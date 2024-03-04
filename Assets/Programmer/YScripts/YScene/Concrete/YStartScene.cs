@@ -12,19 +12,21 @@ public class YStartScene : YSceneState
     PanelManager panelManager;
     public override void OnEnter()
     {
+        
         //Debug.Log("进入" + m_SceneName);
         panelManager = new PanelManager();//这里是不是可优化？
-        if (SceneManager.GetActiveScene().name != m_SceneName)
-        {
-            SceneManager.LoadScene(m_SceneName);
-            //加载完之后执行的操作
-            SceneManager.sceneLoaded += OnSceneLoaded;
-        }
-        else
-        {
-            //如果已经加载过了，直接加载UI
-            panelManager.Push(new StartPanel());
-        }
+        panelManager.Push(new StartPanel());
+        // if (SceneManager.GetActiveScene().name != m_SceneName)
+        // {
+        //     SceneManager.LoadScene(m_SceneName);
+        //     //加载完之后执行的操作
+        //     SceneManager.sceneLoaded += OnSceneLoaded;
+        // }
+        // else
+        // {
+        //     //如果已经加载过了，直接加载UI
+        //     panelManager.Push(new StartPanel());
+        // }
     }
     public override void OnExit()
     {
