@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1142908707240878948
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24a1f09e5bc78d44197bbc4ed1b74521, type: 3}
+  m_Name: H_GaussianBlurSettings
+  m_EditorClassIdentifier: 
+  active: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: BlurTest
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -1142908707240878948}
+  - {fileID: 5541376687099654938}
+--- !u!114 &5541376687099654938
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c7612c2e49059439b111ce565af874, type: 3}
+  m_Name: HBlurCommonSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  blurRadius:
+    m_OverrideState: 1
+    m_Value: 13.3
+  blurIterations:
+    m_OverrideState: 1
+    m_Value: 29
+  blurCenterX:
+    m_OverrideState: 0
+    m_Value: 0.5
+  blurCenterY:
+    m_OverrideState: 0
+    m_Value: 0.5
+  RTDownSampling:
+    m_OverrideState: 1
+    m_Value: 1
+  bufferRadius:
+    m_OverrideState: 1
+    m_Value: 5
