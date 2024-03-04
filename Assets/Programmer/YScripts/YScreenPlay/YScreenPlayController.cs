@@ -63,8 +63,11 @@ public class YScreenPlayController : MonoBehaviour
         AddInListAndEnter(screenplaySound);
 
         //animation
-        YScreenplayBase screenplayAnimation = new YAnimationSP(selectId["animation"],timelineController);
+        YScreenplayBase screenplayAnimation = new YAnimationSP(1,selectId["animation"],timelineController);
         AddInListAndEnter(screenplayAnimation);
+        
+        YScreenplayBase screenplayAnimation2 = new YAnimationSP(8,selectId["animation2"],timelineController);
+        AddInListAndEnter(screenplayAnimation2);
         
         //camera
         YScreenplayBase screenplayCamera = new YCameraSP(selectId["camera"],timelineController);

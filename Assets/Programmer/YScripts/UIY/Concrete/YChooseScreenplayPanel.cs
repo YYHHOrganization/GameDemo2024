@@ -9,35 +9,27 @@ public class YChooseScreenplayPanel : BasePanel
     static readonly string path = "Prefabs/UI/Panel/YChooseScreenplayPanel";
 
     //改为字典
-    Dictionary<string,int> selectId = new Dictionary<string, int>()
-    {
-        {"character",0},
-        {"animation",0},
-        {"audio",0},
-        //加上特效和相机
-        {"effect",0},
-        {"camera",0},
-        {"origin",0},
-        {"destination",0},
-        //宝藏年份
-        {"treasure",0},
-        
-    };
-    string[] dropdownNames = new string[8]{"DropdownCha","DropdownAnimation",
-        "DropdownAudio","DropdownEffect","DropdownCamera","DropdownOrigin","DropdownDestination","DropdownTreasure"};
-    //加上特效和相加
-    string[] selectNames = new string[8]{"character","animation","audio","effect","camera","origin","destination","treasure"};
-    public YChooseScreenplayPanel() : base(new UIType(path)){}
+    Dictionary<string,int> selectId = yPlanningTable.Instance.selectId;
+    // string[] dropdownNames = new string[8]{"DropdownCha","DropdownAnimation",
+    //     "DropdownAudio","DropdownEffect","DropdownCamera","DropdownOrigin","DropdownDestination","DropdownTreasure"};
+    // //加上特效和相加
+    // string[] selectNames = new string[8]{"character","animation","audio","effect","camera","origin","destination","treasure"};
+    //    TMP_Dropdown[] dropdowns = new TMP_Dropdown[8];
     
-    TMP_Dropdown[] dropdowns = new TMP_Dropdown[8];
+    //改为可扩展的List
+    List<string> dropdownNames = yPlanningTable.Instance.dropdownNames;
+    List<string> selectNames = yPlanningTable.Instance.selectNames;
     
+    List<TMP_Dropdown> dropdowns = new List<TMP_Dropdown>();
+    //TMP_Dropdown初始话为dropdownNames.Count个 不使用确定的数字 比如8
 
-    List<List<string>> dropdownOptions = yPlanningTable.Instance.SelectTable;
+    //List<List<string>> dropdownOptions = yPlanningTable.Instance.SelectTable;
+    List<List<string>> dropdownOptions = yPlanningTable.Instance.UISelectTable;
     
     
     //int[] selectId=new int[5];
     
-    
+    public YChooseScreenplayPanel() : base(new UIType(path)){}
     public override void OnEnter()
     {
         uiTool.GetOrAddComponentInChilden<Button>("OkButton").onClick.AddListener(()=>
@@ -54,9 +46,9 @@ public class YChooseScreenplayPanel : BasePanel
             Pop();
             Push(new StartPanel());
         });
-        for (int i = 0; i < dropdownNames.Length; i++)
+        for (int i = 0; i < dropdownNames.Count; i++)
         {
-            dropdowns[i] = uiTool.GetOrAddComponentInChilden<TMP_Dropdown>(dropdownNames[i]);
+            dropdowns.Add(uiTool.GetOrAddComponentInChilden<TMP_Dropdown>(dropdownNames[i]));
             dropdowns[i].AddOptions(dropdownOptions[i]);
             int index = i;
             dropdowns[i].onValueChanged.AddListener((int value)=>
