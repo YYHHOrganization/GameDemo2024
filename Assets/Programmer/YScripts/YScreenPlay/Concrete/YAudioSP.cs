@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class YAudioSP :YScreenplayBase
 {
-    public YAudioSP(int selectId, HTimelineController timelineController) : base(selectId, timelineController)
+    public YAudioSP(int id,int selectId, HTimelineController timelineController) : base(selectId, timelineController)
     {
-        id = 2;
+        // id = 2;
+        this.id = id;
         path = "Prefabs/YAudio/"+yPlanningTable.Instance.SelectTable[id][selectId];
     }
     public override void OnEnter()

@@ -10,11 +10,6 @@ public class YChooseScreenplayPanel : BasePanel
 
     //改为字典
     Dictionary<string,int> selectId = yPlanningTable.Instance.selectId;
-    // string[] dropdownNames = new string[8]{"DropdownCha","DropdownAnimation",
-    //     "DropdownAudio","DropdownEffect","DropdownCamera","DropdownOrigin","DropdownDestination","DropdownTreasure"};
-    // //加上特效和相加
-    // string[] selectNames = new string[8]{"character","animation","audio","effect","camera","origin","destination","treasure"};
-    //    TMP_Dropdown[] dropdowns = new TMP_Dropdown[8];
     
     //改为可扩展的List
     List<string> dropdownNames = yPlanningTable.Instance.dropdownNames;

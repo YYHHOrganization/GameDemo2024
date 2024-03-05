@@ -22,9 +22,15 @@ public class yPlanningTable : MonoBehaviour
     public List<List<string>> SelectTable=new List<List<string>>();
     //UI上的选项名称 
     public List<List<string>> UISelectTable=new List<List<string>>();
+    //表示每个选项框对应【选择的选项的id】
     public Dictionary<string,int> selectId=new Dictionary<string, int>();
     public List<string> dropdownNames = new List<string>();
     public List<string> selectNames = new List<string>();
+    //再加一个用来存储每个string类型，对应的int类型的id
+    public Dictionary<string,int> selectNames2Id=new Dictionary<string, int>();
+    //最后一列表示在自己的细分类中的序列号，比如是第几个animation
+    public List<int> selectSequenceInSelfClass=new List<int>();
+    
     //每一行表示一个表情以及它们在不同角色中对应的每个blendshape的id 存储起来
     //blendshapeNames[0][0]表示第一个表情对应的第一个角色的blendshape的ids
     public List<List<List<int>>> blendshapeIndexs=new List<List<List<int>>>();
@@ -89,6 +95,7 @@ public class yPlanningTable : MonoBehaviour
                     string dropdownName = values[2];
                     string resourcesName = values[3];
                     string UIName = values[4];
+                    int sequenceInSelfClass = int.Parse(values[5]);
 
                     // 将解析后的数据存入您的数据结构中
                     this.selectId.Add(selectId, 0);
@@ -96,6 +103,8 @@ public class yPlanningTable : MonoBehaviour
                     this.selectNames.Add(selectId);
                     this.SelectTable.Add(new List<string>(resourcesName.Split(';')));
                     this.UISelectTable.Add(new List<string>(UIName.Split(';')));
+                    this.selectNames2Id.Add(selectId, id);
+                    this.selectSequenceInSelfClass.Add(sequenceInSelfClass);
                 }
             }
 

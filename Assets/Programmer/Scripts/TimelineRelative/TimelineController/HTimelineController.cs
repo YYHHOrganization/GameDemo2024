@@ -24,6 +24,7 @@ public class HTimelineController : MonoBehaviour
     
     BlendshapeController blendshapeController;
     
+    AnimationTrack animationTrack;
     //根据索引设置对应的TimelineAsset，扩展后面可能有多幕的剧情
     public void SetTimelineAsset(int index)
     {
@@ -76,8 +77,14 @@ public class HTimelineController : MonoBehaviour
         playableDirector = GetComponent<PlayableDirector>();
         //暂时先设置第一幕
         //SetTimelineAsset(0);
-        SetTimelineAssetWithName("DemoTimeline_0");
-        GetTimelineAssetInfos();
+        
+        //旧版设置固定timeline
+        // SetTimelineAssetWithName("DemoTimeline_0");
+        // GetTimelineAssetInfos();
+        
+        //新版动态加载轨道
+        SetTimelineAssetWithName("EmptyTimeline_0");
+        
         blendshapeController = new BlendshapeController();
         //TestSetTimelineContentEverything();
         //PlayTheTimeline();
@@ -91,6 +98,8 @@ public class HTimelineController : MonoBehaviour
         //修改对应track的角色，要求角色要有Animator组件
         string trackName = "Character" + index;
         string trackNameWithPos = "Character" + index + "Pos";
+        string trackAnimName = "CharacterAnimation";
+        //以下代码含义是：如果bindingDict里有这个trackName，就把这个track的sourceObject设置为character的animator
         if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
         {
             playableDirector.SetGenericBinding(pb.sourceObject, character.GetComponent<Animator>());
@@ -100,6 +109,11 @@ public class HTimelineController : MonoBehaviour
         {
             playableDirector.SetGenericBinding(pb2.sourceObject, character.GetComponent<Animator>());
         }
+        if(bindingDict.TryGetValue(trackAnimName, out PlayableBinding pbAnim))
+        {
+            playableDirector.SetGenericBinding(pbAnim.sourceObject, character.GetComponent<Animator>());
+        }
+
     }
 
     //index指的是修改timeline动画轨道的第几个动作
@@ -113,6 +127,27 @@ public class HTimelineController : MonoBehaviour
             var targetClip = clips.ElementAt(index).asset as AnimationPlayableAsset;
             targetClip.clip = clip;
         }
+    }
+    public void AddAnimationTrackWithIndex(int indexInSequence, AnimationClip animationClip)
+    {
+        if (indexInSequence == 0)
+        {
+            string trackName = "CharacterAnimation";
+            animationTrack = currentTimelineAsset.CreateTrack<AnimationTrack>(null, trackName);
+        }
+        
+        float start = indexInSequence * 5f;
+        //playableDirector.SetGenericBinding(track.sourceObject, target.GetComponent<Animator>());
+        
+        var clip = animationTrack.CreateClip<AnimationPlayableAsset>();
+        clip.displayName = animationClip.name;
+        clip.start = start;
+        clip.duration = 6f;
+        var asset = clip.asset as AnimationPlayableAsset;
+        asset.clip = animationClip;
+        
+        GetTimelineAssetInfos();
+    
     }
 
     public void ChangeCinemachineWithIndex(int index, GameObject cinemachine)

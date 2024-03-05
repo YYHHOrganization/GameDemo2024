@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class YCameraSP : YScreenplayBase
 {
-    public YCameraSP(int selectId, HTimelineController timelineController) : base(selectId, timelineController)
+    public YCameraSP(int id,int selectId, HTimelineController timelineController) : base(selectId, timelineController)
     {
-        id = 4;
+        this.id = id;
         path = "Prefabs/YCamera/"+yPlanningTable.Instance.SelectTable[id][selectId];
     }
     public override void OnEnter()

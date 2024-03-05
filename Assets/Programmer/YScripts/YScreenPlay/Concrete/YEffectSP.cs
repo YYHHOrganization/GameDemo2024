@@ -8,9 +8,9 @@ using UnityEngine.Rendering.Universal;
 public class YEffectSP :YScreenplayBase
 {
     //每个selectId对应不同的特效
-    public YEffectSP(int selectId, HTimelineController timelineController) : base(selectId, timelineController)
+    public YEffectSP(int id,int selectId, HTimelineController timelineController) : base(selectId, timelineController)
     {
-        id = 3;
+        this.id = id;
         //path = yPlanningTable.Instance.GetEff(base.selectId);
         //预加载资源
         
