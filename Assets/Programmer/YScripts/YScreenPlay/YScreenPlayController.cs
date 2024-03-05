@@ -17,11 +17,14 @@ public class YScreenPlayController : MonoBehaviour
         }
     }
     HTimelineController timelineController;
+    //设置blendshape
+    BlendshapeController blendshapeController;
 
     private void Awake()
     {
         instance = this;
         timelineController = timeline.gameObject.GetComponent<HTimelineController>();
+        blendshapeController = new BlendshapeController();
     }
 
     //剧本list 用来存放剧本的每个选项YScreenplayBase类型
@@ -76,7 +79,11 @@ public class YScreenPlayController : MonoBehaviour
         //treasure
         YScreenplayBase screenplayTreasure = new YTreasureSP(selectId["treasure"], timelineController);
         AddInListAndEnter(screenplayTreasure);
-
+        
+        // blendshape
+         YScreenplayBase screenplayBlendshape = new YBlendshapeSP(selectId["character"],0,selectId["blendshape"],timelineController);
+         AddInListAndEnter(screenplayBlendshape);
+        
         timelineController.PlayTheTimeline();
     }
 
