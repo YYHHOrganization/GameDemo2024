@@ -25,6 +25,10 @@ public class yPlanningTable : MonoBehaviour
     public Dictionary<string,int> selectId=new Dictionary<string, int>();
     public List<string> dropdownNames = new List<string>();
     public List<string> selectNames = new List<string>();
+    //每一行表示一个表情以及它们在不同角色中对应的每个blendshape的id 存储起来
+    //blendshapeNames[0][0]表示第一个表情对应的第一个角色的blendshape的ids
+    public List<List<List<int>>> blendshapeIndexs=new List<List<List<int>>>();
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -36,57 +40,10 @@ public class yPlanningTable : MonoBehaviour
             Instance = this;
         }
         // effs =new ScriptableRendererFeature[2]{null,null};
-        ReadCSV();
+        ReadScreenPlayCSV();
+        ReadExpressionCSV();
         effs =new List<ScriptableRendererFeature>();
-        
-        // SelectTable = new List<List<string>>()
-        // {
-        //     //顺序是角色 动画 音效 特效 相机 起点 终点
-        //     new List<string>() { "qiyu", "xina", },//0
-        //     new List<string>(){ "Run","Swagger","Creep"},//小步快跑Run/大摇大摆/阴暗的爬行//1
-        //     new List<string>(){ "audio1","audio2","audio3"},//2
-        //     new List<string>(){ "FullScreenWrapPassRendererFeature", "RadialBlur", "null"},//3
-        //     new List<string>(){ "Look down","Follow"},//4
-        //     new List<string>(){ "origin1","origin2","origin3"},
-        //     new List<string>(){ "destination1","destination2","destination3"},
-        //     new List<string>(){ "2.5Years","3.5Years","3000Years"},//7
-        //     new List<string>(){ "Drinking","LookAround",},//8
-        // };
-        //
-        // //UI上的选项名称 
-        // UISelectTable = new List<List<string>>()
-        // {
-        //     //顺序是角色 动画 音效 特效 相机 起点 终点
-        //     new List<string>() { "小帅", "小红", },//0
-        //     new List<string>(){ "小步快跑过去","大摇大摆走过去","阴暗的爬行过去"},//小步快跑Run/大摇大摆/阴暗的爬行//1
-        //     new List<string>(){ "audio1","audio2","audio3"},//2
-        //     new List<string>(){ "扭曲特效", "径向模糊特效", "无特效"},//3
-        //     new List<string>(){ "俯视镜头","跟随镜头"},//4
-        //     new List<string>(){ "origin1","origin2","origin3"},
-        //     new List<string>(){ "destination1","destination2","destination3"},
-        //     new List<string>(){ "2.5年历史","3.5年历史","3000年历史"},//7
-        //     new List<string>(){ "吃毒蘑菇","东张西望",},//8
-        // };
-        //
-        //  selectId = new Dictionary<string, int>() 
-        //  {
-        //     {"character",0},
-        //     {"animation",0},
-        //     {"audio",0},
-        //     //加上特效和相机
-        //     {"effect",0},
-        //     {"camera",0},
-        //     {"origin",0},
-        //     {"destination",0},
-        //     //宝藏年份
-        //     {"treasure",0},
-        //     {"animation2",0},
-        //
-        // };
-        // //改为可扩展的List
-        // dropdownNames = new List<string>(){"DropdownCha","DropdownAnimation",
-        //     "DropdownAudio","DropdownEffect","DropdownCamera","DropdownOrigin","DropdownDestination","DropdownTreasure","DropdownAnimationFront"};
-        //selectNames = new List<string>(){"character","animation","audio","effect","camera","origin","destination","treasure","animation2"};
+
     }
     
     
@@ -105,7 +62,7 @@ public class yPlanningTable : MonoBehaviour
         {8,0},
     };
     
-    void ReadCSV()
+    void ReadScreenPlayCSV()
     {
         //读取csv文件
         //string path = Application.dataPath + "/Resources/SelectTable.csv";
@@ -149,6 +106,61 @@ public class yPlanningTable : MonoBehaviour
             Debug.LogError("File not found: " + filePath);
         }
     }
+    
+    //读取| expression | qiyu  | xina |
+    // | ---------- | ----- | ---- |
+    // | happy      | 24    | 5;23 |
+    // | amazed     | 10;18 | 24   | 存在blendshapeNames中
+    void ReadExpressionCSV()
+    {
+        string filePath = "Assets/Designer/CsvTable/ExpressionCSVFile.csv"; // 替换成您的CSV文件路径
+
+        // 读取CSV文件内容
+        string[] fileData = System.IO.File.ReadAllLines(filePath);
+
+        // 解析CSV数据并存储到 blendshapeNames 中
+        for (int i = 1; i < fileData.Length; i++) // Start from 1 to skip header row
+        {
+            string[] rowData = fileData[i].Split(',');
+            string expression = rowData[0];
+            List<List<int>> expressionData = new List<List<int>>();
+
+            for (int j = 1; j < rowData.Length; j++)
+            {
+                string[] values = rowData[j].Split(';');
+                List<int> intValues = new List<int>();
+                
+                foreach (string value in values)
+                {
+                    int intValue;
+                    if (int.TryParse(value, out intValue))
+                    {
+                        intValues.Add(intValue);
+                    }
+                    else
+                    {
+                        Debug.LogError("Failed to parse value: " + value);
+                    }
+                }
+
+                expressionData.Add(intValues);
+            }
+
+            blendshapeIndexs.Add(expressionData);
+        }
+        //debug 测试输出blendshapeNames
+        for (int i = 0; i < blendshapeIndexs.Count; i++)
+        {
+            for (int j = 0; j < blendshapeIndexs[i].Count; j++)
+            {
+                for (int k = 0; k < blendshapeIndexs[i][j].Count; k++)
+                {
+                    Debug.Log("blendshapeNames[" + i + "][" + j + "][" + k + "] = " + blendshapeIndexs[i][j][k]);
+                }
+            }
+        }
+    }
+
     public ScriptableRendererFeature GetEffRendererFeature(int index)
     {
         if(SelectTable[3][index]=="null")

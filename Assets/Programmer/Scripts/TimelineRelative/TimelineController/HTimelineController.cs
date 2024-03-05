@@ -22,6 +22,8 @@ public class HTimelineController : MonoBehaviour
 
     private ScriptableRendererFeature signalThing;
     
+    BlendshapeController blendshapeController;
+    
     //根据索引设置对应的TimelineAsset，扩展后面可能有多幕的剧情
     public void SetTimelineAsset(int index)
     {
@@ -76,7 +78,7 @@ public class HTimelineController : MonoBehaviour
         //SetTimelineAsset(0);
         SetTimelineAssetWithName("DemoTimeline_0");
         GetTimelineAssetInfos();
-        
+        blendshapeController = new BlendshapeController();
         //TestSetTimelineContentEverything();
         //PlayTheTimeline();
     }
@@ -178,6 +180,11 @@ public class HTimelineController : MonoBehaviour
         
         
 
+    }
+    //blendshape
+    public void ChangeBlendshapeWithIndex(int characterId, int indexInTimeline, int selectId)
+    {
+        blendshapeController.SetBlendshape( characterId, target.GetComponentInChildren<SkinnedMeshRenderer>(),selectId, true); 
     }
         //把index对应轨道的effect设置为某个新的效果
     public void PlayTheTimeline()
