@@ -13,9 +13,9 @@ public enum EnumPlayableCharacter
 }
 public class YCharacterSP : YScreenplayBase
 {
-    public YCharacterSP(int selectId, HTimelineController timelineController) : base(selectId, timelineController)
+    public YCharacterSP(int id,int selectId, HTimelineController timelineController) : base(selectId, timelineController)
     {
-        id = 0;
+        this.id = id;
         path = "Prefabs/YCharacter/"+yPlanningTable.Instance.SelectTable[id][selectId];
     }
     public override void OnEnter()

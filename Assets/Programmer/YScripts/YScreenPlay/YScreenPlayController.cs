@@ -56,33 +56,43 @@ public class YScreenPlayController : MonoBehaviour
 
     public void ConfirmScreenplay( Dictionary<string,int> selectId)
     {
-        YScreenplayBase screenplay = new YCharacterSP(selectId["character"],timelineController);
+        //selectId["animation1"] 与selectId["animation2"] 与selectId["animation3"] 与selectId["animation4"] ，selectId["animation5"] 都表示选择的动画
+        for(int i = 1; i <= 5; i++)
+        {
+            YScreenplayBase screenplayAnimation = new YAnimationSP(yPlanningTable.Instance.selectNames2Id["animation"+i],selectId["animation"+i],timelineController);
+            AddInListAndEnter(screenplayAnimation);
+        }
+        
+        YScreenplayBase screenplay = new YCharacterSP(yPlanningTable.Instance.selectNames2Id["character"],selectId["character"],timelineController);
         AddInListAndEnter(screenplay);
         
-        YScreenplayBase screenplayEff = new YEffectSP(selectId["effect"],timelineController);
-        AddInListAndEnter(screenplayEff);
-        
-        YScreenplayBase screenplaySound = new YAudioSP(selectId["audio"],timelineController);
-        AddInListAndEnter(screenplaySound);
-
-        //animation
-        YScreenplayBase screenplayAnimation = new YAnimationSP(1,selectId["animation"],timelineController);
-        AddInListAndEnter(screenplayAnimation);
-        
-        YScreenplayBase screenplayAnimation2 = new YAnimationSP(8,selectId["animation2"],timelineController);
-        AddInListAndEnter(screenplayAnimation2);
-        
-        //camera
-        YScreenplayBase screenplayCamera = new YCameraSP(selectId["camera"],timelineController);
-        AddInListAndEnter(screenplayCamera);
-        
-        //treasure
-        YScreenplayBase screenplayTreasure = new YTreasureSP(selectId["treasure"], timelineController);
-        AddInListAndEnter(screenplayTreasure);
-        
-        // blendshape
-         YScreenplayBase screenplayBlendshape = new YBlendshapeSP(selectId["character"],0,selectId["blendshape"],timelineController);
-         AddInListAndEnter(screenplayBlendshape);
+        // YScreenplayBase screenplay = new YCharacterSP(selectId["character"],timelineController);
+        // AddInListAndEnter(screenplay);
+        //
+        // YScreenplayBase screenplayEff = new YEffectSP(selectId["effect"],timelineController);
+        // AddInListAndEnter(screenplayEff);
+        //
+        // YScreenplayBase screenplaySound = new YAudioSP(selectId["audio"],timelineController);
+        // AddInListAndEnter(screenplaySound);
+        //
+        // //animation
+        // YScreenplayBase screenplayAnimation = new YAnimationSP(1,selectId["animation"],timelineController);
+        // AddInListAndEnter(screenplayAnimation);
+        //
+        // YScreenplayBase screenplayAnimation2 = new YAnimationSP(8,selectId["animation2"],timelineController);
+        // AddInListAndEnter(screenplayAnimation2);
+        //
+        // //camera
+        // YScreenplayBase screenplayCamera = new YCameraSP(selectId["camera"],timelineController);
+        // AddInListAndEnter(screenplayCamera);
+        //
+        // //treasure
+        // YScreenplayBase screenplayTreasure = new YTreasureSP(selectId["treasure"], timelineController);
+        // AddInListAndEnter(screenplayTreasure);
+        //
+        // // blendshape
+        //  YScreenplayBase screenplayBlendshape = new YBlendshapeSP(selectId["character"],0,selectId["blendshape"],timelineController);
+        //  AddInListAndEnter(screenplayBlendshape);
         
         timelineController.PlayTheTimeline();
     }

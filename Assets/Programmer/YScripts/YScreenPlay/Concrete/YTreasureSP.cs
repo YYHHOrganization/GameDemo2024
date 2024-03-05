@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class YTreasureSP : YScreenplayBase
 {
-    public YTreasureSP(int selectId, HTimelineController timelineController) : base(selectId, timelineController)
+    public YTreasureSP(int id,int selectId, HTimelineController timelineController) : base(selectId, timelineController)
     {
-        id = 7;
+        this.id = id;
         path = "Prefabs/YTreasure/treasure"+yPlanningTable.Instance.SelectTable[id][selectId];
     }
     public override void OnEnter()

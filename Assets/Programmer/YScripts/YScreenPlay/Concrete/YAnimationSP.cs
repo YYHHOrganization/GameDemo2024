@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class YAnimationSP : YScreenplayBase
 {
-    int indexInTimeline;
+    int indexInSequence;
     public YAnimationSP(int id,int selectId, HTimelineController timelineController) : base(selectId, timelineController)
     {
-        this.indexInTimeline = indexInTimeline;//标注是哪一段动画需要更改
+        this.indexInSequence = yPlanningTable.Instance.selectSequenceInSelfClass[id];//标注是哪一段动画需要更改 获取当前的indexInSequence  可以是策划表里面定义的
         this.id = id;
-        indexInTimeline = yPlanningTable.Instance.animationId2TimelineIndex[id];
+        //indexInTimeline = yPlanningTable.Instance.animationId2TimelineIndex[id];
         path = "Prefabs/YAnimation/"+yPlanningTable.Instance.SelectTable[id][selectId];
     }
     public override void OnEnter()
@@ -24,7 +24,8 @@ public class YAnimationSP : YScreenplayBase
         
         //todo:先写死，修改第一个动画资产，后面改为传入修改timeline的第几个动画资产
         AnimationClip clip = Resources.Load<AnimationClip>(path);
-        timelineController.ChangeAnimationWithIndex(indexInTimeline, clip);
+        // timelineController.ChangeAnimationWithIndex(indexInTimeline, clip);
+        timelineController.AddAnimationTrackWithIndex(indexInSequence, clip);
         
         //设置
         //timelineController.SetCharacter(go);
