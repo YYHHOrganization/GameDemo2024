@@ -10,6 +10,11 @@ public class BlendshapeController
     {
         bsIndex = yPlanningTable.Instance.blendshapeIndexs;
     }
+
+    public List<int> GetIndexes(int characterId, int selectId)
+    {
+        return bsIndex[selectId][characterId];
+    }
     
     SkinnedMeshRenderer skinnedMeshRenderers;
     public void SetBlendshape(int characterId,SkinnedMeshRenderer skinnedMeshRenderer,int selectId,bool isOn)

@@ -184,7 +184,24 @@ public class HTimelineController : MonoBehaviour
     //blendshape
     public void ChangeBlendshapeWithIndex(int characterId, int indexInTimeline, int selectId)
     {
-        blendshapeController.SetBlendshape( characterId, target.GetComponentInChildren<SkinnedMeshRenderer>(),selectId, true); 
+        string trackName = "BlendShapeTrack";
+        //blendshapeController.SetBlendshape( characterId, target.GetComponentInChildren<SkinnedMeshRenderer>(),selectId, true); 
+        if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
+        {
+            playableDirector.SetGenericBinding(pb.sourceObject, target.GetComponentInChildren<SkinnedMeshRenderer>());
+            HBlendShapeTrack track = (HBlendShapeTrack)pb.sourceObject;
+            var clips = track.GetClips();
+            var targetClip = clips.ElementAt(indexInTimeline).asset as HBlendShapeClip;
+            targetClip.blendShapeIndex = blendshapeController.GetIndexes(characterId, selectId);
+            List<float> blendshapeValue = new List<float>();
+            //todo:这个值后面可能也要在策划表中设置
+            for(int j=0;j<targetClip.blendShapeIndex.Count;j++)
+            {
+                blendshapeValue.Add(100);
+            }
+
+            targetClip.blendShapeValue = blendshapeValue;
+        }
     }
         //把index对应轨道的effect设置为某个新的效果
     public void PlayTheTimeline()
