@@ -24,8 +24,8 @@ public class YAnimationSP : YScreenplayBase
         
         //todo:先写死，修改第一个动画资产，后面改为传入修改timeline的第几个动画资产
         AnimationClip clip = Resources.Load<AnimationClip>(path);
-        // timelineController.ChangeAnimationWithIndex(indexInTimeline, clip);
-        timelineController.AddAnimationTrackWithIndex(indexInSequence, clip);
+        timelineController.ChangeAnimationWithIndex(indexInSequence, clip);
+        //timelineController.AddAnimationTrackWithIndex(indexInSequence, clip);
         
         //设置
         //timelineController.SetCharacter(go);

@@ -62,9 +62,16 @@ public class YScreenPlayController : MonoBehaviour
             YScreenplayBase screenplayAnimation = new YAnimationSP(yPlanningTable.Instance.selectNames2Id["animation"+i],selectId["animation"+i],timelineController);
             AddInListAndEnter(screenplayAnimation);
         }
-        
         YScreenplayBase screenplay = new YCharacterSP(yPlanningTable.Instance.selectNames2Id["character"],selectId["character"],timelineController);
         AddInListAndEnter(screenplay);
+        
+        for(int i = 1; i <= 5; i++)
+        {
+            //相机
+            YScreenplayBase screenplayCamera = new YCameraSP(yPlanningTable.Instance.selectNames2Id["camera"+i],selectId["camera"+i],timelineController);
+            AddInListAndEnter(screenplayCamera);
+        }
+        
         
         // YScreenplayBase screenplay = new YCharacterSP(selectId["character"],timelineController);
         // AddInListAndEnter(screenplay);
@@ -93,7 +100,13 @@ public class YScreenPlayController : MonoBehaviour
         // // blendshape
         //  YScreenplayBase screenplayBlendshape = new YBlendshapeSP(selectId["character"],0,selectId["blendshape"],timelineController);
         //  AddInListAndEnter(screenplayBlendshape);
-        
+
+
+        PlayTheTimeline();
+    }
+
+    public void PlayTheTimeline()
+    {
         timelineController.PlayTheTimeline();
     }
 
