@@ -76,7 +76,7 @@ public class HTimelineController : MonoBehaviour
         playableDirector = GetComponent<PlayableDirector>();
         //暂时先设置第一幕
         //SetTimelineAsset(0);
-        SetTimelineAssetWithName("DemoTimeline_0");
+        SetTimelineAssetWithName("DemoTimeline_1");
         GetTimelineAssetInfos();
         blendshapeController = new BlendshapeController();
         //TestSetTimelineContentEverything();
