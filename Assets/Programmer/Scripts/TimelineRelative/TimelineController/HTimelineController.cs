@@ -93,6 +93,7 @@ public class HTimelineController : MonoBehaviour
         
         //新版动态加载轨道
         SetTimelineAssetWithName("EmptyTimeline_0");
+
         GetTimelineAssetInfos();
         
         blendshapeController = new BlendshapeController();

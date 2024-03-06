@@ -12,11 +12,9 @@ public class HBlendShapeMixer : PlayableBehaviour
             return;
 
         int inputCount = playable.GetInputCount();
-        float totalWeight = 0;
         for (int i = 0; i < inputCount; i++)
         {
             float inputWeight = playable.GetInputWeight(i);
-            totalWeight += inputWeight;
 
             ScriptPlayable<HBlendShapeBehavior> inputPlayable = (ScriptPlayable<HBlendShapeBehavior>)playable.GetInput(i);
             HBlendShapeBehavior input = inputPlayable.GetBehaviour();
