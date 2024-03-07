@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-[TrackBindingType(typeof(HPostProcessingBase))]
+//[TrackBindingType(typeof(HPostProcessingBase))]
 [TrackClipType(typeof(HPostProcessingClip))]
 public class HPostProcessingTrack : TrackAsset
 {

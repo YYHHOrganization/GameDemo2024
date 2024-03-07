@@ -34,6 +34,8 @@ public class HTimelineController : MonoBehaviour
     private List<float> durations = new List<float>();
     private List<AnimationClip> clippps = new List<AnimationClip>();
     
+    public string timelineAssetName = "EmptyTimeline_0";
+    
     //根据索引设置对应的TimelineAsset，扩展后面可能有多幕的剧情
     public void SetTimelineAsset(int index)
     {
@@ -92,14 +94,17 @@ public class HTimelineController : MonoBehaviour
        
         
         //新版动态加载轨道
-        SetTimelineAssetWithName("EmptyTimeline_0");
+        SetTimelineAssetWithName(timelineAssetName);
 
         GetTimelineAssetInfos();
         
         blendshapeController = new BlendshapeController();
+        
+        
         //TestSetTimelineContentEverything();
         //PlayTheTimeline();
     }
+    
 
     //根据索引设置对应的角色
     public void ChangeCharacter(int index, GameObject character)
@@ -124,7 +129,6 @@ public class HTimelineController : MonoBehaviour
         {
             playableDirector.SetGenericBinding(pbAnim.sourceObject, character.GetComponent<Animator>());
         }
-
     }
 
     private float startShabi = 0;
@@ -296,6 +300,9 @@ public class HTimelineController : MonoBehaviour
             }
 
             targetClip.blendShapeValue = blendshapeValue;
+            var TimelineClipIndex = clips.ElementAt(indexInTimeline);
+            TimelineClipIndex.start = startShabi + indexInTimeline * durationShabi + durationShabi * 0.2f;
+            TimelineClipIndex.duration = durationShabi * 0.6f;
         }
     }
         //把index对应轨道的effect设置为某个新的效果

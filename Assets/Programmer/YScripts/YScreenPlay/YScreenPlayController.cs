@@ -71,7 +71,13 @@ public class YScreenPlayController : MonoBehaviour
             YScreenplayBase screenplayCamera = new YCameraSP(yPlanningTable.Instance.selectNames2Id["camera"+i],selectId["camera"+i],timelineController);
             AddInListAndEnter(screenplayCamera);
         }
-        
+
+        for(int i = 1; i <= 5; i++)
+        {
+            //blendshape
+            YScreenplayBase screenplayBlendshape = new YBlendshapeSP(selectId["character"],yPlanningTable.Instance.selectNames2Id["blendshape"+i],selectId["blendshape"+i],timelineController);
+            AddInListAndEnter(screenplayBlendshape);
+        }
         
         // YScreenplayBase screenplay = new YCharacterSP(selectId["character"],timelineController);
         // AddInListAndEnter(screenplay);

@@ -10,7 +10,7 @@ public class YBlendshapeSP : YScreenplayBase
     public YBlendshapeSP(int characterind,int id,int selectId, HTimelineController timelineController) : base(selectId, timelineController)
     {
         this.id = id;
-        indexInTimeline = 0;
+        this.indexInTimeline = yPlanningTable.Instance.selectSequenceInSelfClass[id];//标注是哪一段bs需要更改 获取当前的indexInSequence  可以是策划表里面定义的
         this.characterind = characterind;
         
         //path = "Prefabs/YAnimation/"+yPlanningTable.Instance.SelectTable[id][selectId];

@@ -38,6 +38,27 @@ public class HPostProcessingFilters : HPostProcessingBase
             attributes.Add("saturation");
             values.Add(-100);
         }
+        
+        else if (postProcessingType == "Xianming")
+        {
+            VolumePPType = "ColorAdjustments";
+            attributes.Add("saturation");
+            values.Add(100);
+        }
+        
+        else if(postProcessingType == "Baohe")
+        {
+            VolumePPType = "ColorAdjustments";
+            attributes.Add("contrast");
+            values.Add(100);
+        }
+        
+        else if(postProcessingType == "Guangyun")
+        {
+            VolumePPType = "ColorAdjustments";
+            attributes.Add("postExposure");
+            values.Add(100);
+        }
     }
     
     public void SetAttributeAndValueFromTimeline(List<string> attributes, List<float> values)
@@ -75,8 +96,19 @@ public class HPostProcessingFilters : HPostProcessingBase
                     var colorAdjustments = (ColorAdjustments) component;
                     for(int i = 0; i < attributes.Count; i++)
                     {
-                        if(attributes[i] == "saturation")
-                            colorAdjustments.saturation.value = values[i]; 
+                        switch (attributes[i])
+                        {
+                            case "saturation":
+                                colorAdjustments.saturation.value = values[i];
+                                break;
+                            case "postExposure":
+                                colorAdjustments.postExposure.value = values[i];
+                                break;
+                            case "contrast":
+                                colorAdjustments.contrast.value = values[i];
+                                break;
+                        }
+                            
                     }
                 }
             }
