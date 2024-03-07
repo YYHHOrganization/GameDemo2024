@@ -4,6 +4,7 @@ using System.Linq;
 using Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Playables;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Timeline;
@@ -118,21 +119,25 @@ public class HTimelineController : MonoBehaviour
         //以下代码含义是：如果bindingDict里有这个trackName，就把这个track的sourceObject设置为character的animator
         if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
         {
-            playableDirector.SetGenericBinding(pb.sourceObject, character.GetComponent<Animator>());
+            playableDirector.SetGenericBinding(pb.sourceObject, character.GetComponentInChildren<Animator>());
         }
         
         if (bindingDict.TryGetValue(trackNameWithPos, out PlayableBinding pb2))
         {
-            playableDirector.SetGenericBinding(pb2.sourceObject, character.GetComponent<Animator>());
+            playableDirector.SetGenericBinding(pb2.sourceObject, character.GetComponentInChildren<Animator>());
         }
         if(bindingDict.TryGetValue(trackAnimName, out PlayableBinding pbAnim))
         {
-            playableDirector.SetGenericBinding(pbAnim.sourceObject, character.GetComponent<Animator>());
+            playableDirector.SetGenericBinding(pbAnim.sourceObject, character.GetComponentInChildren<Animator>());
+        }
+        if(bindingDict.TryGetValue("DestinationTrack", out PlayableBinding pbnav))
+        {
+            playableDirector.SetGenericBinding(pbnav.sourceObject, character.gameObject.GetComponent<NavMeshAgent>());
         }
     }
 
     private float startShabi = 0;
-    private float durationShabi = 3;
+    private float durationShabi = 6;
     //index指的是修改timeline动画轨道的第几个动作
     public void ChangeAnimationWithIndex(int index, AnimationClip clip)
     {
@@ -223,6 +228,7 @@ public class HTimelineController : MonoBehaviour
 //            cinemachine.GetComponent<CinemachineVirtualCamera>().m_Follow = target.transform;
 
             cinemachine.GetComponent<CinemachineVirtualCamera>().Follow = target.transform;
+            cinemachine.GetComponent<CinemachineVirtualCamera>().LookAt = target.transform;
             
             playableDirector.SetReferenceValue(cinemachineShot.VirtualCamera.exposedName, 
                 cinemachine.GetComponent<CinemachineVirtualCamera>());
@@ -303,6 +309,49 @@ public class HTimelineController : MonoBehaviour
             var TimelineClipIndex = clips.ElementAt(indexInTimeline);
             TimelineClipIndex.start = startShabi + indexInTimeline * durationShabi + durationShabi * 0.2f;
             TimelineClipIndex.duration = durationShabi * 0.6f;
+        }
+    }
+
+    public List<GameObject> gooo;
+    /// <summary>
+    /// 用于更改每一段clip的目的地
+    /// </summary>
+    /// <param name="characterId"></param>
+    /// <param name="indexInTimeline"></param>
+    /// <param name="selectId"></param>
+    public void ChangeDestinationWithIndex(int characterId, int indexInTimeline, int selectId)
+    {
+        string trackName = "DestinationTrack";
+        
+        if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
+        {
+            NavMeshAgentControlTrack track = (NavMeshAgentControlTrack)pb.sourceObject;
+            var clips = track.GetClips();
+            var ClipIndex = clips.ElementAt(indexInTimeline);
+            ClipIndex.start = startShabi + indexInTimeline * durationShabi;
+            ClipIndex.duration = durationShabi;
+            var navMeshAgentControlClip = ClipIndex.asset as NavMeshAgentControlClip;
+            Debug.Log("five??" + indexInTimeline);
+            
+            GameObject go1 = yPlanningTable.Instance.GetDestination(selectId).gameObject;
+            playableDirector.SetReferenceValue(navMeshAgentControlClip.destination.exposedName,
+                go1.transform);
+            // playableDirector.SetReferenceValue(navMeshAgentControlClip.destination.exposedName,
+            //     go1.transform);
+            gooo.Add(go1);
+            pringGIII(gooo);
+
+
+            //Debug.Log("destination  "+ yPlanningTable.Instance.GetDestination(selectId).position);
+
+        }
+    }
+
+    void pringGIII(List<GameObject> go)
+    {
+        foreach (var VARIABLE in gooo)
+        {
+            Debug.Log("go  "+VARIABLE + "  "+VARIABLE.transform.position);
         }
     }
         //把index对应轨道的effect设置为某个新的效果

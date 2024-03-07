@@ -70,42 +70,16 @@ public class YScreenPlayController : MonoBehaviour
             //相机
             YScreenplayBase screenplayCamera = new YCameraSP(yPlanningTable.Instance.selectNames2Id["camera"+i],selectId["camera"+i],timelineController);
             AddInListAndEnter(screenplayCamera);
-        }
-
-        for(int i = 1; i <= 5; i++)
-        {
+            
             //blendshape
             YScreenplayBase screenplayBlendshape = new YBlendshapeSP(selectId["character"],yPlanningTable.Instance.selectNames2Id["blendshape"+i],selectId["blendshape"+i],timelineController);
             AddInListAndEnter(screenplayBlendshape);
+            
+            //destination
+            YScreenplayBase screenplayDestination = new YDestinationSP(selectId["character"],yPlanningTable.Instance.selectNames2Id["destination"+i],selectId["destination"+i],timelineController);
+            AddInListAndEnter(screenplayDestination);
         }
         
-        // YScreenplayBase screenplay = new YCharacterSP(selectId["character"],timelineController);
-        // AddInListAndEnter(screenplay);
-        //
-        // YScreenplayBase screenplayEff = new YEffectSP(selectId["effect"],timelineController);
-        // AddInListAndEnter(screenplayEff);
-        //
-        // YScreenplayBase screenplaySound = new YAudioSP(selectId["audio"],timelineController);
-        // AddInListAndEnter(screenplaySound);
-        //
-        // //animation
-        // YScreenplayBase screenplayAnimation = new YAnimationSP(1,selectId["animation"],timelineController);
-        // AddInListAndEnter(screenplayAnimation);
-        //
-        // YScreenplayBase screenplayAnimation2 = new YAnimationSP(8,selectId["animation2"],timelineController);
-        // AddInListAndEnter(screenplayAnimation2);
-        //
-        // //camera
-        // YScreenplayBase screenplayCamera = new YCameraSP(selectId["camera"],timelineController);
-        // AddInListAndEnter(screenplayCamera);
-        //
-        // //treasure
-        // YScreenplayBase screenplayTreasure = new YTreasureSP(selectId["treasure"], timelineController);
-        // AddInListAndEnter(screenplayTreasure);
-        //
-        // // blendshape
-        //  YScreenplayBase screenplayBlendshape = new YBlendshapeSP(selectId["character"],0,selectId["blendshape"],timelineController);
-        //  AddInListAndEnter(screenplayBlendshape);
 
 
         PlayTheTimeline();

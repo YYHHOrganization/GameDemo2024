@@ -5,7 +5,9 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.UI;
 using UnityEngine.Rendering.Universal;
+using Random = UnityEngine.Random;
 
 public class yPlanningTable : MonoBehaviour
 {
@@ -35,6 +37,8 @@ public class yPlanningTable : MonoBehaviour
     //blendshapeNames[0][0]表示第一个表情对应的第一个角色的blendshape的ids
     public List<List<List<int>>> blendshapeIndexs=new List<List<List<int>>>();
     
+    //存储目的地 每个目的地是一个vector3
+    public List<Vector3> destination=new List<Vector3>();
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -48,8 +52,8 @@ public class yPlanningTable : MonoBehaviour
         // effs =new ScriptableRendererFeature[2]{null,null};
         ReadScreenPlayCSV();
         ReadExpressionCSV();
+        ReadDestinationCSV();
         effs =new List<ScriptableRendererFeature>();
-
     }
     
     
@@ -170,6 +174,29 @@ public class yPlanningTable : MonoBehaviour
         }
     }
 
+    void ReadDestinationCSV()
+    {
+        string filePath = "Assets/Designer/CsvTable/DestinationCSVFile.csv"; 
+
+        using (StreamReader reader = new StreamReader(filePath))
+        {
+            while (!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                string[] values = line.Split(',');
+
+                if (values.Length == 4) // 确保每行有四个值
+                {
+                    float x, y, z;
+                    if (float.TryParse(values[1], out x) && float.TryParse(values[2], out y) && float.TryParse(values[3], out z))
+                    {
+                        Vector3 newDestination = new Vector3(x, y, z);
+                        destination.Add(newDestination);
+                    }
+                }
+            }
+        }
+    }
     public ScriptableRendererFeature GetEffRendererFeature(int index)
     {
         if(SelectTable[3][index]=="null")
@@ -250,5 +277,35 @@ public class yPlanningTable : MonoBehaviour
         }
         
         
+    }
+    //GetDestination(characterId, selectId);
+    public Transform GetDestination(int selectId)
+    {
+        // Debug.Log("selectIdWhy>>: " + selectId);
+        // string path = "Prefabs/YCharacter/" + "xina";
+        // GameObject destinationObject = GameObject.Instantiate(Resources.Load<GameObject>(path));
+        // destinationObject.name = "Destination+" + selectId + Random.Range(0, 1554);
+        // destinationObject.transform.position = destination[selectId];
+        // return destinationObject.transform;
+        
+        //Vector3 destination = this.destination[selectId];
+        
+        if (selectId==1)
+        {
+            return GameObject.Find("Restaurant").transform;
+        }
+        else if (selectId==0)
+        {
+            return GameObject.Find("FruitsCornor").transform;
+        }
+        else if (selectId==2)
+        {
+            return GameObject.Find("Bench").transform;
+        }
+       return GameObject.Find("Restaurant").transform;
+        
+        // Transform destinationTransform = new GameObject().transform;
+        // destinationTransform.position = destination[selectId];
+        // return destinationTransform;
     }
 }
