@@ -53,6 +53,7 @@ public class yPlanningTable : MonoBehaviour
         ReadScreenPlayCSV();
         ReadExpressionCSV();
         ReadDestinationCSV();
+        ReadPostProcessingCSV();
         effs =new List<ScriptableRendererFeature>();
     }
     
@@ -172,6 +173,58 @@ public class yPlanningTable : MonoBehaviour
                 }
             }
         }
+    }
+
+    //读取后处理相关的CSV文件
+    void ReadPostProcessingCSV()
+    {
+        // string filePath = "Assets/Designer/CsvTable/PostProcessingCSVFile.csv"; // 替换成您的CSV文件路径
+        //
+        // // 读取CSV文件内容
+        // string[] fileData = System.IO.File.ReadAllLines(filePath);
+        //
+        // // 解析CSV数据并存储到 blendshapeNames 中
+        // for (int i = 1; i < fileData.Length; i++) // Start from 1 to skip header row
+        // {
+        //     string[] rowData = fileData[i].Split(',');
+        //     string effectName = rowData[0];
+        //     List<List<string>> effectAttributes = new List<List<string>>();
+        //     List<List<float>> effectValueData = new List<List<float>>();
+        //
+        //     for (int j = 1; j < rowData.Length; j++)
+        //     {
+        //         string[] values = rowData[j].Split(';');
+        //         List<float> effValues = new List<float>();
+        //         
+        //         foreach (string value in values)
+        //         {
+        //             float floatValue;
+        //             if (float.TryParse(value, out floatValue))
+        //             {
+        //                 effValues.Add(floatValue);
+        //             }
+        //             else
+        //             {
+        //                 Debug.LogError("Failed to parse value: " + value);
+        //             }
+        //         }
+        //
+        //         expressionData.Add(intValues);
+        //     }
+        //
+        //     blendshapeIndexs.Add(expressionData);
+        // }
+        // //debug 测试输出blendshapeNames
+        // for (int i = 0; i < blendshapeIndexs.Count; i++)
+        // {
+        //     for (int j = 0; j < blendshapeIndexs[i].Count; j++)
+        //     {
+        //         for (int k = 0; k < blendshapeIndexs[i][j].Count; k++)
+        //         {
+        //             Debug.Log("blendshapeNames[" + i + "][" + j + "][" + k + "] = " + blendshapeIndexs[i][j][k]);
+        //         }
+        //     }
+        // }
     }
 
     void ReadDestinationCSV()

@@ -40,7 +40,7 @@ public class HPostProcessingBehavior : PlayableBehaviour
     // //实测应该是当timeline没有播放该clip的时候，应该去调用对应的函数，只会在改变状态的时候调用一次，所以问题不大
     public override void OnBehaviourPause(Playable playable, FrameData info)
     {
-        Debug.Log("OnBehaviorPause");
+        //Debug.Log("OnBehaviorPause");
         if (postProcessingType == EnumHPostProcessingType.GlobalVolume)
         {
             HPostProcessingFilters.Instance.ResetInput(this);

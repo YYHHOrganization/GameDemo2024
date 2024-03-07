@@ -53,18 +53,11 @@ public class HPostProcessingFilters : HPostProcessingBase
                     var colorAdjustments = (ColorAdjustments) component;
                     for(int i = 0; i < attributes.Count; i++)
                     {
-                        //用shouldLerp来控制是否需要渐变
-                        // if (inputWeight >= 0.001) //weight仍在控制，用shouldLerp做调整
-                        // {
-                        //     if (shouldLerp[i] == 0) inputWeight = 1;
-                        // } 
                         switch (attributes[i])
                         {
                             case "saturation":
                                 //Debug.Log("now we are in saturation RESET");
-                                //Debug.Log("now we are in saturation~");
                                 colorAdjustments.saturation.value = defaultValues[i];
-                                //Debug.Log(setValue);
                                 break;
                             case "postExposure":
                                 //Debug.Log("now we are in postExposure RESET");
@@ -114,7 +107,6 @@ public class HPostProcessingFilters : HPostProcessingBase
                             case "saturation":
                                 //Debug.Log("now we are in saturation");
                                 colorAdjustments.saturation.value = setValue;
-                                //Debug.Log(setValue);
                                 break;
                             case "postExposure":
                                 //Debug.Log("now we are in postExposure");

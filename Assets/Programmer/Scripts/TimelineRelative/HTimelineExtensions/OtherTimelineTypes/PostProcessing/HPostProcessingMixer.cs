@@ -49,12 +49,7 @@ public class HPostProcessingMixer : PlayableBehaviour
                 //这里的input应该指的就是对应轨道上的那个clip里面的参数
                 HandlePostProcessingBehavior(input, inputWeight);
             }
-            // else
-            // {
-            //     Debug.Log("this clip " + i + " should reset");
-            //     //应该重置为默认值
-            //     ResetPostProcessingValues(input);
-            // }
+            //当离开轨道的时候，调用的逻辑写在了Behavior里，会重置为策划表中写的默认值
         }
         //Debug.Log("=================================");
        
