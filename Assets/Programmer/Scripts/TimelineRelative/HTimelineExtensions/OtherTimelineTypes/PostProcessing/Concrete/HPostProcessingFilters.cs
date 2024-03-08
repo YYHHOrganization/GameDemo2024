@@ -74,6 +74,23 @@ public class HPostProcessingFilters : HPostProcessingBase
                             
                     }
                 }
+                else if (volumePPType == "HRadialBlurSettings")
+                {
+                    var radialBlur = (HRadialBlurSettings) component;
+                    for(int i = 0; i < attributes.Count; i++)
+                    {
+                        switch (attributes[i])
+                        {
+                            case "blurRadius":
+                                radialBlur.blurRadius.value = defaultValues[i]; 
+                                break;
+                            case "blurIterations":
+                                radialBlur.blurIterations.value = (int)defaultValues[i];
+                                break;
+                            
+                        }
+                    }
+                }
             }
             
         }
@@ -121,6 +138,31 @@ public class HPostProcessingFilters : HPostProcessingBase
                                 break;
                         }
                             
+                    }
+                }
+                else if (volumePPType == "HRadialBlurSettings")
+                {
+                    var radialBlur = (HRadialBlurSettings) component;
+                    for(int i = 0; i < attributes.Count; i++)
+                    {
+                        //用shouldLerp来控制是否需要渐变
+                        if (inputWeight >= 0.0001) //weight仍在控制，用shouldLerp做调整
+                        {
+                            if (shouldLerp[i] == 0) inputWeight = 1;
+                        } 
+                        float addValue = values[i] * inputWeight; //在写逻辑的时候保证value[i]在加入到默认值上的时候是合理的
+                        float setValue = defaultValues[i] + addValue;
+                        
+                        switch (attributes[i])
+                        {
+                            case "blurRadius":
+                                radialBlur.blurRadius.value = setValue; 
+                                break;
+                            case "blurIterations":
+                                radialBlur.blurIterations.value = (int)setValue;
+                                break;
+                            
+                        }
                     }
                 }
             }

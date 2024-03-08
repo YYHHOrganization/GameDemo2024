@@ -358,7 +358,22 @@ public class HTimelineController : MonoBehaviour
             Debug.Log("go  "+VARIABLE + "  "+VARIABLE.transform.position);
         }
     }
-        //把index对应轨道的effect设置为某个新的效果
+    
+    //把index对应轨道的effect设置为某个新的效果
+    public void ChangePostProcessingWithIndex(int indexInTimeline, int selectId)
+    {
+        //todo:这里不太会写，后面补充一下，关于后处理的逻辑
+        //另外，如果要调整的参数不是float类型的怎么办？比如说颜色，后面再说
+        string trackName = "PostProcessingTrack";
+        if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
+        {
+            HPostProcessingTrack track = (HPostProcessingTrack)pb.sourceObject;
+            var clips = track.GetClips();
+            var targetClip = clips.ElementAt(indexInTimeline).asset as HPostProcessingClip;
+            
+        }
+    }
+
     public void PlayTheTimeline()
     {
         playableDirector.playableAsset = currentTimelineAsset;
