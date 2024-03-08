@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,8 @@ public class HTimelineController : MonoBehaviour
         TimelineAsset asset = Resources.Load<TimelineAsset>(timelineAssetPath + name);
         currentTimelineAsset = Instantiate(asset);
     }
-
+    
+    [Obsolete("NEVER CALL THIS!! This method is deprecated, just for test")]
     void TestSetTimelineContentEverything()
     {
         //设置角色
@@ -122,10 +124,10 @@ public class HTimelineController : MonoBehaviour
             playableDirector.SetGenericBinding(pb.sourceObject, character.GetComponentInChildren<Animator>());
         }
         
-        if (bindingDict.TryGetValue(trackNameWithPos, out PlayableBinding pb2))
-        {
-            playableDirector.SetGenericBinding(pb2.sourceObject, character.GetComponentInChildren<Animator>());
-        }
+        // if (bindingDict.TryGetValue(trackNameWithPos, out PlayableBinding pb2))
+        // {
+        //     playableDirector.SetGenericBinding(pb2.sourceObject, character.GetComponentInChildren<Animator>());
+        // }
         if(bindingDict.TryGetValue(trackAnimName, out PlayableBinding pbAnim))
         {
             playableDirector.SetGenericBinding(pbAnim.sourceObject, character.GetComponentInChildren<Animator>());
@@ -136,8 +138,8 @@ public class HTimelineController : MonoBehaviour
         }
     }
 
-    private float startShabi = 0;
-    private float durationShabi = 6;
+    private float testAnimationStart = 0;
+    private float testAnimationDuration = 6;
     //index指的是修改timeline动画轨道的第几个动作
     public void ChangeAnimationWithIndex(int index, AnimationClip clip)
     {
@@ -148,9 +150,9 @@ public class HTimelineController : MonoBehaviour
             var clips = track.GetClips();
             var targetClip = clips.ElementAt(index).asset as AnimationPlayableAsset;
             
-            var shabi = clips.ElementAt(index);
-            shabi.start = startShabi + index * durationShabi;
-            shabi.duration = durationShabi + 1;
+            var thisClip = clips.ElementAt(index);
+            thisClip.start = testAnimationStart + index * testAnimationDuration;
+            thisClip.duration = testAnimationDuration + 1;
             
             targetClip.clip = clip;
         }
@@ -217,8 +219,8 @@ public class HTimelineController : MonoBehaviour
             //获取轨道上的相机
             var clips =  track.GetClips();
             var ClipIndex = clips.ElementAt(index);
-            ClipIndex.start = startShabi + index * durationShabi;
-            ClipIndex.duration = durationShabi + 1;
+            ClipIndex.start = testAnimationStart + index * testAnimationDuration;
+            ClipIndex.duration = testAnimationDuration + 1;
             
             var cinemachineShot = ClipIndex.asset as CinemachineShot;
             // cinemachineShot.VirtualCamera = cinemachine.GetComponent<CinemachineVirtualCamera>() as CinemachineVirtualCameraBase;
@@ -307,8 +309,8 @@ public class HTimelineController : MonoBehaviour
 
             targetClip.blendShapeValue = blendshapeValue;
             var TimelineClipIndex = clips.ElementAt(indexInTimeline);
-            TimelineClipIndex.start = startShabi + indexInTimeline * durationShabi + durationShabi * 0.2f;
-            TimelineClipIndex.duration = durationShabi * 0.6f;
+            TimelineClipIndex.start = testAnimationStart + indexInTimeline * testAnimationDuration + testAnimationDuration * 0.2f;
+            TimelineClipIndex.duration = testAnimationDuration * 0.6f;
         }
     }
 
@@ -328,18 +330,20 @@ public class HTimelineController : MonoBehaviour
             NavMeshAgentControlTrack track = (NavMeshAgentControlTrack)pb.sourceObject;
             var clips = track.GetClips();
             var ClipIndex = clips.ElementAt(indexInTimeline);
-            ClipIndex.start = startShabi + indexInTimeline * durationShabi;
-            ClipIndex.duration = durationShabi;
+            ClipIndex.start = testAnimationStart + indexInTimeline * testAnimationDuration;
+            ClipIndex.duration = testAnimationDuration;
             var navMeshAgentControlClip = ClipIndex.asset as NavMeshAgentControlClip;
-            Debug.Log("five??" + indexInTimeline);
+            //Debug.Log("five??" + indexInTimeline);
             
             GameObject go1 = yPlanningTable.Instance.GetDestination(selectId).gameObject;
             playableDirector.SetReferenceValue(navMeshAgentControlClip.destination.exposedName,
                 go1.transform);
             // playableDirector.SetReferenceValue(navMeshAgentControlClip.destination.exposedName,
             //     go1.transform);
-            gooo.Add(go1);
-            pringGIII(gooo);
+            
+            //无用，后面的版本没问题可以把下面的删掉
+            //gooo.Add(go1);
+            //pringGIII(gooo);
 
 
             //Debug.Log("destination  "+ yPlanningTable.Instance.GetDestination(selectId).position);
@@ -354,55 +358,26 @@ public class HTimelineController : MonoBehaviour
             Debug.Log("go  "+VARIABLE + "  "+VARIABLE.transform.position);
         }
     }
-        //把index对应轨道的effect设置为某个新的效果
-    public void PlayTheTimeline()
+    
+    //把index对应轨道的effect设置为某个新的效果
+    public void ChangePostProcessingWithIndex(int indexInTimeline, int selectId)
     {
-        //ChangeAnimationssssss();
-        playableDirector.playableAsset = currentTimelineAsset;
-        
-        playableDirector.Play();//playableDirector.Pause();
-        // Invoke("PauseThenResume2", 3);
-        // //Time.timeScale = 0;
-        // Invoke("PauseThenResume", 5);
-        //StartCoroutine(Resummm());
-    }
-
-    void ChangeAnimationssssss()
-    {
-        string trackNameTemp = "CharacterAnimation";
-        if (bindingDict.TryGetValue(trackNameTemp, out PlayableBinding pb))
+        //todo:这里不太会写，后面补充一下，关于后处理的逻辑
+        //另外，如果要调整的参数不是float类型的怎么办？比如说颜色，后面再说
+        string trackName = "PostProcessingTrack";
+        if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
         {
-            animationTrack = (AnimationTrack)pb.sourceObject;
-            var clipss = animationTrack.GetClips();
-            for(int index=0;index<displayNames.Count;index++)
-            {
-                var targetClip = clipss.ElementAt(index).asset as AnimationPlayableAsset;
-                targetClip.clip = clippps[index];
-            }
+            HPostProcessingTrack track = (HPostProcessingTrack)pb.sourceObject;
+            var clips = track.GetClips();
+            var targetClip = clips.ElementAt(indexInTimeline).asset as HPostProcessingClip;
             
         }
     }
 
-    IEnumerator Resummm()
+    public void PlayTheTimeline()
     {
-        yield return new WaitForSecondsRealtime(5f);
-        Time.timeScale = 1;
-    }
-    public void PauseThenResume2()
-    {
-        //playableDirector重新播放
-        //Time.timeScale = 1;
-        playableDirector.Pause();
+        playableDirector.playableAsset = currentTimelineAsset;
         
-        playableDirector.Stop();
-        //playableDirector.Play();
+        playableDirector.Play();//playableDirector.Pause();
     }
-    public void PauseThenResume()
-    {
-        //playableDirector重新播放
-        //Time.timeScale = 1;
-        playableDirector.Play();
-        //playableDirector.Play();
-    }
-    
 }

@@ -26,89 +26,69 @@ public class HPostProcessingFilters : HPostProcessingBase
 
     private void Start()
     {
+       
+    }
+
+    private void Awake()
+    {
         postProcessVolume = GetComponent<Volume>();
     }
-
-    //todo:先用一个非常简单的策划表来实现
-    public void GetAttributesAndValuesFromDesigner(string postProcessingType, ref string VolumePPType, ref List<string>attributes, ref List<float> values)
-    {
-        if (postProcessingType == "Heibai")
-        {
-            VolumePPType = "ColorAdjustments";
-            attributes.Add("saturation");
-            values.Add(-100);
-        }
-        
-        else if (postProcessingType == "Xianming")
-        {
-            VolumePPType = "ColorAdjustments";
-            attributes.Add("saturation");
-            values.Add(100);
-        }
-        
-        else if(postProcessingType == "Baohe")
-        {
-            VolumePPType = "ColorAdjustments";
-            attributes.Add("contrast");
-            values.Add(100);
-        }
-        
-        else if(postProcessingType == "Guangyun")
-        {
-            VolumePPType = "ColorAdjustments";
-            attributes.Add("postExposure");
-            values.Add(100);
-        }
-    }
     
-    public void SetAttributeAndValueFromTimeline(List<string> attributes, List<float> values)
+    
+    public void ResetInput(HPostProcessingBehavior input)
     {
-        for(int i=0;i<attributes.Count;i++)
-        {
-            string volumePPType = "";
-            List<string> attributesList = new List<string>();
-            List<float> valuesList = new List<float>();
-            GetAttributesAndValuesFromDesigner(attributes[i], ref volumePPType, ref attributesList, ref valuesList);
-            
-            SetVolumePostProcessingNoob(volumePPType, attributesList, valuesList);
-        }
-    }
-
-    public void ResetAttributesAndVolumes()
-    {
+        if (!postProcessVolume) return;
+        string volumePPType = input.globalVolumeField;
+        List<string> attributes = input.attributes;
+        List<float> defaultValues = input.defaultValues;
         var components = postProcessVolume.profile.components;
-        foreach (var component in components)
-        {
-            component.active = false;
-        }
-    }
-
-    public void SetVolumePostProcessingNoob(string volumePPType, List<string> attributes, List<float> values)
-    {
-        var components = postProcessVolume.profile.components;
+        //Debug.Log("$$$$$$$$$$$$$$$$$$$$$$$in Reset Attribute$$$$$$$$$$$$$$");
         foreach (var component in components)
         {
             if(component.GetType().Name == volumePPType)
             {
-                component.active = true;
                 if (volumePPType == "ColorAdjustments")
                 {
+                    //Debug.Log("call Reset ColorAdjustments");
                     var colorAdjustments = (ColorAdjustments) component;
                     for(int i = 0; i < attributes.Count; i++)
                     {
                         switch (attributes[i])
                         {
                             case "saturation":
-                                colorAdjustments.saturation.value = values[i];
+                                //Debug.Log("now we are in saturation RESET");
+                                colorAdjustments.saturation.value = defaultValues[i];
                                 break;
                             case "postExposure":
-                                colorAdjustments.postExposure.value = values[i];
+                                //Debug.Log("now we are in postExposure RESET");
+                                colorAdjustments.postExposure.value = defaultValues[i];
                                 break;
                             case "contrast":
-                                colorAdjustments.contrast.value = values[i];
+                                //Debug.Log("now we are in contrast RESET");
+                                colorAdjustments.contrast.value = defaultValues[i];
+                                break;
+                            case "hueShift":
+                                colorAdjustments.hueShift.value = defaultValues[i];
                                 break;
                         }
                             
+                    }
+                }
+                else if (volumePPType == "HRadialBlurSettings")
+                {
+                    var radialBlur = (HRadialBlurSettings) component;
+                    for(int i = 0; i < attributes.Count; i++)
+                    {
+                        switch (attributes[i])
+                        {
+                            case "blurRadius":
+                                radialBlur.blurRadius.value = defaultValues[i]; 
+                                break;
+                            case "blurIterations":
+                                radialBlur.blurIterations.value = (int)defaultValues[i];
+                                break;
+                            
+                        }
                     }
                 }
             }
@@ -116,30 +96,79 @@ public class HPostProcessingFilters : HPostProcessingBase
         }
     }
     
-    public void SetVolumePostProcessing(string volumePPType, List<string> attributes, List<float> values)
+    public void SetAttributeAndValueFromTimeline(List<string> attributes, List<float> values, List<float> defaultValues, float inputWeight, List<int> shouldLerp, string volumePPType)
     {
+        //Debug.Log("$$$$$$$$$$$$$$$$$$$$$$$in Set Attribute$$$$$$$$$$$$$$");
+        //Debug.Log("inputWeight  " + inputWeight);
+        if (!postProcessVolume) return;
         var components = postProcessVolume.profile.components;
         foreach (var component in components)
         {
-            //Debug.Log("now we are here" + volumePPType);
-            //Debug.Log(component.GetType().Name);
             if(component.GetType().Name == volumePPType)
             {
-                Debug.Log("Set component!!");
-                //set the value of the component
-                for(int i = 0;i < attributes.Count; i++)
+                if (volumePPType == "ColorAdjustments")
                 {
-                    // var field = component.GetType().GetField(attributes[i]);
-                    // field.SetValue(component, values[i]);
-                    
-                    //todo:反射好像做不了，没办法把ClampedFloatParameter转换成Float
-                    if(attributes[i] == "saturation")
+                    //Debug.Log("call ColorAdjustments");
+                    var colorAdjustments = (ColorAdjustments) component;
+                    for(int i = 0; i < attributes.Count; i++)
                     {
+                        //用shouldLerp来控制是否需要渐变
+                        if (inputWeight >= 0.0001) //weight仍在控制，用shouldLerp做调整
+                        {
+                            if (shouldLerp[i] == 0) inputWeight = 1;
+                        } 
+                        float addValue = values[i] * inputWeight; //在写逻辑的时候保证value[i]在加入到默认值上的时候是合理的
+                        float setValue = defaultValues[i] + addValue;
+                        switch (attributes[i])
+                        {
+                            case "saturation":
+                                //Debug.Log("now we are in saturation");
+                                colorAdjustments.saturation.value = setValue;
+                                break;
+                            case "postExposure":
+                                //Debug.Log("now we are in postExposure");
+                                colorAdjustments.postExposure.value = setValue;
+                                break;
+                            case "contrast":
+                                //Debug.Log("now we are in contrast");
+                                colorAdjustments.contrast.value = setValue;
+                                break;
+                            case "hueShift":
+                                colorAdjustments.hueShift.value = setValue;
+                                break;
+                        }
+                            
+                    }
+                }
+                else if (volumePPType == "HRadialBlurSettings")
+                {
+                    var radialBlur = (HRadialBlurSettings) component;
+                    for(int i = 0; i < attributes.Count; i++)
+                    {
+                        //用shouldLerp来控制是否需要渐变
+                        if (inputWeight >= 0.0001) //weight仍在控制，用shouldLerp做调整
+                        {
+                            if (shouldLerp[i] == 0) inputWeight = 1;
+                        } 
+                        float addValue = values[i] * inputWeight; //在写逻辑的时候保证value[i]在加入到默认值上的时候是合理的
+                        float setValue = defaultValues[i] + addValue;
                         
+                        switch (attributes[i])
+                        {
+                            case "blurRadius":
+                                radialBlur.blurRadius.value = setValue; 
+                                break;
+                            case "blurIterations":
+                                radialBlur.blurIterations.value = (int)setValue;
+                                break;
+                            
+                        }
                     }
                 }
             }
             
         }
+        
     }
+    
 }

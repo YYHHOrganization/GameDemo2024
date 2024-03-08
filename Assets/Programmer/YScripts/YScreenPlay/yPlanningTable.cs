@@ -53,6 +53,7 @@ public class yPlanningTable : MonoBehaviour
         ReadScreenPlayCSV();
         ReadExpressionCSV();
         ReadDestinationCSV();
+        ReadPostProcessingCSV();
         effs =new List<ScriptableRendererFeature>();
     }
     
@@ -171,6 +172,83 @@ public class yPlanningTable : MonoBehaviour
                     Debug.Log("blendshapeNames[" + i + "][" + j + "][" + k + "] = " + blendshapeIndexs[i][j][k]);
                 }
             }
+        }
+    }
+
+    //读取后处理相关的CSV文件
+    public List<string> postEffectNames;
+    public List<string> postEffectFieldNames;
+    public List<List<string>> postEffectAttributeNames;
+    public List<List<float>> postEffectAttributeValues;
+    public List<List<float>> postEffectDefaultValues;
+    public List<string> postEffectTypes;
+    public List<List<int>> postEffectShouldLerp;
+    void ReadPostProcessingCSV()
+    {
+        string filePath = "Assets/Designer/CsvTable/PostProcessingCSVFile.csv";
+        // 读取CSV文件内容
+        string[] fileData = System.IO.File.ReadAllLines(filePath);
+        for (int i = 1; i < fileData.Length; i++)
+        {
+            string[] rowData = fileData[i].Split(',');
+            //解析csv一行的数据
+            string effectName = rowData[0];
+            string effectFieldName = rowData[1];
+            string attributeNames = rowData[2];
+            string attributeValues = rowData[3];
+            string shouldLerp = rowData[4];
+            string defaultValues = rowData[5];
+            string type = rowData[6];
+            
+            List<float> floatAttributeValues = new List<float>();
+            foreach (string value in attributeValues.Split(';'))
+            {
+                float floatValue;
+                if (float.TryParse(value, out floatValue))
+                {
+                    floatAttributeValues.Add(floatValue);
+                }
+                else
+                {
+                    Debug.LogError("Failed to parse value: " + value);
+                }
+            }
+            
+            List<float> floatDefaultValues = new List<float>();
+            foreach (string value in defaultValues.Split(';'))
+            {
+                float floatValue;
+                if (float.TryParse(value, out floatValue))
+                {
+                    floatDefaultValues.Add(floatValue);
+                }
+                else
+                {
+                    Debug.LogError("Failed to parse value: " + value);
+                }
+            }
+            
+            List<int> intShouldLerp = new List<int>();
+            foreach (string value in shouldLerp.Split(';'))
+            {
+                int intValue;
+                if (int.TryParse(value, out intValue))
+                {
+                    intShouldLerp.Add(intValue);
+                }
+                else
+                {
+                    Debug.LogError("Failed to parse value: " + value);
+                }
+            }
+            
+            postEffectNames.Add(effectName);
+            postEffectFieldNames.Add(effectFieldName);
+            postEffectAttributeNames.Add(new List<string>(attributeNames.Split(';')));
+            postEffectTypes.Add(type);
+            postEffectAttributeValues.Add(floatAttributeValues);
+            postEffectDefaultValues.Add(floatDefaultValues);
+            postEffectShouldLerp.Add(intShouldLerp);
         }
     }
 

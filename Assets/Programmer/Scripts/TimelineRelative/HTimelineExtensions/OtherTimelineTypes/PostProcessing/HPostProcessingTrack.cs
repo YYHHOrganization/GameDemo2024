@@ -10,6 +10,6 @@ public class HPostProcessingTrack : TrackAsset
 {
     public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
     {
-        return base.CreateTrackMixer(graph, go, inputCount);
+        return ScriptPlayable<HPostProcessingMixer>.Create(graph, inputCount);
     }
 }
