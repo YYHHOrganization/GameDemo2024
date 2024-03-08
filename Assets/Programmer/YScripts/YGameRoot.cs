@@ -28,7 +28,7 @@ public class YGameRoot : MonoBehaviour
         }
         SceneSystem = new YSceneSystem();
         //DontDestroyOnLoad(this.gameObject);
-    }
+    }  
 
     private void Start()
     {

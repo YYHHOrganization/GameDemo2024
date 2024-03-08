@@ -190,7 +190,7 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: CloseFrontVirCamera(Clone)
+    m_DisplayName: FarFrontVirCamera
   - m_Version: 1
     m_Start: 6
     m_ClipIn: 0
@@ -259,7 +259,7 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: CloseFrontVirCamera(Clone)
+    m_DisplayName: CloseFrontVirCamera
   - m_Version: 1
     m_Start: 12
     m_ClipIn: 0
@@ -328,7 +328,7 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: CloseFrontVirCamera(Clone)
+    m_DisplayName: FarFrontVirCamera
   - m_Version: 1
     m_Start: 18
     m_ClipIn: 0
@@ -1269,7 +1269,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  blendShapeIndex: 18000000
+  - 100
+  blendShapeIndex: 0a00000012000000
 --- !u!114 &-936551332919520032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1284,7 +1285,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  blendShapeIndex: 18000000
+  - 100
+  blendShapeIndex: 0a00000012000000
 --- !u!114 &-905559953760220634
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1310,9 +1312,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of LookAround
+  m_Name: AnimationPlayableAsset of Run
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: -203655887218126122, guid: 7e01eb817dc158945b0f566f7ed7bee4, type: 3}
+  m_Clip: {fileID: 7400000, guid: 191d53b95c3b6c3448d73d4a7e1c1337, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -1411,9 +1413,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of FastRun
+  m_Name: AnimationPlayableAsset of LookAround
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
+  m_Clip: {fileID: -203655887218126122, guid: 7e01eb817dc158945b0f566f7ed7bee4, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -1433,9 +1435,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of swimming
+  m_Name: AnimationPlayableAsset of FastRun
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: -203655887218126122, guid: cc78a74fb9bcdc849a0d3592c6c38f2b, type: 3}
+  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
