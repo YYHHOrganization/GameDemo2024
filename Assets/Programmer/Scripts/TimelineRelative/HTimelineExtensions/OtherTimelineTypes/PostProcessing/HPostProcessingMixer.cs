@@ -9,19 +9,7 @@ public class HPostProcessingMixer : PlayableBehaviour
 {
     public void HandlePostProcessingBehavior(HPostProcessingBehavior input, float inputWeight)
     {
-        //使用加法来控制后处理某个变量的值，这样很方便依据inputWeight来复原
-        if(input.postProcessingType==EnumHPostProcessingType.GlobalVolume)
-        {
-            HPostProcessingFilters.Instance.SetAttributeAndValueFromTimeline(input.attributes, input.values, input.defaultValues, inputWeight, input.shouldLerp, input.globalVolumeField);
-        }
-    }
-
-    public void ResetPostProcessingValues(HPostProcessingBehavior input)
-    {
-        if (input.postProcessingType == EnumHPostProcessingType.GlobalVolume)
-        {
-            HPostProcessingFilters.Instance.ResetInput(input);
-        }
+        HPostProcessingFilters.Instance.SetAttributeAndValueFromTimelineNew(input, inputWeight);
     }
     
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)

@@ -35,73 +35,35 @@ public class HPostProcessingFilters : HPostProcessingBase
     }
     
     
-    public void ResetInput(HPostProcessingBehavior input)
+    public void SetAttributeAndValueFromTimelineNew(HPostProcessingBehavior input, float inputWeight)
     {
-        if (!postProcessVolume) return;
-        string volumePPType = input.globalVolumeField;
-        List<string> attributes = input.attributes;
-        List<float> defaultValues = input.defaultValues;
-        var components = postProcessVolume.profile.components;
-        //Debug.Log("$$$$$$$$$$$$$$$$$$$$$$$in Reset Attribute$$$$$$$$$$$$$$");
-        foreach (var component in components)
+        if (input.postProcessingType == EnumHPostProcessingType.GlobalVolume)
         {
-            if(component.GetType().Name == volumePPType)
-            {
-                if (volumePPType == "ColorAdjustments")
-                {
-                    //Debug.Log("call Reset ColorAdjustments");
-                    var colorAdjustments = (ColorAdjustments) component;
-                    for(int i = 0; i < attributes.Count; i++)
-                    {
-                        switch (attributes[i])
-                        {
-                            case "saturation":
-                                //Debug.Log("now we are in saturation RESET");
-                                colorAdjustments.saturation.value = defaultValues[i];
-                                break;
-                            case "postExposure":
-                                //Debug.Log("now we are in postExposure RESET");
-                                colorAdjustments.postExposure.value = defaultValues[i];
-                                break;
-                            case "contrast":
-                                //Debug.Log("now we are in contrast RESET");
-                                colorAdjustments.contrast.value = defaultValues[i];
-                                break;
-                            case "hueShift":
-                                colorAdjustments.hueShift.value = defaultValues[i];
-                                break;
-                        }
-                            
-                    }
-                }
-                else if (volumePPType == "HRadialBlurSettings")
-                {
-                    var radialBlur = (HRadialBlurSettings) component;
-                    for(int i = 0; i < attributes.Count; i++)
-                    {
-                        switch (attributes[i])
-                        {
-                            case "blurRadius":
-                                radialBlur.blurRadius.value = defaultValues[i]; 
-                                break;
-                            case "blurIterations":
-                                radialBlur.blurIterations.value = (int)defaultValues[i];
-                                break;
-                            
-                        }
-                    }
-                }
-            }
-            
+            SetGlobalVolumeAttributeAndValue(input, inputWeight, false);
+        }
+        else if(input.postProcessingType == EnumHPostProcessingType.RenderFeature)
+        {
+            SetRenderFeatureAttributeAndValueFromTimeline(input, inputWeight, false);
         }
     }
-    
-    public void SetAttributeAndValueFromTimeline(List<string> attributes, List<float> values, List<float> defaultValues, float inputWeight, List<int> shouldLerp, string volumePPType)
+
+    public void ResetAttributesAndValuesFromTimeline(HPostProcessingBehavior input)
     {
-        //Debug.Log("$$$$$$$$$$$$$$$$$$$$$$$in Set Attribute$$$$$$$$$$$$$$");
-        //Debug.Log("inputWeight  " + inputWeight);
+        if (input.postProcessingType == EnumHPostProcessingType.GlobalVolume)
+        {
+            SetGlobalVolumeAttributeAndValue(input, 0, true);
+        }
+    }
+
+    private void SetGlobalVolumeAttributeAndValue(HPostProcessingBehavior input, float inputWeight, bool isReset)
+    {
         if (!postProcessVolume) return;
         var components = postProcessVolume.profile.components;
+        string volumePPType = input.globalVolumeField;
+        List<string> attributes = input.attributes;
+        List<float> values = input.values;
+        List<float> defaultValues = input.defaultValues;
+        List<int> shouldLerp = input.shouldLerp;
         foreach (var component in components)
         {
             if(component.GetType().Name == volumePPType)
@@ -119,6 +81,11 @@ public class HPostProcessingFilters : HPostProcessingBase
                         } 
                         float addValue = values[i] * inputWeight; //在写逻辑的时候保证value[i]在加入到默认值上的时候是合理的
                         float setValue = defaultValues[i] + addValue;
+
+                        if (isReset)
+                        {
+                            setValue = defaultValues[i];
+                        }
                         switch (attributes[i])
                         {
                             case "saturation":
@@ -152,6 +119,10 @@ public class HPostProcessingFilters : HPostProcessingBase
                         } 
                         float addValue = values[i] * inputWeight; //在写逻辑的时候保证value[i]在加入到默认值上的时候是合理的
                         float setValue = defaultValues[i] + addValue;
+                        if (isReset)
+                        {
+                            setValue = defaultValues[i];
+                        }
                         
                         switch (attributes[i])
                         {
@@ -168,7 +139,19 @@ public class HPostProcessingFilters : HPostProcessingBase
             }
             
         }
-        
     }
+
     
+    public void SetRenderFeatureAttributeAndValueFromTimeline(HPostProcessingBehavior input, float inputWeight, bool isReset)
+    {
+        if (!postProcessVolume) return;
+        var components = postProcessVolume.profile.components;
+        
+        string name = input.globalVolumeField;
+        List<string> attributes = input.attributes;
+        List<float> values = input.values;
+        List<float> defaultValues = input.defaultValues;
+        List<int> shouldLerp = input.shouldLerp;
+    }
+
 }
