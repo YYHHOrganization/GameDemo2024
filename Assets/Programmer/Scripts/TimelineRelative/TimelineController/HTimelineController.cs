@@ -374,6 +374,12 @@ public class HTimelineController : MonoBehaviour
         }
     }
 
+    public void ChangePostProcessingWithIndexAndRenderFeature(int indexInTimeline, int selectId,
+        ScriptableRendererFeature unitRendererFeature)
+    {
+        //todo:RenderFeature是不是也是直接从策划表当中读取比较好？
+    }
+
     public void PlayTheTimeline()
     {
         playableDirector.playableAsset = currentTimelineAsset;
