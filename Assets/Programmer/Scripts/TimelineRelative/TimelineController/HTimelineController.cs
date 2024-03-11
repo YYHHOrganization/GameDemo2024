@@ -10,6 +10,7 @@ using UnityEngine.Playables;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Timeline;
 using UnityEngine.Video;
+using Random = UnityEngine.Random;
 
 public class HTimelineController : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class HTimelineController : MonoBehaviour
     private ScriptableRendererFeature signalThing;
     
     BlendshapeController blendshapeController;
+    SkinnedMeshRenderer currentSkinnedMeshRenderer;
     
     AnimationTrack animationTrack;
 
@@ -35,8 +37,10 @@ public class HTimelineController : MonoBehaviour
     
     private List<float> durations = new List<float>();
     private List<AnimationClip> clippps = new List<AnimationClip>();
+    List<float> animationClipLengths = new List<float>();
     
     public string timelineAssetName = "EmptyTimeline_0";
+    
     
     //根据索引设置对应的TimelineAsset，扩展后面可能有多幕的剧情
     public void SetTimelineAsset(int index)
@@ -139,7 +143,7 @@ public class HTimelineController : MonoBehaviour
     }
 
     private float testAnimationStart = 0;
-    private float testAnimationDuration = 6;
+    private float testAnimationDuration = 20;
     //index指的是修改timeline动画轨道的第几个动作
     public void ChangeAnimationWithIndex(int index, AnimationClip clip)
     {
@@ -156,6 +160,11 @@ public class HTimelineController : MonoBehaviour
             
             targetClip.clip = clip;
         }
+        //我们可以多做一件事，就是把这个clip的动画的时长存下来，后面可能会用到，但是还应该乘上这个clip的speed
+        // float aniationClipOriginalDuration = clip.length * clip.frameRate;
+        float aniationClipOriginalDuration = clip.length;
+        animationClipLengths.Add(aniationClipOriginalDuration);
+        // Debug.Log("clip length: " + aniationClipOriginalDuration);
     }
     public void AddAnimationTrackWithIndex(int indexInSequence, AnimationClip animationClip)
     {
@@ -209,7 +218,7 @@ public class HTimelineController : MonoBehaviour
         cinemachine.GetComponent<CinemachineVirtualCamera>().m_Follow = target.transform;
         cinemachine.GetComponent<CinemachineVirtualCamera>().m_LookAt = target.transform;
     }
-    public void ChangeCinemachine(int index, GameObject cinemachine)
+    public void ChangeCinemachine(int index, GameObject cinemachine,string name)
     {
         string trackName = "CinemachineTrack";
         if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
@@ -229,11 +238,17 @@ public class HTimelineController : MonoBehaviour
             //设置Cinemachine的follow
 //            cinemachine.GetComponent<CinemachineVirtualCamera>().m_Follow = target.transform;
 
-            cinemachine.GetComponent<CinemachineVirtualCamera>().Follow = target.transform;
+            if(name != "FarSurveillanceCamera")
+            {
+                cinemachine.GetComponent<CinemachineVirtualCamera>().Follow = target.transform;
+            }
+            
             cinemachine.GetComponent<CinemachineVirtualCamera>().LookAt = target.transform;
             
             playableDirector.SetReferenceValue(cinemachineShot.VirtualCamera.exposedName, 
                 cinemachine.GetComponent<CinemachineVirtualCamera>());
+            
+            // Debug.Log(name);
         }
     }
     public void ChangeEffectWithIndex(int index, GameObject effect)
@@ -295,7 +310,8 @@ public class HTimelineController : MonoBehaviour
         //blendshapeController.SetBlendshape( characterId, target.GetComponentInChildren<SkinnedMeshRenderer>(),selectId, true); 
         if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
         {
-            playableDirector.SetGenericBinding(pb.sourceObject, target.GetComponentInChildren<SkinnedMeshRenderer>());
+            currentSkinnedMeshRenderer = target.GetComponentInChildren<SkinnedMeshRenderer>();
+            playableDirector.SetGenericBinding(pb.sourceObject, currentSkinnedMeshRenderer);
             HBlendShapeTrack track = (HBlendShapeTrack)pb.sourceObject;
             var clips = track.GetClips();
             var targetClip = clips.ElementAt(indexInTimeline).asset as HBlendShapeClip;
@@ -309,12 +325,12 @@ public class HTimelineController : MonoBehaviour
 
             targetClip.blendShapeValue = blendshapeValue;
             var TimelineClipIndex = clips.ElementAt(indexInTimeline);
-            TimelineClipIndex.start = testAnimationStart + indexInTimeline * testAnimationDuration + testAnimationDuration * 0.2f;
-            TimelineClipIndex.duration = testAnimationDuration * 0.6f;
+            TimelineClipIndex.start = testAnimationStart + indexInTimeline * testAnimationDuration + 3f * 0.2f;
+            TimelineClipIndex.duration = 4f  * 0.6f;
         }
     }
 
-    public List<GameObject> gooo;
+    public List<GameObject> gooo=new List<GameObject>();
     /// <summary>
     /// 用于更改每一段clip的目的地
     /// </summary>
@@ -342,7 +358,7 @@ public class HTimelineController : MonoBehaviour
             //     go1.transform);
             
             //无用，后面的版本没问题可以把下面的删掉
-            //gooo.Add(go1);
+            gooo.Add(go1);
             //pringGIII(gooo);
 
 
@@ -362,6 +378,12 @@ public class HTimelineController : MonoBehaviour
     //把index对应轨道的effect设置为某个新的效果
     public void ChangePostProcessingWithIndex(int indexInTimeline, int selectId)
     {
+        // string PostProcessingName = yPlanningTable.Instance.postEffectNames[selectId];
+        // if(PostProcessingName == "null")
+        // {
+        //     return;
+        // }
+        
         //todo:这里不太会写，后面补充一下，关于后处理的逻辑
         //另外，如果要调整的参数不是float类型的怎么办？比如说颜色，后面再说
         string trackName = "PostProcessingTrack";
@@ -371,13 +393,105 @@ public class HTimelineController : MonoBehaviour
             var clips = track.GetClips();
             var targetClip = clips.ElementAt(indexInTimeline).asset as HPostProcessingClip;
             
+            //test
+            // targetClip.name = PostProcessingName + indexInTimeline;
+            // Debug.Log("targetClip name: " + targetClip.name);
+            
+            List<string> attributesName = yPlanningTable.Instance.postEffectAttributeNames[selectId];
+            List<float> attributesValue = yPlanningTable.Instance.postEffectAttributeValues[selectId];
+            List<float> attributesDefaultValue = yPlanningTable.Instance.postEffectDefaultValues[selectId];
+            List<int> attributesShouldLerp = yPlanningTable.Instance.postEffectShouldLerp[selectId];
+            string fieldName = yPlanningTable.Instance.postEffectFieldNames[selectId];
+            string type = yPlanningTable.Instance.postEffectTypes[selectId];
+
+            targetClip.attributes = attributesName;
+            targetClip.values = attributesValue;
+            targetClip.defaultValues = attributesDefaultValue;
+            targetClip.shouldLerp = attributesShouldLerp;
+            targetClip.globalVolumeField = fieldName;
+            targetClip.postProcessingType = EnumHPostProcessingType.GlobalVolume;
+            
+            var TimelineClipIndex = clips.ElementAt(indexInTimeline);
+            TimelineClipIndex.start = testAnimationStart + indexInTimeline * testAnimationDuration;
+            TimelineClipIndex.duration = testAnimationDuration +1;
         }
     }
-
+    private bool startPlaying = false;
     public void PlayTheTimeline()
     {
         playableDirector.playableAsset = currentTimelineAsset;
         
         playableDirector.Play();//playableDirector.Pause();
+        //playableDirector.time = 5;
+        startPlaying = true;
+
     }
+
+    
+    private void Update()
+    {
+        changeClip();
+    }
+
+    private int m_clipIndex=0;
+    bool m_isSammPlace = false;
+    bool duringSamePlaceCoroutine = false;
+    public void changeClip()
+    {
+        if (startPlaying)
+        {
+            if (m_clipIndex >= gooo.Count)
+            {
+                return;
+            }
+            //其实初始也应该判断sameplace
+            if (m_isSammPlace == true && duringSamePlaceCoroutine == false)
+            {
+                duringSamePlaceCoroutine = true;
+                //3秒后再走  TODO:这个时间应该是策划表中设置的或者直接是这个动画的完整长度
+                StartCoroutine(WaitAndGo(animationClipLengths[m_clipIndex]));
+                
+            }
+            if (!duringSamePlaceCoroutine&&(Vector3.Distance(target.transform.position, gooo[m_clipIndex].transform.position) < 1f))
+            {
+                changeToNextClip();
+            }
+            
+        }
+    }
+    IEnumerator WaitAndGo(float time)
+    {
+        //yield return new WaitFor
+        //等待多少帧
+        // float timer = 0f;
+        // while (timer < time * Time.deltaTime)
+        // {
+        //     timer += Time.deltaTime;
+        //     yield return null; // 等待下一帧
+        // }
+        
+        yield return new WaitForSeconds(time);
+        m_isSammPlace = false;
+        duringSamePlaceCoroutine = false;
+        changeToNextClip();
+    }
+    public void changeToNextClip()
+    {
+        //todo：突然跳帧有个问题，动画可能不连贯
+        m_clipIndex++;
+        float clipLocateTime = (m_clipIndex) * testAnimationDuration;
+        playableDirector.time = clipLocateTime;
+        
+        if (m_clipIndex < gooo.Count&&gooo[m_clipIndex]==gooo[m_clipIndex-1])//如果是同一个地方，那么就不要再走了
+        {
+            m_isSammPlace = true;
+        }
+        else
+        {
+            m_isSammPlace = false;
+        }
+        
+        blendshapeController.ResetBlendshape( currentSkinnedMeshRenderer,characterIndex);
+    }
+    
 }

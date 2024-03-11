@@ -78,6 +78,10 @@ public class YScreenPlayController : MonoBehaviour
             //destination
             YScreenplayBase screenplayDestination = new YDestinationSP(selectId["character"],yPlanningTable.Instance.selectNames2Id["destination"+i],selectId["destination"+i],timelineController);
             AddInListAndEnter(screenplayDestination);
+            
+            //特效
+            YScreenplayBase screenplayEffect = new HPostProcessingSP(yPlanningTable.Instance.selectNames2Id["effect"+i],selectId["effect"+i],timelineController);
+            AddInListAndEnter(screenplayEffect);
         }
         
 

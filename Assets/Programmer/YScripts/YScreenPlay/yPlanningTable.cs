@@ -39,6 +39,8 @@ public class yPlanningTable : MonoBehaviour
     
     //存储目的地 每个目的地是一个vector3
     public List<Vector3> destination=new List<Vector3>();
+    
+    public List<List<int>> characterExpressionIndices = new List<List<int>>();
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -52,7 +54,7 @@ public class yPlanningTable : MonoBehaviour
         // effs =new ScriptableRendererFeature[2]{null,null};
         ReadScreenPlayCSV();
         ReadExpressionCSV();
-        ReadDestinationCSV();
+        //ReadDestinationCSV();
         ReadPostProcessingCSV();
         effs =new List<ScriptableRendererFeature>();
     }
@@ -64,6 +66,8 @@ public class yPlanningTable : MonoBehaviour
     {
         preLoadEffectFullScreen();
         SetAllEffRendererFeatureOff();
+
+        GetAllBlendShapeUsed();
     }
     
     //不同id更改的动画轨道index
@@ -96,19 +100,19 @@ public class yPlanningTable : MonoBehaviour
 
                     // 解析CSV行，并将数据存入相应的数据结构中
                     int id = int.Parse(values[0]);
-                    string selectId = values[1];
+                    string selectName = values[1];
                     string dropdownName = values[2];
                     string resourcesName = values[3];
                     string UIName = values[4];
                     int sequenceInSelfClass = int.Parse(values[5]);
 
                     // 将解析后的数据存入您的数据结构中
-                    this.selectId.Add(selectId, 0);
+                    this.selectId.Add(selectName, 0);
                     this.dropdownNames.Add(dropdownName);
-                    this.selectNames.Add(selectId);
+                    this.selectNames.Add(selectName);
                     this.SelectTable.Add(new List<string>(resourcesName.Split(';')));
                     this.UISelectTable.Add(new List<string>(UIName.Split(';')));
-                    this.selectNames2Id.Add(selectId, id);
+                    this.selectNames2Id.Add(selectName, id);
                     this.selectSequenceInSelfClass.Add(sequenceInSelfClass);
                 }
             }
@@ -163,26 +167,26 @@ public class yPlanningTable : MonoBehaviour
             blendshapeIndexs.Add(expressionData);
         }
         //debug 测试输出blendshapeNames
-        for (int i = 0; i < blendshapeIndexs.Count; i++)
-        {
-            for (int j = 0; j < blendshapeIndexs[i].Count; j++)
-            {
-                for (int k = 0; k < blendshapeIndexs[i][j].Count; k++)
-                {
-                    Debug.Log("blendshapeNames[" + i + "][" + j + "][" + k + "] = " + blendshapeIndexs[i][j][k]);
-                }
-            }
-        }
+        // for (int i = 0; i < blendshapeIndexs.Count; i++)
+        // {
+        //     for (int j = 0; j < blendshapeIndexs[i].Count; j++)
+        //     {
+        //         for (int k = 0; k < blendshapeIndexs[i][j].Count; k++)
+        //         {
+        //             Debug.Log("blendshapeNames[" + i + "][" + j + "][" + k + "] = " + blendshapeIndexs[i][j][k]);
+        //         }
+        //     }
+        // }
     }
 
     //读取后处理相关的CSV文件
-    public List<string> postEffectNames;
-    public List<string> postEffectFieldNames;
-    public List<List<string>> postEffectAttributeNames;
-    public List<List<float>> postEffectAttributeValues;
-    public List<List<float>> postEffectDefaultValues;
-    public List<string> postEffectTypes;
-    public List<List<int>> postEffectShouldLerp;
+    public List<string> postEffectNames = new List<string>();
+    public List<string> postEffectFieldNames = new List<string>();
+    public List<List<string>> postEffectAttributeNames = new List<List<string>>();
+    public List<List<float>> postEffectAttributeValues = new List<List<float>>();
+    public List<List<float>> postEffectDefaultValues = new List<List<float>>();
+    public List<string> postEffectTypes = new List<string>();
+    public List<List<int>> postEffectShouldLerp = new List<List<int>>();
     void ReadPostProcessingCSV()
     {
         string filePath = "Assets/Designer/CsvTable/PostProcessingCSVFile.csv";
@@ -359,31 +363,53 @@ public class yPlanningTable : MonoBehaviour
     //GetDestination(characterId, selectId);
     public Transform GetDestination(int selectId)
     {
-        // Debug.Log("selectIdWhy>>: " + selectId);
-        // string path = "Prefabs/YCharacter/" + "xina";
-        // GameObject destinationObject = GameObject.Instantiate(Resources.Load<GameObject>(path));
-        // destinationObject.name = "Destination+" + selectId + Random.Range(0, 1554);
-        // destinationObject.transform.position = destination[selectId];
-        // return destinationObject.transform;
+        //哪一个地点
+        string destinationName = SelectTable[selectNames2Id["destination1"]][selectId];
+        Debug.Log("destinationName: " + destinationName);
+        return GameObject.Find(destinationName).transform;
         
-        //Vector3 destination = this.destination[selectId];
-        
-        if (selectId==1)
-        {
-            return GameObject.Find("Restaurant").transform;
-        }
-        else if (selectId==0)
-        {
-            return GameObject.Find("FruitsCornor").transform;
-        }
-        else if (selectId==2)
-        {
-            return GameObject.Find("Bench").transform;
-        }
-       return GameObject.Find("Restaurant").transform;
-        
-        // Transform destinationTransform = new GameObject().transform;
-        // destinationTransform.position = destination[selectId];
-        // return destinationTransform;
+       //  if (selectId==1)
+       //  {
+       //      return GameObject.Find("Restaurant").transform;
+       //  }
+       //  else if (selectId==0)
+       //  {
+       //      return GameObject.Find("FruitsCorner").transform;
+       //  }
+       //  else if (selectId==2)
+       //  {
+       //      return GameObject.Find("Bench").transform;
+       //  }
+       // return GameObject.Find("Restaurant").transform;
+
     }
+    
+    //写一个函数 遍历所有角色，并调用GetAllBlendShapeUsedInExpression
+    public void GetAllBlendShapeUsed()
+    {
+        int characterNum = SelectTable[selectNames2Id["character"]].Count;
+        for (int i = 0; i < characterNum; i++)
+        {
+            GetAllBlendShapeUsedInExpression(i);
+        }
+    }
+    
+    public void GetAllBlendShapeUsedInExpression(int givenCharacter)
+    {
+        //获取blendshapeIndexs中的所有的blendshapeIndex 
+        //给定角色，得到这个角色的而所有表情的index，得到他所有的表情的blendshape，作为一个序列，比如给qiyu，得到24,10,18等构成的list
+        
+        List<int> characterExpressionI = new List<int>();
+        for (int i = 0; i < blendshapeIndexs.Count; i++)
+        {
+            for (int k = 0; k < blendshapeIndexs[i][givenCharacter].Count; k++)
+            {
+                characterExpressionI.Add(blendshapeIndexs[i][givenCharacter][k]);
+            }
+            
+        }
+        characterExpressionIndices.Add(characterExpressionI);
+        
+    }
+    
 }

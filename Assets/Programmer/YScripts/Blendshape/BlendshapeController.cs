@@ -30,4 +30,14 @@ public class BlendshapeController
             skinnedMeshRenderers.SetBlendShapeWeight(blendshapeInd[i], value);
         }
     }
+    
+    public void ResetBlendshape(SkinnedMeshRenderer currentSkinnedMeshRenderer,int characterId)
+    {
+        List<int> blendshapeWithCharacter = yPlanningTable.Instance.characterExpressionIndices[characterId];
+        //将他们全部置为0
+        for (int i = 0; i < blendshapeWithCharacter.Count; i++)
+        {
+            currentSkinnedMeshRenderer.SetBlendShapeWeight(blendshapeWithCharacter[i], 0);
+        }
+    }
 }

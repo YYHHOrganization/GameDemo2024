@@ -28,7 +28,7 @@ public class YCharacterSP : YScreenplayBase
         ////加载资源
         // GameObject obj = Resources.Load<GameObject>(path);
         GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(path));
-        timelineController.ChangeCharacter(0,go);
+        timelineController.ChangeCharacter(selectId,go);
     }
 
 }

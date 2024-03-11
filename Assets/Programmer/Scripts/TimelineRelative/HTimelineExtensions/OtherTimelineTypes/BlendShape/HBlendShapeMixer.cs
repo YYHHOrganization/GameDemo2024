@@ -34,16 +34,19 @@ public class HBlendShapeMixer : PlayableBehaviour
                 }
                 //问题在于
             }
+            
+//            Debug.Log("totalWeight"+totalWeight);
             //【别删】如果全部没改 totalWeight是0  那么需要重置blendshape  
-            // if(i==inputCount-1&&Mathf.Abs(totalWeight) < 0.001f)//防止是负数  但是感觉有点废 感觉没这个也行吧 bs都维持在0.001也看不出来 这个先关闭 有需要在开启
-            // {
-            //     ScriptPlayable<HBlendShapeBehavior> inputPlayable = (ScriptPlayable<HBlendShapeBehavior>)playable.GetInput(i);
-            //     HBlendShapeBehavior input = inputPlayable.GetBehaviour();
-            //     for (int j = 0; j < input.blendShapeValue.Count; j++)
-            //     {
-            //         skinnedMeshRenderer.SetBlendShapeWeight(input.blendShapeIndex[j],  0 * input.blendShapeValue[j]);
-            //     }
-            // }
+            if(i==inputCount-1&&Mathf.Abs(totalWeight) < 0.001f)//防止是负数  但是感觉有点废 感觉没这个也行吧 bs都维持在0.001也看不出来 这个先关闭 有需要在开启
+            {
+                ScriptPlayable<HBlendShapeBehavior> inputPlayable = (ScriptPlayable<HBlendShapeBehavior>)playable.GetInput(i);
+                HBlendShapeBehavior input = inputPlayable.GetBehaviour();
+                for (int j = 0; j < input.blendShapeValue.Count; j++)
+                {
+                    skinnedMeshRenderer.SetBlendShapeWeight(input.blendShapeIndex[j],  0 * input.blendShapeValue[j]);
+                }
+                //Debug.Log("重置blendshape"+"totalWeight"+totalWeight);
+            }
             
         }
         

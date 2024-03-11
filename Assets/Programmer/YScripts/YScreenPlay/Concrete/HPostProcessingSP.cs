@@ -10,7 +10,8 @@ public class HPostProcessingSP : YScreenplayBase
       timelineController)
    {
       this.id = id;
-      this.selectId = yPlanningTable.Instance.selectSequenceInSelfClass[id];
+      this.indexInTimeline = yPlanningTable.Instance.selectSequenceInSelfClass[id];
+      this.selectId = selectId;
    }
 
    public override void LoadResourcesAndSetTimeline()
