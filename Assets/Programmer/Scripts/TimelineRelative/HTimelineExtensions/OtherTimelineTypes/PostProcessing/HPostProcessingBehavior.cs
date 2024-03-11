@@ -43,7 +43,10 @@ public class HPostProcessingBehavior : PlayableBehaviour
         //Debug.Log("OnBehaviorPause");
         if (postProcessingType == EnumHPostProcessingType.GlobalVolume)
         {
-            HPostProcessingFilters.Instance.ResetAttributesAndValuesFromTimeline(this);
+            if (HPostProcessingFilters.Instance)
+            {
+                HPostProcessingFilters.Instance.ResetAttributesAndValuesFromTimeline(this);
+            }
         }
     }
 }

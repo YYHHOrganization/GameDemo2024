@@ -30,7 +30,7 @@ public class HPostProcessingMixer : PlayableBehaviour
                 (ScriptPlayable<HPostProcessingBehavior>)playable.GetInput(i);
             HPostProcessingBehavior input = inputPlayable.GetBehaviour();
             //Debug.Log("inputWeight: " + inputWeight + " for clip:" + i);
-            if (inputWeight > 0.00001f)
+            if ((inputWeight > 0.00001f))  // && (inputWeight < 1.0f), todo：有需要再优化，没需要算了
             {
                 //Debug.Log("this clip " + i + " is active");
                 //Debug.Log("PPInputWeight"+i+":   "+inputWeight); //每个inputWeight对应的是轨道上的clip的weight，比如混合的时候四个weight可能是0.25 0.75 0 0，如果是一段动画渐进的话，这个weight的和也不一定是1

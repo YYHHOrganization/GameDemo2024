@@ -14,6 +14,7 @@ public class HPlayerStateMachine : MonoBehaviour
     Vector3 currentMovement;
     Vector3 currentRunMovement;
     private Vector3 appliedMovement;
+    private Vector3 _cameraRelativeMovement;
     private bool isMovementPressed;
 
     private Animator animator;
@@ -23,7 +24,7 @@ public class HPlayerStateMachine : MonoBehaviour
     private float rotationFactorPerFrame = 15.0f;
 
     private bool isRunPressed;
-    float runMultiplier = 3.0f;
+    float runMultiplier = 5.0f;
 
     private bool isJumpPressed = false;
     private float initialJumpVelocity;
@@ -44,6 +45,8 @@ public class HPlayerStateMachine : MonoBehaviour
 
     private HPlayerBaseState _currentState;
     private HPlayerStateFactory _states;
+    
+    public Camera playerCamera;
 
     #region Gets and Sets
     
@@ -213,19 +216,40 @@ public class HPlayerStateMachine : MonoBehaviour
     void HandleRotation() 
     {
         Vector3 positionToLookAt;
-        positionToLookAt.x = currentMovementInput.x;
+        positionToLookAt.x = _cameraRelativeMovement.x;
         positionToLookAt.y = 0;
-        positionToLookAt.z = currentMovementInput.y;
+        positionToLookAt.z = _cameraRelativeMovement.z;
         
         Quaternion currentRotation = transform.rotation;
         if (isMovementPressed)
         {
+            //Debug.Log("dddddddddddddd");
             Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
             transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * rotationFactorPerFrame);
         }
         
     }
 
+    Vector3 ConvertToCameraSpace(Vector3 vectorToRotate)
+    {
+        float currentYValue = vectorToRotate.y;
+        
+        Vector3 forward = playerCamera.transform.forward;
+        Vector3 right = playerCamera.transform.right;
+        forward.y = 0;
+        right.y = 0;
+        forward = forward.normalized;
+        right = right.normalized;
+        //create direction-relative input vectors, 也就是说在相机的前方和右方的投影
+        Vector3 forwardRelativeVerticalInput = vectorToRotate.z * forward;
+        Vector3 rightRelativeHorizontalInput = vectorToRotate.x * right;
+            
+        //create camera-relative movement
+        Vector3 cameraRelativeMovement = forwardRelativeVerticalInput + rightRelativeHorizontalInput;
+        cameraRelativeMovement.y = currentYValue;
+        return cameraRelativeMovement;
+    }
+    
     void SetupJumpVaraibles()
     {
         float timeToApex = maxJumpTime / 2.0f;
@@ -279,6 +303,7 @@ public class HPlayerStateMachine : MonoBehaviour
     {
         HandleRotation();
         _currentState.UpdateStates(); //逻辑上，先Update自己，有substate的话再Update Substate
-        characterController.Move(appliedMovement * Time.deltaTime);
+        _cameraRelativeMovement = ConvertToCameraSpace(appliedMovement);
+        characterController.Move(_cameraRelativeMovement * Time.deltaTime);
     }
 }

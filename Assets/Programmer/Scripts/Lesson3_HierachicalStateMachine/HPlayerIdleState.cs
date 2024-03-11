@@ -12,7 +12,7 @@ public class HPlayerIdleState : HPlayerBaseState
     }
     public override void EnterState()
     {
-        Debug.Log("玩原神玩的");
+        //Debug.Log("玩原神玩的");
         _ctx.Animator.SetBool(_ctx.IsWalkingHash, false);
         _ctx.Animator.SetBool(_ctx.IsRunningHash, false);
         _ctx.AppliedMovementX = 0;
