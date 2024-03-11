@@ -41,6 +41,15 @@ public class yPlanningTable : MonoBehaviour
     public List<Vector3> destination=new List<Vector3>();
     
     public List<List<int>> characterExpressionIndices = new List<List<int>>();
+
+
+    private List<string> animationNoMoveList = new List<string>();
+    List<string> animationNoMoveListInUI = new List<string>();
+    
+    
+    List<string> animationMoveList = new List<string>();
+    List<string> animationMoveListInUI =new List<string>();
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -56,6 +65,8 @@ public class yPlanningTable : MonoBehaviour
         ReadExpressionCSV();
         //ReadDestinationCSV();
         ReadPostProcessingCSV();
+        ReadAnimationCSV("Assets/Designer/CsvTable/AnimationCSVFile.csv",
+            animationNoMoveList,animationNoMoveListInUI,animationMoveList,animationMoveListInUI);
         effs =new List<ScriptableRendererFeature>();
     }
     
@@ -256,6 +267,9 @@ public class yPlanningTable : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 现在弃用了 现在采用直接场景中的物体来代替
+    /// </summary>
     void ReadDestinationCSV()
     {
         string filePath = "Assets/Designer/CsvTable/DestinationCSVFile.csv"; 
@@ -279,6 +293,41 @@ public class yPlanningTable : MonoBehaviour
             }
         }
     }
+    
+    public void ReadAnimationCSV(string filePath, 
+        List<string> noMoveList, List<string> noMoveListInUI, 
+        List<string> moveList, List<string> moveListInUI)
+    {
+        using (var reader = new StreamReader(filePath))
+        {
+            bool header = true;
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (header) // 跳过表头
+                {
+                    header = false;
+                    continue;
+                }
+                var values = line.Split(',');
+                string animationName = values[0];
+                string moveType = values[1];
+                string uiName = values[2];
+
+                if (moveType == "NoMove")
+                {
+                    noMoveList.Add(animationName);
+                    noMoveListInUI.Add(uiName);
+                }
+                else if (moveType == "Move")
+                {
+                    moveList.Add(animationName);
+                    moveListInUI.Add(uiName);
+                }
+            }
+        }
+    }
+    
     public ScriptableRendererFeature GetEffRendererFeature(int index)
     {
         if(SelectTable[3][index]=="null")
@@ -365,7 +414,7 @@ public class yPlanningTable : MonoBehaviour
     {
         //哪一个地点
         string destinationName = SelectTable[selectNames2Id["destination1"]][selectId];
-        Debug.Log("destinationName: " + destinationName);
+        // Debug.Log("destinationName: " + destinationName);
         return GameObject.Find(destinationName).transform;
         
        //  if (selectId==1)
@@ -411,5 +460,92 @@ public class yPlanningTable : MonoBehaviour
         characterExpressionIndices.Add(characterExpressionI);
         
     }
+    
+    
+    List<string> animationChooseList = new List<string>();
+    public List<string> getAnimationChooseList()
+    {
+        //获取动画选择列表 
+        for(int i = 1; i <= 5; i++)
+        {
+            //选择了SelectTable中id为多少的那个动画选项框 是第一个动画选项框还是第二个第三个，这里的chooseid是2，3，4（因为前面有个角色选项框）
+            int chooseid = selectNames2Id["animation" + i];
+            int selectID = selectId["animation"+i];
+            string AnimStr = SelectTable[chooseid][selectID];
+            animationChooseList.Add(AnimStr);
+        }
+        return animationChooseList;
+        
+    }
+    
+   
+    public List<bool> isMoveList = new List<bool>();
+    public void UpdateMoveOrNoMoveAnimationList(int index,int indexInSequence,bool isMove)
+    {
+        if (isMove)
+        {
+            isMoveList.Add(true);
+            UpdateSelectTable(index,animationMoveList);
+            UpdateUISelectTable(index,animationMoveListInUI);
+        }
+        else
+        {
+            isMoveList.Add(false);
+            UpdateSelectTable(index,animationNoMoveList);
+            UpdateUISelectTable(index,animationNoMoveListInUI);
+            
+            //错误 因为他可能新增节点后又去改前面的节点，所以这个是不对的
+            //UpdateSelectId("destination"+indexInSequence,selectId["destination"+(indexInSequence-1)]);
+            
+            //不移动的话可能还得改当前节点的位置为上一个节点的位置
+            // if (indexInSequence != 1)
+            // {
+            //     UpdateSelectId("destination"+indexInSequence,selectId["destination"+(indexInSequence-1)]);
+            // }
+            // else
+            // {
+            //     //此时这个是有问题的！！！因为这个应该检索起点的索引！！，不应该是0
+            //     UpdateSelectId("destination"+indexInSequence,0);
+            // }
+        }
+    }
+    //将selecttable中的某一行的数据转换成一个list
+    void UpdateSelectTable(int index, List<string> list)
+    {
+        SelectTable[index] = list;
+    }
+    
+    void UpdateUISelectTable(int index, List<string> list)
+    {
+        UISelectTable[index] = list;
+    }
+    void UpdateSelectId(string name,int value)
+    {
+        selectId[name] = value;
+    }
+    
+    //开始运行timeline前 但是点击了确定之后这个脚本要做的
+    public void BeforePlayTimeline()
+    {
+        Debug.Log("PlayTimeMove!!!!!!!!!!!!!!!");
+        //循环遍历move 列表，把所有没有move的 不移动的话可能还得改当前节点的位置为上一个节点的位置
+        for (int i = 0; i < isMoveList.Count; i++)
+        {
+            if (!isMoveList[i])
+            {
+                if (i != 0)
+                {
+                    UpdateSelectId("destination"+(i+1),selectId["destination"+i]);
+                }
+                else
+                {
+                    UpdateSelectId("destination"+(i+1),0);
+                }
+            }
+        }
+    }
+
+
+    
     
 }

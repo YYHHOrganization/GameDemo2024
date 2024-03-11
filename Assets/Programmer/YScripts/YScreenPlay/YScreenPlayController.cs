@@ -56,6 +56,8 @@ public class YScreenPlayController : MonoBehaviour
 
     public void ConfirmScreenplay( Dictionary<string,int> selectId)
     {
+        yPlanningTable.Instance.BeforePlayTimeline();
+        
         //selectId["animation1"] 与selectId["animation2"] 与selectId["animation3"] 与selectId["animation4"] ，selectId["animation5"] 都表示选择的动画
         for(int i = 1; i <= 5; i++)
         {

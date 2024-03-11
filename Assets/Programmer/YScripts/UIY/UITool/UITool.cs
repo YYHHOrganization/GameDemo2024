@@ -76,4 +76,19 @@ public class UITool
         }
         return null;
     }
+    public T GetOrAddComponentInChilden<T>(string name,Transform parent) where T : Component
+    {
+        GameObject go = parent.Find(name).gameObject;
+        if (go != null)
+        {
+            if (go.GetComponent<T>() == null)
+            {
+                go.AddComponent<T>();
+            }
+            return go.GetComponent<T>();
+        }
+        
+        return null;
+    }
+    
 }

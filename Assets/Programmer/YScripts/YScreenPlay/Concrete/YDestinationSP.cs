@@ -24,7 +24,7 @@ public class YDestinationSP : YScreenplayBase
         ////加载资源
         // GameObject obj = Resources.Load<GameObject>(path);
         //目的地信息应该是一个vector3/一个transform  可以存在策划表里面  最终未来希望玩家通过点击屏幕 选择目的地  所以就存储一个vector3应该ok 
-        Debug.Log("目的地信息是"+indexInTimeline +" selectId"+selectId); //34000, 01210
+        // Debug.Log("目的地信息是"+indexInTimeline +" selectId"+selectId); //34000, 01210
         timelineController.ChangeDestinationWithIndex(characterind,indexInTimeline, selectId);
     }
 

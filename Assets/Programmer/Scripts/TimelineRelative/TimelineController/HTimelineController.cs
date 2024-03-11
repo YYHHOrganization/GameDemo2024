@@ -41,6 +41,10 @@ public class HTimelineController : MonoBehaviour
     
     public string timelineAssetName = "EmptyTimeline_0";
     
+    //到达目的地或播放完动画跳到下一个clip相关的变量
+    private int m_clipIndex=0;
+    bool m_isSammPlace = false;
+    bool duringSamePlaceCoroutine = false;
     
     //根据索引设置对应的TimelineAsset，扩展后面可能有多幕的剧情
     public void SetTimelineAsset(int index)
@@ -431,7 +435,12 @@ public class HTimelineController : MonoBehaviour
         playableDirector.Play();//playableDirector.Pause();
         //playableDirector.time = 5;
         startPlaying = true;
-
+        
+        //判断第一帧是否是同一个地方
+        if (yPlanningTable.Instance.isMoveList[0] == false)
+        {
+            m_isSammPlace = true;
+        }
     }
 
     
@@ -440,9 +449,6 @@ public class HTimelineController : MonoBehaviour
         changeClip();
     }
 
-    private int m_clipIndex=0;
-    bool m_isSammPlace = false;
-    bool duringSamePlaceCoroutine = false;
     public void changeClip()
     {
         if (startPlaying)
