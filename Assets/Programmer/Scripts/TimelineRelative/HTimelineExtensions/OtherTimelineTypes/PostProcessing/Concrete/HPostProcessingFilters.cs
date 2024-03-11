@@ -55,6 +55,23 @@ public class HPostProcessingFilters : HPostProcessingBase
         }
     }
 
+    private float CalculateSetValue(float inputWeight, int shouldLerp, float value, float defaultValue, bool isReset)
+    {
+        //用shouldLerp来控制是否需要渐变
+        if (inputWeight >= 0.0001) //weight仍在控制，用shouldLerp做调整
+        {
+            if (shouldLerp == 0) inputWeight = 1;
+        } 
+        float addValue = value * inputWeight; //在写逻辑的时候保证value[i]在加入到默认值上的时候是合理的
+        float setValue = defaultValue + addValue;
+        if (isReset)
+        {
+            setValue = defaultValue;
+        }
+
+        return setValue;
+    }
+
     private void SetGlobalVolumeAttributeAndValue(HPostProcessingBehavior input, float inputWeight, bool isReset)
     {
         if (!postProcessVolume) return;
@@ -64,6 +81,7 @@ public class HPostProcessingFilters : HPostProcessingBase
         List<float> values = input.values;
         List<float> defaultValues = input.defaultValues;
         List<int> shouldLerp = input.shouldLerp;
+        
         foreach (var component in components)
         {
             if(component.GetType().Name == volumePPType)
@@ -74,18 +92,7 @@ public class HPostProcessingFilters : HPostProcessingBase
                     var colorAdjustments = (ColorAdjustments) component;
                     for(int i = 0; i < attributes.Count; i++)
                     {
-                        //用shouldLerp来控制是否需要渐变
-                        if (inputWeight >= 0.0001) //weight仍在控制，用shouldLerp做调整
-                        {
-                            if (shouldLerp[i] == 0) inputWeight = 1;
-                        } 
-                        float addValue = values[i] * inputWeight; //在写逻辑的时候保证value[i]在加入到默认值上的时候是合理的
-                        float setValue = defaultValues[i] + addValue;
-
-                        if (isReset)
-                        {
-                            setValue = defaultValues[i];
-                        }
+                        float setValue = CalculateSetValue(inputWeight, shouldLerp[i], values[i], defaultValues[i], isReset);
                         switch (attributes[i])
                         {
                             case "saturation":
@@ -112,18 +119,7 @@ public class HPostProcessingFilters : HPostProcessingBase
                     var radialBlur = (HRadialBlurSettings) component;
                     for(int i = 0; i < attributes.Count; i++)
                     {
-                        //用shouldLerp来控制是否需要渐变
-                        if (inputWeight >= 0.0001) //weight仍在控制，用shouldLerp做调整
-                        {
-                            if (shouldLerp[i] == 0) inputWeight = 1;
-                        } 
-                        float addValue = values[i] * inputWeight; //在写逻辑的时候保证value[i]在加入到默认值上的时候是合理的
-                        float setValue = defaultValues[i] + addValue;
-                        if (isReset)
-                        {
-                            setValue = defaultValues[i];
-                        }
-                        
+                        float setValue = CalculateSetValue(inputWeight, shouldLerp[i], values[i], defaultValues[i], isReset);
                         switch (attributes[i])
                         {
                             case "blurRadius":
@@ -133,6 +129,41 @@ public class HPostProcessingFilters : HPostProcessingBase
                                 radialBlur.blurIterations.value = (int)setValue;
                                 break;
                             
+                        }
+                    }
+                }
+                
+                else if (volumePPType == "Vignette")
+                {
+                    var vignette = (Vignette) component;
+                    for(int i = 0; i < attributes.Count; i++)
+                    {
+                        float setValue = CalculateSetValue(inputWeight, shouldLerp[i], values[i], defaultValues[i], isReset);
+                        
+                        switch (attributes[i])
+                        {
+                            case "intensity":
+                                vignette.intensity.value = setValue; 
+                                break;
+                            case "smoothness":
+                                vignette.smoothness.value = setValue;
+                                break;
+                        }
+                    }
+                }
+                
+                else if (volumePPType == "LensDistortion")
+                {
+                    var lensDistortion = (LensDistortion) component;
+                    for(int i = 0; i < attributes.Count; i++)
+                    {
+                        float setValue = CalculateSetValue(inputWeight, shouldLerp[i], values[i], defaultValues[i], isReset);
+                        
+                        switch (attributes[i])
+                        {
+                            case "intensity":
+                                lensDistortion.intensity.value = setValue; 
+                                break;
                         }
                     }
                 }
