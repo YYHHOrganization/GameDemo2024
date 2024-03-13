@@ -24,6 +24,11 @@ public class HPostProcessingFilters : HPostProcessingBase
     
     private Volume postProcessVolume;
 
+    public Volume PostProcessVolume
+    {
+        get => postProcessVolume;
+    }
+    
     private void Start()
     {
        
