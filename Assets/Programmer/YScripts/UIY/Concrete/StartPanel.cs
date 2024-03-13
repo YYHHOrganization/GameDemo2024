@@ -10,6 +10,7 @@ public class StartPanel : BasePanel
     
     public override void OnEnter()
     {
+        //演绎模式
         uiTool.GetOrAddComponentInChilden<Button>("StartButton").onClick.AddListener(()=>
         {
             //Debug.Log("点击了开始按钮");
@@ -17,6 +18,13 @@ public class StartPanel : BasePanel
             Pop();
             //Push(new YMainPanel());
             Push(new YChooseScreenplayPanel());
+        });
+        //游玩模式
+        uiTool.GetOrAddComponentInChilden<Button>("PlayButton").onClick.AddListener(()=>
+        {
+            Debug.Log("点击了Play按钮");
+            Pop();
+            Push(new YChooseCharacterPanel());
         });
         uiTool.GetOrAddComponentInChilden<Button>("SettingButton").onClick.AddListener(()=>
         {

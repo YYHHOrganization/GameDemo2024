@@ -430,14 +430,19 @@ public class HTimelineController : MonoBehaviour
     
     public void PlayTheTimeline()
     {
+       
+        
         playableDirector.playableAsset = currentTimelineAsset;
         
         playableDirector.Play();//playableDirector.Pause();
         //playableDirector.time = 5;
         startPlaying = true;
         
+        //如果玩家没有选择任何东西，直接结束
+        checkToEnd();
+        
         //判断第一帧是否是同一个地方
-        if (yPlanningTable.Instance.isMoveList[0] == false)
+        if (yPlanningTable.Instance.isMoveList.Count > 0&&yPlanningTable.Instance.isMoveList[0] == false)
         {
             m_isSammPlace = true;
         }
@@ -449,6 +454,20 @@ public class HTimelineController : MonoBehaviour
         changeClip();
     }
 
+    bool isEnd = false;
+    public bool checkToEnd()
+    {
+        int allClipCount = yPlanningTable.Instance.isMoveList.Count;
+        if(m_clipIndex>=allClipCount)
+        {
+            //如果已经到达末尾 应该直接消失  或者到达末尾
+            playableDirector.time = 5* testAnimationDuration+0.1;
+            startPlaying = false;
+            return true;
+        }
+        return false;
+       
+    }
     public void changeClip()
     {
         if (startPlaying)
@@ -490,8 +509,15 @@ public class HTimelineController : MonoBehaviour
     }
     public void changeToNextClip()
     {
+        
         //todo：突然跳帧有个问题，动画可能不连贯
         m_clipIndex++;
+        
+        if (checkToEnd())
+        {
+            return;
+        }
+        
         float clipLocateTime = (m_clipIndex) * testAnimationDuration;
         playableDirector.time = clipLocateTime;
         

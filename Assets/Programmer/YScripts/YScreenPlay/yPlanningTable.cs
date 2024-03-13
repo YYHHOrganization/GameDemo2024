@@ -67,6 +67,7 @@ public class yPlanningTable : MonoBehaviour
         ReadPostProcessingCSV();
         ReadAnimationCSV("Assets/Designer/CsvTable/AnimationCSVFile.csv",
             animationNoMoveList,animationNoMoveListInUI,animationMoveList,animationMoveListInUI);
+        preKeepDestination();
         effs =new List<ScriptableRendererFeature>();
     }
     
@@ -410,33 +411,46 @@ public class yPlanningTable : MonoBehaviour
         
     }
     //GetDestination(characterId, selectId);
+    
+    public List<GameObject> DestinationList = new List<GameObject>();
+    public List<string> DestinationUINameList = new List<string>();
+    private void preKeepDestination()
+    {
+        //获取目的地
+        //遍历destination[selectId["destination1"]]; 并存储于一个list中
+        //然后在timeline中的每个destination中的位置都是这个list中的位置
+        
+        for (int i = 0; i < SelectTable[selectNames2Id["destination1"]].Count; i++)
+        {
+            int id = selectNames2Id["destination1"];
+            string destinationName = SelectTable[id][i];
+            // Debug.Log("destinationName: " + destinationName);
+            
+            DestinationList.Add(GameObject.Find(destinationName));
+            DestinationUINameList.Add(UISelectTable[id][i]);
+        }
+        
+        
+    }
     public Transform GetDestination(int selectId)
     {
         //哪一个地点
-        string destinationName = SelectTable[selectNames2Id["destination1"]][selectId];
-        // Debug.Log("destinationName: " + destinationName);
-        return GameObject.Find(destinationName).transform;
+        // string destinationName = SelectTable[selectNames2Id["destination1"]][selectId];
+        // // Debug.Log("destinationName: " + destinationName);
+        // return GameObject.Find(destinationName).transform;
         
-       //  if (selectId==1)
-       //  {
-       //      return GameObject.Find("Restaurant").transform;
-       //  }
-       //  else if (selectId==0)
-       //  {
-       //      return GameObject.Find("FruitsCorner").transform;
-       //  }
-       //  else if (selectId==2)
-       //  {
-       //      return GameObject.Find("Bench").transform;
-       //  }
-       // return GameObject.Find("Restaurant").transform;
-
+        return DestinationList[selectId].transform;
     }
-    
+
+    public int GetCharacterNum()
+    {
+        int characterNum = SelectTable[selectNames2Id["character"]].Count;
+        return characterNum;
+    }
     //写一个函数 遍历所有角色，并调用GetAllBlendShapeUsedInExpression
     public void GetAllBlendShapeUsed()
     {
-        int characterNum = SelectTable[selectNames2Id["character"]].Count;
+        int characterNum = GetCharacterNum();
         for (int i = 0; i < characterNum; i++)
         {
             GetAllBlendShapeUsedInExpression(i);

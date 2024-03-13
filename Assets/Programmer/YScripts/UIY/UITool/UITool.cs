@@ -90,5 +90,21 @@ public class UITool
         
         return null;
     }
-    
+
+    //有问题的代码 暂时别调用
+    public void DisableComponentInChilden<T>(string name) where T : Component
+    {
+        GameObject go = FindChildGameObject(name);
+        if (go != null)
+        {
+            if (go.GetComponent<T>() != null)
+            {
+                GameObject goComponent = go.GetComponent<T>().gameObject;
+                goComponent.SetActive(false);
+                
+            }
+            
+        }
+       
+    }
 }

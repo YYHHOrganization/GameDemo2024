@@ -54,7 +54,7 @@ public class HCameraLayoutManager : MonoBehaviour
         _instance = this.gameObject.GetComponent<HCameraLayoutManager>();
         //SetPlayerCameraWholeScreen();
         //SetPuppetCameraLittle();
-        SetTwoCamerasEachHalf();
+        // SetTwoCamerasEachHalf();
     }
 
     public static HCameraLayoutManager Instance

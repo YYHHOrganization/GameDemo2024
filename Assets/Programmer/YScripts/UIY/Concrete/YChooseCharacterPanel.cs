@@ -1,0 +1,69 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class YChooseCharacterPanel : BasePanel
+{
+    static readonly string path = "Prefabs/UI/Panel/YChooseCharacterPanelNew";
+    static readonly string pathPlace = "Prefabs/YPlace/YChooseCharacterShowPlace";
+    public YChooseCharacterPanel() : base(new UIType(path)){}
+    public GameObject YChooseCharacterShowPlace;
+    public GameObject curCharacter;
+    public int curChooseCharacterIndex=-1;
+    public override void OnEnter()
+    {
+        //YChooseCharacterShowPlace = GameObject.Find("YChooseCharacterShowPlace");
+        YChooseCharacterShowPlace = GameObject.Instantiate(Resources.Load<GameObject>(pathPlace));
+        
+        uiTool.GetOrAddComponentInChilden<Button>("BeginButton").onClick.AddListener(()=>
+        {
+            Pop();
+            //Push(new YChooseScreenplayPanel());//其实并不是 而是应该直接让角色在场景中活动，但是先这样吧
+            
+            Push(new YMainPlayModeOriginPanel());
+            //销毁YChooseCharacterShowPlace
+            GameObject.Destroy(YChooseCharacterShowPlace);
+            //然后应该把那些加载出来 
+            YPlayModeController.Instance.SetCharacter(curChooseCharacterIndex);
+
+        });
+        Debug.Log("角色数量"+yPlanningTable.Instance.GetCharacterNum());
+        //循环遍历角色列表
+        for (int i = 0; i < yPlanningTable.Instance.GetCharacterNum(); i++)
+        {
+            //不可以直接传i 因为i会变，因为是引用类型
+            int index = i;
+            //给每个角色按钮添加点击事件
+            uiTool.GetOrAddComponentInChilden<Button>("CharacterButton"+index).onClick.AddListener(()=>
+            {
+                SetCharacter(index);
+            });
+        }
+        SetCharacter(0);
+    }
+    public void SetCharacter(int index)
+    {
+        if(index==curChooseCharacterIndex)
+        {
+            return;
+        }
+        if (curCharacter!=null)
+        {
+            GameObject.Destroy(curCharacter);
+        }
+        curChooseCharacterIndex = index;
+        
+        Debug.Log("选择了角色"+index);
+        int id = yPlanningTable.Instance.selectNames2Id["character"];
+        string path = "Prefabs/YCharacter/"+yPlanningTable.Instance.SelectTable[id][index]+"Show";
+        //string path = "Prefabs/YCharacter/2";
+        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(path));
+        go.transform.parent = YChooseCharacterShowPlace.transform;
+        go.transform.localPosition = Vector3.zero;
+        curCharacter = go;
+        
+        //设置角色
+        //yPlanningTable.Instance.SetCharacter(i);
+    }
+}

@@ -293,6 +293,18 @@ public class HPlayerStateMachine : MonoBehaviour
     {
         playerInput.CharacterControls.Enable();
     }
+    
+    public void SetInputActionDisableOrEnable(bool shouldLock)
+    {
+        if (shouldLock)
+        {
+            playerInput.CharacterControls.Disable();
+        }
+        else
+        {
+            playerInput.CharacterControls.Enable();
+        }
+    }
 
     private void OnDisable()
     {
