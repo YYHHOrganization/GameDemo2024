@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class YChooseCharacterPanel : BasePanel
     public GameObject YChooseCharacterShowPlace;
     public GameObject curCharacter;
     public int curChooseCharacterIndex=-1;
+
+    private bool isInteractMode = true;
     public override void OnEnter()
     {
         //YChooseCharacterShowPlace = GameObject.Find("YChooseCharacterShowPlace");
@@ -41,6 +44,27 @@ public class YChooseCharacterPanel : BasePanel
             });
         }
         SetCharacter(0);
+
+        isInteractMode = true;
+        var interactButton = uiTool.GetOrAddComponentInChilden<Button>("SelectPatternButton");
+        interactButton.onClick.AddListener(() =>
+        {
+            isInteractMode = !isInteractMode;
+            if (isInteractMode)
+            {
+                //change text
+                interactButton.GetComponentInChildren<TMP_Text>().text = "交互模式";
+            }
+            else
+            {
+                interactButton.GetComponentInChildren<TMP_Text>().text = "鉴赏模式";
+            }
+
+            if (curCharacter)
+            {
+                curCharacter.GetComponent<HCharacterInteracionInShow>().SetInteractMode(isInteractMode);
+            }
+        });
     }
     public void SetCharacter(int index)
     {
@@ -62,6 +86,8 @@ public class YChooseCharacterPanel : BasePanel
         go.transform.parent = YChooseCharacterShowPlace.transform;
         go.transform.localPosition = Vector3.zero;
         curCharacter = go;
+
+        go.GetComponent<HCharacterInteracionInShow>().SetInteractMode(isInteractMode);
         
         //设置角色
         //yPlanningTable.Instance.SetCharacter(i);
