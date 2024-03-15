@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class YChooseCharacterPanel : BasePanel
@@ -14,6 +15,23 @@ public class YChooseCharacterPanel : BasePanel
     public int curChooseCharacterIndex=-1;
 
     private bool isInteractMode = true;
+
+    private TMP_Text chatAnswerText;
+    private TMP_InputField inputField;
+    private Button sendMessageButton;
+    public TMP_Text ChatAnswerText
+    {
+        get
+        {
+            if (chatAnswerText == null)
+            {
+                chatAnswerText = uiTool.GetOrAddComponentInChilden<TMP_Text>("AnswerText");
+            }
+            return chatAnswerText;
+        }
+        set => chatAnswerText = value;
+    }
+    
     public override void OnEnter()
     {
         //YChooseCharacterShowPlace = GameObject.Find("YChooseCharacterShowPlace");
@@ -44,12 +62,43 @@ public class YChooseCharacterPanel : BasePanel
             });
         }
         SetCharacter(0);
+        
+        inputField = uiTool.GetOrAddComponentInChilden<TMP_InputField>("InputField");
+        inputField.onEndEdit.AddListener((string value) =>
+        {
+            if (curChooseCharacterIndex >= 0)
+            {
+                HChatGPTManager.Instance.SetPeopleIndex(curChooseCharacterIndex);
+                HChatGPTManager.Instance.AskChatGPT(this, value);
+            }
+        });
+        
+        chatAnswerText = uiTool.GetOrAddComponentInChilden<TMP_Text>("AnswerText");
+        
+        sendMessageButton = uiTool.GetOrAddComponentInChilden<Button>("SendMessageButton");
+        sendMessageButton.onClick.AddListener(()=>
+        {
+            if (curChooseCharacterIndex >= 0 && inputField.text != "")
+            {
+                HChatGPTManager.Instance.SetPeopleIndex(curChooseCharacterIndex);
+                HChatGPTManager.Instance.AskChatGPT(this, inputField.text);
+            }
+        });
 
         isInteractMode = true;
+        inputField.gameObject.SetActive(!isInteractMode);
+        chatAnswerText.gameObject.SetActive(!isInteractMode);
+        sendMessageButton.gameObject.SetActive(!isInteractMode);
+        chatAnswerText.gameObject.GetComponentInParent<Image>().enabled=!isInteractMode;
+        
         var interactButton = uiTool.GetOrAddComponentInChilden<Button>("SelectPatternButton");
         interactButton.onClick.AddListener(() =>
         {
             isInteractMode = !isInteractMode;
+            inputField.gameObject.SetActive(!isInteractMode);
+            chatAnswerText.gameObject.SetActive(!isInteractMode);
+            sendMessageButton.gameObject.SetActive(!isInteractMode);
+            chatAnswerText.gameObject.GetComponentInParent<Image>().enabled=!isInteractMode;
             if (isInteractMode)
             {
                 //change text
@@ -65,7 +114,11 @@ public class YChooseCharacterPanel : BasePanel
                 curCharacter.GetComponent<HCharacterInteracionInShow>().SetInteractMode(isInteractMode);
             }
         });
+        
+        
+        
     }
+    
     public void SetCharacter(int index)
     {
         if(index==curChooseCharacterIndex)

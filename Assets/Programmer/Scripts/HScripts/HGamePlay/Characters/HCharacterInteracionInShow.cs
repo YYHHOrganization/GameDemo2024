@@ -18,6 +18,7 @@ public class HCharacterInteracionInShow : MonoBehaviour
     private bool isRotated = false;
     private bool isPickedUp = false;
     private Vector3 originPosition;
+    
 
     private void Start()
     {
@@ -134,4 +135,5 @@ public class HCharacterInteracionInShow : MonoBehaviour
         }
         
     }
+    
 }
