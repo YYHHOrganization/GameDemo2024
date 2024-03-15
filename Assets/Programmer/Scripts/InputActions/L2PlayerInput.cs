@@ -176,6 +176,34 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""ShortcutKey"",
+            ""id"": ""cda95a47-e31d-4e0c-bfa5-cb76064bea69"",
+            ""actions"": [
+                {
+                    ""name"": ""GetPuppet"",
+                    ""type"": ""Button"",
+                    ""id"": ""e6c27cfb-e420-41c0-a6be-2ef2ac43c7bc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""fc5218ad-fd09-47a4-8ac4-4e54e3f7d96c"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GetPuppet"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -186,6 +214,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         m_CharacterControls_Run = m_CharacterControls.FindAction("Run", throwIfNotFound: true);
         m_CharacterControls_Jump = m_CharacterControls.FindAction("Jump", throwIfNotFound: true);
         m_CharacterControls_Look = m_CharacterControls.FindAction("Look", throwIfNotFound: true);
+        // ShortcutKey
+        m_ShortcutKey = asset.FindActionMap("ShortcutKey", throwIfNotFound: true);
+        m_ShortcutKey_GetPuppet = m_ShortcutKey.FindAction("GetPuppet", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -313,11 +344,61 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public CharacterControlsActions @CharacterControls => new CharacterControlsActions(this);
+
+    // ShortcutKey
+    private readonly InputActionMap m_ShortcutKey;
+    private List<IShortcutKeyActions> m_ShortcutKeyActionsCallbackInterfaces = new List<IShortcutKeyActions>();
+    private readonly InputAction m_ShortcutKey_GetPuppet;
+    public struct ShortcutKeyActions
+    {
+        private @L2PlayerInput m_Wrapper;
+        public ShortcutKeyActions(@L2PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @GetPuppet => m_Wrapper.m_ShortcutKey_GetPuppet;
+        public InputActionMap Get() { return m_Wrapper.m_ShortcutKey; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ShortcutKeyActions set) { return set.Get(); }
+        public void AddCallbacks(IShortcutKeyActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ShortcutKeyActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ShortcutKeyActionsCallbackInterfaces.Add(instance);
+            @GetPuppet.started += instance.OnGetPuppet;
+            @GetPuppet.performed += instance.OnGetPuppet;
+            @GetPuppet.canceled += instance.OnGetPuppet;
+        }
+
+        private void UnregisterCallbacks(IShortcutKeyActions instance)
+        {
+            @GetPuppet.started -= instance.OnGetPuppet;
+            @GetPuppet.performed -= instance.OnGetPuppet;
+            @GetPuppet.canceled -= instance.OnGetPuppet;
+        }
+
+        public void RemoveCallbacks(IShortcutKeyActions instance)
+        {
+            if (m_Wrapper.m_ShortcutKeyActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IShortcutKeyActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ShortcutKeyActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ShortcutKeyActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public ShortcutKeyActions @ShortcutKey => new ShortcutKeyActions(this);
     public interface ICharacterControlsActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+    }
+    public interface IShortcutKeyActions
+    {
+        void OnGetPuppet(InputAction.CallbackContext context);
     }
 }

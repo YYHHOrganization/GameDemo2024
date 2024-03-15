@@ -3,7 +3,7 @@ Shader "HPostProcessing/HTerrianScanning"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _ScanDepth("ScanDepth",Range(0.001, 1))=0.03
+        _ScanDepth("ScanDepth",Range(0, 1))=0
 		_ScanWidth("ScanWidth",Range(0.01, 100))=1
 		_CamFar("CamFar",float)=500
     }

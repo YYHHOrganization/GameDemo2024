@@ -11,7 +11,7 @@ public class HPlayerSkillManager : MonoBehaviour
     //单例模式
     public static HPlayerSkillManager instance;
     private bool checkScanningSkillCD = false;
-    private float scanningSkillCD = 1.5f;
+    private float scanningSkillCD = 3f;
     private float scanningSkillCDTimer = 0.0f;
     Volume postProcessVolume;
     private float originalIntensity;
@@ -52,6 +52,7 @@ public class HPlayerSkillManager : MonoBehaviour
 
         ResumeIntensityCoroutine = null;
 
+        YPlayModeController.Instance.DetectViewOn();
     }
 
     public void CheckSpaceSkill()
@@ -91,6 +92,10 @@ public class HPlayerSkillManager : MonoBehaviour
             {
                 scanningSkillCDTimer = 0.0f;
                 checkScanningSkillCD = false;
+                
+                //调用YPlayModeController的DetectViewOff
+                YPlayModeController.Instance.DetectViewOff();
+                
                 ResumeIntensityCoroutine = StartCoroutine(ResumeIntensity());
             }
             //用Timer对全局扫描的RenderFeature进行控制

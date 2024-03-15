@@ -4,6 +4,7 @@ public class YChestManager : MonoBehaviour
 {
     private static int activatedTriggersCount = 0;
     public GameObject chest;//后面可以改为动态加载
+    //public string chestPath = "Prefabs/YItemPlay/YChest";
     private void OnEnable()
     {
         YTriggerEvents.OnTriggerStateChanged += HandleTriggerStateChanged;//含义是当触发器状态改变时，调用HandleTriggerStateChanged方法

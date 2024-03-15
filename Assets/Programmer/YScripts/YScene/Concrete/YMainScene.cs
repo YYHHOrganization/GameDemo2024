@@ -25,6 +25,7 @@ public class YMainScene : YSceneState
         {
             //如果已经加载过了，直接加载UI
             panelManager.Push(new YMainPanel());
+            YGameRoot.Instance.SetAction(panelManager.Push);
         }
         
     }
@@ -40,5 +41,7 @@ public class YMainScene : YSceneState
         
         //加载完之后执行的操作：加载UI
         panelManager.Push(new YMainPanel());
+        YGameRoot.Instance.SetAction(panelManager.Push);//设置监听事件push 
+                                                       
     }
 }

@@ -22,6 +22,7 @@ public class YPlayModeController : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        CanVasUI = GameObject.Find("CanvasShowUI");
     }
     HCameraLayoutManager CameraLayoutManager;
     GameObject curCharacter;
@@ -62,6 +63,7 @@ public class YPlayModeController : MonoBehaviour
 
     public void LockPlayerInput(bool shouldLock) 
     {
+        //YTriggerEvents.RaiseOnMouseLockStateChanged(!shouldLock);//视角lock 鼠标应该出现
         curCharacter.GetComponent<HPlayerStateMachine>().SetInputActionDisableOrEnable(shouldLock);
         FreeLookCamera.GetComponent<CinemachineInputProvider>().enabled = !shouldLock;
     }
@@ -87,7 +89,7 @@ public class YPlayModeController : MonoBehaviour
     public GameObject CanVasUI;
     public void PlaceKeepNameUI()
     {
-        CanVasUI = GameObject.Find("CanvasShowUI");
+        
         //元素视野打开 将所有的地点显示出来并改名字
         List<GameObject> allPoints = yPlanningTable.Instance.DestinationList;
         List<string> PlaceUIToShowList = yPlanningTable.Instance.DestinationUINameList;
@@ -114,7 +116,33 @@ public class YPlayModeController : MonoBehaviour
         
         detectModeIsOn = !detectModeIsOn;
         CanVasUI.SetActive(detectModeIsOn);
-       
+
+        if (detectModeIsOn)
+        {
+            HPlayerSkillManager.instance.SkillScanningTerrian();
+        }
+        
+    }
+    
+    public void DetectViewOn()
+    {
+        //只会进一次
+        if (flagEnterDetectViewOnOrOff == false)
+        {
+            PlaceKeepNameUI();
+            flagEnterDetectViewOnOrOff = true;
+        }
+        //HPlayerSkillManager中会进行计时 调用这个函数 按理说不应这样，，
+        CanVasUI.SetActive(true);
+        //HPlayerSkillManager.instance.SkillScanningTerrian();
+        
+    }
+    
+    public void DetectViewOff()
+    {
+        detectModeIsOn = false;
+        CanVasUI.SetActive(false);
+        
     }
     
 }

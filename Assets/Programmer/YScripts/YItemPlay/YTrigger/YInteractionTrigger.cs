@@ -9,14 +9,14 @@ public class YInteractionTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player")||other.CompareTag("Puppet"))
         {
-            Debug.Log("OnTriggerEnter！！！");
+            //Debug.Log("OnTriggerEnter！！！");
             activatedTriggers++;
             if (IsActivated())
             {
                 if(activated==false)
                 {
                     activated = true;
-                    Debug.Log("OnTriggerEnter！！！IsActivated");
+                    //Debug.Log("OnTriggerEnter！！！IsActivated");
                     YTriggerEvents.RaiseOnTriggerStateChanged(true);
                 }
             }
@@ -25,13 +25,13 @@ public class YInteractionTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("OnTriggerExit！！！");
+        //Debug.Log("OnTriggerExit！！！");
         if (other.CompareTag("Player")||other.CompareTag("Puppet"))
         {
             activatedTriggers--;
             if (!IsActivated())
             {
-                Debug.Log("OnTriggerExit！！！IsActivated");
+                //Debug.Log("OnTriggerExit！！！IsActivated");
                 YTriggerEvents.RaiseOnTriggerStateChanged(false);
                 activated = false;
             }

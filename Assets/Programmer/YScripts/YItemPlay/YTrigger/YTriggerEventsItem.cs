@@ -16,4 +16,19 @@ public class YTriggerEvents : MonoBehaviour
     {
         OnTriggerStateChanged?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
+    
+    //定义一个事件 当可以呼出木偶面板的时候 可以使用快捷键进行呼出 
+    public static event EventHandler<YTriggerEventArgs> OnPuppetShortCutStateChanged;
+    public static void RaiseOnPuppetShortCutStateChanged(bool activated)
+    {
+        OnPuppetShortCutStateChanged?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
+    
+    //鼠标锁定和解锁
+    public static event EventHandler<YTriggerEventArgs> OnMouseLockStateChanged;
+    public static void RaiseOnMouseLockStateChanged(bool activated)
+    {
+        OnMouseLockStateChanged?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
+    
 }

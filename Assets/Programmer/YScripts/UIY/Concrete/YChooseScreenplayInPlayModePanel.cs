@@ -33,6 +33,7 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
     public YChooseScreenplayInPlayModePanel() : base(new UIType(path)){}
     public override void OnEnter()
     {
+        YTriggerEvents.RaiseOnMouseLockStateChanged(false);
         // panelToAddUnitParent = uiTool.GetOrAddComponentInChilden<Transform>("PanelToAddUnit").gameObject;
         //YContentInScrollView
         panelToAddUnitParent = uiTool.GetOrAddComponentInChilden<Transform>("YContentInScrollView").gameObject;
@@ -86,6 +87,7 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
         // LockButton
         uiTool.GetOrAddComponentInChilden<Button>("LockButton").onClick.AddListener(()=>
         {
+            
             shouldLockPlayerInput = !shouldLockPlayerInput;
             YPlayModeController.Instance.LockPlayerInput(shouldLockPlayerInput);
         });
