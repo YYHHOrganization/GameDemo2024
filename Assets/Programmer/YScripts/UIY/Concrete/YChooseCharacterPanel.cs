@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class YChooseCharacterPanel : BasePanel
@@ -11,6 +13,25 @@ public class YChooseCharacterPanel : BasePanel
     public GameObject YChooseCharacterShowPlace;
     public GameObject curCharacter;
     public int curChooseCharacterIndex=-1;
+
+    private bool isInteractMode = true;
+
+    private TMP_Text chatAnswerText;
+    private TMP_InputField inputField;
+    private Button sendMessageButton;
+    public TMP_Text ChatAnswerText
+    {
+        get
+        {
+            if (chatAnswerText == null)
+            {
+                chatAnswerText = uiTool.GetOrAddComponentInChilden<TMP_Text>("AnswerText");
+            }
+            return chatAnswerText;
+        }
+        set => chatAnswerText = value;
+    }
+    
     public override void OnEnter()
     {
         //YChooseCharacterShowPlace = GameObject.Find("YChooseCharacterShowPlace");
@@ -41,7 +62,63 @@ public class YChooseCharacterPanel : BasePanel
             });
         }
         SetCharacter(0);
+        
+        inputField = uiTool.GetOrAddComponentInChilden<TMP_InputField>("InputField");
+        inputField.onEndEdit.AddListener((string value) =>
+        {
+            if (curChooseCharacterIndex >= 0)
+            {
+                HChatGPTManager.Instance.SetPeopleIndex(curChooseCharacterIndex);
+                HChatGPTManager.Instance.AskChatGPT(this, value);
+            }
+        });
+        
+        chatAnswerText = uiTool.GetOrAddComponentInChilden<TMP_Text>("AnswerText");
+        
+        sendMessageButton = uiTool.GetOrAddComponentInChilden<Button>("SendMessageButton");
+        sendMessageButton.onClick.AddListener(()=>
+        {
+            if (curChooseCharacterIndex >= 0 && inputField.text != "")
+            {
+                HChatGPTManager.Instance.SetPeopleIndex(curChooseCharacterIndex);
+                HChatGPTManager.Instance.AskChatGPT(this, inputField.text);
+            }
+        });
+
+        isInteractMode = true;
+        inputField.gameObject.SetActive(!isInteractMode);
+        chatAnswerText.gameObject.SetActive(!isInteractMode);
+        sendMessageButton.gameObject.SetActive(!isInteractMode);
+        chatAnswerText.gameObject.GetComponentInParent<Image>().enabled=!isInteractMode;
+        
+        var interactButton = uiTool.GetOrAddComponentInChilden<Button>("SelectPatternButton");
+        interactButton.onClick.AddListener(() =>
+        {
+            isInteractMode = !isInteractMode;
+            inputField.gameObject.SetActive(!isInteractMode);
+            chatAnswerText.gameObject.SetActive(!isInteractMode);
+            sendMessageButton.gameObject.SetActive(!isInteractMode);
+            chatAnswerText.gameObject.GetComponentInParent<Image>().enabled=!isInteractMode;
+            if (isInteractMode)
+            {
+                //change text
+                interactButton.GetComponentInChildren<TMP_Text>().text = "交互模式";
+            }
+            else
+            {
+                interactButton.GetComponentInChildren<TMP_Text>().text = "鉴赏模式";
+            }
+
+            if (curCharacter)
+            {
+                curCharacter.GetComponent<HCharacterInteracionInShow>().SetInteractMode(isInteractMode);
+            }
+        });
+        
+        
+        
     }
+    
     public void SetCharacter(int index)
     {
         if(index==curChooseCharacterIndex)
@@ -62,6 +139,8 @@ public class YChooseCharacterPanel : BasePanel
         go.transform.parent = YChooseCharacterShowPlace.transform;
         go.transform.localPosition = Vector3.zero;
         curCharacter = go;
+
+        go.GetComponent<HCharacterInteracionInShow>().SetInteractMode(isInteractMode);
         
         //设置角色
         //yPlanningTable.Instance.SetCharacter(i);

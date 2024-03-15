@@ -3475,6 +3475,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5163177810430896624}
   - component: {fileID: 3631494989482552454}
+  - component: {fileID: -6868026697543105827}
+  - component: {fileID: 6484505679444314308}
   m_Layer: 0
   m_Name: xinaShow
   m_TagString: Untagged
@@ -3512,7 +3514,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: b5c17d279a0e61449993d598c44f8104, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -3520,6 +3522,41 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-6868026697543105827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3781920442650011737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 708201fa8fc0b184db330737e974843e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!136 &6484505679444314308
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3781920442650011737}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.51401305
+  m_Height: 1.3529254
+  m_Direction: 1
+  m_Center: {x: -0.014711618, y: 0.491077, z: -0.07742572}
 --- !u!1 &3821358856080080857
 GameObject:
   m_ObjectHideFlags: 0
