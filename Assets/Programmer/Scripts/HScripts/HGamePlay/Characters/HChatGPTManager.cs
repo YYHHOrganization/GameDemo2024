@@ -6,7 +6,7 @@ using OpenAI;
 public class HChatGPTManager : MonoBehaviour
 {
     private List<ChatMessage> messages = new List<ChatMessage>();
-    private OpenAIApi openAI = new OpenAIApi("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");
+    private OpenAIApi openAI = new OpenAIApi();
     
     //单例模式
     private static HChatGPTManager instance;
