@@ -31,4 +31,11 @@ public class YTriggerEvents : MonoBehaviour
         OnMouseLockStateChanged?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
     
+    //启用快捷键分屏事件
+    public static event EventHandler<YTriggerEventArgs> OnShortcutKeySplitScreenStateChanged;
+    public static void RaiseOnShortcutKeySplitScreenStateChanged(bool activated)
+    {
+        OnShortcutKeySplitScreenStateChanged?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
+    
 }

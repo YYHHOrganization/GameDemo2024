@@ -13,7 +13,11 @@ public class YEntershortcutKey : MonoBehaviour
     private void Awake()
     {
         playerInput = new L2PlayerInput();
-        playerInput.ShortcutKey.GetPuppet.started += EnterPuppet;
+        //playerInput.ShortcutKey.GetPuppet.started += EnterPuppet;
+        
+        playerInput.AfterSplitScreenShortCut.SplitScreen1.started += context => SetSplitScreen(0);
+        playerInput.AfterSplitScreenShortCut.SplitScreen2.started += context => SetSplitScreen(1);
+        playerInput.AfterSplitScreenShortCut.SplitScreen3.started += context => SetSplitScreen(2);
     }
 
     // Start is called before the first frame update
@@ -24,6 +28,13 @@ public class YEntershortcutKey : MonoBehaviour
         //暂时在这里处理鼠标的锁定和解锁
         YTriggerEvents.OnMouseLockStateChanged += OnMouseLockStateChanged;
         
+        //启用快捷键分屏事件
+        YTriggerEvents.OnShortcutKeySplitScreenStateChanged += OnEnterSplitScreenStateChanged;
+        
+    }
+    private void SetSplitScreen(int splitScreenType)
+    {
+        YPlayModeController.Instance.SetCameraLayout(splitScreenType);//全 小 半
     }
 
     //暂时在这里处理鼠标的锁定和解锁
@@ -50,36 +61,54 @@ public class YEntershortcutKey : MonoBehaviour
     }
     private void OnEnable()
     {
-        //playerInput.ShortcutKey.Enable();
+        playerInput.ShortcutKey.Enable();
     }
     
     public void SetInputActionEnableOrDisable(object sender, YTriggerEventArgs e)
     {
         if (e.activated)
         {
-            playerInput.ShortcutKey.Enable();
+            //playerInput.ShortcutKey.Enable();
+            playerInput.ShortcutKey.GetPuppet.started += EnterPuppet;
         }
         else
         {
-            playerInput.ShortcutKey.Disable();
+            //playerInput.ShortcutKey.Disable();
+            playerInput.ShortcutKey.GetPuppet.started -= EnterPuppet;
         }
     }
     
-    public void SetInputActionDisableOrEnable(bool InputActionEnable)
-    {
-        if (InputActionEnable)
-        {
-            playerInput.ShortcutKey.Enable();
-        }
-        else
-        {
-            playerInput.ShortcutKey.Disable();
-        }
-    }
+    // public void SetInputActionDisableOrEnable(bool InputActionEnable)
+    // {
+    //     if (InputActionEnable)
+    //     {
+    //         //playerInput.ShortcutKey.Enable();
+    //         playerInput.ShortcutKey.GetPuppet.started += EnterPuppet;
+    //     }
+    //     else
+    //     {
+    //         //playerInput.ShortcutKey.Disable();
+    //         playerInput.ShortcutKey.GetPuppet.started -= EnterPuppet;
+    //     }
+    // }
     
 
     private void OnDisable()
     {
         playerInput.ShortcutKey.Disable();
+        //playerInput.ShortcutKey.GetPuppet.started -= EnterPuppet;
+    }
+    
+    private void OnEnterSplitScreenStateChanged(object sender, YTriggerEventArgs e)
+    {
+        //可以通过123来控制分屏的类型
+        if (e.activated)
+        {
+            playerInput.AfterSplitScreenShortCut.Enable();
+        }
+        else
+        {
+            playerInput.AfterSplitScreenShortCut.Disable();
+        }
     }
 }

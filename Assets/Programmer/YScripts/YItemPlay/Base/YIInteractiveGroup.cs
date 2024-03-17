@@ -7,11 +7,13 @@ public class YIInteractiveGroup : MonoBehaviour
     public GameObject[] triggers; // 数组用于存储所有触发器（例如踏板）
     public int activatedTriggersCount = 0;
     
+    [Header("是否离开要恢复")]
+    public bool isRecover = false;
     
     // public event Action OnActivationStateChanged; // 定义激活状态改变事件
     
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
         
         foreach (GameObject trigger in triggers)
@@ -37,7 +39,7 @@ public class YIInteractiveGroup : MonoBehaviour
             //这里应该写一个通用的结果处理函数
             SetResultOn();
         }
-        else
+        else if(isRecover)
         {
             //HideChest();
             SetResultOff();

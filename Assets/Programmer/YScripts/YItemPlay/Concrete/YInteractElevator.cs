@@ -8,108 +8,118 @@ public class YInteractElevator : YIInteractiveGroup
     public GameObject elevator;
     //目的
     public Transform target;
+    public float maxSpeed = 6f; // 最大速度
+    public float acceleration = 2f; // 加速度
+    public float deceleration = 2f; // 减速度
+    
+    //如果已经移动到上面了，就不再移动，再点击就是下降？ 或者两个按钮 一个上升一个下降
+    bool isUp = false;
+    
+    YMyUtilityClass.SmoothMover smoothMover;
+    //write start
+    public override void Start()
+    {
+        base.Start();
+        smoothMover = elevator.AddComponent<YMyUtilityClass.SmoothMover>();
+        
+    }
     public override void SetResultOn()
     {
         //电梯上升
         Debug.Log("电梯上升");
-        ElevatorUp();
+
+        smoothMover.setSmoothMover(elevator.transform, elevator.transform.localPosition, target.localPosition, maxSpeed, acceleration, deceleration);
+        smoothMover.StartMoving();
+        
+        
+        
     }
     public override void SetResultOff()
     {
         //电梯下降
         
-    }
-    private void ElevatorUp()
-    {
-        //电梯上升的逻辑
-        // 让电梯上升 直到终点，且速度应该是从0开始加速到最大速度，然后减速到0
-        // 电梯上升的逻辑：
-        // Vector3 direction = target.position - elevator.transform.position;
-        // float distance = direction.magnitude;
-        // float speed = 2f; // 设置电梯上升速度
-        //StartCoroutine(MoveElevator(direction, distance, speed));
         
-        StartMoving();
     }
-    
-    
     private float currentSpeed = 0f; // 当前速度
-    private float distanceToTarget; // 车辆与目标位置的距离
+    private float distanceToTarget; // 与目标位置的距离--实时更新
     private bool isMoving = false; // 是否正在移动
     private Vector3 startPosition; // 起始位置
+    Vector3 targetPosition; // 目标位置
     private float startTime; // 开始时间
-    private float maxSpeed = 10f; // 最大速度
-    private float acceleration = 8f; // 加速度
-    private float deceleration = 8f; // 减速度
-    public void StartMoving()
+    
+    
+    private float distanceOrigin;
+
+    private float accelerationTime;
+    private float decelerationTime;
+    private float uniformTime;
+    public void StartMoving(GameObject moveObj, Transform target, float maxSpeed, float acceleration, float deceleration)
     {
         //Debug.Log("开始运动");
         isMoving = true;
         startTime = Time.time;
-        startPosition = transform.localPosition;
-        distanceToTarget = Vector3.Distance(startPosition, target.position);
+
+        startPosition = moveObj.transform.position;
+
+        targetPosition = target.position;
+        distanceToTarget = Vector3.Distance(startPosition, targetPosition);
+        
+        distanceOrigin = distanceToTarget;
+        
+        accelerationTime = maxSpeed / acceleration;
+        decelerationTime = maxSpeed / deceleration;
+        uniformTime = (distanceOrigin - 0.5f * accelerationTime * accelerationTime * acceleration -
+                             (maxSpeed * decelerationTime -
+                              0.5f * decelerationTime * decelerationTime * deceleration)) / maxSpeed;
+        
     }
+    
     void Update()
     {
-        SetCarMovement();
+        //sSetElevatorMovement();
     }
-    public void SetCarMovement()
+    public void SetElevatorMovement()
     {
         if (isMoving)
         {
-            distanceToTarget = Vector3.Distance(transform.localPosition,target.position);
+            //实时更新距离目标的位置
+            distanceToTarget = Vector3.Distance(elevator.transform.position,targetPosition);
+            //Debug.Log("distanceToTarget"+distanceToTarget);
             if (distanceToTarget<=0.1f)
             {
-                transform.localPosition =target.position;
+                elevator.transform.position =targetPosition;
                 isMoving = false;
+                //Debug.Log("到达目的地");
                 return;
             }
             // 计算当前移动时间
             float currentTime = Time.time - startTime;
 
             // 计算加速段、匀速段和减速段的时间
-            float accelerationTime = maxSpeed / acceleration;
-            float decelerationTime = maxSpeed / deceleration;
-            float uniformTime = (distanceToTarget - accelerationTime*accelerationTime / 2 - decelerationTime*decelerationTime / 2) / maxSpeed;
-       
+            
             // 根据时间和距离计算当前速度
             if (currentTime < accelerationTime)
             {
+                //Debug.Log("加速段");
                 // 加速段
-                currentSpeed = Mathf.Lerp(0f, maxSpeed, currentTime / accelerationTime);
+                currentSpeed = acceleration * currentTime;
             }
             else if (currentTime < accelerationTime + uniformTime)
             {
+                //Debug.Log("匀速段");
                 // 匀速段
                 currentSpeed = maxSpeed;
             }
             else
             {
                 // 减速段
-                currentSpeed = Mathf.Lerp(maxSpeed, 0f, (currentTime - accelerationTime - uniformTime) / decelerationTime);
+                currentSpeed = maxSpeed - deceleration * (currentTime - accelerationTime - uniformTime);
+                //Debug.Log("减速段"+currentSpeed);
             }
-            // Vector3 direction = (GetVatPos(targetIndex) - startPosition).normalized;
-            Vector3 direction = (target.position - startPosition).normalized;
+            Vector3 direction = (targetPosition - startPosition).normalized;
             elevator.transform.Translate(direction * currentSpeed * Time.deltaTime);
 
         }
     }
-
     
-    // private IEnumerator MoveElevator(Vector3 direction, float distance, float speed)
-    // {
-    //     
-    //     float startTime = Time.time;
-    //     float duration = distance / speed;
-    //     
-    //     while (Time.time < startTime + duration)
-    //     {
-    //         float t = (Time.time - startTime) / duration;
-    //         elevator.transform.position += direction * Time.deltaTime * speed;
-    //         yield return null;
-    //     }
-    //     elevator.transform.position = target.position;
-    //     
-    // }
-    //
 }

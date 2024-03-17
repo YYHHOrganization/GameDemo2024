@@ -91,7 +91,7 @@ public class YPlayModeController : MonoBehaviour
     {
         
         //元素视野打开 将所有的地点显示出来并改名字
-        List<GameObject> allPoints = yPlanningTable.Instance.DestinationList;
+        List<GameObject> allPoints = yPlanningTable.Instance.DestinationGoList;
         List<string> PlaceUIToShowList = yPlanningTable.Instance.DestinationUINameList;
         int j = 0;
         foreach (var destination in allPoints)

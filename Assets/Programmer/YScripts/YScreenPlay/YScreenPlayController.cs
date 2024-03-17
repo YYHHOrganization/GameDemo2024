@@ -56,10 +56,13 @@ public class YScreenPlayController : MonoBehaviour
 
     public void ConfirmScreenplay( Dictionary<string,int> selectId)
     {
+        int clipCount = yPlanningTable.Instance.isMoveList.Count;
+        
         yPlanningTable.Instance.BeforePlayTimeline();
+        timelineController.BeforePlayTimeline();
         
         //selectId["animation1"] 与selectId["animation2"] 与selectId["animation3"] 与selectId["animation4"] ，selectId["animation5"] 都表示选择的动画
-        for(int i = 1; i <= 5; i++)
+        for(int i = 1; i <= clipCount; i++)
         {
             YScreenplayBase screenplayAnimation = new YAnimationSP(yPlanningTable.Instance.selectNames2Id["animation"+i],selectId["animation"+i],timelineController);
             AddInListAndEnter(screenplayAnimation);
@@ -67,7 +70,7 @@ public class YScreenPlayController : MonoBehaviour
         YScreenplayBase screenplay = new YCharacterSP(yPlanningTable.Instance.selectNames2Id["character"],selectId["character"],timelineController);
         AddInListAndEnter(screenplay);
         
-        for(int i = 1; i <= 5; i++)
+        for(int i = 1; i <= clipCount; i++)
         {
             //相机
             YScreenplayBase screenplayCamera = new YCameraSP(yPlanningTable.Instance.selectNames2Id["camera"+i],selectId["camera"+i],timelineController);

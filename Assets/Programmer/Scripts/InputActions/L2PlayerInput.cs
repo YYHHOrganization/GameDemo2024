@@ -204,6 +204,74 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""AfterSplitScreenShortCut"",
+            ""id"": ""cf5a46ed-d126-4bad-b930-968feab59afd"",
+            ""actions"": [
+                {
+                    ""name"": ""SplitScreen1"",
+                    ""type"": ""Button"",
+                    ""id"": ""a7db3ec2-a2d7-4a4b-aff3-4f3bf21d3bfe"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SplitScreen2"",
+                    ""type"": ""Button"",
+                    ""id"": ""1bdddd62-30f0-4aec-bb34-9c6f35922be4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SplitScreen3"",
+                    ""type"": ""Button"",
+                    ""id"": ""59957eef-ec5a-48a6-a3e7-2eccc35e8d82"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""de1bf0a0-c6a7-4017-a24b-dfc4c48d9747"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SplitScreen1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6bb77002-bffd-48a4-b066-4eb51c6f4cf6"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SplitScreen2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ff3567fd-6038-4424-a6a8-4b1d8b899d44"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SplitScreen3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -217,6 +285,11 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         // ShortcutKey
         m_ShortcutKey = asset.FindActionMap("ShortcutKey", throwIfNotFound: true);
         m_ShortcutKey_GetPuppet = m_ShortcutKey.FindAction("GetPuppet", throwIfNotFound: true);
+        // AfterSplitScreenShortCut
+        m_AfterSplitScreenShortCut = asset.FindActionMap("AfterSplitScreenShortCut", throwIfNotFound: true);
+        m_AfterSplitScreenShortCut_SplitScreen1 = m_AfterSplitScreenShortCut.FindAction("SplitScreen1", throwIfNotFound: true);
+        m_AfterSplitScreenShortCut_SplitScreen2 = m_AfterSplitScreenShortCut.FindAction("SplitScreen2", throwIfNotFound: true);
+        m_AfterSplitScreenShortCut_SplitScreen3 = m_AfterSplitScreenShortCut.FindAction("SplitScreen3", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -390,6 +463,68 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public ShortcutKeyActions @ShortcutKey => new ShortcutKeyActions(this);
+
+    // AfterSplitScreenShortCut
+    private readonly InputActionMap m_AfterSplitScreenShortCut;
+    private List<IAfterSplitScreenShortCutActions> m_AfterSplitScreenShortCutActionsCallbackInterfaces = new List<IAfterSplitScreenShortCutActions>();
+    private readonly InputAction m_AfterSplitScreenShortCut_SplitScreen1;
+    private readonly InputAction m_AfterSplitScreenShortCut_SplitScreen2;
+    private readonly InputAction m_AfterSplitScreenShortCut_SplitScreen3;
+    public struct AfterSplitScreenShortCutActions
+    {
+        private @L2PlayerInput m_Wrapper;
+        public AfterSplitScreenShortCutActions(@L2PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @SplitScreen1 => m_Wrapper.m_AfterSplitScreenShortCut_SplitScreen1;
+        public InputAction @SplitScreen2 => m_Wrapper.m_AfterSplitScreenShortCut_SplitScreen2;
+        public InputAction @SplitScreen3 => m_Wrapper.m_AfterSplitScreenShortCut_SplitScreen3;
+        public InputActionMap Get() { return m_Wrapper.m_AfterSplitScreenShortCut; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(AfterSplitScreenShortCutActions set) { return set.Get(); }
+        public void AddCallbacks(IAfterSplitScreenShortCutActions instance)
+        {
+            if (instance == null || m_Wrapper.m_AfterSplitScreenShortCutActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_AfterSplitScreenShortCutActionsCallbackInterfaces.Add(instance);
+            @SplitScreen1.started += instance.OnSplitScreen1;
+            @SplitScreen1.performed += instance.OnSplitScreen1;
+            @SplitScreen1.canceled += instance.OnSplitScreen1;
+            @SplitScreen2.started += instance.OnSplitScreen2;
+            @SplitScreen2.performed += instance.OnSplitScreen2;
+            @SplitScreen2.canceled += instance.OnSplitScreen2;
+            @SplitScreen3.started += instance.OnSplitScreen3;
+            @SplitScreen3.performed += instance.OnSplitScreen3;
+            @SplitScreen3.canceled += instance.OnSplitScreen3;
+        }
+
+        private void UnregisterCallbacks(IAfterSplitScreenShortCutActions instance)
+        {
+            @SplitScreen1.started -= instance.OnSplitScreen1;
+            @SplitScreen1.performed -= instance.OnSplitScreen1;
+            @SplitScreen1.canceled -= instance.OnSplitScreen1;
+            @SplitScreen2.started -= instance.OnSplitScreen2;
+            @SplitScreen2.performed -= instance.OnSplitScreen2;
+            @SplitScreen2.canceled -= instance.OnSplitScreen2;
+            @SplitScreen3.started -= instance.OnSplitScreen3;
+            @SplitScreen3.performed -= instance.OnSplitScreen3;
+            @SplitScreen3.canceled -= instance.OnSplitScreen3;
+        }
+
+        public void RemoveCallbacks(IAfterSplitScreenShortCutActions instance)
+        {
+            if (m_Wrapper.m_AfterSplitScreenShortCutActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IAfterSplitScreenShortCutActions instance)
+        {
+            foreach (var item in m_Wrapper.m_AfterSplitScreenShortCutActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_AfterSplitScreenShortCutActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public AfterSplitScreenShortCutActions @AfterSplitScreenShortCut => new AfterSplitScreenShortCutActions(this);
     public interface ICharacterControlsActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -400,5 +535,11 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
     public interface IShortcutKeyActions
     {
         void OnGetPuppet(InputAction.CallbackContext context);
+    }
+    public interface IAfterSplitScreenShortCutActions
+    {
+        void OnSplitScreen1(InputAction.CallbackContext context);
+        void OnSplitScreen2(InputAction.CallbackContext context);
+        void OnSplitScreen3(InputAction.CallbackContext context);
     }
 }

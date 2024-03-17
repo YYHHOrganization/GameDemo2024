@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.UI;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class yPlanningTable : MonoBehaviour
@@ -40,6 +41,9 @@ public class yPlanningTable : MonoBehaviour
     //存储目的地 每个目的地是一个vector3
     public List<Vector3> destination=new List<Vector3>();
     
+    //表情
+    public List<string> expressionNameList = new List<string>();
+    public List<string> expressionUINameList = new List<string>();
     public List<List<int>> characterExpressionIndices = new List<List<int>>();
 
 
@@ -49,7 +53,53 @@ public class yPlanningTable : MonoBehaviour
     
     List<string> animationMoveList = new List<string>();
     List<string> animationMoveListInUI =new List<string>();
+    
+    //地点
+    public List<GameObject> DestinationGoList = new List<GameObject>();
+    public List<string> DestinationList = new List<string>();
+    public List<string> DestinationUINameList = new List<string>();
 
+    //特效
+    //读取后处理相关的CSV文件
+    public List<string> postEffectNames = new List<string>();
+    public List<string> postEffectUIName = new List<string>();
+    
+    public List<string> postEffectFieldNames = new List<string>();
+    public List<List<string>> postEffectAttributeNames = new List<List<string>>();
+    public List<List<float>> postEffectAttributeValues = new List<List<float>>();
+    public List<List<float>> postEffectDefaultValues = new List<List<float>>();
+    public List<string> postEffectTypes = new List<string>();
+    public List<List<int>> postEffectShouldLerp = new List<List<int>>();
+    //存储特效的结构体
+    public struct PostEffectStruct
+    {
+        public string effectName;
+        public string effectUIName;
+        public string effectFieldName;
+        public List<string> attributeNames;
+        public List<float> attributeValues;
+        public List<float> defaultValues;
+        public string type;
+        public List<int> shouldLerp;
+    }
+    
+    //相机
+    public List<string> cameraNamesList = new List<string>();
+    public List<string> cameraUINameList = new List<string>();
+    
+    //一个相机结构体或者类？
+    public struct CameraStruct
+    {
+        public string cameraName;
+        public string cameraUIName;
+        //是否是follow
+        public bool isFollow;
+        //是否是lookat
+        public bool isLookAt;
+    }
+    //存储相机的结构体
+    public List<CameraStruct> cameraStructs = new List<CameraStruct>();
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -67,11 +117,13 @@ public class yPlanningTable : MonoBehaviour
         ReadPostProcessingCSV();
         ReadAnimationCSV("Assets/Designer/CsvTable/AnimationCSVFile.csv",
             animationNoMoveList,animationNoMoveListInUI,animationMoveList,animationMoveListInUI);
+        ReadDestinationCSV("Assets/Designer/CsvTable/DestinationCSVFile.csv",
+            DestinationList,DestinationUINameList);
         preKeepDestination();
+        ReadCameraCSV("Assets/Designer/CsvTable/CameraCSVFile.csv",
+            cameraNamesList,cameraUINameList,cameraStructs);
         effs =new List<ScriptableRendererFeature>();
     }
-    
-    
     
     //定义一个eff 用于存放特效 其中有每个特效的名称和id
     private void Start()
@@ -153,9 +205,13 @@ public class yPlanningTable : MonoBehaviour
         {
             string[] rowData = fileData[i].Split(',');
             string expression = rowData[0];
+            string expressionUIName = rowData[1];
+            expressionNameList.Add(expression);
+            expressionUINameList.Add(expressionUIName);
+            
             List<List<int>> expressionData = new List<List<int>>();
 
-            for (int j = 1; j < rowData.Length; j++)
+            for (int j = 2; j < rowData.Length; j++)
             {
                 string[] values = rowData[j].Split(';');
                 List<int> intValues = new List<int>();
@@ -189,16 +245,10 @@ public class yPlanningTable : MonoBehaviour
         //         }
         //     }
         // }
+        UpdateTableList("blendshape",expressionNameList,expressionUINameList);
     }
 
-    //读取后处理相关的CSV文件
-    public List<string> postEffectNames = new List<string>();
-    public List<string> postEffectFieldNames = new List<string>();
-    public List<List<string>> postEffectAttributeNames = new List<List<string>>();
-    public List<List<float>> postEffectAttributeValues = new List<List<float>>();
-    public List<List<float>> postEffectDefaultValues = new List<List<float>>();
-    public List<string> postEffectTypes = new List<string>();
-    public List<List<int>> postEffectShouldLerp = new List<List<int>>();
+    
     void ReadPostProcessingCSV()
     {
         string filePath = "Assets/Designer/CsvTable/PostProcessingCSVFile.csv";
@@ -209,12 +259,15 @@ public class yPlanningTable : MonoBehaviour
             string[] rowData = fileData[i].Split(',');
             //解析csv一行的数据
             string effectName = rowData[0];
-            string effectFieldName = rowData[1];
-            string attributeNames = rowData[2];
-            string attributeValues = rowData[3];
-            string shouldLerp = rowData[4];
-            string defaultValues = rowData[5];
-            string type = rowData[6];
+            
+            string effectUIName = rowData[1];
+            
+            string effectFieldName = rowData[2];
+            string attributeNames = rowData[3];
+            string attributeValues = rowData[4];
+            string shouldLerp = rowData[5];
+            string defaultValues = rowData[6];
+            string type = rowData[7];
             
             List<float> floatAttributeValues = new List<float>();
             foreach (string value in attributeValues.Split(';'))
@@ -259,13 +312,17 @@ public class yPlanningTable : MonoBehaviour
             }
             
             postEffectNames.Add(effectName);
+            
             postEffectFieldNames.Add(effectFieldName);
+            postEffectUIName.Add(effectUIName);
+            
             postEffectAttributeNames.Add(new List<string>(attributeNames.Split(';')));
             postEffectTypes.Add(type);
             postEffectAttributeValues.Add(floatAttributeValues);
             postEffectDefaultValues.Add(floatDefaultValues);
             postEffectShouldLerp.Add(intShouldLerp);
         }
+        UpdateTableList("effect",postEffectNames,postEffectUIName);
     }
 
     /// <summary>
@@ -273,7 +330,7 @@ public class yPlanningTable : MonoBehaviour
     /// </summary>
     void ReadDestinationCSV()
     {
-        string filePath = "Assets/Designer/CsvTable/DestinationCSVFile.csv"; 
+        string filePath = "Assets/Designer/CsvTable/DestinationCSVFileOld.csv"; 
 
         using (StreamReader reader = new StreamReader(filePath))
         {
@@ -294,7 +351,33 @@ public class yPlanningTable : MonoBehaviour
             }
         }
     }
-    
+
+    void ReadDestinationCSV(string filePath,
+        List<string> destinationList, List<string> destinationListInUI
+        )
+    {
+        using (var reader = new StreamReader(filePath))
+        {
+            bool header = true;
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (header) // 跳过表头
+                {
+                    header = false;
+                    continue;
+                }
+                var values = line.Split(',');
+                string destinationName = values[0];
+                string uiName = values[1];
+
+                destinationList.Add(destinationName);
+                destinationListInUI.Add(uiName);
+            }
+        }
+        //UpdateDestinationList();
+        UpdateTableList("destination",destinationList,destinationListInUI);
+    }
     public void ReadAnimationCSV(string filePath, 
         List<string> noMoveList, List<string> noMoveListInUI, 
         List<string> moveList, List<string> moveListInUI)
@@ -329,6 +412,44 @@ public class yPlanningTable : MonoBehaviour
         }
     }
     
+    void ReadCameraCSV(string filePath, 
+        List<string> cameraList, List<string> cameraListInUI,List<CameraStruct> cameraStructs)
+
+    {
+        using (StreamReader reader = new StreamReader(filePath))
+        {
+            bool header = true;
+            while (!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                if (header) // 跳过表头
+                {
+                    header = false;
+                    continue;
+                }
+                string[] values = line.Split(',');
+
+                if (values.Length == 4) // 确保每行有三个值
+                {
+                    CameraStruct newCamera = new CameraStruct();
+                    string cameraName = values[0];
+                    string cameraUIName = values[1];
+                    newCamera.cameraName = cameraName;
+                    newCamera.cameraUIName = cameraUIName;
+                    // newCamera.cameraName = values[0];
+                    // newCamera.cameraUIName = values[1];
+                    newCamera.isFollow = values[2] == "1";//如果是1就是true,如果是0就是false
+                    newCamera.isLookAt = values[3] == "1";
+                    cameraStructs.Add(newCamera);
+                    
+                    cameraList.Add(cameraName);
+                    cameraListInUI.Add(cameraUIName);
+                }
+            }
+        }
+        //UpdateCameraList();
+        UpdateTableList("camera",cameraList,cameraListInUI);
+    }
     public ScriptableRendererFeature GetEffRendererFeature(int index)
     {
         if(SelectTable[3][index]=="null")
@@ -412,22 +533,26 @@ public class yPlanningTable : MonoBehaviour
     }
     //GetDestination(characterId, selectId);
     
-    public List<GameObject> DestinationList = new List<GameObject>();
-    public List<string> DestinationUINameList = new List<string>();
+   
     private void preKeepDestination()
     {
         //获取目的地
         //遍历destination[selectId["destination1"]]; 并存储于一个list中
         //然后在timeline中的每个destination中的位置都是这个list中的位置
         
-        for (int i = 0; i < SelectTable[selectNames2Id["destination1"]].Count; i++)
+        // for (int i = 0; i < SelectTable[selectNames2Id["destination1"]].Count; i++)
+        // {
+        //     int id = selectNames2Id["destination1"];
+        //     string destinationName = SelectTable[id][i];
+        //     // Debug.Log("destinationName: " + destinationName);
+        //     
+        //     DestinationGoList.Add(GameObject.Find(destinationName));
+        //     DestinationUINameList.Add(UISelectTable[id][i]);
+        // }
+        
+        for (int i = 0; i < DestinationList.Count; i++)
         {
-            int id = selectNames2Id["destination1"];
-            string destinationName = SelectTable[id][i];
-            // Debug.Log("destinationName: " + destinationName);
-            
-            DestinationList.Add(GameObject.Find(destinationName));
-            DestinationUINameList.Add(UISelectTable[id][i]);
+            DestinationGoList.Add(GameObject.Find(DestinationList[i]));
         }
         
         
@@ -439,7 +564,7 @@ public class yPlanningTable : MonoBehaviour
         // // Debug.Log("destinationName: " + destinationName);
         // return GameObject.Find(destinationName).transform;
         
-        return DestinationList[selectId].transform;
+        return DestinationGoList[selectId].transform;
     }
 
     public int GetCharacterNum()
@@ -523,6 +648,37 @@ public class yPlanningTable : MonoBehaviour
             // }
         }
     }
+    // void UpdateDestinationList()
+    // {
+    //     for(int i = 1; i <= 5; i++)
+    //     {
+    //         //选择了SelectTable中id为多少的那个动画选项框 是第一个动画选项框还是第二个第三个，这里的chooseid是2，3，4（因为前面有个角色选项框）
+    //         int chooseid = selectNames2Id["destination" + i];
+    //         UpdateSelectTable(chooseid,DestinationList);
+    //         UpdateUISelectTable(chooseid,DestinationUINameList);
+    //     }
+    // }
+    //
+    // void UpdateCameraList()
+    // {
+    //     for(int i = 1; i <= 5; i++)
+    //     {
+    //         int chooseid = selectNames2Id["camera" + i];
+    //         UpdateSelectTable(chooseid,cameraNamesList);
+    //         UpdateUISelectTable(chooseid,cameraUINameList);
+    //     }
+    // }
+
+    void UpdateTableList(string name, List<string> nameList, List<string> nameListInUI)
+    {
+        for(int i = 1; i <= 5; i++)
+        {
+            int chooseid = selectNames2Id[name + i];
+            UpdateSelectTable(chooseid,nameList);
+            UpdateUISelectTable(chooseid,nameListInUI);
+        }
+    }
+   
     //将selecttable中的某一行的数据转换成一个list
     void UpdateSelectTable(int index, List<string> list)
     {

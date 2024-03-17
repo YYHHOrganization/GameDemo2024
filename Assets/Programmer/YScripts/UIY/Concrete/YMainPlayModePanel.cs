@@ -16,6 +16,7 @@ public class YMainPlayModePanel : BasePanel
     public override void OnEnter()
     {
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
+        YTriggerEvents.RaiseOnShortcutKeySplitScreenStateChanged(true);
         uiTool.GetOrAddComponentInChilden<Button>("SetTwoCamerasEachHalfButton").onClick.AddListener(()=>
         {
             //设置为半屏

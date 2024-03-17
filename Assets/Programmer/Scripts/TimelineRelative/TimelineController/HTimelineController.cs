@@ -46,6 +46,17 @@ public class HTimelineController : MonoBehaviour
     bool m_isSammPlace = false;
     bool duringSamePlaceCoroutine = false;
     
+    // public struct CameraStruct
+    // {
+    //     public string cameraName;
+    //     public string cameraUIName;
+    //     //是否是follow
+    //     public bool isFollow;
+    //     //是否是lookat
+    //     public bool isLookAt;
+    // }
+    List<yPlanningTable.CameraStruct> cameraStructs = new List<yPlanningTable.CameraStruct>();
+    
     //根据索引设置对应的TimelineAsset，扩展后面可能有多幕的剧情
     public void SetTimelineAsset(int index)
     {
@@ -222,7 +233,9 @@ public class HTimelineController : MonoBehaviour
         cinemachine.GetComponent<CinemachineVirtualCamera>().m_Follow = target.transform;
         cinemachine.GetComponent<CinemachineVirtualCamera>().m_LookAt = target.transform;
     }
-    public void ChangeCinemachine(int index, GameObject cinemachine,string name)
+    
+    
+    public void ChangeCinemachine(int index, GameObject cinemachine,string name,int selectId)
     {
         string trackName = "CinemachineTrack";
         if (bindingDict.TryGetValue(trackName, out PlayableBinding pb))
@@ -242,12 +255,21 @@ public class HTimelineController : MonoBehaviour
             //设置Cinemachine的follow
 //            cinemachine.GetComponent<CinemachineVirtualCamera>().m_Follow = target.transform;
 
-            if(name != "FarSurveillanceCamera")
+            yPlanningTable.CameraStruct cameraStruct = cameraStructs[selectId];
+            if(cameraStruct.isFollow)
             {
                 cinemachine.GetComponent<CinemachineVirtualCamera>().Follow = target.transform;
             }
-            
-            cinemachine.GetComponent<CinemachineVirtualCamera>().LookAt = target.transform;
+            if(cameraStruct.isLookAt)
+            {
+                cinemachine.GetComponent<CinemachineVirtualCamera>().LookAt = target.transform;
+            }
+            // if(name != "FarSurveillanceCamera")
+            // {
+            //     cinemachine.GetComponent<CinemachineVirtualCamera>().Follow = target.transform;
+            // }
+            //
+            // cinemachine.GetComponent<CinemachineVirtualCamera>().LookAt = target.transform;
             
             playableDirector.SetReferenceValue(cinemachineShot.VirtualCamera.exposedName, 
                 cinemachine.GetComponent<CinemachineVirtualCamera>());
@@ -446,9 +468,14 @@ public class HTimelineController : MonoBehaviour
         {
             m_isSammPlace = true;
         }
+        
     }
 
-    
+    public void BeforePlayTimeline()
+    {
+        cameraStructs = yPlanningTable.Instance.cameraStructs;
+    }
+
     private void Update()
     {
         changeClip();

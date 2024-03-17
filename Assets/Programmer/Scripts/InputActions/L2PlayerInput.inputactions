@@ -182,6 +182,74 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "AfterSplitScreenShortCut",
+            "id": "cf5a46ed-d126-4bad-b930-968feab59afd",
+            "actions": [
+                {
+                    "name": "SplitScreen1",
+                    "type": "Button",
+                    "id": "a7db3ec2-a2d7-4a4b-aff3-4f3bf21d3bfe",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SplitScreen2",
+                    "type": "Button",
+                    "id": "1bdddd62-30f0-4aec-bb34-9c6f35922be4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SplitScreen3",
+                    "type": "Button",
+                    "id": "59957eef-ec5a-48a6-a3e7-2eccc35e8d82",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "de1bf0a0-c6a7-4017-a24b-dfc4c48d9747",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SplitScreen1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6bb77002-bffd-48a4-b066-4eb51c6f4cf6",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SplitScreen2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ff3567fd-6038-4424-a6a8-4b1d8b899d44",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SplitScreen3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

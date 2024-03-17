@@ -11,7 +11,8 @@ public class HBlendShapeMixer : PlayableBehaviour
         if (skinnedMeshRenderer == null)
             return;
     
-        int inputCount = playable.GetInputCount();
+        //int inputCount = playable.GetInputCount();
+        int inputCount =yPlanningTable.Instance.isMoveList.Count;//这个代表的是当前一共会有多少个clip生效
         
         // Debug.Log("inputCount: " + inputCount);
         float totalWeight = 0;

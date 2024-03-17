@@ -24,7 +24,7 @@ public class YCameraSP : YScreenplayBase
         //GameObject obj = Resources.Load<GameObject>(path);
         GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(path));
         // timelineController.ChangeCinemachineWithIndex(indexInSequence,go);
-        timelineController.ChangeCinemachine(indexInSequence,go,name);
+        timelineController.ChangeCinemachine(indexInSequence,go,name,selectId);
 
     }
 
