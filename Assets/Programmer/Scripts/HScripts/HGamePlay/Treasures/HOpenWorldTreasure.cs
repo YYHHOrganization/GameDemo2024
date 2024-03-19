@@ -17,13 +17,13 @@ public class HOpenWorldTreasure : MonoBehaviour
 
     private void Update()
     {
-        if (giveMeTreasure)
-        {
-            if (treasure!=null)
-            {
-                treasure.GiveoutTreasures();
-                giveMeTreasure = false;
-            }
-        }
+        // if (giveMeTreasure)
+        // {
+        //     if (treasure!=null)
+        //     {
+        //         treasure.GiveoutTreasures();
+        //         giveMeTreasure = false;
+        //     }
+        // }
     }
 }

@@ -20,6 +20,12 @@ public class YInteractChest : YIInteractiveGroup
     {
         Debug.Log("宝箱开启");
         animator.SetBool("isOpen", true);
+        HOpenWorldTreasure tmp = chest.GetComponent<HOpenWorldTreasure>();
+        if (tmp)
+        {
+            tmp.treasure.GiveoutTreasures();
+        }
+        
     }
     public override void SetResultOff()
     {

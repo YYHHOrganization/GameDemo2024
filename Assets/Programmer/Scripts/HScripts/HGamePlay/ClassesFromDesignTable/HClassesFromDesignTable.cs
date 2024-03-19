@@ -7,6 +7,7 @@ public enum ItemType
 {
     Money,
     Treasure,
+    Character,
 }
 
 public enum TreasureType
@@ -14,6 +15,7 @@ public enum TreasureType
     CommonChest,
     GoodChest,
     VeryGoodChest,
+    VeryVeryGoodChest,
 }
 
 public class HOpenWorldItemStruct
