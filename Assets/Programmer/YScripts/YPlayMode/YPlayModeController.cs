@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -23,6 +24,9 @@ public class YPlayModeController : MonoBehaviour
     {
         instance = this;
         CanVasUI = GameObject.Find("CanvasShowUI");
+        CanvasShowUINew = GameObject.Find("CanvasShowUINew");
+        
+        YTriggerEvents.OnShortcutKeyInteractionStateChanged += SetNameUILabel;
     }
     HCameraLayoutManager CameraLayoutManager;
     GameObject curCharacter;
@@ -144,5 +148,40 @@ public class YPlayModeController : MonoBehaviour
         CanVasUI.SetActive(false);
         
     }
-    
+
+    private GameObject CanvasShowUINew;
+    private GameObject ShowPlaceUI = null;
+    YNameUI yNameUiSctipt;
+    public void SetNameUILabel(object sender, YTriggerGameObjectEventArgs e)
+    {
+        GameObject destination = e.gameObject;
+        if (e.activated)
+        {
+            //如果showpalceui==null
+            if (ShowPlaceUI == null)//但是这样会导致同时只有一个牌子显示 也挺好 防止不知道点哪个
+            {
+                //出现提示面板
+                //可以使用快捷键进行交互
+                // YGameRoot.Instance.Push(new YLabelPanel());
+                ShowPlaceUI = Instantiate(Resources.Load<GameObject>("Prefabs/UI/YNameUI/ShowInteractUI"));
+                // ShowPlaceUI.transform.parent = CanVasUI.transform;
+                ShowPlaceUI.transform.parent = CanvasShowUINew.transform;
+                //PlaceUIToShowList.Add(ShowPlaceUI);
+                //yNameUiSctipt = ShowPlaceUI.GetComponent<YNameUI>();
+                yNameUiSctipt = ShowPlaceUI.GetComponentInChildren<YNameUI>();
+            
+                
+            }
+            
+            yNameUiSctipt.SetAttribute("Q",destination.transform,PlayerCamera,1.5f);
+            ShowPlaceUI.SetActive(true);
+            
+        }
+        else
+        {
+            ShowPlaceUI.SetActive(false);
+        }
+       
+    }
+   
 }

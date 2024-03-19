@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,7 +10,6 @@ public class YEntershortcutKey : MonoBehaviour
     //单例
     
     L2PlayerInput playerInput;
-    
     private void Awake()
     {
         playerInput = new L2PlayerInput();
@@ -18,6 +18,9 @@ public class YEntershortcutKey : MonoBehaviour
         playerInput.AfterSplitScreenShortCut.SplitScreen1.started += context => SetSplitScreen(0);
         playerInput.AfterSplitScreenShortCut.SplitScreen2.started += context => SetSplitScreen(1);
         playerInput.AfterSplitScreenShortCut.SplitScreen3.started += context => SetSplitScreen(2);
+        
+        playerInput.Interaction.interact.started += context =>SetInteractResult();
+        
     }
 
     // Start is called before the first frame update
@@ -30,6 +33,9 @@ public class YEntershortcutKey : MonoBehaviour
         
         //启用快捷键分屏事件
         YTriggerEvents.OnShortcutKeySplitScreenStateChanged += OnEnterSplitScreenStateChanged;
+        
+        ////启动出现提示面板，并可以使用快捷键进行交互
+        YTriggerEvents.OnShortcutKeyInteractionStateChanged += SetInteractionEnableOrDisable;
         
     }
     private void SetSplitScreen(int splitScreenType)
@@ -78,6 +84,28 @@ public class YEntershortcutKey : MonoBehaviour
         }
     }
     
+    public GameObject interactGo;
+    //启动出现提示面板，并可以使用快捷键进行交互
+    public void SetInteractionEnableOrDisable(object sender, YTriggerGameObjectEventArgs e)
+    {
+        interactGo = e.gameObject;
+        if (e.activated)
+        {
+            playerInput.Interaction.Enable();
+        }
+        else
+        {
+            playerInput.Interaction.Disable();
+        }
+    
+    }
+    private void SetInteractResult()
+    {
+        Debug.Log("SetInteractResult");
+        // YTriggerTagUnit triggerTagUnit = interactGo.GetComponent<YTriggerTagUnit>();
+        YTriggerTagUnit triggerTagUnit = interactGo.GetComponentInChildren<YTriggerTagUnit>();
+        triggerTagUnit.OnActive();
+    }
     // public void SetInputActionDisableOrEnable(bool InputActionEnable)
     // {
     //     if (InputActionEnable)

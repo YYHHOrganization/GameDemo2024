@@ -41,6 +41,18 @@ public class YNameUI : MonoBehaviour
         nameUI.text = name;
     }   
    
+    public void SetAttribute(string name,Transform ShowPlaceTrans,GameObject camera,float bias)
+    {
+        this.ShowPlaceTrans = ShowPlaceTrans;
+        this.camera = camera;
+        this.name = name;
+        this.transform.position = new Vector3(ShowPlaceTrans.position.x, ShowPlaceTrans.position.y+bias,
+            ShowPlaceTrans.position.z);//如果这个目的地会移动的话就要放在Update里面
+        //改名 寻找自己下面的节点name
+        nameUI = this.transform.Find("Name").GetComponent<TMP_Text>();//这句话的意思是找到自己下面的节点name
+        nameUI.text = name;
+    }   
+
     public void OnEnterShowName()
     {
         Debug.Log("OnEnterShowName");

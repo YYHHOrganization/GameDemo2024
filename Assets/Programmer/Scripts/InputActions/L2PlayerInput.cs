@@ -272,6 +272,34 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Interaction"",
+            ""id"": ""c5996b6a-72c6-4332-80c2-7c8c2152738d"",
+            ""actions"": [
+                {
+                    ""name"": ""interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""66bb4374-b9b8-44bd-8612-4791b497953f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""974a8b28-152e-4d15-96f5-f3063ac76674"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -290,6 +318,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         m_AfterSplitScreenShortCut_SplitScreen1 = m_AfterSplitScreenShortCut.FindAction("SplitScreen1", throwIfNotFound: true);
         m_AfterSplitScreenShortCut_SplitScreen2 = m_AfterSplitScreenShortCut.FindAction("SplitScreen2", throwIfNotFound: true);
         m_AfterSplitScreenShortCut_SplitScreen3 = m_AfterSplitScreenShortCut.FindAction("SplitScreen3", throwIfNotFound: true);
+        // Interaction
+        m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
+        m_Interaction_interact = m_Interaction.FindAction("interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -525,6 +556,52 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public AfterSplitScreenShortCutActions @AfterSplitScreenShortCut => new AfterSplitScreenShortCutActions(this);
+
+    // Interaction
+    private readonly InputActionMap m_Interaction;
+    private List<IInteractionActions> m_InteractionActionsCallbackInterfaces = new List<IInteractionActions>();
+    private readonly InputAction m_Interaction_interact;
+    public struct InteractionActions
+    {
+        private @L2PlayerInput m_Wrapper;
+        public InteractionActions(@L2PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @interact => m_Wrapper.m_Interaction_interact;
+        public InputActionMap Get() { return m_Wrapper.m_Interaction; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InteractionActions set) { return set.Get(); }
+        public void AddCallbacks(IInteractionActions instance)
+        {
+            if (instance == null || m_Wrapper.m_InteractionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Add(instance);
+            @interact.started += instance.OnInteract;
+            @interact.performed += instance.OnInteract;
+            @interact.canceled += instance.OnInteract;
+        }
+
+        private void UnregisterCallbacks(IInteractionActions instance)
+        {
+            @interact.started -= instance.OnInteract;
+            @interact.performed -= instance.OnInteract;
+            @interact.canceled -= instance.OnInteract;
+        }
+
+        public void RemoveCallbacks(IInteractionActions instance)
+        {
+            if (m_Wrapper.m_InteractionActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IInteractionActions instance)
+        {
+            foreach (var item in m_Wrapper.m_InteractionActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public InteractionActions @Interaction => new InteractionActions(this);
     public interface ICharacterControlsActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -541,5 +618,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         void OnSplitScreen1(InputAction.CallbackContext context);
         void OnSplitScreen2(InputAction.CallbackContext context);
         void OnSplitScreen3(InputAction.CallbackContext context);
+    }
+    public interface IInteractionActions
+    {
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

@@ -6,6 +6,12 @@ public class YTriggerEventArgs : EventArgs
 {
     public bool activated;
 }
+//还包含物体GameObject
+public class YTriggerGameObjectEventArgs : EventArgs
+{
+    public bool activated;
+    public GameObject gameObject;
+}
 
 public class YTriggerEvents : MonoBehaviour
 {
@@ -36,6 +42,14 @@ public class YTriggerEvents : MonoBehaviour
     public static void RaiseOnShortcutKeySplitScreenStateChanged(bool activated)
     {
         OnShortcutKeySplitScreenStateChanged?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
+    
+    //启动出现提示面板，并可以使用快捷键进行交互
+    public static event EventHandler<YTriggerGameObjectEventArgs> OnShortcutKeyInteractionStateChanged;
+    public static void RaiseOnShortcutKeyInteractionStateChanged(bool activated,GameObject go)
+    {
+        OnShortcutKeyInteractionStateChanged?.Invoke(null,
+            new YTriggerGameObjectEventArgs { activated = activated, gameObject = go });
     }
     
 }
