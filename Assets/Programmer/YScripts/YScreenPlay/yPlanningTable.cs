@@ -122,6 +122,7 @@ public class yPlanningTable : MonoBehaviour
         preKeepDestination();
         ReadCameraCSV("Assets/Designer/CsvTable/CameraCSVFile.csv",
             cameraNamesList,cameraUINameList,cameraStructs);
+        ReadOpenWorldThings();
         effs =new List<ScriptableRendererFeature>();
     }
     
@@ -140,6 +141,34 @@ public class yPlanningTable : MonoBehaviour
         {1,1},
         {8,0},
     };
+
+    void ReadOpenWorldThings()
+    {
+        string worldItemLink = "Assets/Designer/CsvTable/ItemSystem/WorldItemCSVFile.csv";
+        ReadItemsInDesignerTable(worldItemLink);
+        //todo:大世界暂时就一个宝箱，后面再研究读取其他东西
+        string treasureLayout = "Assets/Designer/CsvTable/ItemSystem/WorldTreasureLayoutCSVFile.csv";
+        string treasure = "Assets/Designer/CsvTable/ItemSystem/WorldTreasureCSVFile.csv";
+        HOpenWorldTreasureManager.Instance.ReadCSVFile(treasureLayout, treasure);
+    }
+
+    public Dictionary<string, HOpenWorldItemStruct> worldItems = new Dictionary<string, HOpenWorldItemStruct>();
+    void ReadItemsInDesignerTable(string link)
+    {
+        //从index=3开始读取
+        string[] fileData = File.ReadAllLines(link);
+        for (int i = 3; i < fileData.Length; i++)
+        {
+            string[] rowData = fileData[i].Split(',');
+            string itemName = rowData[0];
+            HOpenWorldItemStruct item = new HOpenWorldItemStruct();
+            item.id = int.Parse(rowData[0]);
+            item.itemName = rowData[3];
+            item.chineseName = rowData[2];
+            item.itemType = (ItemType)Enum.Parse(typeof(ItemType), rowData[1]);
+            worldItems.Add(itemName, item);
+        }
+    }
     
     void ReadScreenPlayCSV()
     {

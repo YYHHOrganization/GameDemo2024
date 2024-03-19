@@ -1,0 +1,6 @@
+﻿ID号,物品类型,宝箱名称,宝箱开出内容,物品ID,宝箱固定开出物品ID,宝箱固定开出物品数量,宝箱Prefab对应路径
+ID,TreasureType,TreasureName,TreasureContent,ItemID,FixedItemID,FixedItemCount,ResourceLink
+宝箱类型ID为10000xxx,比如Chest，后面还可以引入别的,,"a:b:c|表示对应后面的物品ID,从索引a到索引a+b，抽取c个作为奖励",,用英文分号分隔,用英文分号分隔,已使用Addressable，对应Addressable里面的路径
+10000000,CommonChest,普通宝箱,,,20000000;20000001,10;5000,CommonChest
+10000001,GoodChest,精致宝箱,,,20000000;20000001,50;10000,GoodChest
+10000002,VeryGoodChest,华丽宝箱,,,20000000;20000001,100;20000,VeryGoodChest
