@@ -30,7 +30,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  blendShapeIndex: 0f000000
+  blendShapeIndex: 18000000
 --- !u!114 &-8780262249072632564
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -68,8 +68,8 @@ MonoBehaviour:
   attributes:
   - saturation
   values:
-  - 100
-  shouldLerp: 01000000
+  - 0
+  shouldLerp: 00000000
   defaultValues:
   - 0
   postProcessingType: 0
@@ -119,17 +119,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c451de31106db64c81a97723d976159, type: 3}
   m_Name: heibai0
   m_EditorClassIdentifier: 
-  globalVolumeField: HRadialBlurSettings
+  globalVolumeField: ColorAdjustments
   attributes:
-  - blurRadius
-  - blurIterations
+  - hueShift
   values:
-  - 0.4
-  - 35
-  shouldLerp: 0100000001000000
+  - -160
+  shouldLerp: 01000000
   defaultValues:
   - 0
-  - 20
   postProcessingType: 0
 --- !u!114 &-7171884983537428702
 MonoBehaviour:
@@ -408,13 +405,49 @@ MonoBehaviour:
     m_BlendOutDuration: 1
     m_MixInCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_MixOutCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -762,13 +795,49 @@ MonoBehaviour:
     m_BlendOutDuration: 1
     m_MixInCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_MixOutCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -1352,12 +1421,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c451de31106db64c81a97723d976159, type: 3}
   m_Name: HueShiftPositive3
   m_EditorClassIdentifier: 
-  globalVolumeField: LensDistortion
+  globalVolumeField: ColorAdjustments
   attributes:
-  - intensity
+  - saturation
   values:
-  - 0.85
-  shouldLerp: 01000000
+  - 0
+  shouldLerp: 00000000
   defaultValues:
   - 0
   postProcessingType: 0
@@ -1389,12 +1458,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c451de31106db64c81a97723d976159, type: 3}
   m_Name: HPostProcessingClip
   m_EditorClassIdentifier: 
-  globalVolumeField: Vignette
+  globalVolumeField: ColorAdjustments
   attributes:
-  - intensity
+  - saturation
   values:
-  - 0.5
-  shouldLerp: 01000000
+  - 0
+  shouldLerp: 00000000
   defaultValues:
   - 0
   postProcessingType: 0
@@ -1412,8 +1481,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  - 100
-  blendShapeIndex: 0500000017000000
+  blendShapeIndex: 18000000
 --- !u!114 &-936551332919520032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1443,11 +1511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  - 100
-  - 100
-  - 100
-  - 100
-  blendShapeIndex: 0b0000000d0000001e0000002b0000002e000000
+  blendShapeIndex: 18000000
 --- !u!114 &-788450191841167140
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1458,9 +1522,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of Run
+  m_Name: AnimationPlayableAsset of HappyIdle
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 191d53b95c3b6c3448d73d4a7e1c1337, type: 2}
+  m_Clip: {fileID: -203655887218126122, guid: f8d320d17a563654893589d2c22d67ba, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -1500,10 +1564,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  - 100
-  - 100
-  - 100
-  blendShapeIndex: 0e000000140000004200000049000000
+  blendShapeIndex: 18000000
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1771,13 +1832,49 @@ MonoBehaviour:
     m_BlendOutDuration: 1
     m_MixInCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_MixOutCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -1795,7 +1892,7 @@ MonoBehaviour:
     m_Start: 80
     m_ClipIn: 0
     m_Asset: {fileID: -1672150985407684439}
-    m_Duration: 20
+    m_Duration: 21
     m_TimeScale: 1
     m_ParentTrack: {fileID: 1233739913828372177}
     m_EaseInDuration: 0
@@ -1804,7 +1901,25 @@ MonoBehaviour:
     m_BlendOutDuration: -1
     m_MixInCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -1932,9 +2047,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of HappyIdle
+  m_Name: AnimationPlayableAsset of LookAround
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: -203655887218126122, guid: f8d320d17a563654893589d2c22d67ba, type: 3}
+  m_Clip: {fileID: -203655887218126122, guid: 7e01eb817dc158945b0f566f7ed7bee4, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -2398,9 +2513,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of Drinking
+  m_Name: AnimationPlayableAsset of FastRun
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 8f2c6396e2de6d145976c125e9711db1, type: 2}
+  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1

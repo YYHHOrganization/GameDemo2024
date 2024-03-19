@@ -9,8 +9,9 @@ public class YIInteractiveGroup : MonoBehaviour
     
     [Header("是否离开要恢复")]
     public bool isRecover = false;
-    
-    // public event Action OnActivationStateChanged; // 定义激活状态改变事件
+    [Header("是否只可开启一次（且不关闭）")]
+    public bool isOnce = false;
+    public bool hasEnter = false;//是否是第一次进入
     
     // Start is called before the first frame update
     public virtual void Start()
@@ -18,7 +19,9 @@ public class YIInteractiveGroup : MonoBehaviour
         
         foreach (GameObject trigger in triggers)
         {
-            trigger.GetComponent<YTriggerUnit>().OnTriggerStateChanged+=CheckActivationStatus;
+            // trigger.GetComponent<YTriggerUnit>().OnTriggerStateChanged+=CheckActivationStatus;
+            trigger.GetComponent<YITriggerUnit>().OnTriggerStateChanged += CheckActivationStatus;
+            trigger.GetComponent<YITriggerUnit>().OnEnterFieldStateChanged += EnterField;
         }
     }
 
@@ -33,10 +36,16 @@ public class YIInteractiveGroup : MonoBehaviour
             activatedTriggersCount--;
         }
 
+        if (isOnce && hasEnter)
+        {
+            return;
+        }
+        hasEnter = true;
         if (activatedTriggersCount >= triggers.Length) // 所有触发器都被激活
         {
             //ShowChest();
             //这里应该写一个通用的结果处理函数
+            
             SetResultOn();
         }
         else if(isRecover)
@@ -55,5 +64,15 @@ public class YIInteractiveGroup : MonoBehaviour
     public virtual void SetResultOff()
     {
         
+    }
+    
+    // public void EnterField(bool isEnter)
+    public void EnterField(GameObject TriggergameObject)
+    {
+        if (isOnce && hasEnter)
+        {
+            return;
+        }
+        YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(true, TriggergameObject);
     }
 }
