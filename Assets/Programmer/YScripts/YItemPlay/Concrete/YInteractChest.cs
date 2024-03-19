@@ -24,7 +24,7 @@ public class YInteractChest : YIInteractiveGroup
         HOpenWorldTreasure tmp = chest.GetComponent<HOpenWorldTreasure>();
         if (tmp)
         {
-            tmp.treasure.GiveoutTreasures();
+            tmp.GiveOutAllTreasuresAndDestroy();
         }
         
     }

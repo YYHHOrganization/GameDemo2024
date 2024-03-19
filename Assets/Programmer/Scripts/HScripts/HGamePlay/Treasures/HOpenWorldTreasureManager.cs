@@ -54,6 +54,9 @@ public class HOpenWorldTreasureManager : MonoBehaviour
             treasure.treasureType = (TreasureType) Enum.Parse(typeof(TreasureType), rowData[1]);
             treasure.addressableLink = rowData[7];
             
+            treasure.SetRandomItems(rowData[3], rowData[4]);
+            treasure.UILayoutType = rowData[8];
+            
             treasureTypes.Add(treasureTypeId, treasure);
         }
         

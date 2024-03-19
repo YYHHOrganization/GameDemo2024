@@ -163,9 +163,13 @@ public class yPlanningTable : MonoBehaviour
             string itemName = rowData[0];
             HOpenWorldItemStruct item = new HOpenWorldItemStruct();
             item.id = int.Parse(rowData[0]);
+            Debug.Log(rowData[0]);
             item.itemName = rowData[3];
             item.chineseName = rowData[2];
             item.itemType = (ItemType)Enum.Parse(typeof(ItemType), rowData[1]);
+            item.isExpensive = (rowData[4] == "1");
+            item.UIIconLink = rowData[5];
+            item.description = rowData[6];
             worldItems.Add(itemName, item);
         }
     }

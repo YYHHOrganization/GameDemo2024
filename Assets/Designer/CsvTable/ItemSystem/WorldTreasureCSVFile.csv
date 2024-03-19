@@ -1,7 +1,7 @@
-﻿ID号,物品类型,宝箱名称,宝箱开出内容,物品ID,宝箱固定开出物品ID,宝箱固定开出物品数量,宝箱Prefab对应路径
-ID,TreasureType,TreasureName,TreasureContent,ItemID,FixedItemID,FixedItemCount,ResourceLink
-宝箱类型ID为10000xxx,比如Chest，后面还可以引入别的,,"a:b:c|表示对应后面的物品ID,从索引a到索引a+b，抽取c个作为奖励",,用英文分号分隔,用英文分号分隔,已使用Addressable，对应Addressable里面的路径
-10000000,CommonChest,普通宝箱,,,20000000;20000001,10;5000,CommonChest
-10000001,GoodChest,精致宝箱,,,20000000;20000001,50;10000,GoodChest
-10000002,VeryGoodChest,华丽宝箱,,,20000000;20000001,100;20000,VeryGoodChest
-10000003,VeryVeryGoodChest,超级华丽宝箱,,,20000000;20000001;20000002,328;64800;1,VeryVeryGoodChest
+﻿ID号,物品类型,宝箱名称,宝箱开出内容,物品ID,宝箱固定开出物品ID,宝箱固定开出物品数量,宝箱Prefab对应路径,宝箱开出物品UI显示逻辑
+ID,TreasureType,TreasureName,TreasureContent,ItemID,FixedItemID,FixedItemCount,ResourceLink,UILayout
+宝箱类型ID为10000xxx,比如Chest，后面还可以引入别的,,"a:b:c|表示对应后面的物品ID,从索引a到索引a+b，抽取c个作为奖励",后面用:表示数量,用英文分号分隔,用英文分号分隔,已使用Addressable，对应Addressable里面的路径,物品显示在UI上的逻辑
+10000000,CommonChest,普通宝箱,0:5:2,20000003:100;20000004:1;20000005:1;20000006:1;20000007:1;20000008:20,20000000;20000001,10;5000,CommonChest,LeftRoll
+10000001,GoodChest,精致宝箱,0:5:3,20000003:100;20000004:1;20000005:1;20000006:1;20000007:1;20000008:20,20000000;20000001,50;10000,GoodChest,LeftRoll
+10000002,VeryGoodChest,华丽宝箱,0:5:3,20000003:100;20000004:1;20000005:1;20000006:1;20000007:1;20000008:20,20000000;20000001,100;20000,VeryGoodChest,LeftRollAndPreciousMiddle
+10000003,VeryVeryGoodChest,超级华丽宝箱,0:5:3,20000003:100;20000004:1;20000005:1;20000006:1;20000007:1;20000008:20,20000000;20000001;20000002,328;64800;1,VeryVeryGoodChest,LeftRollAndPreciousMiddle

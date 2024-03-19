@@ -8,6 +8,7 @@ public enum ItemType
     Money,
     Treasure,
     Character,
+    CommonItem,
 }
 
 public enum TreasureType
@@ -24,6 +25,11 @@ public class HOpenWorldItemStruct
     public string itemName;
     public string chineseName;
     public ItemType itemType;
+    public bool isExpensive; //贵重的物体会在UI中间显示，比如珍贵宝箱的所有物品应该都会UI中间显示，单独逻辑
+    
+    public string UIIconLink;
+    public string description;
+    
 }
 
 public class HOpenWorldTreasureStruct
@@ -35,6 +41,28 @@ public class HOpenWorldTreasureStruct
     private string fixedNumString;
     public TreasureType treasureType;
     public string addressableLink;
+
+    private string randomItemLogicString;
+    private string randomItemAndCountString;
+    public string UILayoutType;
+    
+    //属性
+    public string FixedItemString
+    {
+        get { return fixedItemString; }
+    }
+    public string FixedNumString
+    {
+        get { return fixedNumString; }
+    }
+    public string RandomItemLogicString
+    {
+        get { return randomItemLogicString; }
+    }
+    public string RandomItemAndCountString
+    {
+        get { return randomItemAndCountString; }
+    }
     
     public void SetFixedItems(string items, string nums)
     {
@@ -42,21 +70,14 @@ public class HOpenWorldTreasureStruct
         fixedItemString = items;
         fixedNumString = nums;
     }
-
-    public void GiveoutTreasures()
+    
+    public void SetRandomItems(string randomLogic, string randomItemAndCount)
     {
-        //此时要解析字符串，并生成奖励
-        string [] items = fixedItemString.Split(';');
-        string [] nums = fixedNumString.Split(';');
-        for (int i = 0; i < items.Length; i++)
-        {
-            string itemId = items[i];
-            string itemName = yPlanningTable.Instance.worldItems[itemId].chineseName;
-            string itemNum = nums[i];
-            Debug.Log("宝箱类型是： " + treasureType + ", 开出了 "+ itemNum + "个" + itemName);
-        }
-        Debug.Log("====================================================");
-        
+        randomItemLogicString = randomLogic;
+        randomItemAndCountString = randomItemAndCount;
     }
+    
 }
+
+
 
