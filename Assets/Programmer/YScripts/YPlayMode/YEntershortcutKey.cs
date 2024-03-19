@@ -20,6 +20,9 @@ public class YEntershortcutKey : MonoBehaviour
         playerInput.AfterSplitScreenShortCut.SplitScreen3.started += context => SetSplitScreen(2);
         
         playerInput.Interaction.interact.started += context =>SetInteractResult();
+
+        playerInput.Always.Exit.started += context => ExitPanelOn();
+        playerInput.Always.Enable();
         
     }
 
@@ -37,7 +40,10 @@ public class YEntershortcutKey : MonoBehaviour
         ////启动出现提示面板，并可以使用快捷键进行交互
         YTriggerEvents.OnShortcutKeyInteractionStateChanged += SetInteractionEnableOrDisable;
         
+        //退出快捷键启用与否
+        YTriggerEvents.OnShortcutKeyEsc+=SetESCEnableOrDisable;
     }
+    
     private void SetSplitScreen(int splitScreenType)
     {
         YPlayModeController.Instance.SetCameraLayout(splitScreenType);//全 小 半
@@ -83,7 +89,17 @@ public class YEntershortcutKey : MonoBehaviour
             playerInput.ShortcutKey.GetPuppet.started -= EnterPuppet;
         }
     }
-    
+    public void SetESCEnableOrDisable(object sender, YTriggerEventArgs e)
+    {
+        if (e.activated)
+        {
+            playerInput.Always.Enable();
+        }
+        else
+        {
+            playerInput.Always.Disable();
+        }
+    }
     public GameObject interactGo;
     //启动出现提示面板，并可以使用快捷键进行交互
     public void SetInteractionEnableOrDisable(object sender, YTriggerGameObjectEventArgs e)
@@ -103,6 +119,9 @@ public class YEntershortcutKey : MonoBehaviour
     {
         Debug.Log("SetInteractResult");
         // YTriggerTagUnit triggerTagUnit = interactGo.GetComponent<YTriggerTagUnit>();
+        
+        
+        
         YTriggerTagUnit triggerTagUnit = interactGo.GetComponentInChildren<YTriggerTagUnit>();
         triggerTagUnit.OnActive();
     }
@@ -138,5 +157,10 @@ public class YEntershortcutKey : MonoBehaviour
         {
             playerInput.AfterSplitScreenShortCut.Disable();
         }
+    }
+    
+    private void ExitPanelOn()
+    {
+        YGameRoot.Instance.Push(new YExitPanel());
     }
 }

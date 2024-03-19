@@ -6,7 +6,7 @@ using UnityEngine;
 public class YTriggerTagUnit : MonoBehaviour, YITriggerUnit
 {
     public event Action<bool> OnTriggerStateChanged;
-    public event Action<GameObject> OnEnterFieldStateChanged;
+    public event Action<bool,GameObject> OnEnterFieldStateChanged;
     
     //事件激活
     public void OnActive()
@@ -19,10 +19,11 @@ public class YTriggerTagUnit : MonoBehaviour, YITriggerUnit
         OnTriggerStateChanged?.Invoke(false);
     }
     //进入触发区域
-    public void OnEnterField()
+    public void OnEnterField(bool isEnter)
     {
-        OnEnterFieldStateChanged?.Invoke(gameObject);
-        Debug.Log("OnEnterField！！！");
+        OnEnterFieldStateChanged?.Invoke(isEnter,gameObject);
+        //Debug.Log("OnEnterField！！！");
         // YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(true, gameObject);
-    }
+    }   
+
 }

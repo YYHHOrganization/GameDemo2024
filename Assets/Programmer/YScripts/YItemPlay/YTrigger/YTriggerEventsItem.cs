@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using System;
+using UnityEngine.InputSystem;
 
 public class YTriggerEventArgs : EventArgs
 {
@@ -12,6 +13,13 @@ public class YTriggerGameObjectEventArgs : EventArgs
     public bool activated;
     public GameObject gameObject;
 }
+
+//有 activated 用来看是否开启快捷键，以及需要有一个对应，
+// public class YShortCutKeyEventArgs : EventArgs
+// {
+//     public bool activated;
+//     public InputActionMap inputActionMap;
+// }
 
 public class YTriggerEvents : MonoBehaviour
 {
@@ -50,6 +58,15 @@ public class YTriggerEvents : MonoBehaviour
     {
         OnShortcutKeyInteractionStateChanged?.Invoke(null,
             new YTriggerGameObjectEventArgs { activated = activated, gameObject = go });
+    }
+    
+    //启用快捷键或者不启用
+    public static event EventHandler<YTriggerEventArgs> OnShortcutKeyEsc;
+    // public static void RaiseOnShortcutKeyEnableOrDisable(bool activated,InputActionMap inputActionMap)
+    public static void RaiseOnShortcutKeyEsc(bool activated)
+    
+    {
+       OnShortcutKeyEsc?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
     
 }

@@ -67,12 +67,20 @@ public class YIInteractiveGroup : MonoBehaviour
     }
     
     // public void EnterField(bool isEnter)
-    public void EnterField(GameObject TriggergameObject)
+    public virtual void EnterField(bool isEnter, GameObject TriggergameObject)
     {
-        if (isOnce && hasEnter)
+        if (isEnter)
         {
-            return;
+            if (isOnce && hasEnter)
+            {
+                return;
+            }
+            YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(true, TriggergameObject);
         }
-        YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(true, TriggergameObject);
+        else
+        {
+            YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(false, TriggergameObject);
+        }
     }
+
 }

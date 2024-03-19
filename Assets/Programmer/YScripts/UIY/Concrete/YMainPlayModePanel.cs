@@ -35,6 +35,12 @@ public class YMainPlayModePanel : BasePanel
             YPlayModeController.Instance.SetCameraLayout(0);
            
         });
+        uiTool.GetOrAddComponentInChilden<Button>("ExitButton").onClick.AddListener(()=>
+        {
+            //显示出是否退出面板
+            Push(new YExitPanel());
+           
+        });
        
         
     }

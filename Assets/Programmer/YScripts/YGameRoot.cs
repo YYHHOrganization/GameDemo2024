@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.SceneManagement;
 public class YGameRoot : MonoBehaviour
 {
     //单例模式
@@ -63,5 +63,23 @@ public class YGameRoot : MonoBehaviour
         //     YPlayModeController.Instance.SetCameraLayout(2);
         // }
     }
+    
+    public void QuitGame()
+        {
+    #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+    #else
+            Application.Quit();
+    #endif
+        }
+    public void PlayAgain()
+    {
+        // SceneSystem.SetScene(new YStartScene());
+        
+
+        SceneManager.LoadScene ("YStartSceneTest");
+        
+    }
+    
     
 }

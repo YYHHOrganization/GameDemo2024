@@ -300,6 +300,34 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Always"",
+            ""id"": ""d1bfd32c-f6dd-44e1-8d8a-878ea01eaf16"",
+            ""actions"": [
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""5969fa1f-f016-4486-87fd-053d3aed1690"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""e896c8cc-f3de-4142-9270-176748072d07"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -321,6 +349,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         // Interaction
         m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
         m_Interaction_interact = m_Interaction.FindAction("interact", throwIfNotFound: true);
+        // Always
+        m_Always = asset.FindActionMap("Always", throwIfNotFound: true);
+        m_Always_Exit = m_Always.FindAction("Exit", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -602,6 +633,52 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public InteractionActions @Interaction => new InteractionActions(this);
+
+    // Always
+    private readonly InputActionMap m_Always;
+    private List<IAlwaysActions> m_AlwaysActionsCallbackInterfaces = new List<IAlwaysActions>();
+    private readonly InputAction m_Always_Exit;
+    public struct AlwaysActions
+    {
+        private @L2PlayerInput m_Wrapper;
+        public AlwaysActions(@L2PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Exit => m_Wrapper.m_Always_Exit;
+        public InputActionMap Get() { return m_Wrapper.m_Always; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(AlwaysActions set) { return set.Get(); }
+        public void AddCallbacks(IAlwaysActions instance)
+        {
+            if (instance == null || m_Wrapper.m_AlwaysActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_AlwaysActionsCallbackInterfaces.Add(instance);
+            @Exit.started += instance.OnExit;
+            @Exit.performed += instance.OnExit;
+            @Exit.canceled += instance.OnExit;
+        }
+
+        private void UnregisterCallbacks(IAlwaysActions instance)
+        {
+            @Exit.started -= instance.OnExit;
+            @Exit.performed -= instance.OnExit;
+            @Exit.canceled -= instance.OnExit;
+        }
+
+        public void RemoveCallbacks(IAlwaysActions instance)
+        {
+            if (m_Wrapper.m_AlwaysActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IAlwaysActions instance)
+        {
+            foreach (var item in m_Wrapper.m_AlwaysActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_AlwaysActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public AlwaysActions @Always => new AlwaysActions(this);
     public interface ICharacterControlsActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -622,5 +699,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
     public interface IInteractionActions
     {
         void OnInteract(InputAction.CallbackContext context);
+    }
+    public interface IAlwaysActions
+    {
+        void OnExit(InputAction.CallbackContext context);
     }
 }

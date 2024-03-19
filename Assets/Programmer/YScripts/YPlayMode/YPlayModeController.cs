@@ -172,14 +172,21 @@ public class YPlayModeController : MonoBehaviour
             
                 
             }
-            
-            yNameUiSctipt.SetAttribute("Q",destination.transform,PlayerCamera,1.5f);
-            ShowPlaceUI.SetActive(true);
+
+            if (yNameUiSctipt != null)
+            {
+                yNameUiSctipt.SetAttribute("Q",destination.transform,PlayerCamera,1.5f);
+                ShowPlaceUI.SetActive(true);
+            }
             
         }
         else
         {
-            ShowPlaceUI.SetActive(false);
+            if (ShowPlaceUI != null)
+            {
+                ShowPlaceUI.SetActive(false);
+            }
+           
         }
        
     }

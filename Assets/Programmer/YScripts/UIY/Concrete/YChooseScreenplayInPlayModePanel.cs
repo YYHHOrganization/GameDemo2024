@@ -91,6 +91,12 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
             shouldLockPlayerInput = !shouldLockPlayerInput;
             YPlayModeController.Instance.LockPlayerInput(shouldLockPlayerInput);
         });
+        uiTool.GetOrAddComponentInChilden<Button>("ExitButton").onClick.AddListener(()=>
+        {
+            //显示出是否退出面板
+            Push(new YExitPanel());
+           
+        });
         
         TMP_Dropdown dropdown = uiTool.GetOrAddComponentInChilden<TMP_Dropdown>("DropdownCharacter");
         int id = yPlanningTable.Instance.selectNames2Id["character"];

@@ -40,7 +40,12 @@ public class YMainPlayModeOriginPanel : BasePanel
             HPlayerSkillManager.instance.SkillScanningTerrian();
             //uiTool.GetOrAddComponentInChilden<Button>("DetectButton").interactable = false;
         });
-        
+        uiTool.GetOrAddComponentInChilden<Button>("ExitButton").onClick.AddListener(()=>
+        {
+            //显示出是否退出面板
+            Push(new YExitPanel());
+           
+        });
     }
     //如果输入F 也认为点击了GetPuppetButton
     public override void OnPause()
