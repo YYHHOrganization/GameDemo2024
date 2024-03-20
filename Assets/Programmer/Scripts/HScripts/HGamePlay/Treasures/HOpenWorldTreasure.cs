@@ -156,12 +156,22 @@ public class HOpenWorldTreasure : MonoBehaviour
         
     }
 
+    public GameObject lightPlane;
     IEnumerator DestroySelf()
     {
         yield return new WaitForSeconds(2f);
         //todo:这里调用一下消融效果可以加一个音效
         YGameRoot.Instance.Pop();
-        Destroy(gameObject);
+        DissolvingControllery dissolving = gameObject.AddComponent<DissolvingControllery>();
+        dissolving.SetMaterialsPropAndBeginDissolve(gameObject);
+
+        yield return new WaitForSeconds(0.5f);
+        if (lightPlane != null)
+        {
+            lightPlane.SetActive(false);
+        }
+        
+        
     }
 
     private void Update()
