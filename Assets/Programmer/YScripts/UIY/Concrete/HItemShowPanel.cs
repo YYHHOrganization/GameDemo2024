@@ -21,10 +21,12 @@ public class HItemShowPanel : BasePanel
     public void ShowItemsLeftScroll(Sprite image, string name, int count)
     {
         var anItem = GameObject.Instantiate(Resources.Load<GameObject>(leftScrollItemPrefabLink), leftScrollPanel.transform);
-        Image itemIcon = uiTool.GetOrAddComponentInChilden<Image>("itemIcon");
+        Transform itemIcon = anItem.transform.Find("AnItem").Find("itemIcon");
+            
+        //uiTool.GetOrAddComponentInChilden<Transform>("itemIcon");
         if (itemIcon != null)
         {
-            itemIcon.sprite = image;
+            itemIcon.GetComponent<Image>().sprite = image;
         }
         else
         {
