@@ -15,8 +15,13 @@ public class HOpenWorldTreasure : MonoBehaviour
         private int number;
         private string itemImageLink;
         private bool isExpensive;
+        private string description;
         
         //gets
+        public string Description
+        {
+            get { return description; }
+        }
         public string ItemChineseName
         {
             get { return itemChineseName; }
@@ -34,12 +39,13 @@ public class HOpenWorldTreasure : MonoBehaviour
             get { return isExpensive; }
         }
 
-        public ItemToShow(string itemChineseName, int number, string itemImageLink, bool isExpensive)
+        public ItemToShow(string itemChineseName, int number, string itemImageLink, bool isExpensive, string description)
         {
             this.number = number;
             this.itemChineseName = itemChineseName;
             this.itemImageLink = itemImageLink;
             this.isExpensive = isExpensive;
+            this.description = description;
         }
     }
     HItemShowPanel panel = new HItemShowPanel();
@@ -66,7 +72,7 @@ public class HOpenWorldTreasure : MonoBehaviour
             int itemNum = int.Parse(nums[i]);
             Debug.Log("宝箱类型是： " + treasure.treasureType + ", 开出了 "+ itemNum + "个" + itemName);
             //todo:这些数据可以存于数据库当中，或者暂存在本地，但要给UI提供要显示的东西
-            ItemToShow itemToShow = new ItemToShow(itemName, itemNum, thisItem.UIIconLink, thisItem.isExpensive);
+            ItemToShow itemToShow = new ItemToShow(itemName, itemNum, thisItem.UIIconLink, thisItem.isExpensive, thisItem.description);
             itemsToShow.Add(itemToShow);
         }
         
@@ -103,7 +109,7 @@ public class HOpenWorldTreasure : MonoBehaviour
             string itemName = thisItem.chineseName;
             
             Debug.Log("随机开出的东西 " + treasure.treasureType + ", 开出了 "+ itemNum + "个" + itemName);
-            ItemToShow itemToShow = new ItemToShow(itemName,itemNum, thisItem.UIIconLink, thisItem.isExpensive);
+            ItemToShow itemToShow = new ItemToShow(itemName,itemNum, thisItem.UIIconLink, thisItem.isExpensive, thisItem.description);
             itemsToShow.Add(itemToShow);
         }
     }
@@ -144,8 +150,11 @@ public class HOpenWorldTreasure : MonoBehaviour
 
     IEnumerator ShowPreciousItemInMiddle(List<ItemToShow> items)
     {
+        //YTriggerEvents.RaiseOnMouseLockStateChanged(false);
         YGameRoot.Instance.Push(panel);
+        panel.SetLeftScrollPanelActive(false);
         panel.SetMiddlePanelActive(true);
+        yield return new WaitForSeconds(1f);
         foreach (var item in items)
         {
             if (item.IsExpensive)
@@ -153,23 +162,37 @@ public class HOpenWorldTreasure : MonoBehaviour
                 AsyncOperationHandle<Sprite> handle =
                     Addressables.LoadAssetAsync<Sprite>(item.ItemImageLink);
                 yield return handle;
-                panel.ShowItemsLeftScroll(handle.Result, item.ItemChineseName, item.Number);
+                panel.ShowItemsMiddlePanel(handle.Result, item.ItemChineseName, item.Number, item.Description);
                 yield return new WaitForSeconds(0.02f);
             }
         }
+
+        yield return new WaitForSeconds(2f);
+        panel.SetMiddlePanelDeactivateFadeOff();
+        yield return new WaitForSeconds(0.5f);
+        panel.Pop();
+        StartCoroutine(showEachItemOnLeftScroll(items));
     }
     
     IEnumerator showEachItemOnLeftScroll(List<ItemToShow> items)
     {
         YGameRoot.Instance.Push(panel);
+        panel.SetLeftScrollPanelActive(true);
+        panel.SetMiddlePanelActive(false);
         foreach (var item in items)
         {
+            //Debug.Log(item.ItemChineseName);
             AsyncOperationHandle<Sprite> handle =
                 Addressables.LoadAssetAsync<Sprite>(item.ItemImageLink);
             yield return handle;
             panel.ShowItemsLeftScroll(handle.Result, item.ItemChineseName, item.Number);
+            //Debug.Log(item.ItemChineseName);
+            //Debug.Log("ddddddddddddddddddddd");
             yield return new WaitForSeconds(0.02f);
         }
+
+        yield return new WaitForSeconds(2f);
+        YGameRoot.Instance.Pop();
         
     }
 
@@ -178,7 +201,6 @@ public class HOpenWorldTreasure : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         //todo:这里调用一下消融效果可以加一个音效
-        YGameRoot.Instance.Pop();
         DissolvingControllery dissolving = gameObject.AddComponent<DissolvingControllery>();
         dissolving.SetMaterialsPropAndBeginDissolve(gameObject);
 

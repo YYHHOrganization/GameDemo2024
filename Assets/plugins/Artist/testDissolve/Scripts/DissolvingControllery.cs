@@ -57,7 +57,7 @@ public class DissolvingControllery : MonoBehaviour
             }
         }
         
-        Destroy(gameObject);
+        Destroy(gameObject, 10f);
         
     }
     
