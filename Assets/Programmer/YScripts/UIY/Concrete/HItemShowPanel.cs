@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class HItemShowPanel : BasePanel
 {
@@ -20,7 +21,12 @@ public class HItemShowPanel : BasePanel
 
     public void ShowItemsLeftScroll(Sprite image, string name, int count)
     {
-        var anItem = GameObject.Instantiate(Resources.Load<GameObject>(leftScrollItemPrefabLink), leftScrollPanel.transform);
+        GameObject anItem = GameObject.Instantiate(Resources.Load<GameObject>(leftScrollItemPrefabLink), leftScrollPanel.transform);
+        //Debug.Log(anItem.transform.localPosition); //为啥localPosition的x是100呢？
+        //anItem.transform.DOLocalMoveX(200, 2);
+        //anItem.transform.DOMoveX(5, 0.2f).From(true);
+        anItem.transform.DOScale(new Vector3(0.9f, 0.9f, 1.0f), 0.2f).From(true);
+        anItem.GetComponent<CanvasGroup>().DOFade(1.0f, 0.2f);
         Transform itemIcon = anItem.transform.Find("AnItem").Find("itemIcon");
             
         //uiTool.GetOrAddComponentInChilden<Transform>("itemIcon");
