@@ -53,7 +53,7 @@ public class HOpenWorldTreasure : MonoBehaviour
         treasure = treasureStruct;
     }
     
-    public void GiveoutTreasures()
+    private void GiveoutTreasures()
     {
         //此时要解析字符串，并生成奖励
         string [] items = treasure.FixedItemString.Split(';');
@@ -137,8 +137,25 @@ public class HOpenWorldTreasure : MonoBehaviour
                 StartCoroutine(showEachItemOnLeftScroll(itemsToShow)); 
                 break;
             case "LeftRollAndPreciousMiddle": //贵重物品中间显示，其他的左侧显示
-                StartCoroutine(showEachItemOnLeftScroll(itemsToShow)); 
+                StartCoroutine(ShowPreciousItemInMiddle(itemsToShow)); 
                 break;
+        }
+    }
+
+    IEnumerator ShowPreciousItemInMiddle(List<ItemToShow> items)
+    {
+        YGameRoot.Instance.Push(panel);
+        panel.SetMiddlePanelActive(true);
+        foreach (var item in items)
+        {
+            if (item.IsExpensive)
+            {
+                AsyncOperationHandle<Sprite> handle =
+                    Addressables.LoadAssetAsync<Sprite>(item.ItemImageLink);
+                yield return handle;
+                panel.ShowItemsLeftScroll(handle.Result, item.ItemChineseName, item.Number);
+                yield return new WaitForSeconds(0.02f);
+            }
         }
     }
     

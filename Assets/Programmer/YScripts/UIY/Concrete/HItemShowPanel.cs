@@ -13,10 +13,13 @@ public class HItemShowPanel : BasePanel
     private GameObject leftScrollPanel;
     private GameObject middleShowPanel;
     private string leftScrollItemPrefabLink = "Prefabs/UI/singleUnit/AnItemGroup";
+    private string middleShowItemPrefabLink = "Prefabs/UI/singleUnit/BigItemShowGroup";
     
     public override void OnEnter()
     {
         leftScrollPanel = uiTool.GetOrAddComponentInChilden<Transform>("LeftScrollPanel").gameObject;
+        middleShowPanel = uiTool.GetOrAddComponentInChilden<Transform>("MiddleShowPanel").gameObject;
+        middleShowPanel.gameObject.SetActive(false);
     }
 
     public void ShowItemsLeftScroll(Sprite image, string name, int count)
@@ -42,6 +45,24 @@ public class HItemShowPanel : BasePanel
         //anItem.transform.Find("itemIcon").GetComponent<Image>().sprite = image;
         anItem.GetComponentInChildren<TMP_Text>().text = name + " ×" + count;
         GameObject.Destroy(anItem, 3f);
+    }
+    
+    public void SetMiddlePanelActive(bool active)
+    {
+        middleShowPanel.SetActive(active);
+    }
+    
+    public void ShowItemsMiddlePanel(Sprite image, string name, int count)
+    {
+        GameObject anItem = GameObject.Instantiate(Resources.Load<GameObject>(middleShowItemPrefabLink), middleShowPanel.transform);
+        anItem.transform.DOScale(new Vector3(0.9f, 0.9f, 1.0f), 0.2f).From(true);
+        anItem.GetComponent<CanvasGroup>().DOFade(1.0f, 0.2f);
+        anItem.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            var itemDescription = anItem.transform.Find("ItemDescription").gameObject;
+            itemDescription.transform.Find("descriptionText").GetComponent<TMP_Text>().text = name;
+            itemDescription.SetActive(true);
+        });
     }
 
     
