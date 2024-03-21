@@ -86,7 +86,7 @@ public class HOpenWorldTreasureManager : MonoBehaviour
             yield return handle;
             //用这种协程的方式去写，可以保证每个宝箱都有自己的信息,不然不好对Instantiate得到的结果进行处理
             handle.Result.GetComponent<HOpenWorldTreasure>().SetTreasure(treasureTypes[treasureTypeId]);
-            treasureLayouts.Add(treasureTypeId, handle.Result);
+            treasureLayouts.Add(rowData[0], handle.Result);
         }
     }
     

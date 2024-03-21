@@ -12,7 +12,7 @@ public class YInteract2AndChest :YIInteractiveGroup
     public void Start()
     {
         base.Start();
-        GetChestAndSetTrans();
+        //GetChestAndSetTrans();
     }
     public void GetChestAndSetTrans()
     {
@@ -24,9 +24,10 @@ public class YInteract2AndChest :YIInteractiveGroup
         }
         int chestID = yPlanningTable.Instance.interactiveGroupDict[InteractGroupID].TreasureID;
         Debug.Log("宝箱ID：" + chestID);
+
+        GameObject treasure = HOpenWorldTreasureManager.Instance.GetTreasureLayout(chestID.ToString());
         
-        // HOpenWorldTreasureStruct treasure = HOpenWorldTreasureManager.Instance.GetTreasure(chestID);
-        
+        chest = treasure;
         //更新宝箱位置 将宝箱放在chestTrans的位置
         chest.transform.position = chestTrans.position;
         chest.transform.rotation = chestTrans.rotation;
@@ -41,6 +42,7 @@ public class YInteract2AndChest :YIInteractiveGroup
     }
     private void ShowChest()
     {
+        GetChestAndSetTrans();
         // 显示宝箱的逻辑
         chest.SetActive(true);
     }
