@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class YIInteractiveGroup : MonoBehaviour
 {
+    public int InteractGroupID;
     public GameObject[] triggers; // 数组用于存储所有触发器（例如踏板）
     public int activatedTriggersCount = 0;
     

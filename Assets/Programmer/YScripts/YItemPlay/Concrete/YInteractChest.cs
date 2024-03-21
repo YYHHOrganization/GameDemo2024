@@ -6,6 +6,7 @@ using UnityEngine;
 public class YInteractChest : YIInteractiveGroup
 {
     public GameObject chest;
+    
     Animator animator;
     public void Start()
     {
@@ -13,6 +14,8 @@ public class YInteractChest : YIInteractiveGroup
         
         chest = gameObject;
         animator = chest.GetComponentInChildren<Animator>();
+
+        
     }
 
     

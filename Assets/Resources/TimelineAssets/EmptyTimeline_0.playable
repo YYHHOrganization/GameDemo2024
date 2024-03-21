@@ -30,7 +30,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  blendShapeIndex: 18000000
+  blendShapeIndex: 01000000
 --- !u!114 &-8780262249072632564
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -45,12 +45,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalVolumeField: ColorAdjustments
   attributes:
-  - saturation
+  - contrast
   values:
-  - 0
-  shouldLerp: 00000000
+  - 95
+  shouldLerp: 01000000
   defaultValues:
-  - 0
+  - 5
   postProcessingType: 0
 --- !u!114 &-8652573009566066712
 MonoBehaviour:
@@ -1496,7 +1496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  blendShapeIndex: 18000000
+  blendShapeIndex: 01000000
 --- !u!114 &-905559953760220634
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2032,9 +2032,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of HappyIdle
+  m_Name: AnimationPlayableAsset of LookAround
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: -203655887218126122, guid: f8d320d17a563654893589d2c22d67ba, type: 3}
+  m_Clip: {fileID: -203655887218126122, guid: 7e01eb817dc158945b0f566f7ed7bee4, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1

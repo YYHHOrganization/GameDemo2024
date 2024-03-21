@@ -100,6 +100,19 @@ public class yPlanningTable : MonoBehaviour
     //存储相机的结构体
     public List<CameraStruct> cameraStructs = new List<CameraStruct>();
     
+    //存储机关的结构体
+    public struct InteractiveStruct
+    {
+        public int id;
+        public bool hasTreasure;
+        public int TreasureTypeID;
+        public int TreasureID;
+    }
+    List<InteractiveStruct> interactiveGroups = new List<InteractiveStruct>();
+    //存储一个字典，可以通过id找到对应的InteractiveStruct
+    public Dictionary<int, InteractiveStruct> interactiveGroupDict = new Dictionary<int, InteractiveStruct>();
+    
+   
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -124,6 +137,10 @@ public class yPlanningTable : MonoBehaviour
             cameraNamesList,cameraUINameList,cameraStructs);
         ReadOpenWorldThings();
         effs =new List<ScriptableRendererFeature>();
+        
+        //读取机关表格
+        ReadInteractiveGroupCSV("Assets/Designer/CsvTable/InteractiveGroup/InteractiveGroupCSVFile.csv", 
+            interactiveGroups);
     }
     
     //定义一个eff 用于存放特效 其中有每个特效的名称和id
@@ -482,6 +499,24 @@ public class yPlanningTable : MonoBehaviour
         }
         //UpdateCameraList();
         UpdateTableList("camera",cameraList,cameraListInUI);
+    }
+    
+    void ReadInteractiveGroupCSV(string filePath, List<InteractiveStruct> interactiveGroups)
+    {
+        //从index=3开始读取
+        string[] fileData = File.ReadAllLines(filePath);
+        for (int i = 3; i < fileData.Length; i++)
+        {
+            string[] rowData = fileData[i].Split(',');
+            InteractiveStruct interactiveGroup = new InteractiveStruct();
+            interactiveGroup.id = int.Parse(rowData[0]);
+            interactiveGroup.hasTreasure = rowData[1] == "1";
+            interactiveGroup.TreasureTypeID = int.Parse(rowData[2]);
+            interactiveGroup.TreasureID = int.Parse(rowData[3]);
+            interactiveGroups.Add(interactiveGroup);
+            interactiveGroupDict.Add(interactiveGroup.id, interactiveGroup);
+        }
+            
     }
     public ScriptableRendererFeature GetEffRendererFeature(int index)
     {
