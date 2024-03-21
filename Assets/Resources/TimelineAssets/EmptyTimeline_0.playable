@@ -45,12 +45,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalVolumeField: ColorAdjustments
   attributes:
-  - contrast
+  - saturation
   values:
-  - 95
-  shouldLerp: 01000000
+  - 0
+  shouldLerp: 00000000
   defaultValues:
-  - 5
+  - 0
   postProcessingType: 0
 --- !u!114 &-8652573009566066712
 MonoBehaviour:
@@ -119,12 +119,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c451de31106db64c81a97723d976159, type: 3}
   m_Name: heibai0
   m_EditorClassIdentifier: 
-  globalVolumeField: ColorAdjustments
+  globalVolumeField: Vignette
   attributes:
-  - saturation
+  - intensity
   values:
-  - 0
-  shouldLerp: 00000000
+  - 0.5
+  shouldLerp: 01000000
   defaultValues:
   - 0
   postProcessingType: 0
@@ -1496,7 +1496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  blendShapeIndex: 01000000
+  blendShapeIndex: 18000000
 --- !u!114 &-905559953760220634
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2032,9 +2032,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of LookAround
+  m_Name: AnimationPlayableAsset of interaction
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: -203655887218126122, guid: 7e01eb817dc158945b0f566f7ed7bee4, type: 3}
+  m_Clip: {fileID: -203655887218126122, guid: 4f02d10105932fd44adafbaf181884aa, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1

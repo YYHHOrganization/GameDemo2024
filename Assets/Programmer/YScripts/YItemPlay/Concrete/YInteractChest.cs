@@ -14,10 +14,7 @@ public class YInteractChest : YIInteractiveGroup
         
         chest = gameObject;
         animator = chest.GetComponentInChildren<Animator>();
-
-        
     }
-
     
     public override void SetResultOn()
     {

@@ -490,11 +490,26 @@ public class HTimelineController : MonoBehaviour
             //如果已经到达末尾 应该直接消失  或者到达末尾
             playableDirector.time = 5* testAnimationDuration+0.1;
             startPlaying = false;
+            //END
+            ScreenPlayEnd();
             return true;
         }
         return false;
        
     }
+
+    public void ScreenPlayEnd()
+    {
+        //结束之后  应该是弹出结束演出的UI
+        Debug.Log("ScreenPlayEnd结束演出");
+        //退出半屏等，并后面应该可以呼出新的木偶/队友
+        YPlayModeController.Instance.SetCameraLayout(0);//全 小 半
+        
+        //此时应该回到那个origin的有呼出木偶的Panel
+        // YGameRoot.Instance.Pop();
+        // YGameRoot.Instance.Push(new YMainPlayModeOriginPanel());
+    }
+    
     public void changeClip()
     {
         if (startPlaying)

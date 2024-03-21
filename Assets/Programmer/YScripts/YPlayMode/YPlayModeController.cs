@@ -175,7 +175,7 @@ public class YPlayModeController : MonoBehaviour
 
             if (yNameUiSctipt != null)
             {
-                yNameUiSctipt.SetAttribute("Q",destination.transform,PlayerCamera,1.5f);
+                yNameUiSctipt.SetAttribute("Q",destination.transform,PlayerCamera,1f);
                 ShowPlaceUI.SetActive(true);
             }
             

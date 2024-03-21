@@ -12,6 +12,8 @@ using Random = UnityEngine.Random;
 
 public class yPlanningTable : MonoBehaviour
 {
+    
+    int clipCount;//代表timeline中片段的数量，最终决定于玩家增减的数量，是在玩家点击确定之后会确定
     //静态类
     public static yPlanningTable Instance{get;private set;}
     //获取Eff
@@ -765,6 +767,7 @@ public class yPlanningTable : MonoBehaviour
     //开始运行timeline前 但是点击了确定之后这个脚本要做的
     public void BeforePlayTimeline()
     {
+        clipCount = isMoveList.Count;
         Debug.Log("PlayTimeMove!!!!!!!!!!!!!!!");
         //循环遍历move 列表，把所有没有move的 不移动的话可能还得改当前节点的位置为上一个节点的位置
         for (int i = 0; i < isMoveList.Count; i++)
