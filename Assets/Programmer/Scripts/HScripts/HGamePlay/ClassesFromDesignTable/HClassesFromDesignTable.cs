@@ -9,6 +9,7 @@ public enum ItemType
     Treasure,
     Character,
     CommonItem,
+    LevelNecessary, //通关所需要的物品
 }
 
 public enum TreasureType
