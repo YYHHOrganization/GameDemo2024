@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 4679975195495863520}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -138,8 +138,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3722119683337618090}
   - {fileID: 4464536015287309026}
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 854c9c6933d3ae8408adee74fd6267a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 13
+  maxDistance: 10
   LaserVfx: {fileID: 8365354536592384855}
   LaserHitVfx: {fileID: 7849839176171843777}
 --- !u!1001 &7133821444825157052
@@ -168,6 +168,36 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5625620259000216783}
     m_Modifications:
+    - target: {fileID: 1148514581513305469, guid: 769b4140b3a436847addec61a66f6a12,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.x
+      value: 4.867145
+      objectReference: {fileID: 0}
+    - target: {fileID: 1148514581513305469, guid: 769b4140b3a436847addec61a66f6a12,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.y
+      value: 2.6695619
+      objectReference: {fileID: 0}
+    - target: {fileID: 1148514581513305469, guid: 769b4140b3a436847addec61a66f6a12,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.z
+      value: 1.492285
+      objectReference: {fileID: 0}
+    - target: {fileID: 1148514581513305469, guid: 769b4140b3a436847addec61a66f6a12,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[4].m_Value.x
+      value: 12.844468
+      objectReference: {fileID: 0}
+    - target: {fileID: 1148514581513305469, guid: 769b4140b3a436847addec61a66f6a12,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[4].m_Value.y
+      value: 2.4851758
+      objectReference: {fileID: 0}
+    - target: {fileID: 1148514581513305469, guid: 769b4140b3a436847addec61a66f6a12,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[4].m_Value.z
+      value: 0.40683836
+      objectReference: {fileID: 0}
     - target: {fileID: 6842475353470754654, guid: 769b4140b3a436847addec61a66f6a12,
         type: 3}
       propertyPath: m_LocalPosition.x

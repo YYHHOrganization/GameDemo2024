@@ -46,13 +46,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6149c7b347cb84042b67a8a0379978c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InteractGroupID: 0
   triggers:
   - {fileID: 7688077995465690877}
   activatedTriggersCount: 0
+  isRecover: 1
+  isOnce: 0
+  hasEnter: 0
   doorLeft: {fileID: 7501869144287381293}
   doorRight: {fileID: 3044045208413328676}
   targetLeft: {fileID: 9215878731522065235}
   targetRight: {fileID: 758884778811194374}
+  doorLeftOrigin: {x: 0, y: 0, z: 0}
+  doorRightOrigin: {x: 0, y: 0, z: 0}
   maxSpeed: 10
   acceleration: 8
   deceleration: 8

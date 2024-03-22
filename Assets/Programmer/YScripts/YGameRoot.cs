@@ -77,7 +77,7 @@ public class YGameRoot : MonoBehaviour
         // SceneSystem.SetScene(new YStartScene());
         
 
-        SceneManager.LoadScene ("YStartSceneTest");
+        SceneManager.LoadScene ("Level1DemoScene");
         
     }
     

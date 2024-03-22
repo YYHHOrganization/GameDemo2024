@@ -15,6 +15,8 @@ Shader "HEnvironment/HBaseAirWall"
             "RenderPipeline" = "UniversalPipeline"
         }
         Blend SrcAlpha OneMinusSrcAlpha
+        Cull Off
+        ZWrite Off
         
         HLSLINCLUDE
 
