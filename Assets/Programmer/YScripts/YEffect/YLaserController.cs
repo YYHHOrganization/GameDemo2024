@@ -16,12 +16,24 @@ public class YLaserController : MonoBehaviour
     //VFX
     public VisualEffect LaserVfx;
     float dis2laserLength=6;
+    
+    bool enterLaserDetect = false;
 
+    public VisualEffect LaserHitVfx;
+    
+    //记录从没打到物体进入有打到物体的状态
+    private bool isBeShotActive = false;
+    //记录从打到物体进入没打到物体的状态
+    private bool isBeShotDeactive = false;
+    
     private void Start()
     {
         // LaserVfx = gameObject.GetComponent<VisualEffect>();
+        LaserHitVfx.Stop();
+        dis2laserLength = 6*gameObject.transform.localScale.z;
     }
-
+    
+    
     void Update()
     {
         //if (Input.GetMouseButtonDown(0))//如果鼠标左键按下
@@ -43,22 +55,42 @@ public class YLaserController : MonoBehaviour
                     //hitObject.transform.localScale = new Vector3(0, 0, 0); // 缩短到相应位置
                     hitObject.GetComponent<HJustTestRipple>().SetRipple(hit.point); // 通知护盾显示撞击
                     // 计算两点之间的距离
-                    distance = Vector3.Distance(transform.position, hit.point);
-                    LaserVfx.SetFloat("laserLength", distance/dis2laserLength);
+                    
+                    
                     // Debug.Log("distance: " + distance);
                 }
                 else if (hitObject.CompareTag("Player"))
                 {
                     // 如果射线打中了角色
                     //hitObject.GetComponent<PlayerScript>().Die(); // 触发角色死亡
+                    Debug.Log("hit player!!");
                 }
+                
+                distance = Vector3.Distance(transform.position, hit.point);
+                LaserVfx.SetFloat("laserLength", distance/dis2laserLength);
+
+                if (isBeShotActive==false)
+                {
+                    LaserHitVfx.Play();
+                    isBeShotActive = true;
+                    isBeShotDeactive = false;
+                }
+                   
+                LaserHitVfx.transform.position = hit.point;
+                
                 
             }
             else
             {
-                // 如果射线没有打中任何物体
-                LaserVfx.SetFloat("laserLength", maxDistance/dis2laserLength);
+                if(isBeShotDeactive==false)
+                {
+                    LaserHitVfx.Stop();
+                    isBeShotDeactive = true;
+                    isBeShotActive = false;
+                    // 如果射线没有打中任何物体
+                    LaserVfx.SetFloat("laserLength", maxDistance/dis2laserLength);
+                }
             }
-        //}
+            //}
     }
 }
