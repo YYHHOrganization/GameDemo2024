@@ -75,6 +75,9 @@ public class HPlayerJumpState : HPlayerBaseState, IRootState
         _ctx.Animator.SetBool(_ctx.IsJumpingHash, true);
         _ctx.IsJumping = true;
         _ctx.JumpCount += 1;
+        string jumpAudio = "JumpAudio" + _ctx.JumpCount;
+        HAudioManager.instance.Play(jumpAudio, _ctx.gameObject);
+        
         _ctx.Animator.SetInteger(_ctx.JumpCountHash, _ctx.JumpCount);
         _ctx.CurrentMovementY = _ctx.InitialJumpVelocities[_ctx.JumpCount];
         _ctx.AppliedMovementY = _ctx.InitialJumpVelocities[_ctx.JumpCount];

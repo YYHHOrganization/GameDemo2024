@@ -143,6 +143,7 @@ public class yPlanningTable : MonoBehaviour
         //读取机关表格
         ReadInteractiveGroupCSV("Assets/Designer/CsvTable/InteractiveGroup/InteractiveGroupCSVFile.csv", 
             interactiveGroups);
+        ReadAudios();
     }
     
     //定义一个eff 用于存放特效 其中有每个特效的名称和id
@@ -169,6 +170,12 @@ public class yPlanningTable : MonoBehaviour
         string treasureLayout = "Assets/Designer/CsvTable/ItemSystem/WorldTreasureLayoutCSVFile.csv";
         string treasure = "Assets/Designer/CsvTable/ItemSystem/WorldTreasureCSVFile.csv";
         HOpenWorldTreasureManager.Instance.ReadCSVFile(treasureLayout, treasure);
+    }
+
+    void ReadAudios()
+    {
+        string audiosLink = "Assets/Designer/CsvTable/Audios/AudioCSVFile.csv";
+        HAudioManager.instance.SetAudioSourcesFromDesignTable(audiosLink);
     }
 
     public Dictionary<string, HOpenWorldItemStruct> worldItems = new Dictionary<string, HOpenWorldItemStruct>();
