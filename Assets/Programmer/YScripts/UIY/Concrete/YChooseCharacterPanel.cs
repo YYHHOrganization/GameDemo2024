@@ -34,6 +34,7 @@ public class YChooseCharacterPanel : BasePanel
     
     public override void OnEnter()
     {
+        HAudioManager.instance.Play("SelectCharacterMusic", HAudioManager.instance.gameObject);
         //YChooseCharacterShowPlace = GameObject.Find("YChooseCharacterShowPlace");
         YChooseCharacterShowPlace = GameObject.Instantiate(Resources.Load<GameObject>(pathPlace));
         
@@ -47,7 +48,7 @@ public class YChooseCharacterPanel : BasePanel
             GameObject.Destroy(YChooseCharacterShowPlace);
             //然后应该把那些加载出来 
             YPlayModeController.Instance.SetCharacter(curChooseCharacterIndex);
-
+            HAudioManager.instance.Play("StartPlayerModeMusic", HAudioManager.instance.gameObject);
         });
         Debug.Log("角色数量"+yPlanningTable.Instance.GetCharacterNum());
         //循环遍历角色列表

@@ -31,6 +31,5 @@ public class StartPanel : BasePanel
             //Debug.Log("点击了设置按钮");
             Push(new SettingPanel());
         });
-        
     }
 }

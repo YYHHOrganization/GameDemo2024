@@ -16,6 +16,7 @@ public class HPlayerIdleState : HPlayerBaseState
         _ctx.Animator.SetBool(_ctx.IsRunningHash, false);
         _ctx.AppliedMovementX = 0;
         _ctx.AppliedMovementZ = 0;
+        HAudioManager.instance.Stop(_ctx.gameObject);
     }
 
     public override void InitializeSubState()

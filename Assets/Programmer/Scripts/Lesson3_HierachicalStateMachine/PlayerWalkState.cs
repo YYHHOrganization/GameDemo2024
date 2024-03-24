@@ -12,6 +12,7 @@ public class PlayerWalkState : HPlayerBaseState
     {
         _ctx.Animator.SetBool(_ctx.IsWalkingHash, true);
         _ctx.Animator.SetBool(_ctx.IsRunningHash, false);
+        HAudioManager.instance.Play("FootStepOnGround", this._ctx.gameObject);
     }
 
     public override void InitializeSubState()
