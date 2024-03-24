@@ -32,6 +32,8 @@ public static class YMyUtilityClass
         
         private float currentSpeed = 0f; // 当前速度
 
+        //是否只判断y轴
+        private bool isOnlyY = false;
         public SmoothMover(Transform objectTransform, Vector3 start, Vector3 end, float maxSpeed, float acceleration, float deceleration)
         {
             this.objectTransform = objectTransform;
@@ -54,7 +56,18 @@ public static class YMyUtilityClass
             
             
         }
-
+        public void setSmoothMover(Transform objectTransform, Vector3 start, Vector3 end, float maxSpeed, float acceleration, float deceleration,bool isOnlyY)
+        {
+            this.objectTransform = objectTransform;
+            this.start = start;
+            this.end = end;
+            this.maxSpeed = maxSpeed;
+            this.acceleration = acceleration;
+            this.deceleration = deceleration;
+            this.isOnlyY = isOnlyY;
+            
+        }
+       
         public void StartMoving()
         {
             startTime = Time.time;
@@ -75,15 +88,23 @@ public static class YMyUtilityClass
             if (isMoving)
             {
                 //实时更新距离目标的位置
-                // distanceToTarget = Vector3.Distance(objectTransform.position,end);
+                
                 distanceToTarget = Vector3.Distance(objectTransform.localPosition,end);
-                //Debug.Log("distanceToTarget"+distanceToTarget);
+                if (isOnlyY)
+                {
+                    distanceToTarget = Mathf.Abs(objectTransform.localPosition.y - end.y);
+                }
+                
                 if (distanceToTarget<=0.1f)
                 {
                     // objectTransform.position = end;
                     objectTransform.localPosition = end;
+                    if (isOnlyY)
+                    {
+                        objectTransform.localPosition = new Vector3(objectTransform.localPosition.x,end.y,objectTransform.localPosition.z);
+                    }
                     isMoving = false;
-                    //Debug.Log("到达目的地");
+                    Debug.Log("到达目的地");
                     return;
                 }
                 // 计算当前移动时间
@@ -111,9 +132,15 @@ public static class YMyUtilityClass
                     //Debug.Log("减速段"+currentSpeed);
                 }
                 Vector3 direction = (end - start).normalized;
-                //objectTransform.Translate(direction * currentSpeed * Time.deltaTime);
-                // objectTransform.position += direction * currentSpeed * Time.deltaTime;
+                if (isOnlyY)
+                {
+                    direction = new Vector3(0,1,0);
+                }
+              
+                
                 objectTransform.localPosition += direction * currentSpeed * Time.deltaTime;
+
+                
 
             }
         }

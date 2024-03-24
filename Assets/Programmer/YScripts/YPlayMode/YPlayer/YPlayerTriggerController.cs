@@ -21,6 +21,16 @@ public class YPlayerTriggerController : MonoBehaviour
             // YTriggerTagUnit triggerTagUnit = other.GetComponent<YTriggerTagUnit>();
             // triggerTagUnit.OnActive();
         }
+
+        
+        //Elevator
+        if (other.CompareTag("Elevator"))
+        {
+            Debug.Log("电梯进入");
+            //这里应该写一个通用的结果处理函数
+            YInteractElevator interactElevator = other.GetComponentInParent<YInteractElevator>();
+            interactElevator.PlayerEnterElevator(gameObject);
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -39,5 +49,14 @@ public class YPlayerTriggerController : MonoBehaviour
             // YTriggerTagUnit triggerTagUnit = other.GetComponent<YTriggerTagUnit>();
             // triggerTagUnit.OnDeactive();
         }
+
+        if (other.CompareTag("Elevator"))
+        {
+            Debug.Log("电梯离开");
+            //这里应该写一个通用的结果处理函数
+            YInteractElevator interactElevator = other.GetComponentInParent<YInteractElevator>();
+            interactElevator.PlayerExitElevator();
+        }
+        
     }
 }

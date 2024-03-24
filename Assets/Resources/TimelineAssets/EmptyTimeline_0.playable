@@ -30,8 +30,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  - 100
-  blendShapeIndex: 0500000017000000
+  blendShapeIndex: 00000000
 --- !u!114 &-8780262249072632564
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1422,17 +1421,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c451de31106db64c81a97723d976159, type: 3}
   m_Name: HueShiftPositive3
   m_EditorClassIdentifier: 
-  globalVolumeField: HRadialBlurSettings
+  globalVolumeField: ColorAdjustments
   attributes:
-  - blurRadius
-  - blurIterations
+  - saturation
   values:
-  - 0.4
-  - 35
-  shouldLerp: 0100000001000000
+  - 0
+  shouldLerp: 00000000
   defaultValues:
   - 0
-  - 20
   postProcessingType: 0
 --- !u!114 &-1675713594959761639
 MonoBehaviour:
@@ -1464,12 +1460,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalVolumeField: ColorAdjustments
   attributes:
-  - contrast
+  - saturation
   values:
-  - 95
-  shouldLerp: 01000000
+  - 0
+  shouldLerp: 00000000
   defaultValues:
-  - 5
+  - 0
   postProcessingType: 0
 --- !u!114 &-1470174155323374280
 MonoBehaviour:
@@ -1485,8 +1481,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  - 100
-  blendShapeIndex: 0500000017000000
+  blendShapeIndex: 00000000
 --- !u!114 &-936551332919520032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1501,8 +1496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  - 100
-  blendShapeIndex: 0500000017000000
+  blendShapeIndex: 00000000
 --- !u!114 &-905559953760220634
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1517,8 +1511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  - 100
-  blendShapeIndex: 0500000017000000
+  blendShapeIndex: 00000000
 --- !u!114 &-788450191841167140
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2033,9 +2026,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of Happy
+  m_Name: AnimationPlayableAsset of FastRun
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: -203655887218126122, guid: b7b7d1d333c20fd4584e729a1d144b9f, type: 3}
+  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -2055,9 +2048,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of FastRun
+  m_Name: AnimationPlayableAsset of Reacting
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
+  m_Clip: {fileID: -203655887218126122, guid: b88e8bb7c8e31484393625aab3e8780f, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1

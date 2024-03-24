@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -21,8 +22,8 @@ public class YInteractElevator : YIInteractiveGroup
     {
         base.Start();
         smoothMover = elevator.AddComponent<YMyUtilityClass.SmoothMover>();
-        
     }
+    YMyUtilityClass.SmoothMover smoothMoverPlayer;
     public override void SetResultOn()
     {
         //电梯上升
@@ -31,14 +32,50 @@ public class YInteractElevator : YIInteractiveGroup
         smoothMover.setSmoothMover(elevator.transform, elevator.transform.localPosition, target.localPosition, maxSpeed, acceleration, deceleration);
         smoothMover.StartMoving();
         
+        //test player上升
         
+        if(player==null)
+            return;
+        player.transform.parent = gameObject.transform;
+        smoothMoverPlayer = player.AddComponent<YMyUtilityClass.SmoothMover>();
+        smoothMoverPlayer.setSmoothMover(player.transform, player.transform.localPosition, target.localPosition, 
+            maxSpeed, acceleration, deceleration,true);
+        smoothMoverPlayer.StartMoving();
         
     }
+
+    GameObject player;
+    // private void OnTriggerEnter(Collider other)
+    // {
+    //     Debug.Log("什么东西进入电梯");
+    //     if (other.CompareTag("Player"))
+    //     {
+    //         Debug.Log("角色进入电梯");
+    //         player = other.gameObject;
+    //         //player.transform.position = elevator.transform.position;
+    //         player.transform.parent = elevator.transform;
+    //     }
+    // }
+    
+    public void PlayerEnterElevator(GameObject player)
+    {
+        Debug.Log("角色进入电梯*********");
+        this.player = player;
+        player.transform.parent = gameObject.transform;
+    }
+   public void PlayerExitElevator()
+    {
+        //移除父节点
+        player.transform.parent = null;
+        //移除组件
+        Destroy(smoothMoverPlayer);
+        //移除对player的引用
+        player = null;
+    }
+
     public override void SetResultOff()
     {
         //电梯下降
-        
-        
     }
     private float currentSpeed = 0f; // 当前速度
     private float distanceToTarget; // 与目标位置的距离--实时更新
