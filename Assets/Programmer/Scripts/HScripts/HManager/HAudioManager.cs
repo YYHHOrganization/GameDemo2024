@@ -30,6 +30,18 @@ public class HAudioManager : MonoBehaviour
 {
     public List<HSoundBase> sounds;
     public static HAudioManager instance;
+    public static HAudioManager Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                instance = FindObjectOfType<HAudioManager>();
+            }
+
+            return instance;
+        }
+    }
     private Dictionary<string, HSoundBase> soundDict = new Dictionary<string, HSoundBase>();
 
     public void SetAudioSourcesFromDesignTable(string audioDesignTablePath)
@@ -60,17 +72,18 @@ public class HAudioManager : MonoBehaviour
     
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-        DontDestroyOnLoad(gameObject);
-        
+        // if (instance == null)
+        // {
+        //     instance = this;
+        // }
+        // else
+        // {
+        //     Destroy(gameObject);
+        //     return;
+        // }
+        // DontDestroyOnLoad(gameObject);
+        instance = this;
+
         // foreach (HSoundBase s in sounds)
         // {
         //     s.source = gameObject.AddComponent<AudioSource>();
