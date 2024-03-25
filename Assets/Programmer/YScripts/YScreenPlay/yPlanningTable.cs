@@ -175,7 +175,7 @@ public class yPlanningTable : MonoBehaviour
     void ReadAudios()
     {
         string audiosLink = "Assets/Designer/CsvTable/Audios/AudioCSVFile.csv";
-        HAudioManager.instance.SetAudioSourcesFromDesignTable(audiosLink);
+        HAudioManager.Instance.SetAudioSourcesFromDesignTable(audiosLink);
     }
 
     public Dictionary<string, HOpenWorldItemStruct> worldItems = new Dictionary<string, HOpenWorldItemStruct>();
