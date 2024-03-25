@@ -46,7 +46,7 @@ public class YIInteractiveGroup : MonoBehaviour
         {
             //ShowChest();
             //这里应该写一个通用的结果处理函数
-            
+            HAudioManager.Instance.Play("InteractionCommon", this.gameObject);
             SetResultOn();
         }
         else if(isRecover)

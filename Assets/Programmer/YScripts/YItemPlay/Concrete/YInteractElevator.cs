@@ -28,6 +28,7 @@ public class YInteractElevator : YIInteractiveGroup
     {
         //电梯上升
         Debug.Log("电梯上升");
+        HAudioManager.Instance.Play("ElevatorUpAudio", smoothMover.gameObject);
 
         smoothMover.setSmoothMover(elevator.transform, elevator.transform.localPosition, target.localPosition, maxSpeed, acceleration, deceleration);
         smoothMover.StartMoving();

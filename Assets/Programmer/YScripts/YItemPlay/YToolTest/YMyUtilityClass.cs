@@ -34,6 +34,7 @@ public static class YMyUtilityClass
 
         //是否只判断y轴
         private bool isOnlyY = false;
+        
         public SmoothMover(Transform objectTransform, Vector3 start, Vector3 end, float maxSpeed, float acceleration, float deceleration)
         {
             this.objectTransform = objectTransform;
@@ -53,7 +54,6 @@ public static class YMyUtilityClass
             this.maxSpeed = maxSpeed;
             this.acceleration = acceleration;
             this.deceleration = deceleration;
-            
             
         }
         public void setSmoothMover(Transform objectTransform, Vector3 start, Vector3 end, float maxSpeed, float acceleration, float deceleration,bool isOnlyY)
@@ -103,8 +103,9 @@ public static class YMyUtilityClass
                     {
                         objectTransform.localPosition = new Vector3(objectTransform.localPosition.x,end.y,objectTransform.localPosition.z);
                     }
+                    HAudioManager.Instance.EaseOutAndStop(gameObject);
                     isMoving = false;
-                    Debug.Log("到达目的地");
+                    Debug.Log("到达目的地" + gameObject.name);
                     return;
                 }
                 // 计算当前移动时间

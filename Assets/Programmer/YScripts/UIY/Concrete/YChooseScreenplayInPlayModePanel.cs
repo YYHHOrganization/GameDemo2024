@@ -47,7 +47,7 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
             ConfirmScreenplay();
             Pop();
             Push(new YMainPlayModePanel());
-            
+            HAudioManager.Instance.Play("PlayWithPuppetMusic", HAudioManager.Instance.gameObject);
             
             // //设置为半屏
             // YPlayModeController.Instance.SetCameraLayout(2);

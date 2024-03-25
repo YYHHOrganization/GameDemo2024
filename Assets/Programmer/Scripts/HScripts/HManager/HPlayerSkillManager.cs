@@ -61,6 +61,7 @@ public class HPlayerSkillManager : MonoBehaviour
         {
             //Debug.Log("Space");
             SkillScanningTerrian();
+            HAudioManager.Instance.Play("SweepSceneMusic", this.gameObject);
         }
     }
     

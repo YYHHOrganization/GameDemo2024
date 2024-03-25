@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using DG.Tweening;
 using UnityEngine.Audio;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -114,7 +115,12 @@ public class HAudioManager : MonoBehaviour
         }
         else
         {
+            //ease out, ease in
             audioSource.Stop();
+        }
+        if(!soundDict.ContainsKey(name))
+        {
+            return;
         }
         HSoundBase s = soundDict[name];
         
@@ -127,6 +133,7 @@ public class HAudioManager : MonoBehaviour
         SetAudioSource(audioSource, s);
         audioSource.Play();
     }
+    
 
     public void Stop(GameObject go)
     {
@@ -137,4 +144,21 @@ public class HAudioManager : MonoBehaviour
             audioSource.Stop();
         }
     }
+
+    public void EaseOutAndStop(GameObject go)
+    {
+        AudioSource audioSource = go.GetComponent<AudioSource>();
+        if (audioSource)
+        {
+            StartCoroutine(EaseOutAudioAndStop(audioSource));
+        }
+    }
+    
+    IEnumerator EaseOutAudioAndStop(AudioSource audioSource)
+    {
+        audioSource.DOFade(0, 1);
+        yield return new WaitForSeconds(1);
+        audioSource.Stop();
+    }
+    
 }

@@ -70,6 +70,7 @@ public class YEntershortcutKey : MonoBehaviour
         YGameRoot.Instance.Pop();
         YGameRoot.Instance.Push(new YChooseScreenplayInPlayModePanel());
         YPlayModeController.Instance.SetCameraLayout(2);
+        HAudioManager.Instance.Play("SelectPuppetActionMusic", HAudioManager.Instance.gameObject);
     }
     private void OnEnable()
     {

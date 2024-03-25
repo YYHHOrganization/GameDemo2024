@@ -39,6 +39,7 @@ public class YInteractDoor : YIInteractiveGroup
     }
     public override void SetResultOn()
     {
+        HAudioManager.Instance.Play("DoorsOpenAudio", this.gameObject);
         Debug.Log("门开启");
         // smoothMoverLeft.setSmoothMover(doorLeft.transform, doorLeft.transform.position, targetLeft.position, maxSpeed, acceleration, deceleration);
         smoothMoverLeft.setSmoothMover(doorLeft.transform, doorLeft.transform.localPosition, targetLeft.localPosition, maxSpeed, acceleration, deceleration);
@@ -52,6 +53,7 @@ public class YInteractDoor : YIInteractiveGroup
     }
     public override void SetResultOff()
     {
+        HAudioManager.Instance.Play("DoorsCloseAudio", this.gameObject);
         Debug.Log("门关闭");
         // smoothMoverLeft.setSmoothMover(doorLeft.transform, doorLeft.transform.position, doorLeftOrigin, maxSpeed, acceleration, deceleration);
         // smoothMoverLeft.StartMoving();

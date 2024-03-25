@@ -62,11 +62,18 @@ public class HItemShowPanel : BasePanel
 
     public void SetMiddlePanelDeactivateFadeOff()
     {
-        middleShowPanel.gameObject.transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), 0.4f);
+        if (middleShowPanel)
+        {
+            middleShowPanel.gameObject.transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), 0.4f);
+        }
     }
     
     public void ShowItemsMiddlePanel(Sprite image, string name, int count, string description)
     {
+        if (!showPreciousMiddlePanel)
+        {
+            return;
+        }
         GameObject anItem = GameObject.Instantiate(Resources.Load<GameObject>(middleShowItemPrefabLink), showPreciousMiddlePanel.transform);
         anItem.transform.DOScale(new Vector3(0.9f, 0.9f, 1.0f), 0.2f).From(true);
         anItem.GetComponent<CanvasGroup>().DOFade(1.0f, 0.2f);

@@ -43,14 +43,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c451de31106db64c81a97723d976159, type: 3}
   m_Name: HPostProcessingClip
   m_EditorClassIdentifier: 
-  globalVolumeField: ColorAdjustments
+  globalVolumeField: HRadialBlurSettings
   attributes:
-  - saturation
+  - blurRadius
+  - blurIterations
   values:
-  - 0
-  shouldLerp: 00000000
+  - 0.4
+  - 35
+  shouldLerp: 0100000001000000
   defaultValues:
   - 0
+  - 20
   postProcessingType: 0
 --- !u!114 &-8652573009566066712
 MonoBehaviour:
@@ -66,12 +69,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalVolumeField: ColorAdjustments
   attributes:
-  - saturation
+  - contrast
   values:
-  - 0
-  shouldLerp: 00000000
+  - 95
+  shouldLerp: 01000000
   defaultValues:
-  - 0
+  - 5
   postProcessingType: 0
 --- !u!114 &-8365162141020146411
 MonoBehaviour:
@@ -1425,8 +1428,8 @@ MonoBehaviour:
   attributes:
   - saturation
   values:
-  - 0
-  shouldLerp: 00000000
+  - -100
+  shouldLerp: 01000000
   defaultValues:
   - 0
   postProcessingType: 0
@@ -1458,12 +1461,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c451de31106db64c81a97723d976159, type: 3}
   m_Name: HPostProcessingClip
   m_EditorClassIdentifier: 
-  globalVolumeField: ColorAdjustments
+  globalVolumeField: LensDistortion
   attributes:
-  - saturation
+  - intensity
   values:
-  - 0
-  shouldLerp: 00000000
+  - 0.85
+  shouldLerp: 01000000
   defaultValues:
   - 0
   postProcessingType: 0
@@ -1522,9 +1525,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of FastRun
+  m_Name: AnimationPlayableAsset of RunCartoon
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
+  m_Clip: {fileID: -203655887218126122, guid: 086ee47614ddfdc41ac2a86f94945c6c, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -1564,8 +1567,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendShapeValue:
   - 100
-  - 100
-  blendShapeIndex: 0500000017000000
+  blendShapeIndex: 00000000
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2026,9 +2028,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of FastRun
+  m_Name: AnimationPlayableAsset of Drinking
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
+  m_Clip: {fileID: 7400000, guid: 8f2c6396e2de6d145976c125e9711db1, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -2048,9 +2050,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of Reacting
+  m_Name: AnimationPlayableAsset of Creep
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: -203655887218126122, guid: b88e8bb7c8e31484393625aab3e8780f, type: 3}
+  m_Clip: {fileID: 7400000, guid: 781609ffa2d5e0946ad26c99a7ce2b66, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -2514,9 +2516,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of FastRun
+  m_Name: AnimationPlayableAsset of Creep
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
+  m_Clip: {fileID: 7400000, guid: 781609ffa2d5e0946ad26c99a7ce2b66, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1

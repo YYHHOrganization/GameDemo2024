@@ -45,6 +45,7 @@ public class YInteract2AndChest :YIInteractiveGroup
         GetChestAndSetTrans();
         // 显示宝箱的逻辑
         chest.SetActive(true);
+        HAudioManager.Instance.Play("ChestShowAudio", this.gameObject);
     }
 
     private void HideChest()

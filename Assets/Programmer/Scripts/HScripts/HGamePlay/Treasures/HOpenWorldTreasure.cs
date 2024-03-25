@@ -68,8 +68,10 @@ public class HOpenWorldTreasure : MonoBehaviour
         {
             string itemId = items[i];
             var thisItem = yPlanningTable.Instance.worldItems[itemId];
+            
             string itemName = thisItem.chineseName;
             int itemNum = int.Parse(nums[i]);
+            HItemCounter.Instance.AddItem(itemId, itemNum);
             Debug.Log("宝箱类型是： " + treasure.treasureType + ", 开出了 "+ itemNum + "个" + itemName);
             //todo:这些数据可以存于数据库当中，或者暂存在本地，但要给UI提供要显示的东西
             ItemToShow itemToShow = new ItemToShow(itemName, itemNum, thisItem.UIIconLink, thisItem.isExpensive, thisItem.description);
@@ -108,6 +110,7 @@ public class HOpenWorldTreasure : MonoBehaviour
             var thisItem = yPlanningTable.Instance.worldItems[itemId];
             string itemName = thisItem.chineseName;
             
+            HItemCounter.Instance.AddItem(itemId, itemNum);
             Debug.Log("随机开出的东西 " + treasure.treasureType + ", 开出了 "+ itemNum + "个" + itemName);
             ItemToShow itemToShow = new ItemToShow(itemName,itemNum, thisItem.UIIconLink, thisItem.isExpensive, thisItem.description);
             itemsToShow.Add(itemToShow);
@@ -121,6 +124,7 @@ public class HOpenWorldTreasure : MonoBehaviour
     {
         if (treasure != null)
         {
+            HAudioManager.Instance.Play("OpenChestMusic", gameObject);
             GiveoutTreasures();
             StartCoroutine(UIShowTreasures());
         }
@@ -162,7 +166,10 @@ public class HOpenWorldTreasure : MonoBehaviour
                 AsyncOperationHandle<Sprite> handle =
                     Addressables.LoadAssetAsync<Sprite>(item.ItemImageLink);
                 yield return handle;
-                panel.ShowItemsMiddlePanel(handle.Result, item.ItemChineseName, item.Number, item.Description);
+                if (panel!=null)
+                {
+                    panel.ShowItemsMiddlePanel(handle.Result, item.ItemChineseName, item.Number, item.Description);
+                }
                 yield return new WaitForSeconds(0.02f);
             }
         }
