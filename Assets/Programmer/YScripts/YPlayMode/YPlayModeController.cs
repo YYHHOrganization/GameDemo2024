@@ -154,7 +154,8 @@ public class YPlayModeController : MonoBehaviour
     YNameUI yNameUiSctipt;
     public void SetNameUILabel(object sender, YTriggerGameObjectEventArgs e)
     {
-        GameObject destination = e.gameObject;
+        //GameObject destination = e.gameObject;
+        Transform showUI = e.showUIPlace;
         if (e.activated)
         {
             //如果showpalceui==null
@@ -175,7 +176,7 @@ public class YPlayModeController : MonoBehaviour
 
             if (yNameUiSctipt != null)
             {
-                yNameUiSctipt.SetAttribute("Q",destination.transform,PlayerCamera,1f);
+                yNameUiSctipt.SetAttribute("Q",showUI,PlayerCamera);
                 ShowPlaceUI.SetActive(true);
             }
             

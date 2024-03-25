@@ -34,8 +34,9 @@ public class YNameUI : MonoBehaviour
         this.ShowPlaceTrans = ShowPlaceTrans;
         this.camera = camera;
         this.name = name;
-        this.transform.position = new Vector3(ShowPlaceTrans.position.x, ShowPlaceTrans.position.y+0.5f,
-            ShowPlaceTrans.position.z);//如果这个目的地会移动的话就要放在Update里面
+        // this.transform.position = new Vector3(ShowPlaceTrans.position.x, ShowPlaceTrans.position.y,
+        //     ShowPlaceTrans.position.z);//如果这个目的地会移动的话就要放在Update里面
+        this.transform.position = ShowPlaceTrans.position;
         //改名 寻找自己下面的节点name
         nameUI = this.transform.Find("Name").GetComponent<TMP_Text>();//这句话的意思是找到自己下面的节点name
         nameUI.text = name;

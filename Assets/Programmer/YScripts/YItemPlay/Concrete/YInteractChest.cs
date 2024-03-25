@@ -20,7 +20,7 @@ public class YInteractChest : YIInteractiveGroup
     {
         Debug.Log("宝箱开启");
         animator.SetBool("isOpen", true);
-        YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(false, triggers[0]);//如果是靠近宝箱打开 只会有一个trigger
+        YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(false, triggers[0],null);//如果是靠近宝箱打开 只会有一个trigger
         HOpenWorldTreasure tmp = chest.GetComponent<HOpenWorldTreasure>();
         if (tmp)
         {
@@ -33,9 +33,9 @@ public class YInteractChest : YIInteractiveGroup
         
     }
     
-    public override void EnterField(bool isEnter, GameObject TriggergameObject)
+    public override void EnterField(bool isEnter, GameObject TriggergameObject,Transform showUIPlace)
     {
-        base.EnterField(isEnter, TriggergameObject);
+        base.EnterField(isEnter, TriggergameObject,showUIPlace);
         if (isEnter)
         {
             animator.SetBool("isEnterField", true);

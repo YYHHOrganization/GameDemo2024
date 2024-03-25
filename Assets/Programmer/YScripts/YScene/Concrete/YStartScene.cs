@@ -15,7 +15,8 @@ public class YStartScene : YSceneState
         
         //Debug.Log("进入" + m_SceneName);
         panelManager = new PanelManager();//这里是不是可优化？
-        panelManager.Push(new StartPanel());
+        // panelManager.Push(new StartPanel());
+        panelManager.Push(new YLoadPanel());
         YGameRoot.Instance.SetAction(panelManager.Push);
         YGameRoot.Instance.SetAction(panelManager.Pop);
         
@@ -42,7 +43,8 @@ public class YStartScene : YSceneState
         //Debug.Log(m_SceneName + "加载完毕");
         
         //加载完之后执行的操作：加载UI
-        panelManager.Push(new StartPanel());
+        // panelManager.Push(new StartPanel());
+        panelManager.Push(new YLoadPanel());
         YGameRoot.Instance.SetAction(panelManager.Push);//这句话等价于用委托链表：YGameRoot.Instance.Push += panelManager.Push！！
         YGameRoot.Instance.SetAction(panelManager.Pop);
     }

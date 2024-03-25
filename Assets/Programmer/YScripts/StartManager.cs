@@ -12,7 +12,8 @@ public class StartManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        panelManager.Push(new StartPanel());
+        // panelManager.Push(new StartPanel());
+        panelManager.Push(new YLoadPanel());
     }
 
     // Update is called once per frame
