@@ -68,6 +68,7 @@ public class HAudioManager : MonoBehaviour
             soundDict.Add(sound.name, sound);
         }
         Play("BeginGameMusic", this.gameObject);
+        YTriggerEvents.RaiseOnLoadResourceStateChanged(true);
     }
     
     private void Awake()

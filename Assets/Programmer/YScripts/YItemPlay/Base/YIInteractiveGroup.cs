@@ -68,7 +68,7 @@ public class YIInteractiveGroup : MonoBehaviour
     }
     
     // public void EnterField(bool isEnter)
-    public virtual void EnterField(bool isEnter, GameObject TriggergameObject)
+    public virtual void EnterField(bool isEnter, GameObject TriggergameObject,Transform showUIPlace)
     {
         if (isEnter)
         {
@@ -76,11 +76,11 @@ public class YIInteractiveGroup : MonoBehaviour
             {
                 return;
             }
-            YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(true, TriggergameObject);
+            YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(true, TriggergameObject,showUIPlace);
         }
         else
         {
-            YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(false, TriggergameObject);
+            YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(false, TriggergameObject,showUIPlace);
         }
     }
 
