@@ -33,6 +33,8 @@ public class YPlayModeController : MonoBehaviour
     private GameObject FreeLookCamera;
     GameObject PlayerCamera; 
     
+    GameObject PuppetCamera;
+    
     public bool detectModeIsOn = false;
     public void SetCharacter(int characterIndex)
     {
@@ -60,7 +62,12 @@ public class YPlayModeController : MonoBehaviour
         GameObject CameraLayout = Instantiate(Resources.Load<GameObject>(pathCameraLayout));
         CameraLayoutManager = CameraLayout.GetComponent<HCameraLayoutManager>();
         CameraLayoutManager.playerCamera = PlayerCamera.GetComponent<Camera>();
-        CameraLayoutManager.puppetCamera = GameObject.Find("PuppetCamera").GetComponent<Camera>();
+        // CameraLayoutManager.puppetCamera = GameObject.Find("PuppetCamera").GetComponent<Camera>();
+        if (PuppetCamera == null)
+        {
+            PuppetCamera = GameObject.Find("PuppetCamera");
+        }
+        CameraLayoutManager.puppetCamera = PuppetCamera.GetComponent<Camera>();
         CameraLayoutManager.SetPlayerCameraWholeScreen();
         // CameraLayoutManager.SetPuppetCameraLittle();
     }
@@ -87,7 +94,6 @@ public class YPlayModeController : MonoBehaviour
                 break;
         }
     }
-    
     
     public List<YNameUI> PlaceUIToShowScriptsList = new List<YNameUI>();
     public GameObject CanVasUI;
@@ -190,6 +196,15 @@ public class YPlayModeController : MonoBehaviour
            
         }
        
+    }
+
+    public void EnterNewLevel()
+    {
+        Destroy(curCharacter);
+        Destroy(FreeLookCamera);
+        Destroy(PlayerCamera);
+        Destroy(CameraLayoutManager.gameObject);
+        
     }
    
 }

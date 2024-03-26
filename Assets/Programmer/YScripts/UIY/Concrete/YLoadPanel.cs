@@ -30,6 +30,11 @@ public class YLoadPanel : BasePanel
         sliderChange = slider.GetComponent<YSliderChange>();
         sliderChange.SetSliderOn(0,0.9f,loadFakeTime,slider,this);  
     }
+    public override void OnExit()
+    {
+        base.OnExit();
+        YTriggerEvents.OnLoadResourceStateChanged -= Loadend;
+    }
     void ShowEnterGameButton()
     {
         if (enterGameButton == null)
@@ -48,6 +53,12 @@ public class YLoadPanel : BasePanel
     }
     void Loadend(object sender, YTriggerEventArgs e)
     {
+        if (sliderChange == null)
+        {
+            slider = uiTool.GetOrAddComponentInChilden<Slider>("LoadSlider");
+            sliderChange = slider.GetComponent<YSliderChange>();
+        }
+        
         sliderChange.StopCoroutine("CountDown");
         sliderChange.SetSliderOn(0.9f,1f,loadFinalTime,slider,this);
         //等待0.1s后

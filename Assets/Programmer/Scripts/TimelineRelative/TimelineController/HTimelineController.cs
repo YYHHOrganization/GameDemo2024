@@ -575,4 +575,12 @@ public class HTimelineController : MonoBehaviour
         blendshapeController.ResetBlendshape( currentSkinnedMeshRenderer,characterIndex);
     }
     
+    public void EnterNewLevel()
+    {
+        Destroy(target);
+        // Destroy(currentSkinnedMeshRenderer);
+        // Destroy(playableDirector);
+        // Destroy(this);
+    }
+    
 }
