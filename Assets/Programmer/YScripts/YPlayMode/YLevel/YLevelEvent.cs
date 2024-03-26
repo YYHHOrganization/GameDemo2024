@@ -14,7 +14,8 @@ public class YLevelEvent : MonoBehaviour
             //假设关卡的名称即为对应场景的名称
             //Application.LoadLevel(level.Name);
             Debug.Log ("当前选择的关卡是:"+level.Name);
-            YLevelManager.LoadAndBeginLevel(level.Name);
+            //YLevelManager.LoadAndBeginLevel(level.Name);
+            YLevelManager.SetCurrentLevelIndex(int.Parse(level.ID));
         }
         else
         {

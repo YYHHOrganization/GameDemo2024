@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Xml;
 public static class YLevelManager
 {
-    /// <summary>
+    static int currentLevelIndex = 0;
+    static List<string> levelnames;
+    /// <summary> 
     /// 加载Xml文件 
     /// </summary>
     /// <returns>The levels.</returns>
     public static List<YLevel> LoadLevels()
     {
+        levelnames = new List<string>();
         //创建Xml对象
         XmlDocument xmlDoc = new XmlDocument();
         //如果本地存在配置文件则读取配置文件
@@ -25,7 +28,6 @@ public static class YLevelManager
         //     xmlDoc.Load(filePath);
         // }
         xmlDoc.Load(filePath);
-        
         
         XmlElement root = xmlDoc.DocumentElement;
         XmlNodeList levelsNode = root.SelectNodes("/levels/level");
@@ -47,6 +49,8 @@ public static class YLevelManager
             }
 
             levels.Add(l);
+            
+            levelnames.Add(l.Name);
         }
 
         return levels;
@@ -83,6 +87,20 @@ public static class YLevelManager
         xmlDoc.Save (filePath);
     }
     
+    
+    public static void NextLevel()
+    {
+        currentLevelIndex++;
+        if (currentLevelIndex >= levelnames.Count)
+        {
+            Debug.Log("已经是最后一关了");
+            return;
+        }
+        else
+        {
+            WinAndEnterLevelPanel(levelnames[currentLevelIndex]);
+        }
+    }
     public static void WinAndEnterLevelPanel(string levelName)
     {
         //如果此时应该进入下一个关卡，那么应该是先进入选择关卡界面？？还是直接出现panel，显示下一关
@@ -91,7 +109,6 @@ public static class YLevelManager
         YGameRoot.Instance.Pop();//有可能需要popall
         YGameRoot.Instance.Push(new YWinAndNextLevelPanel(levelName));
         
-        
         //解锁下一关
         YLevelManager.SetLevels(levelName,true);
         //然后应该是加载下一个关卡所有所需要的资源
@@ -99,6 +116,7 @@ public static class YLevelManager
     
     public static void LoadAndBeginLevel(string levelName)
     {
+        int levelID = levelnames.IndexOf(levelName);
         //如果点击新的关卡
         Debug.Log("LoadAndBeginLevel"+levelName);
         //加载关卡 这里要做的事情很多 比如要加载关卡的资源，加载关卡的UI，加载关卡的数据等等
@@ -107,8 +125,33 @@ public static class YLevelManager
         
         //删掉木偶
         YScreenPlayController.Instance.EnterNewLevel();
+        
+        yPlanningTable.Instance.EnterNewLevel(levelID);
     }
     
+    public static void LoadAndBeginLevel()
+    {
+        string levelName = levelnames[currentLevelIndex];
+        int levelID = currentLevelIndex;
+        //如果点击新的关卡
+        Debug.Log("LoadAndBeginLevel"+levelName);
+        //加载关卡 这里要做的事情很多 比如要加载关卡的资源，加载关卡的UI，加载关卡的数据等等
+        //删掉原来的角色 
+        YPlayModeController.Instance.EnterNewLevel();
+        
+        //删掉木偶
+        YScreenPlayController.Instance.EnterNewLevel();
+        
+        yPlanningTable.Instance.EnterNewLevel(levelID);
+    }
+    public static void SetCurrentLevelIndex(int index)
+    {
+        currentLevelIndex = index;
+    }
+    public static void SetCurrentLevelName(string name)
+    {
+        currentLevelIndex = levelnames.IndexOf(name);
+    }
     
     
     

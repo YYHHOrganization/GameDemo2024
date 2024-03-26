@@ -50,7 +50,7 @@ public class YScreenPlayController : MonoBehaviour
 
     private void AddInListAndEnter(YScreenplayBase screenplay)
     {
-        screenplayList.Add(screenplay);
+        //screenplayList.Add(screenplay);这个好像完全没用啊
         screenplay.OnEnter();
     }
 
@@ -68,6 +68,12 @@ public class YScreenPlayController : MonoBehaviour
                 new YAnimationSP(yPlanningTable.Instance.selectNames2Id["animation" + i], selectId["animation" + i],
                     timelineController);
             AddInListAndEnter(screenplayAnimation);
+            
+            //destination
+            YScreenplayBase screenplayDestination = new YDestinationSP(selectId["character"],
+                yPlanningTable.Instance.selectNames2Id["destination" + i], selectId["destination" + i],
+                timelineController);
+            AddInListAndEnter(screenplayDestination);
         }
 
         YScreenplayBase screenplay = new YCharacterSP(yPlanningTable.Instance.selectNames2Id["character"],
@@ -87,12 +93,6 @@ public class YScreenPlayController : MonoBehaviour
                 timelineController);
             AddInListAndEnter(screenplayBlendshape);
 
-            //destination
-            YScreenplayBase screenplayDestination = new YDestinationSP(selectId["character"],
-                yPlanningTable.Instance.selectNames2Id["destination" + i], selectId["destination" + i],
-                timelineController);
-            AddInListAndEnter(screenplayDestination);
-
             //特效
             YScreenplayBase screenplayEffect = new HPostProcessingSP(
                 yPlanningTable.Instance.selectNames2Id["effect" + i], selectId["effect" + i], timelineController);
@@ -111,7 +111,13 @@ public class YScreenPlayController : MonoBehaviour
 
     public void EnterNewLevel()
     {
-        timelineController.EnterNewLevel();
+        if (timelineController)
+        {
+            timelineController.EnterNewLevel();
+            //当进入新的关卡时，应当清空所有的List
+        }
+        
+        
     }
 
 

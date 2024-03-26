@@ -13,8 +13,15 @@ public class HItemShowPanel : BasePanel
     private GameObject leftScrollPanel;
     private GameObject middleShowPanel;
     private GameObject showPreciousMiddlePanel;
+    private GameObject giveOutItemPanel;
+    private GameObject showPreciousGiveoutPanel;
     private string leftScrollItemPrefabLink = "Prefabs/UI/singleUnit/AnItemGroup";
     private string middleShowItemPrefabLink = "Prefabs/UI/singleUnit/BigItemShowGroup";
+    private string giveOutItemPrefabLink = "Prefabs/UI/singleUnit/GiveoutItemGroup";
+    private Button cancelButton;
+    private Button confirmButton;
+
+    private YInteractPortal portal;
     
     public override void OnEnter()
     {
@@ -22,6 +29,62 @@ public class HItemShowPanel : BasePanel
         middleShowPanel = uiTool.GetOrAddComponentInChilden<Transform>("MiddleShowPanel").gameObject;
         middleShowPanel.gameObject.SetActive(false);
         showPreciousMiddlePanel = middleShowPanel.transform.Find("ShowPreciousItemPanel").gameObject;
+        
+        giveOutItemPanel = uiTool.GetOrAddComponentInChilden<Transform>("GiveOutPanel").gameObject;
+        giveOutItemPanel.gameObject.SetActive(false);
+        showPreciousGiveoutPanel = giveOutItemPanel.transform.Find("ItemShowPanel").gameObject;
+        
+        cancelButton = giveOutItemPanel.transform.Find("CancelButton").GetComponent<Button>();
+        confirmButton = giveOutItemPanel.transform.Find("ConfirmButton").GetComponent<Button>();
+        cancelButton.onClick.AddListener(OnCancelButtonClick);
+        
+        confirmButton.onClick.AddListener(OnConfirmButtonClick);
+    }
+    
+    private void OnCancelButtonClick()
+    {
+        SetGiveOutPanelActive(false);
+        YPlayModeController.Instance.LockPlayerInput(false);
+        YTriggerEvents.RaiseOnMouseLockStateChanged(true);
+        Pop();
+    }
+    
+    private void OnConfirmButtonClick()
+    {
+        bool result = portal.CheckCountIsRightOrNot();
+        if (result)
+        {
+            Debug.Log("效果正确");
+            SetGiveOutPanelActive(false);
+            YPlayModeController.Instance.LockPlayerInput(false);
+            YTriggerEvents.RaiseOnMouseLockStateChanged(true);
+            Pop();
+            
+            //TEST
+            YLevelManager.NextLevel();
+        }
+        else
+        {
+            Debug.Log("效果不正确");
+        }
+        
+    }
+
+    public void ShowGiveOutItems(Sprite image, int needCount, int actualCount, YInteractPortal portal)
+    {
+        this.portal = portal;
+        GameObject anItem = GameObject.Instantiate(Resources.Load<GameObject>(giveOutItemPrefabLink), showPreciousGiveoutPanel.transform);
+        anItem.transform.DOLocalMoveX(0, 0.5f).From(true);
+        Transform itemIcon = anItem.transform.Find("IconImage");
+        if (itemIcon != null)
+        {
+            itemIcon.GetComponent<Image>().sprite = image;
+        }
+        else
+        {
+            Debug.LogError("itemIcon is null");
+        }
+        anItem.GetComponentInChildren<TMP_Text>().text = actualCount + " / " + needCount;
     }
 
     public void ShowItemsLeftScroll(Sprite image, string name, int count)
@@ -58,6 +121,12 @@ public class HItemShowPanel : BasePanel
     {
         middleShowPanel.gameObject.transform.localScale = new Vector3(1.0f,1.0f,1.0f);
         middleShowPanel.SetActive(active);
+    }
+
+    public void SetGiveOutPanelActive(bool active)
+    {
+        giveOutItemPanel.gameObject.SetActive(active);
+        
     }
 
     public void SetMiddlePanelDeactivateFadeOff()

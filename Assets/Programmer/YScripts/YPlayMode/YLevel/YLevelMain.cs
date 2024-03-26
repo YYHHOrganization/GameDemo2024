@@ -78,11 +78,6 @@ public class YLevelMain : MonoBehaviour
     //test 测试按下L，直接进入赢了界面 测试！！
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            Debug.Log("按下了L键");
-            YLevelManager.WinAndEnterLevelPanel("level1");
-        }
     }
     
     

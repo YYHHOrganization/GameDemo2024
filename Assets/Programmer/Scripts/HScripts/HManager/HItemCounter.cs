@@ -27,7 +27,7 @@ public class HItemCounter : MonoBehaviour
         instance = this;
     }
     
-    public Dictionary<string, int> worldItemCounts = new Dictionary<string, int>();
+    private Dictionary<string, int> worldItemCounts = new Dictionary<string, int>();
     
     private void DebugDictionary()
     {

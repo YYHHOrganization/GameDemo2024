@@ -21,6 +21,7 @@ public class YLevelPanel : BasePanel
         
         uiTool.GetOrAddComponentInChilden<Button>("OkButton").onClick.AddListener(()=>
         {
+            YLevelManager.LoadAndBeginLevel();
             Debug.Log("点击了开始按钮");
              Pop();
              Push(new YChooseCharacterPanel());

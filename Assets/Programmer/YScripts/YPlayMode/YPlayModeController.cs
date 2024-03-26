@@ -200,10 +200,22 @@ public class YPlayModeController : MonoBehaviour
 
     public void EnterNewLevel()
     {
-        Destroy(curCharacter);
-        Destroy(FreeLookCamera);
-        Destroy(PlayerCamera);
-        Destroy(CameraLayoutManager.gameObject);
+        if (curCharacter)
+        {
+            Destroy(curCharacter);
+        }
+        if (FreeLookCamera)
+        {
+            Destroy(FreeLookCamera);
+        }
+        if (PlayerCamera)
+        {
+            Destroy(PlayerCamera);
+        }
+        if (CameraLayoutManager)
+        {
+            Destroy(CameraLayoutManager.gameObject);
+        }
         
     }
    

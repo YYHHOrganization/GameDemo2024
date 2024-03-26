@@ -62,12 +62,9 @@ public class YNameUI : MonoBehaviour
     }
     private void LateUpdate()
     {
-        
-        this.transform.rotation = camera.transform.rotation;
-        
-        
-        
-        // this.transform.LookAt(ShowPlaceTrans.position + camera.transform.rotation * Vector3.forward,camera.transform.rotation * Vector3.up);
-        // this.transform.LookAt(ShowPlaceTrans.position + camera.transform.rotation * Vector3.forward,camera.transform.rotation * Vector3.up);
+        if(camera)
+        {
+            this.transform.rotation = camera.transform.rotation;
+        }
     }
 }

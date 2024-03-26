@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 public class yPlanningTable : MonoBehaviour
 {
     
-    int clipCount;//代表timeline中片段的数量，最终决定于玩家增减的数量，是在玩家点击确定之后会确定
+    public int clipCount;//代表timeline中片段的数量，最终决定于玩家增减的数量，是在玩家点击确定之后会确定
     //静态类
     public static yPlanningTable Instance{get;private set;}
     //获取Eff
@@ -132,9 +132,10 @@ public class yPlanningTable : MonoBehaviour
         ReadPostProcessingCSV();
         ReadAnimationCSV("Assets/Designer/CsvTable/AnimationCSVFile.csv",
             animationNoMoveList,animationNoMoveListInUI,animationMoveList,animationMoveListInUI);
-        ReadDestinationCSV("Assets/Designer/CsvTable/DestinationCSVFile.csv",
-            DestinationList,DestinationUINameList);
-        preKeepDestination();
+        ReadDestinationCSV("Assets/Designer/CsvTable/DestinationCSVFile.csv");
+        
+        
+        
         ReadCameraCSV("Assets/Designer/CsvTable/CameraCSVFile.csv",
             cameraNamesList,cameraUINameList,cameraStructs);
         ReadOpenWorldThings();
@@ -411,8 +412,16 @@ public class yPlanningTable : MonoBehaviour
         }
     }
 
-    void ReadDestinationCSV(string filePath,
-        List<string> destinationList, List<string> destinationListInUI
+
+    struct DestinationStruct
+    {
+        public string destinationName;
+        public string destinationUIName;
+        public int levelID;
+    }
+    List<DestinationStruct> destinationStructs = new List<DestinationStruct>();
+    
+    void ReadDestinationCSV(string filePath
         )
     {
         using (var reader = new StreamReader(filePath))
@@ -429,12 +438,31 @@ public class yPlanningTable : MonoBehaviour
                 var values = line.Split(',');
                 string destinationName = values[0];
                 string uiName = values[1];
-
-                destinationList.Add(destinationName);
-                destinationListInUI.Add(uiName);
+                
+                DestinationStruct newDestination = new DestinationStruct();
+                newDestination.destinationName = destinationName;
+                newDestination.destinationUIName = uiName;
+                newDestination.levelID = int.Parse(values[2]);
+                
+                destinationStructs.Add(newDestination);
             }
         }
         //UpdateDestinationList();
+        
+    }
+    
+    void UpdateDestinationList(int levelID,List<string> destinationList, List<string> destinationListInUI)
+    {
+        destinationList.Clear();
+        destinationListInUI.Clear();
+        foreach (DestinationStruct destination in destinationStructs)
+        {
+            if (destination.levelID == levelID)
+            {
+                destinationList.Add(destination.destinationName);
+                destinationListInUI.Add(destination.destinationUIName);
+            }
+        }
         UpdateTableList("destination",destinationList,destinationListInUI);
     }
     public void ReadAnimationCSV(string filePath, 
@@ -617,16 +645,6 @@ public class yPlanningTable : MonoBehaviour
         //遍历destination[selectId["destination1"]]; 并存储于一个list中
         //然后在timeline中的每个destination中的位置都是这个list中的位置
         
-        // for (int i = 0; i < SelectTable[selectNames2Id["destination1"]].Count; i++)
-        // {
-        //     int id = selectNames2Id["destination1"];
-        //     string destinationName = SelectTable[id][i];
-        //     // Debug.Log("destinationName: " + destinationName);
-        //     
-        //     DestinationGoList.Add(GameObject.Find(destinationName));
-        //     DestinationUINameList.Add(UISelectTable[id][i]);
-        // }
-        
         for (int i = 0; i < DestinationList.Count; i++)
         {
             DestinationGoList.Add(GameObject.Find(DestinationList[i]));
@@ -725,26 +743,6 @@ public class yPlanningTable : MonoBehaviour
             // }
         }
     }
-    // void UpdateDestinationList()
-    // {
-    //     for(int i = 1; i <= 5; i++)
-    //     {
-    //         //选择了SelectTable中id为多少的那个动画选项框 是第一个动画选项框还是第二个第三个，这里的chooseid是2，3，4（因为前面有个角色选项框）
-    //         int chooseid = selectNames2Id["destination" + i];
-    //         UpdateSelectTable(chooseid,DestinationList);
-    //         UpdateUISelectTable(chooseid,DestinationUINameList);
-    //     }
-    // }
-    //
-    // void UpdateCameraList()
-    // {
-    //     for(int i = 1; i <= 5; i++)
-    //     {
-    //         int chooseid = selectNames2Id["camera" + i];
-    //         UpdateSelectTable(chooseid,cameraNamesList);
-    //         UpdateUISelectTable(chooseid,cameraUINameList);
-    //     }
-    // }
 
     void UpdateTableList(string name, List<string> nameList, List<string> nameListInUI)
     {
@@ -770,6 +768,11 @@ public class yPlanningTable : MonoBehaviour
     {
         selectId[name] = value;
     }
+
+    public GameObject GetCharacterGeneratePosition()
+    {
+        return DestinationGoList[0];//第一个位置 起点
+    }
     
     //开始运行timeline前 但是点击了确定之后这个脚本要做的
     public void BeforePlayTimeline()
@@ -794,6 +797,15 @@ public class yPlanningTable : MonoBehaviour
     }
 
 
-    
+    public void EnterNewLevel(int levelID)
+    {
+        
+        //当进入新的关卡时，应当清空所有的List
+        isMoveList.Clear();
+        
+        UpdateDestinationList(levelID,DestinationList,DestinationUINameList);
+        preKeepDestination();
+        //Update 比如说地点
+    }
     
 }

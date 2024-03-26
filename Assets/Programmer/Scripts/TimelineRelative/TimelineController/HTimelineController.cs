@@ -57,6 +57,9 @@ public class HTimelineController : MonoBehaviour
     // }
     List<yPlanningTable.CameraStruct> cameraStructs = new List<yPlanningTable.CameraStruct>();
     
+    bool isEnd = false;
+    private bool startPlaying = false;
+    
     //根据索引设置对应的TimelineAsset，扩展后面可能有多幕的剧情
     public void SetTimelineAsset(int index)
     {
@@ -126,11 +129,20 @@ public class HTimelineController : MonoBehaviour
         //TestSetTimelineContentEverything();
         //PlayTheTimeline();
     }
-    
 
+
+    void SetCharacterGeneratePosition(GameObject character)
+    {
+        character.transform.position = yPlanningTable.Instance.GetCharacterGeneratePosition().transform.position;
+        //{"x":-72.88999938964844,"y":0.3799999952316284,"z":39.49800109863281}
+        
+    }
     //根据索引设置对应的角色
     public void ChangeCharacter(int index, GameObject character)
     {
+        //设置角色的生成位置
+        SetCharacterGeneratePosition(character);
+        
         characterIndex = index;
         target = character.gameObject;
         //修改对应track的角色，要求角色要有Animator组件
@@ -385,7 +397,7 @@ public class HTimelineController : MonoBehaviour
             
             //无用，后面的版本没问题可以把下面的删掉
             gooo.Add(go1);
-            //pringGIII(gooo);
+            
 
 
             //Debug.Log("destination  "+ yPlanningTable.Instance.GetDestination(selectId).position);
@@ -442,7 +454,7 @@ public class HTimelineController : MonoBehaviour
             TimelineClipIndex.duration = testAnimationDuration +1;
         }
     }
-    private bool startPlaying = false;
+    
 
     public void ChangePostProcessingWithIndexAndRenderFeature(int indexInTimeline, int selectId,
         ScriptableRendererFeature unitRendererFeature)
@@ -452,11 +464,12 @@ public class HTimelineController : MonoBehaviour
     
     public void PlayTheTimeline()
     {
-       
-        
         playableDirector.playableAsset = currentTimelineAsset;
         
+        //从头开始播放
+        playableDirector.time = 0;
         playableDirector.Play();//playableDirector.Pause();
+        
         //playableDirector.time = 5;
         startPlaying = true;
         
@@ -474,6 +487,7 @@ public class HTimelineController : MonoBehaviour
     public void BeforePlayTimeline()
     {
         cameraStructs = yPlanningTable.Instance.cameraStructs;
+        
     }
 
     private void Update()
@@ -481,7 +495,7 @@ public class HTimelineController : MonoBehaviour
         changeClip();
     }
 
-    bool isEnd = false;
+    
     public bool checkToEnd()
     {
         int allClipCount = yPlanningTable.Instance.isMoveList.Count;
@@ -514,7 +528,7 @@ public class HTimelineController : MonoBehaviour
     {
         if (startPlaying)
         {
-            if (m_clipIndex >= gooo.Count)
+            if (m_clipIndex >= yPlanningTable.Instance.clipCount)//如果已经到达末尾
             {
                 return;
             }
@@ -581,6 +595,22 @@ public class HTimelineController : MonoBehaviour
         // Destroy(currentSkinnedMeshRenderer);
         // Destroy(playableDirector);
         // Destroy(this);
+        
+        //清空数组
+        displayNames.Clear();
+        starts.Clear();
+        durations.Clear();
+        clippps.Clear();
+        animationClipLengths.Clear();
+        gooo.Clear();
+        
+        
+        m_clipIndex = 0;
+        m_isSammPlace = false;
+        duringSamePlaceCoroutine = false;
+        startPlaying = false;
+        isEnd = false;
+        
     }
     
 }
