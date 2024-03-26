@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 public class YLoadPanel : BasePanel
@@ -13,10 +14,15 @@ public class YLoadPanel : BasePanel
     
     public float loadFakeTime = 0.5f;
     public float loadFinalTime = 0.1f;
+    
+    static readonly string pathPlace = "Prefabs/YPlace/HLoadGamePlace";
+    private GameObject loadGamePlace;
     public YLoadPanel() : base(new UIType(path)){}
     
     public override void OnEnter()
     {
+        loadGamePlace = GameObject.Instantiate(Resources.Load<GameObject>(pathPlace));
+        
         YTriggerEvents.OnLoadResourceStateChanged += Loadend;
         enterGameButton = uiTool.GetOrAddComponentInChilden<Button>("EnterGameButton");
         enterGameButton.gameObject.SetActive(false);
@@ -30,7 +36,7 @@ public class YLoadPanel : BasePanel
         sliderChange = slider.GetComponent<YSliderChange>();
         sliderChange.SetSliderOn(0,0.9f,loadFakeTime,slider,this);  
     }
-    void ShowEnterGameButton()
+    public void ShowEnterGameButton()
     {
         if (enterGameButton == null)
         {
@@ -43,12 +49,14 @@ public class YLoadPanel : BasePanel
             Pop();
             panelManager.Push(new StartPanel());
             Debug.Log("点击了开始游戏按钮");
-           
+            GameObject.Destroy(loadGamePlace, 10f);
         });
     }
+    
     void Loadend(object sender, YTriggerEventArgs e)
     {
         sliderChange.StopCoroutine("CountDown");
+        
         sliderChange.SetSliderOn(0.9f,1f,loadFinalTime,slider,this);
         //等待0.1s后
         sliderChange.Invoke("endLoad",loadFinalTime);
@@ -56,7 +64,8 @@ public class YLoadPanel : BasePanel
     public void HideSlider()
     {
         slider.gameObject.SetActive(false);
-        ShowEnterGameButton();
+        //播放对应的Timeline，然后展示进入游戏的界面
+        loadGamePlace.GetComponent<HTimelineTriggerSomething>().LoadScenePlayDirector(this, 5f);
     }
     
 }
