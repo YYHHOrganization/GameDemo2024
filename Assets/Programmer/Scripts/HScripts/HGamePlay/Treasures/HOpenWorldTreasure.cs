@@ -170,7 +170,7 @@ public class HOpenWorldTreasure : MonoBehaviour
                 {
                     panel.ShowItemsMiddlePanel(handle.Result, item.ItemChineseName, item.Number, item.Description);
                 }
-                yield return new WaitForSeconds(0.02f);
+                yield return new WaitForSeconds(0.05f);
             }
         }
 

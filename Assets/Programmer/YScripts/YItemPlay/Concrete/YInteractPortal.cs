@@ -62,10 +62,12 @@ public class YInteractPortal : YIInteractiveGroup
         if (isEnter)
         {
             Debug.Log("进入传送门区域");
+            HAudioManager.Instance.Play("PortalAudio", gameObject);
         }
         else
         {
             StopAllCoroutines();
+            //HAudioManager.Instance.Stop(gameObject);
         }
     
     }
