@@ -21,10 +21,14 @@ public class HPlayerStateMachine : MonoBehaviour
     private int isWalkingHash;
     private int isRunningHash;
     private int isJumpingHash;
+    private int isSkill1Hash;
     private float rotationFactorPerFrame = 15.0f;
 
     private bool isRunPressed;
     float runMultiplier = 5.0f;
+
+    private bool isSkill1Pressed;
+    private HCharacterSkillBase skillScript;
 
     private bool isJumpPressed = false;
     private float initialJumpVelocity;
@@ -50,6 +54,14 @@ public class HPlayerStateMachine : MonoBehaviour
 
     #region Gets and Sets
     
+    public HCharacterSkillBase SkillScript
+    {
+        get { return skillScript; }
+    }
+    public int IsSkill1Hash
+    {
+        get { return isSkill1Hash; }
+    }
     public bool IsJumpPressed
     {
         get { return isJumpPressed; }
@@ -131,6 +143,11 @@ public class HPlayerStateMachine : MonoBehaviour
         get { return jumpGravities; }
     }
     
+    public bool IsSkill1Pressed
+    {
+        get { return isSkill1Pressed; }
+    }
+    
     public bool IsMovementPressed
     {
         get { return isMovementPressed; }
@@ -197,12 +214,18 @@ public class HPlayerStateMachine : MonoBehaviour
 
         playerInput.CharacterControls.Jump.started += OnJump;
         playerInput.CharacterControls.Jump.canceled += OnJump;
+
+        playerInput.CharacterControls.Skill1.started += OnSkill1;
+        playerInput.CharacterControls.Skill1.canceled += OnSkill1;
         animator = GetComponent<Animator>();
         
         isWalkingHash = Animator.StringToHash("isWalking");
         isRunningHash = Animator.StringToHash("isRunning");
         isJumpingHash = Animator.StringToHash("isJumping");
         jumpCountHash = Animator.StringToHash("jumpCount");
+        isSkill1Hash = Animator.StringToHash("isSkill1");
+        
+        skillScript = GetComponent<HCharacterSkillBase>();
         
         SetupJumpVaraibles();
     }
@@ -276,6 +299,24 @@ public class HPlayerStateMachine : MonoBehaviour
     {
         isJumpPressed = context.ReadValueAsButton();
         _requireNewJumpPress = false;
+    }
+
+    void OnSkill1(InputAction.CallbackContext context)
+    {
+        isSkill1Pressed = context.ReadValueAsButton();
+        if (!skillScript) return;
+        if(isSkill1Pressed && skillScript.isSkill1Valid() && characterController.isGrounded)
+        {
+            animator.SetTrigger(isSkill1Hash);
+            playerInput.CharacterControls.Disable();
+            Invoke("SetCharacterControlEnable", 3f); //todo:先锁死3s，之后再根据技能的动画时长来设置,有的时候或许不锁死呢
+            skillScript.PlaySkill1();
+        }
+    }
+
+    private void SetCharacterControlEnable()
+    {
+        playerInput.CharacterControls.Enable();
     }
 
     void OnRun(InputAction.CallbackContext context)

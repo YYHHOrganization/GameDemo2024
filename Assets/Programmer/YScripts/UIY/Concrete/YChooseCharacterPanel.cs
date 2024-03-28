@@ -62,7 +62,7 @@ public class YChooseCharacterPanel : BasePanel
                 SetCharacter(index);
             });
         }
-        SetCharacter(0);
+        SetCharacter(2);
         
         inputField = uiTool.GetOrAddComponentInChilden<TMP_InputField>("InputField");
         inputField.onEndEdit.AddListener((string value) =>

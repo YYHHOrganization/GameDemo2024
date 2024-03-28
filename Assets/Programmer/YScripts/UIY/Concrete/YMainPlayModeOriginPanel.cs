@@ -63,4 +63,9 @@ public class YMainPlayModeOriginPanel : BasePanel
         base.OnExit();
         YTriggerEvents.RaiseOnPuppetShortCutStateChanged(false);
     }
+
+    public void TickCharacterSkill1Time(float time)
+    {
+        
+    }
 }
