@@ -26,10 +26,10 @@ public class YLevelMain : MonoBehaviour
 
     }
     //动态生成关卡
-    public void InitLevelPanel(GameObject parent)
+    public void InitLevelPanel(GameObject parent,YLevelPanel panel)
     {
         //获取关卡
-        m_levels = YLevelManager.LoadLevels();
+        m_levels = YLevelManager.LoadLevels(panel);
         //动态生成关卡
         foreach (YLevel l in m_levels) 
         {

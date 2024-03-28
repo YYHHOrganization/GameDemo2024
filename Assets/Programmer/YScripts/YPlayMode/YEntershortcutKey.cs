@@ -23,7 +23,9 @@ public class YEntershortcutKey : MonoBehaviour
 
         playerInput.Always.Exit.started += context => ExitPanelOn();
         playerInput.Always.Enable();
-        
+
+        playerInput.LockView.Lock.started += context => SetLockView();
+
     }
 
     // Start is called before the first frame update
@@ -42,6 +44,9 @@ public class YEntershortcutKey : MonoBehaviour
         
         //退出快捷键启用与否
         YTriggerEvents.OnShortcutKeyEsc+=SetESCEnableOrDisable;
+        
+        //启用快捷键进入锁住视角
+        YTriggerEvents.OnShortcutKeyLockView+=SetLockViewEnableOrDisable;
     }
     
     private void SetSplitScreen(int splitScreenType)
@@ -126,19 +131,24 @@ public class YEntershortcutKey : MonoBehaviour
         YTriggerTagUnit triggerTagUnit = interactGo.GetComponentInChildren<YTriggerTagUnit>();
         triggerTagUnit.OnActive();
     }
-    // public void SetInputActionDisableOrEnable(bool InputActionEnable)
-    // {
-    //     if (InputActionEnable)
-    //     {
-    //         //playerInput.ShortcutKey.Enable();
-    //         playerInput.ShortcutKey.GetPuppet.started += EnterPuppet;
-    //     }
-    //     else
-    //     {
-    //         //playerInput.ShortcutKey.Disable();
-    //         playerInput.ShortcutKey.GetPuppet.started -= EnterPuppet;
-    //     }
-    // }
+    public void SetLockViewEnableOrDisable(object sender, YTriggerEventArgs e)
+    {
+        if (e.activated)
+        {
+            playerInput.LockView.Enable();
+        }
+        else
+        {
+            playerInput.LockView.Disable();
+        }
+    }
+    
+    bool shouldLockPlayerInput=false;
+    private void SetLockView()
+    {
+        shouldLockPlayerInput = !shouldLockPlayerInput;
+        YPlayModeController.Instance.LockPlayerInput(shouldLockPlayerInput);
+    }
     
 
     private void OnDisable()

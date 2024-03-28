@@ -17,14 +17,16 @@ public class StartPanel : BasePanel
             //YGameRoot.Instance.SceneSystem.SetScene(new YMainScene());
             Pop();
             //Push(new YMainPanel());
-            Push(new YChooseScreenplayPanel());
+            
+            Push(new YLevelPanel(1));//演绎模式
+            // Push(new YChooseScreenplayPanel());
         });
         //游玩模式
         uiTool.GetOrAddComponentInChilden<Button>("PlayButton").onClick.AddListener(()=>
         {
             Debug.Log("点击了Play按钮");
             Pop();
-            Push(new YLevelPanel());
+            Push(new YLevelPanel(0));//游玩模式
             // Push(new YChooseCharacterPanel());
         });
         uiTool.GetOrAddComponentInChilden<Button>("SettingButton").onClick.AddListener(()=>

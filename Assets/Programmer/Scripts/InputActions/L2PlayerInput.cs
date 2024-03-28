@@ -328,6 +328,34 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""LockView"",
+            ""id"": ""130d1183-2d1a-4d5e-b8db-3b636aa54e40"",
+            ""actions"": [
+                {
+                    ""name"": ""Lock"",
+                    ""type"": ""Button"",
+                    ""id"": ""27a19c0d-983c-4d2f-a175-10b99d339d5c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""59757b19-db2c-410f-ab39-e8ff26b595c2"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Lock"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -352,6 +380,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         // Always
         m_Always = asset.FindActionMap("Always", throwIfNotFound: true);
         m_Always_Exit = m_Always.FindAction("Exit", throwIfNotFound: true);
+        // LockView
+        m_LockView = asset.FindActionMap("LockView", throwIfNotFound: true);
+        m_LockView_Lock = m_LockView.FindAction("Lock", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -679,6 +710,52 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public AlwaysActions @Always => new AlwaysActions(this);
+
+    // LockView
+    private readonly InputActionMap m_LockView;
+    private List<ILockViewActions> m_LockViewActionsCallbackInterfaces = new List<ILockViewActions>();
+    private readonly InputAction m_LockView_Lock;
+    public struct LockViewActions
+    {
+        private @L2PlayerInput m_Wrapper;
+        public LockViewActions(@L2PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Lock => m_Wrapper.m_LockView_Lock;
+        public InputActionMap Get() { return m_Wrapper.m_LockView; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(LockViewActions set) { return set.Get(); }
+        public void AddCallbacks(ILockViewActions instance)
+        {
+            if (instance == null || m_Wrapper.m_LockViewActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_LockViewActionsCallbackInterfaces.Add(instance);
+            @Lock.started += instance.OnLock;
+            @Lock.performed += instance.OnLock;
+            @Lock.canceled += instance.OnLock;
+        }
+
+        private void UnregisterCallbacks(ILockViewActions instance)
+        {
+            @Lock.started -= instance.OnLock;
+            @Lock.performed -= instance.OnLock;
+            @Lock.canceled -= instance.OnLock;
+        }
+
+        public void RemoveCallbacks(ILockViewActions instance)
+        {
+            if (m_Wrapper.m_LockViewActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ILockViewActions instance)
+        {
+            foreach (var item in m_Wrapper.m_LockViewActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_LockViewActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public LockViewActions @LockView => new LockViewActions(this);
     public interface ICharacterControlsActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -703,5 +780,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
     public interface IAlwaysActions
     {
         void OnExit(InputAction.CallbackContext context);
+    }
+    public interface ILockViewActions
+    {
+        void OnLock(InputAction.CallbackContext context);
     }
 }

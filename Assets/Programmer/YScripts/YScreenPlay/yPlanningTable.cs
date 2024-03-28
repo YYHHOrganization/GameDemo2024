@@ -100,6 +100,8 @@ public class yPlanningTable : MonoBehaviour
         public bool isFollow;
         //是否是lookat
         public bool isLookAt;
+        //是哪个level 如果是-1 表示所有的level都可以用
+        public int levelID;
     }
     //存储相机的结构体
     public List<CameraStruct> cameraStructs = new List<CameraStruct>();
@@ -520,7 +522,7 @@ public class yPlanningTable : MonoBehaviour
                 }
                 string[] values = line.Split(',');
 
-                if (values.Length == 4) // 确保每行有三个值
+                if (values.Length == 5) // 确保每行有三个值
                 {
                     CameraStruct newCamera = new CameraStruct();
                     string cameraName = values[0];
@@ -531,14 +533,30 @@ public class yPlanningTable : MonoBehaviour
                     // newCamera.cameraUIName = values[1];
                     newCamera.isFollow = values[2] == "1";//如果是1就是true,如果是0就是false
                     newCamera.isLookAt = values[3] == "1";
+                    newCamera.levelID = int.Parse(values[4]);
                     cameraStructs.Add(newCamera);
                     
-                    cameraList.Add(cameraName);
-                    cameraListInUI.Add(cameraUIName);
+                    // cameraList.Add(cameraName);
+                    // cameraListInUI.Add(cameraUIName);
                 }
             }
         }
         //UpdateCameraList();
+        //UpdateTableList("camera",cameraList,cameraListInUI);
+    }
+
+    void UpdateCameraList(int levelID, List<string> cameraList, List<string> cameraListInUI)
+    {
+        cameraList.Clear();
+        cameraListInUI.Clear();
+        foreach (CameraStruct camera in cameraStructs)
+        {
+            if (camera.levelID == levelID||camera.levelID==-1)
+            {
+                cameraList.Add(camera.cameraName);
+                cameraListInUI.Add(camera.cameraUIName);
+            }
+        }
         UpdateTableList("camera",cameraList,cameraListInUI);
     }
     
@@ -813,6 +831,7 @@ public class yPlanningTable : MonoBehaviour
         DestinationGoList.Clear();
         
         UpdateDestinationList(levelID,DestinationList,DestinationUINameList);
+        UpdateCameraList(levelID,cameraNamesList,cameraUINameList);
         preKeepDestination();
         //Update 比如说地点
     }

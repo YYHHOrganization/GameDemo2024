@@ -32,65 +32,74 @@ public class YLaserController : MonoBehaviour
         LaserHitVfx.Stop();
         dis2laserLength = 6*gameObject.transform.localScale.z;
     }
-    
-    
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player")||other.CompareTag("Puppet"))
+        {
+           enterLaserDetect = true;
+        }
+        
+    }
+
     void Update()
     {
-        //if (Input.GetMouseButtonDown(0))//如果鼠标左键按下
-        //{
+        if (enterLaserDetect) //如果鼠标左键按下
+        {
             // Debug.Log("鼠标左键按下");
             //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            
+
             //向z方向发射射线
             Ray ray = new Ray(transform.position, transform.forward);
-            
+
             if (Physics.Raycast(ray, out hit, maxDistance))
+        {
+            GameObject hitObject = hit.transform.gameObject;
+
+            // if (hitObject.CompareTag("Shield"))
+            if (hitObject.CompareTag("Shield")) //test
             {
-                GameObject hitObject = hit.transform.gameObject;
+                // 如果射线打中了防护罩
+                //hitObject.transform.localScale = new Vector3(0, 0, 0); // 缩短到相应位置
+                hitObject.GetComponent<HJustTestRipple>().SetRipple(hit.point); // 通知护盾显示撞击
+                // 计算两点之间的距离
 
-                // if (hitObject.CompareTag("Shield"))
-                if (hitObject.CompareTag("Shield"))//test
-                {
-                    // 如果射线打中了防护罩
-                    //hitObject.transform.localScale = new Vector3(0, 0, 0); // 缩短到相应位置
-                    hitObject.GetComponent<HJustTestRipple>().SetRipple(hit.point); // 通知护盾显示撞击
-                    // 计算两点之间的距离
-                    
-                    
-                    // Debug.Log("distance: " + distance);
-                }
-                else if (hitObject.CompareTag("Player"))
-                {
-                    // 如果射线打中了角色
-                    //hitObject.GetComponent<PlayerScript>().Die(); // 触发角色死亡
-                    Debug.Log("hit player!!");
-                }
-                
-                distance = Vector3.Distance(transform.position, hit.point);
-                LaserVfx.SetFloat("laserLength", distance/dis2laserLength);
 
-                if (isBeShotActive==false)
-                {
-                    LaserHitVfx.Play();
-                    isBeShotActive = true;
-                    isBeShotDeactive = false;
-                }
-                   
-                LaserHitVfx.transform.position = hit.point;
-                
-                
+                // Debug.Log("distance: " + distance);
             }
+            else if (hitObject.CompareTag("Player"))
+            {
+                // 如果射线打中了角色
+                //hitObject.GetComponent<PlayerScript>().Die(); // 触发角色死亡
+                Debug.Log("hit player!!");
+            }
+
+            distance = Vector3.Distance(transform.position, hit.point);
+            LaserVfx.SetFloat("laserLength", distance / dis2laserLength);
+
+            if (isBeShotActive == false)
+            {
+                LaserHitVfx.Play();
+                isBeShotActive = true;
+                isBeShotDeactive = false;
+            }
+
+            LaserHitVfx.transform.position = hit.point;
+
+
+        }
             else
+        {
+            if (isBeShotDeactive == false)
             {
-                if(isBeShotDeactive==false)
-                {
-                    LaserHitVfx.Stop();
-                    isBeShotDeactive = true;
-                    isBeShotActive = false;
-                    // 如果射线没有打中任何物体
-                    LaserVfx.SetFloat("laserLength", maxDistance/dis2laserLength);
-                }
+                LaserHitVfx.Stop();
+                isBeShotDeactive = true;
+                isBeShotActive = false;
+                // 如果射线没有打中任何物体
+                LaserVfx.SetFloat("laserLength", maxDistance / dis2laserLength);
             }
-            //}
+        }
+        }
     }
 }

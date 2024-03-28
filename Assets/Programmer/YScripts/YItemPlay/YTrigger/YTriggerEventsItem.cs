@@ -77,4 +77,12 @@ public class YTriggerEvents : MonoBehaviour
     {
         OnLoadResourceStateChanged?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
+    
+    //是否启用快捷键-进入锁住视角
+    public static event EventHandler<YTriggerEventArgs> OnShortcutKeyLockView;
+    public static void RaiseOnShortcutKeyLockViewStateChanged(bool activated)
+    {
+        OnShortcutKeyLockView?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
+    
 }

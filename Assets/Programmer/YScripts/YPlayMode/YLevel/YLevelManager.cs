@@ -6,12 +6,14 @@ public static class YLevelManager
 {
     static int currentLevelIndex = 0;
     static List<string> levelnames;
+    static YLevelPanel mpanel;
     /// <summary> 
     /// 加载Xml文件 
     /// </summary>
     /// <returns>The levels.</returns>
-    public static List<YLevel> LoadLevels()
+    public static List<YLevel> LoadLevels(YLevelPanel panel)
     {
+        mpanel = panel;
         levelnames = new List<string>();
         //创建Xml对象
         XmlDocument xmlDoc = new XmlDocument();
@@ -147,6 +149,7 @@ public static class YLevelManager
     public static void SetCurrentLevelIndex(int index)
     {
         currentLevelIndex = index;
+        mpanel.SetCurLevel(index);
     }
 
     public static int GetCurrentLevelIndex()

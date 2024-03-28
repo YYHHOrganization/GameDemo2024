@@ -34,6 +34,7 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
     public override void OnEnter()
     {
         YTriggerEvents.RaiseOnMouseLockStateChanged(false);
+        YTriggerEvents.RaiseOnShortcutKeyLockViewStateChanged(true);//触发 锁住视角 的快捷键的监听了
         // panelToAddUnitParent = uiTool.GetOrAddComponentInChilden<Transform>("PanelToAddUnit").gameObject;
         //YContentInScrollView
         panelToAddUnitParent = uiTool.GetOrAddComponentInChilden<Transform>("YContentInScrollView").gameObject;
@@ -167,5 +168,11 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
     public void ConfirmScreenplay()
     {
         YScreenPlayController.Instance.ConfirmScreenplay(selectId);
+    }
+    
+    public  override void OnExit()
+    {
+        base.OnExit();
+        YTriggerEvents.RaiseOnShortcutKeyLockViewStateChanged(false);//停止 锁住视角 的快捷键的监听了
     }
 }

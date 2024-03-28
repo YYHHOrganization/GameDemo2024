@@ -86,6 +86,10 @@ public class YPlayModeController : MonoBehaviour
     
     public void SetCameraLayout(int layoutIndex)
     {
+        if (CameraLayoutManager == null)
+        {
+            return;
+        }
         switch (layoutIndex)
         {
             case 0:
