@@ -31,8 +31,10 @@ public class HBlendShapeMixer : PlayableBehaviour
                 //被改了，当前改动的这个轨道的所有的blendshapeIndex应该被改  应该记录下来
                 ScriptPlayable<HBlendShapeBehavior> inputPlayable = (ScriptPlayable<HBlendShapeBehavior>)playable.GetInput(i);
                 HBlendShapeBehavior input = inputPlayable.GetBehaviour();
+                if (input.blendShapeIndex[0] == -1) return;
                 for (int j = 0; j < input.blendShapeValue.Count; j++)
                 {
+                    if(input.blendShapeIndex[j]<0 || input.blendShapeIndex[j]>=skinnedMeshRenderer.sharedMesh.blendShapeCount) return;
                     // skinnedMeshRenderer.SetBlendShapeWeight(input.blendShapeIndex[j],  totalWeight * input.blendShapeValue[j]);
                     skinnedMeshRenderer.SetBlendShapeWeight(input.blendShapeIndex[j],  inputWeight * input.blendShapeValue[j]);
                 }
@@ -47,6 +49,7 @@ public class HBlendShapeMixer : PlayableBehaviour
                 HBlendShapeBehavior input = inputPlayable.GetBehaviour();
                 for (int j = 0; j < input.blendShapeValue.Count; j++)
                 {
+                    if(input.blendShapeIndex[j]<0 || input.blendShapeIndex[j]>=skinnedMeshRenderer.sharedMesh.blendShapeCount) return;
                     skinnedMeshRenderer.SetBlendShapeWeight(input.blendShapeIndex[j],  0 * input.blendShapeValue[j]);
                 }
                 //Debug.Log("重置blendshape"+"totalWeight"+totalWeight);

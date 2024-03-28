@@ -18,6 +18,7 @@ public class HJustTestRipple : MonoBehaviour
     {
         ripples = Instantiate(rippleVFX, transform) as GameObject;
         psr = ripples.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
+        ripples.gameObject.SetActive(false);
         mat = psr.material;
     }
 

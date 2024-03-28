@@ -57,7 +57,7 @@ public class HPlayerSkillManager : MonoBehaviour
 
     public void CheckSpaceSkill()
     {
-        if (Input.GetKeyDown(KeyCode.E)) 
+        if (Input.GetKeyDown(KeyCode.R)) 
         {
             //Debug.Log("Space");
             SkillScanningTerrian();

@@ -40,6 +40,15 @@ public class HCharacterInteracionInShow : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (!cameraComponent)
+            {
+                camera = GameObject.FindGameObjectWithTag("PlayerCamera");
+                if (camera)
+                {
+                    cameraComponent = camera.GetComponent<Camera>();
+                }
+            }
+            
             Ray ray = cameraComponent.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo)) {

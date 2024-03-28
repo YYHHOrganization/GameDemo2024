@@ -14,7 +14,6 @@ public class HWorldAirWall : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("shajin");
         if (other.CompareTag("Player"))
         {
             mat.SetVector("_PlayerPos",other.transform.position);
