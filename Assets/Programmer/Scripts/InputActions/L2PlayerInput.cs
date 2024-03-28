@@ -367,7 +367,7 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""59757b19-db2c-410f-ab39-e8ff26b595c2"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/l"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
