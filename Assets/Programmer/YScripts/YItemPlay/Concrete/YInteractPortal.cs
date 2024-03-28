@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,20 @@ public class YInteractPortal : YIInteractiveGroup
     public void Start()
     {
         base.Start();
+        //todo:后面记得去掉
+        if (debugMode)
+        {
+            actualCount = 3;
+        }
     }
     
+    public bool debugMode = false;
+
+    private void Update()
+    {
+        
+    }
+
     public override void SetResultOn()
     {
         Debug.Log("传送门开启交互");
@@ -41,7 +54,10 @@ public class YInteractPortal : YIInteractiveGroup
         AsyncOperationHandle<Sprite> handle =
             Addressables.LoadAssetAsync<Sprite>(item.UIIconLink);
         yield return handle;
-        actualCount = HItemCounter.Instance.CheckCountWithItemId(needId);
+        if (!debugMode)
+        {
+            actualCount = HItemCounter.Instance.CheckCountWithItemId(needId);
+        }
         panel.ShowGiveOutItems(handle.Result, needCount, actualCount, this);
     }
 

@@ -33,13 +33,20 @@ public class YPlayModeController : MonoBehaviour
     private GameObject FreeLookCamera;
     GameObject PlayerCamera; 
     
+    GameObject PuppetCamera;
+    
     public bool detectModeIsOn = false;
     public void SetCharacter(int characterIndex)
     {
         //设置角色
         int id = yPlanningTable.Instance.selectNames2Id["character"];
         string path = "Prefabs/YCharacter/"+yPlanningTable.Instance.SelectTable[id][characterIndex]+"Player";
-        GameObject player = Instantiate(Resources.Load<GameObject>(path));
+
+        int curLevelID = YLevelManager.GetCurrentLevelIndex();
+        Transform GeneratePlace = yPlanningTable.Instance.GetCharacterGeneratePlace(curLevelID);
+
+        GameObject player =
+            Instantiate(Resources.Load<GameObject>(path), GeneratePlace.position, GeneratePlace.rotation);
         curCharacter = player;
         // go.transform.parent = YChooseCharacterShowPlace.transform;
         // go.transform.localPosition = Vector3.zero;
@@ -60,7 +67,12 @@ public class YPlayModeController : MonoBehaviour
         GameObject CameraLayout = Instantiate(Resources.Load<GameObject>(pathCameraLayout));
         CameraLayoutManager = CameraLayout.GetComponent<HCameraLayoutManager>();
         CameraLayoutManager.playerCamera = PlayerCamera.GetComponent<Camera>();
-        CameraLayoutManager.puppetCamera = GameObject.Find("PuppetCamera").GetComponent<Camera>();
+        // CameraLayoutManager.puppetCamera = GameObject.Find("PuppetCamera").GetComponent<Camera>();
+        if (PuppetCamera == null)
+        {
+            PuppetCamera = GameObject.Find("PuppetCamera");
+        }
+        CameraLayoutManager.puppetCamera = PuppetCamera.GetComponent<Camera>();
         CameraLayoutManager.SetPlayerCameraWholeScreen();
         // CameraLayoutManager.SetPuppetCameraLittle();
     }
@@ -87,7 +99,6 @@ public class YPlayModeController : MonoBehaviour
                 break;
         }
     }
-    
     
     public List<YNameUI> PlaceUIToShowScriptsList = new List<YNameUI>();
     public GameObject CanVasUI;
@@ -190,6 +201,27 @@ public class YPlayModeController : MonoBehaviour
            
         }
        
+    }
+
+    public void EnterNewLevel()
+    {
+        if (curCharacter)
+        {
+            Destroy(curCharacter);
+        }
+        if (FreeLookCamera)
+        {
+            Destroy(FreeLookCamera);
+        }
+        if (PlayerCamera)
+        {
+            Destroy(PlayerCamera);
+        }
+        if (CameraLayoutManager)
+        {
+            Destroy(CameraLayoutManager.gameObject);
+        }
+        
     }
    
 }

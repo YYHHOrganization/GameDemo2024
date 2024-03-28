@@ -2507,7 +2507,7 @@ PlayableDirector:
   m_PlayableAsset: {fileID: 11400000, guid: 48b23db5d3b78cd4493d882e0b3ccb4c, type: 2}
   m_InitialState: 0
   m_WrapMode: 2
-  m_DirectorUpdateMode: 1
+  m_DirectorUpdateMode: 2
   m_InitialTime: 0
   m_SceneBindings:
   - key: {fileID: -1131938999443105706, guid: 48b23db5d3b78cd4493d882e0b3ccb4c, type: 2}
@@ -3672,17 +3672,12 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ff223f594c343df46ba4613a3e4723d2, type: 3}
   m_Controller: {fileID: 9100000, guid: 3a0d6ae6881f48d4a938e81c0d23f398, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'Right arm'\n\tTransform 'Eye_R'\n\tTransform
-    'Neck'\n\tTransform 'Right ankle'\n\tTransform 'Right leg'\n\tTransform 'Left
-    arm'\n\tTransform 'Left elbow'\n\tTransform 'Right shoulder'\n\tTransform 'Right
-    knee'\n\tTransform 'Right elbow'\n\tand more ..."
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0

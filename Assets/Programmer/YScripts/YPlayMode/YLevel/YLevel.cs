@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class YLevel : MonoBehaviour
+public class YLevel
 {
     /// <summary>
     /// 关卡ID
@@ -13,6 +13,11 @@ public class YLevel : MonoBehaviour
     /// 关卡名称
     /// </summary>
     public string Name;
+    
+    /// <summary>
+    /// UI上显示的名称
+    /// </summary>
+    public string UIName;
 
     /// <summary>
     /// 关卡是否解锁  

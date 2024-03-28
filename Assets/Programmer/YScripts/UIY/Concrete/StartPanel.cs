@@ -24,7 +24,8 @@ public class StartPanel : BasePanel
         {
             Debug.Log("点击了Play按钮");
             Pop();
-            Push(new YChooseCharacterPanel());
+            Push(new YLevelPanel());
+            // Push(new YChooseCharacterPanel());
         });
         uiTool.GetOrAddComponentInChilden<Button>("SettingButton").onClick.AddListener(()=>
         {

@@ -10,7 +10,7 @@ public class HBlendShapeMixer : PlayableBehaviour
         SkinnedMeshRenderer skinnedMeshRenderer = playerData as SkinnedMeshRenderer;
         if (skinnedMeshRenderer == null)
         {
-            Debug.Log("skinnedMeshRenderer is null");
+            //Debug.Log("skinnedMeshRenderer is null");
             return;
         }
         

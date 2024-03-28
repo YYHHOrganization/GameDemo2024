@@ -59,6 +59,9 @@ public class HItemShowPanel : BasePanel
             YPlayModeController.Instance.LockPlayerInput(false);
             YTriggerEvents.RaiseOnMouseLockStateChanged(true);
             Pop();
+            
+            //TEST
+            YLevelManager.NextLevel();
         }
         else
         {
