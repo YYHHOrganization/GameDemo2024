@@ -30,6 +30,6 @@ public class HShajinPlayerSkill : HCharacterSkillBase
     {
         yield return new WaitForSeconds(1.5f);
         base.PlaySkill1();
-
+        HAudioManager.Instance.Play("ShieldSummonAudio", this.gameObject);
     }
 }
