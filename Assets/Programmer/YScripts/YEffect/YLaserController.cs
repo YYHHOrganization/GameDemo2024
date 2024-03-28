@@ -17,7 +17,7 @@ public class YLaserController : MonoBehaviour
     public VisualEffect LaserVfx;
     float dis2laserLength=6;
     
-    bool enterLaserDetect = false;
+    public bool enterLaserDetect = false;
 
     public VisualEffect LaserHitVfx;
     

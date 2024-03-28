@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BlendshapeController 
@@ -27,6 +28,7 @@ public class BlendshapeController
         //skinnedMeshRenderers.SetBlendShapeWeight(blendshapeInd, value);
         for (int i = 0; i < blendshapeInd.Count; i++)
         {
+            if(blendshapeInd[i]<0 || blendshapeInd[i]>=skinnedMeshRenderers.sharedMesh.blendShapeCount) return;
             skinnedMeshRenderers.SetBlendShapeWeight(blendshapeInd[i], value);
         }
     }
@@ -37,6 +39,7 @@ public class BlendshapeController
         //将他们全部置为0
         for (int i = 0; i < blendshapeWithCharacter.Count; i++)
         {
+            if(blendshapeWithCharacter[i]<0 || blendshapeWithCharacter[i]>=currentSkinnedMeshRenderer.sharedMesh.blendShapeCount) return;
             currentSkinnedMeshRenderer.SetBlendShapeWeight(blendshapeWithCharacter[i], 0);
         }
     }
