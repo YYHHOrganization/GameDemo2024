@@ -25,9 +25,11 @@ public class YCharacterSP : YScreenplayBase
     
     public override void LoadResourcesAndSetTimeline()
     {
-        ////加载资源
+        ////加载资源character.transform.position = yPlanningTable.Instance.GetCharacterGeneratePosition().transform.position;
         // GameObject obj = Resources.Load<GameObject>(path);
-        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(path));
+        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(path),
+            yPlanningTable.Instance.GetCharacterGeneratePosition().transform.position,
+            Quaternion.identity);
         timelineController.ChangeCharacter(selectId,go);
     }
 

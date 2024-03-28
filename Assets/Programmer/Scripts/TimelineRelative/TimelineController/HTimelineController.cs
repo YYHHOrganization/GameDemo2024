@@ -131,7 +131,7 @@ public class HTimelineController : MonoBehaviour
     }
 
 
-    void SetCharacterGeneratePosition(GameObject character)
+    void SetCharacterGeneratePosition(ref GameObject character)
     {
         character.transform.position = yPlanningTable.Instance.GetCharacterGeneratePosition().transform.position;
         //{"x":-72.88999938964844,"y":0.3799999952316284,"z":39.49800109863281}
@@ -141,7 +141,7 @@ public class HTimelineController : MonoBehaviour
     public void ChangeCharacter(int index, GameObject character)
     {
         //设置角色的生成位置
-        SetCharacterGeneratePosition(character);
+        //SetCharacterGeneratePosition(ref character);
         
         characterIndex = index;
         target = character.gameObject;

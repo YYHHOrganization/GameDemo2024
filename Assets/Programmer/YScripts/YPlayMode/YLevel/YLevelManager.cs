@@ -148,6 +148,11 @@ public static class YLevelManager
     {
         currentLevelIndex = index;
     }
+
+    public static int GetCurrentLevelIndex()
+    {
+        return currentLevelIndex;
+    }
     public static void SetCurrentLevelName(string name)
     {
         currentLevelIndex = levelnames.IndexOf(name);

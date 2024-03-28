@@ -60,7 +60,9 @@ public class yPlanningTable : MonoBehaviour
     public List<GameObject> DestinationGoList = new List<GameObject>();
     public List<string> DestinationList = new List<string>();
     public List<string> DestinationUINameList = new List<string>();
-
+    //角色生成地点 levelID对应地点
+    List<string> CharacterGeneratePlace = new List<string>();
+    
     //特效
     //读取后处理相关的CSV文件
     public List<string> postEffectNames = new List<string>();
@@ -133,8 +135,6 @@ public class yPlanningTable : MonoBehaviour
         ReadAnimationCSV("Assets/Designer/CsvTable/AnimationCSVFile.csv",
             animationNoMoveList,animationNoMoveListInUI,animationMoveList,animationMoveListInUI);
         ReadDestinationCSV("Assets/Designer/CsvTable/DestinationCSVFile.csv");
-        
-        
         
         ReadCameraCSV("Assets/Designer/CsvTable/CameraCSVFile.csv",
             cameraNamesList,cameraUINameList,cameraStructs);
@@ -462,6 +462,10 @@ public class yPlanningTable : MonoBehaviour
                 destinationList.Add(destination.destinationName);
                 destinationListInUI.Add(destination.destinationUIName);
             }
+            else if (destination.levelID == -1)//代表的是角色初始生成的位置
+            {
+                CharacterGeneratePlace.Add(destination.destinationName);
+            }
         }
         UpdateTableList("destination",destinationList,destinationListInUI);
     }
@@ -662,6 +666,10 @@ public class yPlanningTable : MonoBehaviour
         return DestinationGoList[selectId].transform;
     }
 
+    public Transform GetCharacterGeneratePlace(int levelID)
+    {
+        return GameObject.Find(CharacterGeneratePlace[levelID]).transform;
+    }
     public int GetCharacterNum()
     {
         int characterNum = SelectTable[selectNames2Id["character"]].Count;
@@ -802,6 +810,7 @@ public class yPlanningTable : MonoBehaviour
         
         //当进入新的关卡时，应当清空所有的List
         isMoveList.Clear();
+        DestinationGoList.Clear();
         
         UpdateDestinationList(levelID,DestinationList,DestinationUINameList);
         preKeepDestination();

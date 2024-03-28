@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2511099721473350254}
   m_Layer: 0
   m_Name: heita
-  m_TagString: Untagged
+  m_TagString: Puppet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53,7 +53,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1
+  m_Height: 0.8
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -77,9 +77,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.4
-  m_Height: 1
+  m_Height: 0.8
   m_Direction: 1
-  m_Center: {x: 0, y: 0.6, z: 0}
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!54 &2511099721473350254
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -123,7 +123,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 0d8961981239d22438480578e7c9fb42,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.03
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0d8961981239d22438480578e7c9fb42,
         type: 3}
@@ -169,6 +169,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: heita
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 0d8961981239d22438480578e7c9fb42,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 0d8961981239d22438480578e7c9fb42,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 0d8961981239d22438480578e7c9fb42,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 0d8961981239d22438480578e7c9fb42,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
