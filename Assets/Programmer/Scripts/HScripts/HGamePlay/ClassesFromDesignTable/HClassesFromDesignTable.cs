@@ -80,5 +80,51 @@ public class HOpenWorldTreasureStruct
     
 }
 
+public class MessageBoxBaseStruct
+{
+    private string messageId;
+    private string messageContent;
+    private int messageType;
+    private float messageShowTime;
+    private string messageTransitionEffect;
+    
+    #region Gets And Sets
+    public string MessageId
+    {
+        get { return messageId; }
+    }
+    
+    public string MessageContent
+    {
+        get { return messageContent; }
+    }
+    
+    public int MessageType
+    {
+        get { return messageType; }
+    }
+    
+    public float MessageShowTime
+    {
+        get { return messageShowTime; }
+    }
+    
+    public string MessageTransitionEffect
+    {
+        get { return messageTransitionEffect; }
+    }
+    
+    #endregion
+    
+    public MessageBoxBaseStruct(string id, string content, int type, float showTime, string transitionEffect)
+    {
+        messageId = id;
+        messageContent = content;
+        messageType = type;
+        messageShowTime = showTime;
+        messageTransitionEffect = transitionEffect;
+    }
+}
+
 
 

@@ -115,9 +115,6 @@ public class YChooseCharacterPanel : BasePanel
                 curCharacter.GetComponent<HCharacterInteracionInShow>().SetInteractMode(isInteractMode);
             }
         });
-        
-        
-        
     }
     
     public void SetCharacter(int index)
