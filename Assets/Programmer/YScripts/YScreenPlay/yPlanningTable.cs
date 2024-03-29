@@ -193,7 +193,8 @@ public class yPlanningTable : MonoBehaviour
             string messageContent = rowData[2];
             float messageShowTime = float.Parse(rowData[3]);
             string messageTransitionEffect = rowData[4];
-            MessageBoxBaseStruct aMessage = new MessageBoxBaseStruct(messageId, messageContent,messageKind,messageShowTime,messageTransitionEffect);
+            string messagePrefabLink = rowData[5];
+            MessageBoxBaseStruct aMessage = new MessageBoxBaseStruct(messageId, messageContent,messageKind,messageShowTime,messageTransitionEffect, messagePrefabLink);
             messages.Add(messageId, aMessage);
         }
     }

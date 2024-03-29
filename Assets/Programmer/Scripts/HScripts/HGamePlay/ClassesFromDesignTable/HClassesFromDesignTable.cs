@@ -87,8 +87,14 @@ public class MessageBoxBaseStruct
     private int messageType;
     private float messageShowTime;
     private string messageTransitionEffect;
+    private string messageLink;
     
     #region Gets And Sets
+    
+    public string MessageLink
+    {
+        get { return messageLink; }
+    }
     public string MessageId
     {
         get { return messageId; }
@@ -116,13 +122,14 @@ public class MessageBoxBaseStruct
     
     #endregion
     
-    public MessageBoxBaseStruct(string id, string content, int type, float showTime, string transitionEffect)
+    public MessageBoxBaseStruct(string id, string content, int type, float showTime, string transitionEffect, string link)
     {
         messageId = id;
         messageContent = content;
         messageType = type;
         messageShowTime = showTime;
         messageTransitionEffect = transitionEffect;
+        messageLink = link;
     }
 }
 
