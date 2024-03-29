@@ -25,7 +25,7 @@ public class YEntershortcutKey : MonoBehaviour
         playerInput.Always.Enable();
 
         playerInput.LockView.Lock.started += context => SetLockView();
-
+        playerInput.LockView.GiveUpBackPanel.started += context => ExitPanelOn();
     }
 
     // Start is called before the first frame update

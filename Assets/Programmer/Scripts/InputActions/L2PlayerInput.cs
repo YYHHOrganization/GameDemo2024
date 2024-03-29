@@ -361,6 +361,15 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GiveUpBackPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""3be353d6-7868-4dae-8158-5fe49f7d6306"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -372,6 +381,17 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Lock"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6aab37db-6a5f-40f1-81bb-09e61a2a5295"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GiveUpBackPanel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -404,6 +424,7 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         // LockView
         m_LockView = asset.FindActionMap("LockView", throwIfNotFound: true);
         m_LockView_Lock = m_LockView.FindAction("Lock", throwIfNotFound: true);
+        m_LockView_GiveUpBackPanel = m_LockView.FindAction("GiveUpBackPanel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -744,11 +765,13 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_LockView;
     private List<ILockViewActions> m_LockViewActionsCallbackInterfaces = new List<ILockViewActions>();
     private readonly InputAction m_LockView_Lock;
+    private readonly InputAction m_LockView_GiveUpBackPanel;
     public struct LockViewActions
     {
         private @L2PlayerInput m_Wrapper;
         public LockViewActions(@L2PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Lock => m_Wrapper.m_LockView_Lock;
+        public InputAction @GiveUpBackPanel => m_Wrapper.m_LockView_GiveUpBackPanel;
         public InputActionMap Get() { return m_Wrapper.m_LockView; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -761,6 +784,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
             @Lock.started += instance.OnLock;
             @Lock.performed += instance.OnLock;
             @Lock.canceled += instance.OnLock;
+            @GiveUpBackPanel.started += instance.OnGiveUpBackPanel;
+            @GiveUpBackPanel.performed += instance.OnGiveUpBackPanel;
+            @GiveUpBackPanel.canceled += instance.OnGiveUpBackPanel;
         }
 
         private void UnregisterCallbacks(ILockViewActions instance)
@@ -768,6 +794,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
             @Lock.started -= instance.OnLock;
             @Lock.performed -= instance.OnLock;
             @Lock.canceled -= instance.OnLock;
+            @GiveUpBackPanel.started -= instance.OnGiveUpBackPanel;
+            @GiveUpBackPanel.performed -= instance.OnGiveUpBackPanel;
+            @GiveUpBackPanel.canceled -= instance.OnGiveUpBackPanel;
         }
 
         public void RemoveCallbacks(ILockViewActions instance)
@@ -814,5 +843,6 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
     public interface ILockViewActions
     {
         void OnLock(InputAction.CallbackContext context);
+        void OnGiveUpBackPanel(InputAction.CallbackContext context);
     }
 }

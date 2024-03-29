@@ -339,6 +339,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GiveUpBackPanel",
+                    "type": "Button",
+                    "id": "3be353d6-7868-4dae-8158-5fe49f7d6306",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -350,6 +359,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Lock",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6aab37db-6a5f-40f1-81bb-09e61a2a5295",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GiveUpBackPanel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -769,6 +769,10 @@ public class yPlanningTable : MonoBehaviour
             // }
         }
     }
+    public void RemoveMoveOrNoMoveAnimationList(int index)
+    {
+        isMoveList.RemoveAt(index);
+    }
 
     void UpdateTableList(string name, List<string> nameList, List<string> nameListInUI)
     {

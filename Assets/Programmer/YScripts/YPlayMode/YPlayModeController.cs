@@ -178,10 +178,12 @@ public class YPlayModeController : MonoBehaviour
             {
                 //出现提示面板
                 //可以使用快捷键进行交互
-                // YGameRoot.Instance.Push(new YLabelPanel());
-                ShowPlaceUI = Instantiate(Resources.Load<GameObject>("Prefabs/UI/YNameUI/ShowInteractUI"));
-                // ShowPlaceUI.transform.parent = CanVasUI.transform;
-                ShowPlaceUI.transform.parent = CanvasShowUINew.transform;
+                // ShowPlaceUI = Instantiate(Resources.Load<GameObject>("Prefabs/UI/YNameUI/ShowInteractUI"));
+                // ShowPlaceUI.transform.parent = CanvasShowUINew.transform;
+                
+                //等待Instantiate之后，再ShowPlaceUI.transform.parent = CanvasShowUINew.transform;
+                ShowPlaceUI = Instantiate(Resources.Load<GameObject>("Prefabs/UI/YNameUI/ShowInteractUI"),CanvasShowUINew.transform);
+                
                 //PlaceUIToShowList.Add(ShowPlaceUI);
                 //yNameUiSctipt = ShowPlaceUI.GetComponent<YNameUI>();
                 yNameUiSctipt = ShowPlaceUI.GetComponentInChildren<YNameUI>();
