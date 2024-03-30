@@ -47,6 +47,9 @@ public class HPlayerStateMachine : MonoBehaviour
     private Coroutine currentJumpResetRoutine = null;
     private int jumpCountHash;
 
+    //死亡
+    private bool isDie = false;
+    
     private HPlayerBaseState _currentState;
     private HPlayerStateFactory _states;
     
@@ -156,6 +159,12 @@ public class HPlayerStateMachine : MonoBehaviour
     public bool IsRunPressed
     {
         get { return isRunPressed; }
+    }
+    
+    public bool IsDie
+    {
+        get { return isDie; }
+        set { isDie = value; }
     }
     
     public int IsWalkingHash

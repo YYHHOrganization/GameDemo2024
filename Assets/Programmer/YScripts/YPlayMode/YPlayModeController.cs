@@ -36,8 +36,11 @@ public class YPlayModeController : MonoBehaviour
     GameObject PuppetCamera;
     
     public bool detectModeIsOn = false;
+    
+    HPlayerStateMachine playerStateMachine;
     public void SetCharacter(int characterIndex)
     {
+        PlayerDieFlag = false;
         //设置角色
         int id = yPlanningTable.Instance.selectNames2Id["character"];
         string path = "Prefabs/YCharacter/"+yPlanningTable.Instance.SelectTable[id][characterIndex]+"Player";
@@ -54,7 +57,9 @@ public class YPlayModeController : MonoBehaviour
         //PlayerCameraPlayMode
         string pathPlayerCamera = "Prefabs/YPlayModePrefab/PlayerCameraPlayMode";
         PlayerCamera = Instantiate(Resources.Load<GameObject>(pathPlayerCamera));
-        player.GetComponent<HPlayerStateMachine>().playerCamera = PlayerCamera.GetComponent<Camera>();
+        //player.GetComponent<HPlayerStateMachine>().playerCamera = PlayerCamera.GetComponent<Camera>();
+        playerStateMachine = player.GetComponent<HPlayerStateMachine>();
+        playerStateMachine.playerCamera = PlayerCamera.GetComponent<Camera>();
         
         //FreeLookCameraPlayMode
         string pathFreeLookCamera = "Prefabs/YPlayModePrefab/FreeLookCameraPlayMode";
@@ -80,7 +85,9 @@ public class YPlayModeController : MonoBehaviour
     public void LockPlayerInput(bool shouldLock) 
     {
         //YTriggerEvents.RaiseOnMouseLockStateChanged(!shouldLock);//视角lock 鼠标应该出现
-        curCharacter.GetComponent<HPlayerStateMachine>().SetInputActionDisableOrEnable(shouldLock);
+        
+        //curCharacter.GetComponent<HPlayerStateMachine>().SetInputActionDisableOrEnable(shouldLock);
+        playerStateMachine.SetInputActionDisableOrEnable(shouldLock);
         FreeLookCamera.GetComponent<CinemachineInputProvider>().enabled = !shouldLock;
     }
     
@@ -227,6 +234,37 @@ public class YPlayModeController : MonoBehaviour
         {
             Destroy(CameraLayoutManager.gameObject);
         }
+        
+    }
+
+    public void GiveUpPanel()
+    {
+        yPlanningTable.Instance.ClearMoveOrNoMoveAnimationList();
+        SetCameraLayout(0);//全 小 半
+        //视角如果锁住了要回退！
+        LockPlayerInput(false);
+        //鼠标进入屏幕
+        YTriggerEvents.RaiseOnMouseLockStateChanged(false);
+    }
+
+    bool PlayerDieFlag = false;
+    public void PlayerDie()
+    {
+        //应该先转换为死亡状态 播放死亡动画 然后一会儿后弹出失败界面
+        if (PlayerDieFlag)
+        {
+            return;
+        }
+        PlayerDieFlag = true;
+        //curCharacter.GetComponent<HPlayerStateMachine>().SetPlayerDie();
+        StartCoroutine(PlayerDieCoroutine());
+        playerStateMachine.IsDie = true;
+    }
+    IEnumerator  PlayerDieCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+        YGameRoot.Instance.Pop();
+        YGameRoot.Instance.Push(new YLossAndNextLevelPanel());
         
     }
    

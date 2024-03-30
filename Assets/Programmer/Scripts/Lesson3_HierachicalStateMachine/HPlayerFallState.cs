@@ -40,6 +40,10 @@ public class HPlayerFallState : HPlayerBaseState, IRootState
         {
             SwitchState(_factory.Grounded());
         }
+        else  if(_ctx.IsDie)
+        {
+            SwitchState(_factory.Die());
+        }
     }
 
     public override void InitializeSubState()

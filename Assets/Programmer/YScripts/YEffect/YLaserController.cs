@@ -45,11 +45,8 @@ public class YLaserController : MonoBehaviour
 
     void Update()
     {
-        if (enterLaserDetect) //如果鼠标左键按下
+        if (enterLaserDetect) 
         {
-            // Debug.Log("鼠标左键按下");
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
             //向z方向发射射线
             Ray ray = new Ray(transform.position, transform.forward);
 
@@ -73,6 +70,7 @@ public class YLaserController : MonoBehaviour
                 // 如果射线打中了角色
                 //hitObject.GetComponent<PlayerScript>().Die(); // 触发角色死亡
                 Debug.Log("hit player!!");
+                YPlayModeController.Instance.PlayerDie();
             }
 
             distance = Vector3.Distance(transform.position, hit.point);

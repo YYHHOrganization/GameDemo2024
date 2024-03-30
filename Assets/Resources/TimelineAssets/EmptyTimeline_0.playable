@@ -1423,12 +1423,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c451de31106db64c81a97723d976159, type: 3}
   m_Name: HueShiftPositive3
   m_EditorClassIdentifier: 
-  globalVolumeField: ColorAdjustments
+  globalVolumeField: LensDistortion
   attributes:
-  - saturation
+  - intensity
   values:
-  - 0
-  shouldLerp: 00000000
+  - 0.85
+  shouldLerp: 01000000
   defaultValues:
   - 0
   postProcessingType: 0
@@ -2055,9 +2055,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of FastRun
+  m_Name: AnimationPlayableAsset of FallingBackDeath
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
+  m_Clip: {fileID: -203655887218126122, guid: 558c4ad3837f1944ab35c47417bb0013, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -2521,9 +2521,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of FastRun
+  m_Name: AnimationPlayableAsset of Reacting
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 565de3bf9a3869b45bcb37541ef18dc5, type: 2}
+  m_Clip: {fileID: -203655887218126122, guid: b88e8bb7c8e31484393625aab3e8780f, type: 3}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1

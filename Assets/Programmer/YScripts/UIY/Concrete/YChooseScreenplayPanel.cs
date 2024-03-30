@@ -85,6 +85,27 @@ public class YChooseScreenplayPanel : BasePanel
         {
             OnDropdownValueChange(id,value);
         });
+        
+        //UndoButton 撤回添加的单元
+        uiTool.GetOrAddComponentInChilden<Button>("UndoButton").onClick.AddListener(()=>
+        {
+            if (curChooseUnitIndex<=1)
+            {
+                Debug.Log("已经没有单元了");
+                return;
+            }
+            //把这个unit删除
+            
+            int index = Units.Count-1;
+            GameObject unit = Units[index];
+            GameObject.Destroy(unit);
+            // Debug.Log("删除了"+unit.name+"xxx"+ Units.Count);
+            Units.RemoveAt(index);
+            yPlanningTable.Instance.RemoveMoveOrNoMoveAnimationList(index);
+            
+            curChooseUnitIndex--;
+            
+        });
     }
     bool CheckIndex(int index)
     {

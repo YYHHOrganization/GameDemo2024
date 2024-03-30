@@ -75,9 +75,10 @@ public class YLevelMain : MonoBehaviour
     }
     
     
-    //test 测试按下L，直接进入赢了界面 测试！！
+    //test 测试按下v，直接进入输了界面 测试！！
     void Update()
     {
+        
     }
     
     
