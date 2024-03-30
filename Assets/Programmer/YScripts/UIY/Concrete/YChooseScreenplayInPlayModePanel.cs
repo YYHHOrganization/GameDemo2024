@@ -127,6 +127,16 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
             curChooseUnitIndex--;
             
         });
+        
+        //GiveUpButton
+        uiTool.GetOrAddComponentInChilden<Button>("GiveUpButton").onClick.AddListener(()=>
+        {
+            Pop();
+            Push(new YMainPlayModeOriginPanel());
+            YPlayModeController.Instance.GiveUpPanel();
+            
+            
+        });
     }
     /// <summary>
     /// 是否超过了最大的index

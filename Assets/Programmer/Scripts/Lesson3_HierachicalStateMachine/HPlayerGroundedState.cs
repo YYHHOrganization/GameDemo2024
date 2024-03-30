@@ -49,6 +49,10 @@ public class HPlayerGroundedState : HPlayerBaseState, IRootState
         {
             SwitchState(_factory.Fall());
         }
+        else if (_ctx.IsDie)
+        {
+            SwitchState(_factory.Die());
+        }
     }
 
     // private float gravity = -9.8f;

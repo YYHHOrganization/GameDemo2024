@@ -773,7 +773,10 @@ public class yPlanningTable : MonoBehaviour
     {
         isMoveList.RemoveAt(index);
     }
-
+    public void ClearMoveOrNoMoveAnimationList()
+    {
+        isMoveList.Clear();
+    }
     void UpdateTableList(string name, List<string> nameList, List<string> nameListInUI)
     {
         for(int i = 1; i <= 5; i++)

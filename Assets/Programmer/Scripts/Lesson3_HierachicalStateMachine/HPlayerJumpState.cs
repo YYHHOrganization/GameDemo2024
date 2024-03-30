@@ -57,6 +57,10 @@ public class HPlayerJumpState : HPlayerBaseState, IRootState
         {
             SwitchState(_factory.Grounded());
         }
+        else if (_ctx.IsDie)
+        {
+            SwitchState(_factory.Die());
+        }
     }
 
     public override void UpdateState()

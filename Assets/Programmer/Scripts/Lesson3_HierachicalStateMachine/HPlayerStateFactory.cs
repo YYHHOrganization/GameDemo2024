@@ -14,6 +14,7 @@ public class HPlayerStateFactory
         jump,
         fall,
         Skill1,
+        die
     }
     
     public HPlayerStateFactory(HPlayerStateMachine context)
@@ -26,6 +27,7 @@ public class HPlayerStateFactory
         _states[PlayerStates.grounded] = new HPlayerGroundedState(_context, this);
         _states[PlayerStates.fall] = new HPlayerFallState(_context, this);
         _states[PlayerStates.Skill1] = new HPlayerSkill1State(_context, this);
+        _states[PlayerStates.die] = new YPlayerDieState(_context, this);
     }
 
     public HPlayerBaseState Idle()
@@ -61,5 +63,10 @@ public class HPlayerStateFactory
     public HPlayerBaseState Skill1()
     {
         return _states[PlayerStates.Skill1];
+    }
+    
+    public HPlayerBaseState Die()
+    {
+        return _states[PlayerStates.die];
     }
 }
