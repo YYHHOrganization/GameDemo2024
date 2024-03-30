@@ -46,6 +46,10 @@ public class YMainPlayModeOriginPanel : BasePanel
             Push(new YExitPanel());
            
         });
+        int levelIndex = YLevelManager.GetCurrentLevelIndex();
+        string messageIndex = levelIndex.ToString();
+        HMessageShowMgr.Instance.ShowMessage("LEVEL_IN_MSG_" + messageIndex);
+        HMessageShowMgr.Instance.ShowMessage("LEVEL_LOCATE_MSG_" + messageIndex);
     }
     //如果输入F 也认为点击了GetPuppetButton
     public override void OnPause()

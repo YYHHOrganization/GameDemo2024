@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -118,5 +119,31 @@ public class HOpenWorldTreasureManager : MonoBehaviour
             Instantiate(obj.Result, Vector3.zero, Quaternion.identity);
             Debug.Log("Instantiate Done");
         }
+    }
+    
+    public void JustGiveoutSomeTreasures(string id, int count)
+    {
+        HItemShowPanel panel = new HItemShowPanel();
+        string itemId = id;
+        var thisItem = yPlanningTable.Instance.worldItems[itemId];
+            
+        string itemName = thisItem.chineseName;
+        int itemNum = count;
+        HItemCounter.Instance.AddItem(itemId, itemNum);
+        HOpenWorldTreasure.ItemToShow itemToShow = new HOpenWorldTreasure.ItemToShow(itemName, itemNum, thisItem.UIIconLink, thisItem.isExpensive, thisItem.description);
+        
+        YGameRoot.Instance.Push(panel);
+        panel.SetLeftScrollPanelActive(true);
+        panel.SetMiddlePanelActive(false);
+        var op2 = Addressables.LoadAssetAsync<Sprite>(itemToShow.ItemImageLink);
+        Sprite go = op2.WaitForCompletion();
+        panel.ShowItemsLeftScroll(go, itemName, count);
+        StartCoroutine(PopPanel(panel));
+    }
+
+    IEnumerator PopPanel(BasePanel panel)
+    {
+        yield return new WaitForSeconds(1.2f);    
+        panel.Pop();
     }
 }

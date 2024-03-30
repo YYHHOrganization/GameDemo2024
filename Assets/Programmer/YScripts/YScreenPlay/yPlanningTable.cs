@@ -146,6 +146,7 @@ public class yPlanningTable : MonoBehaviour
         //读取机关表格
         ReadInteractiveGroupCSV("Assets/Designer/CsvTable/InteractiveGroup/InteractiveGroupCSVFile.csv", 
             interactiveGroups);
+        ReadAllMessages();
         ReadAudios();
     }
     
@@ -173,6 +174,29 @@ public class yPlanningTable : MonoBehaviour
         string treasureLayout = "Assets/Designer/CsvTable/ItemSystem/WorldTreasureLayoutCSVFile.csv";
         string treasure = "Assets/Designer/CsvTable/ItemSystem/WorldTreasureCSVFile.csv";
         HOpenWorldTreasureManager.Instance.ReadCSVFile(treasureLayout, treasure);
+    }
+
+    private Dictionary<string, MessageBoxBaseStruct> messages = new Dictionary<string, MessageBoxBaseStruct>();
+    public Dictionary<string, MessageBoxBaseStruct> Messages
+    {
+        get { return messages; }
+    }
+    void ReadAllMessages()
+    {
+        string messageLink = "Assets/Designer/CsvTable/MessageBox/MessageCommonCSVFile.csv";
+        string[] fileData = File.ReadAllLines(messageLink);
+        for (int i = 3; i < fileData.Length; i++)
+        {
+            string[] rowData = fileData[i].Split(',');
+            string messageId = rowData[0];
+            int messageKind = int.Parse(rowData[1]);
+            string messageContent = rowData[2];
+            float messageShowTime = float.Parse(rowData[3]);
+            string messageTransitionEffect = rowData[4];
+            string messagePrefabLink = rowData[5];
+            MessageBoxBaseStruct aMessage = new MessageBoxBaseStruct(messageId, messageContent,messageKind,messageShowTime,messageTransitionEffect, messagePrefabLink);
+            messages.Add(messageId, aMessage);
+        }
     }
 
     void ReadAudios()

@@ -29,6 +29,15 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
     
     private bool shouldLockPlayerInput=false;
     
+    public void ConfirmPlayFunc()
+    {
+        shouldLockPlayerInput = false;
+        YPlayModeController.Instance.LockPlayerInput(shouldLockPlayerInput);
+        ConfirmScreenplay();
+        Pop();
+        Push(new YMainPlayModePanel());
+        HAudioManager.Instance.Play("PlayWithPuppetMusic", HAudioManager.Instance.gameObject);
+    }
     
     public YChooseScreenplayInPlayModePanel() : base(new UIType(path)){}
     public override void OnEnter()
@@ -42,17 +51,18 @@ public class YChooseScreenplayInPlayModePanel  : BasePanel
         {
             //Debug.Log("点击了开始按钮");
             //YGameRoot.Instance.SceneSystem.SetScene(new YMainScene());
-            
-            shouldLockPlayerInput = false;
-            YPlayModeController.Instance.LockPlayerInput(shouldLockPlayerInput);
-            ConfirmScreenplay();
-            Pop();
-            Push(new YMainPlayModePanel());
-            HAudioManager.Instance.Play("PlayWithPuppetMusic", HAudioManager.Instance.gameObject);
-            
+            HMessageShowMgr.Instance.ShowMessageWithActions("ConfirmPuppetAction",ConfirmPlayFunc,null,null);
+            // shouldLockPlayerInput = false;
+            // YPlayModeController.Instance.LockPlayerInput(shouldLockPlayerInput);
+            // ConfirmScreenplay();
+            // Pop();
+            // Push(new YMainPlayModePanel());
+            // HAudioManager.Instance.Play("PlayWithPuppetMusic", HAudioManager.Instance.gameObject);
+            //
             // //设置为半屏
             // YPlayModeController.Instance.SetCameraLayout(2);
         });
+        
         // uiTool.GetOrAddComponentInChilden<Button>("BackButton").onClick.AddListener(()=>
         // {
         //     Pop();
