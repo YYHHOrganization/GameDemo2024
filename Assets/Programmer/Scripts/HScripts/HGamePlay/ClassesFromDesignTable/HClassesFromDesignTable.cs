@@ -18,6 +18,8 @@ public enum TreasureType
     GoodChest,
     VeryGoodChest,
     VeryVeryGoodChest,
+    ChestKeepGiving,
+    WangxiayitongRunChest,
 }
 
 public class HOpenWorldItemStruct
