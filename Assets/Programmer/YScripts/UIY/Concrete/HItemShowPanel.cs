@@ -55,6 +55,7 @@ public class HItemShowPanel : BasePanel
         if (result)
         {
             Debug.Log("效果正确");
+            HItemCounter.Instance.RemoveItem(portal.NeedId, portal.NeedCount);
             SetGiveOutPanelActive(false);
             YPlayModeController.Instance.LockPlayerInput(false);
             YTriggerEvents.RaiseOnMouseLockStateChanged(true);

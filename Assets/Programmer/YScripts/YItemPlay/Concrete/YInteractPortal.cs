@@ -9,6 +9,15 @@ public class YInteractPortal : YIInteractiveGroup
 {
     private string needId = "20000009";
     private int needCount = 3;
+    public string NeedId
+    {
+        get { return needId; }
+    }
+    
+    public int NeedCount
+    {
+        get { return needCount; }
+    }
     HItemShowPanel panel = new HItemShowPanel();
     private bool isPushed;
     private int actualCount;
