@@ -62,7 +62,6 @@ public class YLaserController : MonoBehaviour
                 hitObject.GetComponent<HJustTestRipple>().SetRipple(hit.point); // 通知护盾显示撞击
                 // 计算两点之间的距离
 
-
                 // Debug.Log("distance: " + distance);
             }
             else if (hitObject.CompareTag("Player"))
@@ -71,6 +70,12 @@ public class YLaserController : MonoBehaviour
                 //hitObject.GetComponent<PlayerScript>().Die(); // 触发角色死亡
                 Debug.Log("hit player!!");
                 YPlayModeController.Instance.PlayerDie();
+            }
+            else if (hitObject.CompareTag("Puppet"))
+            {
+                // 如果射线打中了角色
+                Debug.Log("hit puppet!!");
+                YScreenPlayController.Instance.PuppetDie();
             }
 
             distance = Vector3.Distance(transform.position, hit.point);

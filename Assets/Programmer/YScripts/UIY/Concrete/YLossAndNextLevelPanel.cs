@@ -2,11 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class YLossAndNextLevelPanel : BasePanel
 {
     static readonly string path = "Prefabs/UI/Panel/YLossAndNextLevelPanel";
-    public YLossAndNextLevelPanel() : base(new UIType(path)) { }
+    private string TextStr="挑战失败";
+
+    public YLossAndNextLevelPanel() : base(new UIType(path))
+    {
+        TextStr = "挑战失败";
+    }
+
+    public YLossAndNextLevelPanel(string Textstr) : base(new UIType(path))
+    {
+        TextStr = Textstr;
+    }
     
     public override void OnEnter()
     {
@@ -19,8 +30,11 @@ public class YLossAndNextLevelPanel : BasePanel
         uiTool.GetOrAddComponentInChilden<Button>("AgainButton").onClick.AddListener(()=>
         {
             YLevelManager.LoadAndBeginLevel();
-            Pop();
+            //Pop();
+            RemoveSelfPanel();
             Push(new YChooseCharacterPanel());
+            //变回全屏
+            YPlayModeController.Instance.SetCameraLayout(0);
         });
         //ChooseLevelButton
         uiTool.GetOrAddComponentInChilden<Button>("ChooseLevelButton").onClick.AddListener(()=>
@@ -28,6 +42,8 @@ public class YLossAndNextLevelPanel : BasePanel
             Pop();
             Push(new YLevelPanel(0));
         });
+        TMP_Text LossText = uiTool.GetOrAddComponentInChilden<TMP_Text>("LossText");
+        LossText.text = TextStr;
         
     }
 }

@@ -177,7 +177,8 @@ public class HOpenWorldTreasure : MonoBehaviour
         yield return new WaitForSeconds(2f);
         panel.SetMiddlePanelDeactivateFadeOff();
         yield return new WaitForSeconds(0.5f);
-        panel.Pop();
+        //panel.Pop();
+        panel.RemoveSelfPanel();
         StartCoroutine(showEachItemOnLeftScroll(items));
     }
     
@@ -199,8 +200,8 @@ public class HOpenWorldTreasure : MonoBehaviour
         }
 
         yield return new WaitForSeconds(2f);
-        YGameRoot.Instance.Pop();
-        
+        // YGameRoot.Instance.Pop();
+        panel.RemoveSelfPanel();
     }
 
     public GameObject lightPlane;
