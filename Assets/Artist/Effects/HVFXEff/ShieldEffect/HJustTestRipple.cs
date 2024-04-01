@@ -30,6 +30,7 @@ public class HJustTestRipple : MonoBehaviour
         }
         else
         {
+            ripples.gameObject.SetActive(true);
             checkTimer += Time.deltaTime;
             if (checkTimer >= checkTime)
             {
