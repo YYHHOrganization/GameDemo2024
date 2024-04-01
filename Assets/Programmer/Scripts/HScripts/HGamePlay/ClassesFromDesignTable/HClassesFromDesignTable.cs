@@ -137,6 +137,11 @@ public class MessageBoxBaseStruct
         messageTransitionEffect = transitionEffect;
         messageLink = link;
     }
+
+    public void SetMessage(string message)
+    {
+        messageContent = new string(message);
+    }
 }
 
 

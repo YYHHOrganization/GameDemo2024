@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9126469557159018920}
   - component: {fileID: 4774097772366347519}
   - component: {fileID: 8635744392037642391}
+  - component: {fileID: 1784476929926194965}
   m_Layer: 5
   m_Name: HShowMessagePanel
   m_TagString: Untagged
@@ -63,7 +64,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -91,6 +92,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141533a94d550544aab46fde4534a2f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &1784476929926194965
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4437147873333580355}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6571890420390949652
 GameObject:
   m_ObjectHideFlags: 0

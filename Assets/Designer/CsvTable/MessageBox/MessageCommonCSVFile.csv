@@ -1,6 +1,6 @@
 ﻿消息标识符,消息类型,消息内容,消息显示的持续时间,视觉效果（比如淡入淡出，左滑进入等）,消息的Addressable链接
 MessageId,MessageKind,MessageContent,MessageLastTime,MessageTransitionEffect,MessagePrefabLink
-参考下面的写，不要重复,"（1：屏幕上方出现的消息， 2：大型弹窗（例如教程,需要用户点掉） 3：屏幕下方弹出的消息（比如获得成就），4:屏幕中间弹出的消息（比如重要提示等））,5:二次确认窗口",后面加入一些转义符的配置,消息持续时间,淡入淡出等,没有资源类型的填NULL
+参考下面的写，不要重复,"（1：屏幕上方出现的消息， 2：大型弹窗（例如教程,需要用户点掉） 3：屏幕下方弹出的消息（比如获得成就），4:屏幕中间弹出的消息（比如重要提示等））,5:二次确认窗口, 6:从背包提交物品窗口",后面加入一些转义符的配置,消息持续时间,淡入淡出等,没有资源类型的填NULL
 LEVEL_IN_MSG_0,1,关卡1：小城镇,5,FadeInAndFadeOut,NULL
 LEVEL_IN_MSG_1,1,关卡2：无主荒星,5,FadeInAndFadeOut,NULL
 LEVEL_LOCATE_MSG_0,1,<size=80%>宁静祥和的小城市，是休闲的好去处</size>,5,FadeInAndFadeOut,NULL
@@ -9,3 +9,5 @@ Tut_LearnLevel0,2,基础操作——召唤同伴,-1,ScaleFadeInNoOut,Tut_LearnLe
 ConfirmPuppetAction,5,是否确定同伴的行动序列？,-1,ScaleFadeInNoOut,NULL
 ConfirmCancelPuppet,5,是否确定要取消召唤同伴？,-1,ScaleFadeInNoOut,NULL
 ConfirmExitRuizao,5,是否确定要退出枘凿八合?,-1,ScaleFadeInNoOut,NULL
+SubmitSthInSlotMachineMsg,6,请选择要全部提交的物品,-1,ScaleFadeInNoOut,NULL
+SlotMachineSubmitMsg,4,啊哦，你失去了全部的物品,5,FadeInAndFadeOut,
