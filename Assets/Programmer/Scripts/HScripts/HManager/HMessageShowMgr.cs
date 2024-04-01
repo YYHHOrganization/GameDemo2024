@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -17,10 +18,12 @@ public class HMessageShowMgr : MonoBehaviour
     private string messageKind4UIPath = "messageKind4Prefab";
     
     private string aSimpleMessageUILink = "aSimpleMessageUILink"; //一条消息，会放在对应消息类型的Panel当中 
+    private string aSimpleMessageUIKind4Link = "aSimpleMessageUIKind4Link"; 
     private GameObject canvas;
     private TMP_Text messageKind2Content;
 
     private string messageConfirmBoxLink = "MessageConfirmBox";
+    private string messageGiveoutBoxLink = "MessageGiveoutBox";
     private Transform messageKind5Panel;
     
     //单例模式
@@ -67,6 +70,8 @@ public class HMessageShowMgr : MonoBehaviour
         Destroy(go, messageShowTime);
     }
     
+    
+    
     private void ShowMessageKind2(MessageBoxBaseStruct message)
     {
         transform.SetAsLastSibling();
@@ -105,7 +110,16 @@ public class HMessageShowMgr : MonoBehaviour
 
     private void ShowMessageKind4(MessageBoxBaseStruct message)
     {
-        //屏幕中间弹出的消息，
+        //呈现在屏幕上方的UI
+        string messageContent = message.MessageContent;
+        float messageShowTime = message.MessageShowTime;
+        string messageTransitionEffect = message.MessageTransitionEffect;
+
+        var op2 = Addressables.InstantiateAsync(aSimpleMessageUIKind4Link, messageKind1Panel);
+        GameObject go = op2.WaitForCompletion();
+        go.transform.GetComponentInChildren<TMP_Text>().text = messageContent;
+        DoMessageTransitionEffect(go.transform, messageTransitionEffect, messageShowTime);
+        Destroy(go, messageShowTime);
     }
 
     private void ShowMessageKind5(MessageBoxBaseStruct message, Action confirmAction, Action cancelAction=null, Action closeAction=null)
@@ -143,8 +157,60 @@ public class HMessageShowMgr : MonoBehaviour
         YTriggerEvents.RaiseOnMouseLockStateChanged(false); //鼠标呼出的状态
         YPlayModeController.Instance.LockPlayerInput(true);
     }
+    
+    private void ShowMessageKind6(MessageBoxBaseStruct message, Action confirmAction, Action cancelAction, Action closeAction, GameObject gameObject = null)
+    {
+        YTriggerEvents.RaiseOnMouseLockStateChanged(false);
+        YPlayModeController.Instance.LockPlayerInput(true);
+        
+        HBagToGiveoutPanel bagPanel = new HBagToGiveoutPanel();
+        YGameRoot.Instance.Push(bagPanel);
+        
+        var op2 = Addressables.InstantiateAsync(messageGiveoutBoxLink, messageKind5Panel);
+        GameObject go = op2.WaitForCompletion();
+        //从背包中提交物品的逻辑
+        transform.SetAsLastSibling();
+        bagPanel.uiTool.Get<HBagToGiveoutBaseLogic>().SetGiveoutPanel(go);
+        
+        TMP_Text messageContent = go.transform.Find("messageContent").GetComponent<TMP_Text>();
+        messageContent.text = message.MessageContent;
+        Button cancelButton = go.transform.Find("CancelButton").GetComponent<Button>();
+        cancelButton.onClick.AddListener(() =>
+        {
+            Debug.Log("Cancel");
+            YPlayModeController.Instance.LockPlayerInput(false);
+            transform.SetAsFirstSibling();
+            cancelAction?.Invoke();
+            YGameRoot.Instance.Pop();
+            Destroy(go);
+        });
+        //return button
+        Button closeButton = go.transform.Find("ReturnButton").GetComponent<Button>();
+        closeButton.onClick.AddListener(() =>
+        {
+            Debug.Log("Close");
+            YPlayModeController.Instance.LockPlayerInput(false);
+            transform.SetAsFirstSibling();
+            closeAction?.Invoke();
+            YGameRoot.Instance.Pop();
+            Destroy(go);
+        });
+        
+        Button confirmButton = go.transform.Find("ConfirmButton").GetComponent<Button>();
+        confirmButton.onClick.AddListener(() =>
+        {
+            Debug.Log("Confirm");
+            YPlayModeController.Instance.LockPlayerInput(false);
+            transform.SetAsFirstSibling();
+            HItemCounter.Instance.RemoveItem(go.GetComponent<HGiveoutPanelCollectBagInfo>().itemId,go.GetComponent<HGiveoutPanelCollectBagInfo>().itemCount);
+            YTriggerEvents.RaiseOnGiveOutItemInBagForSlotMachine(go.GetComponent<HGiveoutPanelCollectBagInfo>().itemId,go.GetComponent<HGiveoutPanelCollectBagInfo>().itemCount);
+            YGameRoot.Instance.Pop();
+            confirmAction?.Invoke();
+            Destroy(go);
+        });
+    }
 
-    public void ShowMessageWithActions(string messageId, Action confirmAction, Action cancelAction, Action closeAction)
+    public void ShowMessageWithActions(string messageId, Action confirmAction, Action cancelAction, Action closeAction, GameObject gameobject=null)
     {
         MessageBoxBaseStruct message = yPlanningTable.Instance.Messages[messageId];
         if (message!=null)
@@ -155,15 +221,24 @@ public class HMessageShowMgr : MonoBehaviour
                 case 5:
                     ShowMessageKind5(message, confirmAction, cancelAction, closeAction);
                     break;
+                case 6:
+                    ShowMessageKind6(message, confirmAction, cancelAction, closeAction, gameobject);
+                    break;
             }
         }
     }
     
-    public void ShowMessage(string messageId)
+    
+    
+    public void ShowMessage(string messageId, string overrideMessageContent=null)
     {
         MessageBoxBaseStruct message = yPlanningTable.Instance.Messages[messageId];
         if (message!=null)
         {
+            if (overrideMessageContent!=null)
+            {
+                message.SetMessage(overrideMessageContent);
+            }
             int messageKind = message.MessageType;
             switch (messageKind)
             {

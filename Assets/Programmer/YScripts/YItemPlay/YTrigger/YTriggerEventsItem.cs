@@ -14,6 +14,12 @@ public class YTriggerGameObjectEventArgs : EventArgs
     public GameObject gameObject;
     public Transform showUIPlace;
 }
+//给抽奖机，传的物体
+public class YTriggerGivingItemEventArgs : EventArgs
+{
+    public string itemId;
+    public int itemCount;
+}
 
 //有 activated 用来看是否开启快捷键，以及需要有一个对应，
 // public class YShortCutKeyEventArgs : EventArgs
@@ -93,4 +99,11 @@ public class YTriggerEvents : MonoBehaviour
         OnEnterNewLevel?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
 
+    //给抽奖机物品点击确认
+    public static event EventHandler<YTriggerGivingItemEventArgs> OnGiveOutItemInBagForSlotMachine;
+    public static void RaiseOnGiveOutItemInBagForSlotMachine(string id, int count)
+    {
+        OnGiveOutItemInBagForSlotMachine?.Invoke(null, new YTriggerGivingItemEventArgs{itemId = id, itemCount = count});
+    }
+    
 }
