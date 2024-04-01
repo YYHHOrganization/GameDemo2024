@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using Unity.VisualScripting;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
@@ -638,8 +637,8 @@ public class HTimelineController : MonoBehaviour
         //播放死亡动画
         //获取DieAnimatorController
         string ruizaoLink = "DieAnimatorController";//""YRuiZaoLiuHe";
-        var op = Addressables.LoadAssetAsync<AnimatorController>(ruizaoLink);
-        AnimatorController go = op.WaitForCompletion();
+        var op = Addressables.LoadAssetAsync<RuntimeAnimatorController>(ruizaoLink);
+        RuntimeAnimatorController go = op.WaitForCompletion() as RuntimeAnimatorController;
         
         //给target增加组件DieAnimatorController
         
