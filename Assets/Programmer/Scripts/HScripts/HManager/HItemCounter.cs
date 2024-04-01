@@ -28,6 +28,16 @@ public class HItemCounter : MonoBehaviour
     }
     
     private Dictionary<string, int> worldItemCounts = new Dictionary<string, int>();
+
+    public Dictionary<string, int> WorldItemCounts
+    {
+        get => worldItemCounts;
+    }
+
+    public int GetDictLength()
+    {
+        return worldItemCounts.Count;
+    }
     
     private void DebugDictionary()
     {

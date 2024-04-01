@@ -223,6 +223,9 @@ public class yPlanningTable : MonoBehaviour
             item.isExpensive = (rowData[4] == "1");
             item.UIIconLink = rowData[5];
             item.description = rowData[6];
+            item.starLevel = int.Parse(rowData[7]);
+            item.couldBeExchanged = bool.Parse(rowData[8]);
+            item.itemKindChinese = rowData[9];
             worldItems.Add(itemName, item);
         }
     }

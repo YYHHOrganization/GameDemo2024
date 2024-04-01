@@ -32,7 +32,11 @@ public class HOpenWorldItemStruct
     
     public string UIIconLink;
     public string description;
-    
+
+    public int starLevel;
+    public bool couldBeExchanged; //暂时是是否可以被星际和平公司投资机器兑换
+    public string itemKindChinese;
+
 }
 
 public class HOpenWorldTreasureStruct

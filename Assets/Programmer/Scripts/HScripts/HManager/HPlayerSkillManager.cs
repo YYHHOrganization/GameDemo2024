@@ -18,6 +18,12 @@ public class HPlayerSkillManager : MonoBehaviour
     Coroutine ResumeIntensityCoroutine;
     private float scanningIntensity = -2f;
 
+    private bool bagBeenPushed = false;
+    public void SetBagBeenPushed(bool value)
+    {
+        bagBeenPushed = value;
+    }
+
     private void SetOriginalIntensity()
     {
         postProcessVolume.profile.TryGet(out ColorAdjustments settings);
@@ -63,6 +69,16 @@ public class HPlayerSkillManager : MonoBehaviour
             SkillScanningTerrian();
             HAudioManager.Instance.Play("SweepSceneMusic", this.gameObject);
         }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            if (!bagBeenPushed)
+            {
+                YGameRoot.Instance.Push(new HBagPanel());
+                bagBeenPushed = true;   
+            }
+        }
+        
     }
     
     IEnumerator ResumeIntensity()
