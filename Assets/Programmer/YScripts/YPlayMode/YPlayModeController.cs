@@ -38,6 +38,16 @@ public class YPlayModeController : MonoBehaviour
     public bool detectModeIsOn = false;
     
     HPlayerStateMachine playerStateMachine;
+
+    //记录是否是进入召唤完伙伴的panel的状态 及其get set
+    private bool isAfterEnterPuppetPanel = false;
+    public bool IsAfterEnterPuppetPanel
+    {
+        get => isAfterEnterPuppetPanel;
+        set => isAfterEnterPuppetPanel = value;
+    }
+    
+    
     public void SetCharacter(int characterIndex)
     {
         PlayerDieFlag = false;
@@ -218,6 +228,7 @@ public class YPlayModeController : MonoBehaviour
 
     public void EnterNewLevel()
     {
+        YTriggerEvents.RaiseOnEnterNewLevel(true);
         if (curCharacter)
         {
             Destroy(curCharacter);
@@ -235,6 +246,7 @@ public class YPlayModeController : MonoBehaviour
             Destroy(CameraLayoutManager.gameObject);
         }
         
+        IsAfterEnterPuppetPanel = false;
     }
 
     public void GiveUpPanel()

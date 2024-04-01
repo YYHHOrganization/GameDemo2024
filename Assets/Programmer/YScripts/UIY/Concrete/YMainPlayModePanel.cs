@@ -15,6 +15,9 @@ public class YMainPlayModePanel : BasePanel
     
     public override void OnEnter()
     {
+        //进入这个panel 代表已经召唤完伙伴了 进入召唤完的panel
+        YPlayModeController.Instance.IsAfterEnterPuppetPanel = true;
+        
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
         YTriggerEvents.RaiseOnShortcutKeySplitScreenStateChanged(true);
         uiTool.GetOrAddComponentInChilden<Button>("SetTwoCamerasEachHalfButton").onClick.AddListener(()=>
