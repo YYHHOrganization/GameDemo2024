@@ -85,4 +85,12 @@ public class YTriggerEvents : MonoBehaviour
         OnShortcutKeyLockView?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
     
+    //是否进入新的一关/重新开始 很多enter new level都没有用这个的逻辑，因为之前就写好了
+    public static event EventHandler<YTriggerEventArgs> OnEnterNewLevel;
+
+    public static void RaiseOnEnterNewLevel(bool activated)
+    {
+        OnEnterNewLevel?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
+
 }
