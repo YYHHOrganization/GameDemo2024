@@ -72,7 +72,7 @@ public class HSlotMachineBase : MonoBehaviour
         }
     }
     
-    private void GiveOutSomethingAndPlay()
+    public void GiveOutSomethingAndPlay()
     {
         //调出提交物品的菜单, 用Message表的新类型
         HMessageShowMgr.Instance.ShowMessageWithActions("SubmitSthInSlotMachineMsg", CalculateTheResult,null,null);
@@ -115,7 +115,7 @@ public class HSlotMachineBase : MonoBehaviour
         else if(resultsCnt[0]>=3 || resultsCnt[1]>=3 || resultsCnt[2]>=3 || resultsCnt[3]>=3)
         {
             string itemName = yPlanningTable.Instance.worldItems[chooseItemID].chineseName;
-            newContent = new string("某一种图案出现了三次及以上！你回本了！获得了" + chooseItemCount * 3 + "个" + itemName + "！");
+            newContent = new string("某一种图案出现了三次及以上！你回本了！获得了" + chooseItemCount * 1 + "个" + itemName + "！");
             HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg",newContent);
             HItemCounter.Instance.AddItem(chooseItemID, chooseItemCount);
         }

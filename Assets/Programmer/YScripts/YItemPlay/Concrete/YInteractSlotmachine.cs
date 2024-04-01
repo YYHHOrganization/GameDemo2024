@@ -1,0 +1,41 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class YInteractSlotmachine : YIInteractiveGroup
+{
+    GameObject slotmachine;
+    public void Start()
+    {
+        base.Start();
+        slotmachine = GameObject.Find("SlotMachineNew");
+    }
+    
+    public override void SetResultOn()
+    {
+        YTriggerEvents.RaiseOnShortcutKeyInteractionStateChanged(false, triggers[0],null);//如果是靠近宝箱打开 只会有一个trigger
+        Debug.Log("开启");
+        slotmachine.GetComponent<HSlotMachineBase >().GiveOutSomethingAndPlay();
+    }
+
+    
+    public override void SetResultOff()
+    {
+        
+    }
+    
+    public override void EnterField(bool isEnter, GameObject TriggergameObject,Transform showUIPlace)
+    {
+        base.EnterField(isEnter, TriggergameObject,showUIPlace);
+        if (isEnter)
+        {
+            Debug.Log("进入区域");
+        }
+        else
+        {
+            Debug.Log("离开区域");
+        }
+    
+    }
+    
+}
