@@ -53,6 +53,34 @@ public class PanelManager
             panel.OnResume();
         }
     }
+    
+    /// <summary>
+    /// 移除某个特定面板
+    /// </summary>
+    /// <param name="panelToRemove"></param>
+    public void RemovePanel(BasePanel panelToRemove)
+    {
+        panelToRemove.OnExit();
+        if (panelStack.Contains(panelToRemove))
+        {
+            BasePanel[] panelArray = panelStack.ToArray();
+            panelStack.Clear();
+        
+            foreach (BasePanel panel in panelArray)
+            {
+                if (panel != panelToRemove)
+                {
+                    panelStack.Push(panel);
+                }
+            }
+        }
+        if (panelStack.Count > 0)
+        {
+            panel = panelStack.Peek();
+            panel.OnResume();
+        }
+    }
+    
     /// <summary>
     /// 执行所有面板的OnExit操作
     /// </summary>

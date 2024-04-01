@@ -85,4 +85,6 @@ public abstract class BasePanel
     /// 关闭一个面板
     /// </summary>
     public void Pop()=>panelManager?.Pop();
+    
+    public void RemoveSelfPanel()=>panelManager?.RemovePanel(this);
 }

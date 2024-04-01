@@ -117,7 +117,19 @@ public class YScreenPlayController : MonoBehaviour
             //当进入新的关卡时，应当清空所有的List
         }
         
+        // //应该要等到全load完毕再这个 不然就会出现木偶还是在原地  然后又再次触发死亡界面 所以写在timelineController内吧
+        // isPuppetDie = false;
         
+    }
+    
+    // private bool isPuppetDie = false;
+    
+    public void PuppetDie()
+    {
+        
+        timelineController.PuppetDie();
+        
+
     }
 
 

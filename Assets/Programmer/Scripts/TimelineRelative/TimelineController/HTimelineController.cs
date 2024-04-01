@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using Unity.VisualScripting;
+using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
 using UnityEngine.Playables;
 using UnityEngine.Rendering.Universal;
@@ -170,7 +172,7 @@ public class HTimelineController : MonoBehaviour
     }
 
     private float testAnimationStart = 0;
-    private float testAnimationDuration = 20;
+    private float testAnimationDuration = 100;
     //index指的是修改timeline动画轨道的第几个动作
     public void ChangeAnimationWithIndex(int index, AnimationClip clip)
     {
@@ -482,6 +484,9 @@ public class HTimelineController : MonoBehaviour
             m_isSammPlace = true;
         }
         
+        //应该要等到全load完毕再这个 不然就会出现木偶还是在原地  然后又再次触发死亡界面 所以写在timelineController内吧
+        //或者当呼出木偶的时候再去赋值 
+        isPuppetDie = false;
     }
 
     public void BeforePlayTimeline()
@@ -540,7 +545,7 @@ public class HTimelineController : MonoBehaviour
                 StartCoroutine(WaitAndGo(animationClipLengths[m_clipIndex]));
                 
             }
-            if (!duringSamePlaceCoroutine&&(Vector3.Distance(target.transform.position, gooo[m_clipIndex].transform.position) < 1f))
+            if (!duringSamePlaceCoroutine&&(Vector3.Distance(target.transform.position, gooo[m_clipIndex].transform.position) < 0.5f))
             {
                 changeToNextClip();
             }
@@ -611,6 +616,49 @@ public class HTimelineController : MonoBehaviour
         startPlaying = false;
         isEnd = false;
         
+    }
+    private bool isPuppetDie = false;
+    
+    public void PuppetDie()
+    {
+        if(isPuppetDie)
+        {
+            return;
+        }
+        isPuppetDie = true;
+        
+        
+        //停止timeline
+        playableDirector.Stop();
+        //播放死亡动画
+        
+        
+        //puppet不能再移动
+        target.GetComponent<NavMeshAgent>().isStopped = true;
+        //播放死亡动画
+        //获取DieAnimatorController
+        string ruizaoLink = "DieAnimatorController";//""YRuiZaoLiuHe";
+        var op = Addressables.LoadAssetAsync<AnimatorController>(ruizaoLink);
+        AnimatorController go = op.WaitForCompletion();
+        
+        //给target增加组件DieAnimatorController
+        
+        // 将 Animator Controller 绑定到游戏对象上
+        //target.AddComponent<Animator>().runtimeAnimatorController = go;
+        
+        Animator animator=target.GetComponentInChildren<Animator>();
+        
+        if(animator==null)
+        {
+            animator=target.AddComponent<Animator>();
+        }
+        // animator.avatar = 
+        animator.runtimeAnimatorController = go;
+        //target.GetComponent<Animator>().SetTrigger("Die");
+        
+        
+        YGameRoot.Instance.Pop();
+        YGameRoot.Instance.Push(new YLossAndNextLevelPanel("伙伴死亡"));
     }
     
 }
