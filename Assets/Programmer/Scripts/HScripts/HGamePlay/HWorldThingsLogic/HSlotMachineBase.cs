@@ -51,8 +51,8 @@ public class HSlotMachineBase : MonoBehaviour
         {
             string itemName = yPlanningTable.Instance.worldItems[chooseItemID].chineseName;
             HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","你失去了" + chooseItemCount + "个" + itemName + ", 换取了一次抽奖机会！");
-            int num = Random.Range(0, 1);
-            if (num == 0)
+            int num = Random.Range(0, 10000);
+            if (num > 5000)
             {
                 HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","这是一场豪赌，朋友！所有，或者一无所有！");
             }
@@ -161,7 +161,7 @@ public class HSlotMachineBase : MonoBehaviour
         yield return new WaitForSeconds(4.5f);
         CheckResultAndGiveOutTreasure(rollResults);
         
-        Invoke("ResetEverything", 5f);
+        Invoke("ResetEverything", 3.5f);
     }
 
     private void ResetEverything()
