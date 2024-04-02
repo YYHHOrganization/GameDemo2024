@@ -51,6 +51,13 @@ public class HSlotMachineBase : MonoBehaviour
         {
             string itemName = yPlanningTable.Instance.worldItems[chooseItemID].chineseName;
             HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","你失去了" + chooseItemCount + "个" + itemName + ", 换取了一次抽奖机会！");
+            int num = Random.Range(0, 1);
+            if (num == 0)
+            {
+                HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","这是一场豪赌，朋友！所有，或者一无所有！");
+            }
+            else
+                HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","愿你的血脉永远鼓动，旅途永远坦然，诡计永不败露。");
         }
         
         List<int> rollResults = new List<int>();
@@ -76,7 +83,7 @@ public class HSlotMachineBase : MonoBehaviour
     {
         //调出提交物品的菜单, 用Message表的新类型
         HMessageShowMgr.Instance.ShowMessageWithActions("SubmitSthInSlotMachineMsg", CalculateTheResult,null,null);
-        
+
     }
 
     private void CheckResultAndGiveOutTreasure(List<int> rollResults)
