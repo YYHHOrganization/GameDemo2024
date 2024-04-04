@@ -317,17 +317,11 @@ public class HPlayerStateMachine : MonoBehaviour
         if(isSkill1Pressed && skillScript.isSkill1Valid() && characterController.isGrounded)
         {
             animator.SetTrigger(isSkill1Hash);
-            playerInput.CharacterControls.Disable();
-            Invoke("SetCharacterControlEnable", 3f); //todo:先锁死3s，之后再根据技能的动画时长来设置,有的时候或许不锁死呢
+            skillScript.SetPlayerBaseAction(playerInput);
             skillScript.PlaySkill1();
         }
     }
-
-    private void SetCharacterControlEnable()
-    {
-        playerInput.CharacterControls.Enable();
-    }
-
+    
     void OnRun(InputAction.CallbackContext context)
     {
         isRunPressed = context.ReadValueAsButton();
