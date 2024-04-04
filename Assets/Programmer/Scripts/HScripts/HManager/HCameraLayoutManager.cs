@@ -11,7 +11,6 @@ public class HCameraLayoutManager : MonoBehaviour
     public Camera playerCamera;
     public Camera puppetCamera;
     
-
     private void SetPlayerOutputViewportRect(float x, float y, float width, float height)
     {
         playerCamera.rect = new Rect(x, y, width, height);
@@ -28,6 +27,7 @@ public class HCameraLayoutManager : MonoBehaviour
         SetPlayerOutputViewportRect(0,0,1,1);
         puppetCamera.gameObject.SetActive(false);
     }
+    
 
     public void SetTwoCamerasEachHalf()
     {
