@@ -12,6 +12,7 @@ public class HShajinPlayerSkill : HCharacterSkillBase
         skillVFXPath = "HVFX_ShajinShield";
         skillCDTime = 2.0f;
         skillLastTime = 8.0f;
+        skillLockTime = 3.0f;
         countDownUIlink = "Prefabs/UI/singleUnit/Skill1CountDownPanel";
         countDownUI = Instantiate(Resources.Load<GameObject>(countDownUIlink), GameObject.Find("Canvas").transform);
         countDownUI.gameObject.SetActive(false);
@@ -23,13 +24,14 @@ public class HShajinPlayerSkill : HCharacterSkillBase
     public override void PlaySkill1()
     {
         StartCoroutine(WaitForAnimationAndSummonShield());
-        
     }
+    
+    
 
     IEnumerator WaitForAnimationAndSummonShield()
     {
         yield return new WaitForSeconds(1.5f);
-        base.PlaySkill1();
+        base.PlaySkillOn();
         HAudioManager.Instance.Play("ShieldSummonAudio", this.gameObject);
     }
 }

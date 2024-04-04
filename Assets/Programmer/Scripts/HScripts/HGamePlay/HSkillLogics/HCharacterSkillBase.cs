@@ -20,28 +20,65 @@ public class HCharacterSkillBase : MonoBehaviour
     private bool isSkill1CD = false;  //技能1是否在冷却中
     private bool isSkill1Using = false;  //技能1是否正在使用
     private float isSkill1LastTimer;
+    protected float delayEffTime;
     
     protected GameObject countDownUI;
     protected string countDownUIlink;
     protected TMP_Text countDownText;
     protected Image countDownImage;
     
+    protected L2PlayerInput thisPlayerInput;
+    protected float skillLockTime;
     
+    protected AnimationClip skillAnimationClip;
+    protected string clipStringPath;
+    protected Animator animator;
     private void Start()
     {
-        LoadVFXEffect();
+        //LoadVFXEffect();
         //LoadSkillInfoFromDesignTable();
+        
     }
 
     public bool isSkill1Valid()
     {
         return !isSkill1CD && !isSkill1Using;
     }
+    protected void LoadAnimationClip()
+    {
+        animator = GetComponent<Animator>();
+        skillAnimationClip = Resources.Load<AnimationClip>(clipStringPath);
+        
+        AnimatorOverrideController animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        Debug.Log(animatorOverrideController);
+        animatorOverrideController["ShajinSummonShield"] = skillAnimationClip;
+        animator.runtimeAnimatorController = animatorOverrideController;
+    }
+    /// <summary>
+    /// // 用来处理角色放技能时是否可以移动的逻辑
+    /// </summary>
+    /// <param name="playerInput"></param>
+    public virtual void SetPlayerBaseAction(L2PlayerInput playerInput)
+    {
+        thisPlayerInput = playerInput;
+        playerInput.CharacterControls.Disable();
+        Invoke("SetCharacterControlEnable", skillLockTime); //todo:先锁死3s，之后再根据技能的动画时长来设置,有的时候或许不锁死呢
+        
+    }
+    private void SetCharacterControlEnable()
+    {
+        thisPlayerInput.CharacterControls.Enable();
+    }
     
     protected virtual void LoadVFXEffect()
     {
         Addressables.InstantiateAsync(skillVFXPath, transform.position, Quaternion.identity, gameObject.transform).Completed += OnLoadVFXEffect;
     }
+    protected virtual void LoadVFXEffect(bool withRotation)
+    {
+        Addressables.InstantiateAsync(skillVFXPath, transform.position, transform.rotation, gameObject.transform).Completed += OnLoadVFXEffect;
+    }
+   
     
     protected virtual void OnLoadVFXEffect(UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<GameObject> obj)
     {
@@ -54,6 +91,16 @@ public class HCharacterSkillBase : MonoBehaviour
 
     //第一个技能——小技能
     public virtual void PlaySkill1()
+    {
+        if (isSkill1Using || isSkill1CD) return;
+        
+        isSkill1Using = true;
+        StartCoroutine(SkillUsingTick());
+        isSkill1LastTimer = skillLastTime;
+        characterSkillVFX.gameObject.SetActive(true);
+    }
+    
+    public virtual void PlaySkillOn()
     {
         if (isSkill1Using || isSkill1CD) return;
         
@@ -93,12 +140,12 @@ public class HCharacterSkillBase : MonoBehaviour
             //更新UI为remainTime
             countDownText.text = remainTime.ToString("F1");
             countDownImage.fillAmount = remainTime / skillCDTime;
-            Debug.Log(remainTime / skillCDTime);
+            // Debug.Log(remainTime / skillCDTime);
         }
         isSkill1CD = false;
         countDownUI.gameObject.SetActive(false);
     }
-    
+
     private void Update()
     {
         // if (isSkill1Using)
