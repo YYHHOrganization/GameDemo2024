@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HTestCharacterShoot : MonoBehaviour
@@ -16,7 +15,9 @@ public class HTestCharacterShoot : MonoBehaviour
     
     public Transform thirdPersonCommonFollowPlace;
     public Transform aimTargetReticle;
-    
+    public GameObject effectToSpawn;
+
+    public Transform gunTrans;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,28 +50,12 @@ public class HTestCharacterShoot : MonoBehaviour
             thirdAimCamera.gameObject.SetActive(false);
             aimTargetReticle.gameObject.SetActive(false);
             //FaceToPlayerCameraDirection();
-            StopCoroutine(CalculateScreenRayForShoot());
+            StopAllCoroutines();
         }
         RotateCharacterWithMouse2();
         
     }
     
-    private void PrepareForShoot()
-    {
-        RotateCharacterWithMouse2();
-    }
-
-    private void RotateCharacterWithMouse()
-    {
-        
-        float fMouseX = Input.GetAxis("Mouse X");
-        float fMouseY = Input.GetAxis("Mouse Y");
-        //thirdPersonFollowPlace.Rotate(Vector3.up, fMouseX, Space.World);//左右旋转
-        //thirdPersonFollowPlace.transform.position = aimLocateSpace.position;
-        thirdPersonFollowPlace.Rotate(Vector3.right, -fMouseY * 2, Space.World);//上下旋转
-        transform.Rotate(Vector3.up, fMouseX, Space.World);//左右旋转
-    }
-
     float TurnSpeed = 3;
     float VerticalRotMin = -80;
     float VerticalRotMax = 80;
@@ -101,17 +86,37 @@ public class HTestCharacterShoot : MonoBehaviour
         }
         
     }
-
-    private void FaceToPlayerCameraDirection()
+    
+    private void ShootBulletFromMuzzle(bool needShootHelp,bool hitButNoNeedHelp, Vector3 hitPosition)
     {
-        //直接朝向相机看向的位置，再射出射线
-        Vector3 positionToLookAt;
-        positionToLookAt.x = mainPlayerCamera.transform.forward.x;
-        positionToLookAt.y = 0;
-        positionToLookAt.z = mainPlayerCamera.transform.forward.z;
-        
-        Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt,Vector3.up);
-        transform.rotation = targetRotation;
+        //由枪口位置向屏幕中心所指的位置发射子弹
+        GameObject Effects;
+        if (thirdPersonFollowPlace)
+        {
+            // Debug.Log("ShootBulletFromMuzzle");
+            //
+            float middleX = Screen.width * 0.5f;
+            float middleY = Screen.height * 0.5f;
+            Ray shotRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, 0));
+            Vector3 shotDir = shotRay.direction;
+            //rotation is from gunTrans.rotation to shotDir
+
+            // Effects = Instantiate(effectToSpawn, gunTrans.position, Quaternion.identity, this.transform);
+            if (needShootHelp || hitButNoNeedHelp)
+            {
+                //打到怪，近似处理，辅助瞄准
+                Vector3 dir = hitPosition - gunTrans.position;
+                //instantiate effectToSpawn at gunTrans.position, with rotation to shotDir
+                Effects = Instantiate(effectToSpawn, gunTrans.position, Quaternion.LookRotation(dir), this.transform);
+                Destroy(Effects, 10f);
+            }
+            else {
+                //没有打到任何东西，进入这个逻辑
+                Effects = Instantiate(effectToSpawn, gunTrans.position, thirdPersonFollowPlace.rotation);
+                Destroy(Effects, 10f);
+            }
+            
+        }
     }
     
     IEnumerator CalculateScreenRayForShoot()
@@ -121,11 +126,13 @@ public class HTestCharacterShoot : MonoBehaviour
         //中心位置射出9条射线，检测射中的物体
         while (true)
         {
+            Vector3 hitPosition = new Vector3();
             float middleX = Screen.width * 0.5f;
             float middleY = Screen.height * 0.5f;
             float deltaX = Screen.width * 0.05f;
             float deltaY = Screen.height * 0.05f;
-            bool isHit = false;
+            bool needShootHelp = false;
+            bool hitButNoNeedHelp = false;
             //中心位置射出9条射线，检测射中的物体
             for(int i=-1; i<=1; i++)
             {
@@ -137,25 +144,53 @@ public class HTestCharacterShoot : MonoBehaviour
                     {
                         if (hit.collider.gameObject.CompareTag("Enemy"))
                         {
+                            hitPosition = hit.point;
                             //draw ray
                             Debug.DrawRay(ray.origin, ray.direction * 100, Color.red);
                             Debug.Log(hit.collider.gameObject.name);
                             if(hit.collider.gameObject != historyObject)
                             {
                                 historyObject = hit.collider.gameObject;
-                                aimTargetReticle.position = mainPlayerCamera.WorldToScreenPoint(hit.transform.position);
+                                //aimTargetReticle.position = mainPlayerCamera.WorldToScreenPoint(hit.transform.position);
                             }
-                            isHit = true;
+                            needShootHelp = true;
                             continue;
                         }
                     }
                 }
-
-                if (isHit)
+                if(needShootHelp)
                     continue;
             }
-
-            yield return new WaitForSeconds(0.2f);
+            //使用hitSphere 检测射中的物体
+            // if(Physics.SphereCast(mainPlayerCamera.transform.position, 0.1f, mainPlayerCamera.transform.forward, out RaycastHit hit, 100))
+            // {
+            //     if (hit.collider.gameObject.CompareTag("Enemy"))
+            //     {
+            //         hitPosition = hit.point;
+            //         //draw ray
+            //         Debug.DrawRay(mainPlayerCamera.transform.position, mainPlayerCamera.transform.forward * 100, Color.red);
+            //         Debug.Log(hit.collider.gameObject.name);
+            //         if(hit.collider.gameObject != historyObject)
+            //         {
+            //             historyObject = hit.collider.gameObject;
+            //             //aimTargetReticle.position = mainPlayerCamera.WorldToScreenPoint(hit.transform.position);
+            //         }
+            //         needShootHelp = true;
+            //     }
+            // }
+            
+            Ray middleRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, 0));
+            RaycastHit hit2;
+            if (Physics.Raycast(middleRay, out hit2, 100))
+            {
+                if (!needShootHelp)
+                {
+                    hitButNoNeedHelp = true;
+                    hitPosition = hit2.point;
+                }
+            }
+            ShootBulletFromMuzzle(needShootHelp,hitButNoNeedHelp,hitPosition);
+            yield return new WaitForSeconds(0.1f);
         }
         
     }
