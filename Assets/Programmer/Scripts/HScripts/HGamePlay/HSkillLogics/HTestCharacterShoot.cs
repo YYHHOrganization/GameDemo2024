@@ -21,7 +21,7 @@ public class HTestCharacterShoot : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        mainPlayerCamera = GameObject.FindWithTag("PlayerCamera").GetComponent<Camera>();
+        //mainPlayerCamera = GameObject.FindWithTag("PlayerCamera").GetComponent<Camera>();
         SetCommonThirdPersonFollowCamera(testCommonThirdPersonFollowCam);
         stateMachine = gameObject.GetComponent<HPlayerStateMachine>();
         stateMachine.SetInThirdPersonCamera(true);
@@ -31,6 +31,11 @@ public class HTestCharacterShoot : MonoBehaviour
     public void SetCommonThirdPersonFollowCamera(GameObject virtualCamera)
     {
         c_thirdPersonCam = virtualCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>();
+    }
+    //set mainPlayerCamera
+    public void SetMainPlayerCamera(Camera camera)
+    {
+        mainPlayerCamera = camera;
     }
     
     private void Update()

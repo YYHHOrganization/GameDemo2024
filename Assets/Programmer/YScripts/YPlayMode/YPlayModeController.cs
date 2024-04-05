@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using Unity.VisualScripting;
 //using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.LowLevel;
@@ -46,7 +47,7 @@ public class YPlayModeController : MonoBehaviour
         get => isAfterEnterPuppetPanel;
         set => isAfterEnterPuppetPanel = value;
     }
-    
+
     
     public void SetCharacter(int characterIndex)
     {
@@ -90,6 +91,41 @@ public class YPlayModeController : MonoBehaviour
         CameraLayoutManager.puppetCamera = PuppetCamera.GetComponent<Camera>();
         CameraLayoutManager.SetPlayerCameraWholeScreen();
         // CameraLayoutManager.SetPuppetCameraLittle();
+        
+        string pathAimPrefab = "Prefabs/YPlayModePrefab/GunAimPrefab";
+        GameObject aimPrefab = Instantiate(Resources.Load<GameObject>(pathAimPrefab), player.transform);
+        
+        YGunShootPre yGunShootPre = aimPrefab.GetComponent<YGunShootPre>();
+        Cinemachine.CinemachineVirtualCamera thirdAimCamera = yGunShootPre.thirdAimCamera;
+        GameObject testCommonThirdPersonFollowCam = yGunShootPre.testCommonThirdPersonFollowCam;
+        
+        //给testCharacterShoot赋值
+        HTestCharacterShoot testCharacterShoot = player.AddComponent<HTestCharacterShoot>();
+        testCharacterShoot.thirdAimCamera = thirdAimCamera;
+        testCharacterShoot.testCommonThirdPersonFollowCam = testCommonThirdPersonFollowCam;
+        testCharacterShoot.thirdPersonFollowPlace = yGunShootPre.thirdPersonFollowPlace;
+        testCharacterShoot.thirdPersonCommonFollowPlace = yGunShootPre.thirdPersonCommonFollowPlace;
+        testCharacterShoot.aimTargetReticle = yGunShootPre.aimTargetReticle;
+        
+        // testCharacterShoot.thirdAimCamera.gameObject.SetActive(false);
+        thirdAimCamera.gameObject.SetActive(false);
+        //如果当前关卡是第3个关卡
+        if (curLevelID == 2)
+        {
+            // testCharacterShoot.SetMainPlayerCamera(PlayerCamera.GetComponent<Camera>());
+            // testCharacterShoot.testCommonThirdPersonFollowCam.gameObject.SetActive(true);
+            testCommonThirdPersonFollowCam.SetActive(true);
+            testCharacterShoot.SetMainPlayerCamera(PlayerCamera.GetComponent<Camera>());
+            testCharacterShoot.enabled = true;
+            FreeLookCamera.SetActive(false);
+        }
+        else
+        {
+            // testCharacterShoot.testCommonThirdPersonFollowCam.gameObject.SetActive(false);
+            testCommonThirdPersonFollowCam.SetActive(false);
+            testCharacterShoot.enabled = false;
+        }
+        
     }
 
     public void LockPlayerInput(bool shouldLock) 
@@ -204,7 +240,7 @@ public class YPlayModeController : MonoBehaviour
                 //PlaceUIToShowList.Add(ShowPlaceUI);
                 //yNameUiSctipt = ShowPlaceUI.GetComponent<YNameUI>();
                 yNameUiSctipt = ShowPlaceUI.GetComponentInChildren<YNameUI>();
-            
+                
                 
             }
 
