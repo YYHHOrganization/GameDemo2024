@@ -55,6 +55,12 @@ public class HPlayerStateMachine : MonoBehaviour
     
     public Camera playerCamera;
 
+    private bool isInThirdPersonCamera = false;
+    public void SetInThirdPersonCamera(bool value)
+    {
+        isInThirdPersonCamera = value;
+    }
+    
     #region Gets and Sets
     
     public HCharacterSkillBase SkillScript
@@ -357,7 +363,11 @@ public class HPlayerStateMachine : MonoBehaviour
     
     void Update()
     {
-        HandleRotation();
+        if (!isInThirdPersonCamera)
+        {
+            HandleRotation();
+        }
+        
         _currentState.UpdateStates(); //逻辑上，先Update自己，有substate的话再Update Substate
         _cameraRelativeMovement = ConvertToCameraSpace(appliedMovement);
         characterController.Move(_cameraRelativeMovement * Time.deltaTime);
