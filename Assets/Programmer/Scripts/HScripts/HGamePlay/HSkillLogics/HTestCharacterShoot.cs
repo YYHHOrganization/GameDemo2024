@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HTestCharacterShoot : MonoBehaviour
@@ -8,7 +9,7 @@ public class HTestCharacterShoot : MonoBehaviour
     bool thirdAimCameraActive = false;
     private Cinemachine.CinemachineVirtualCamera c_thirdPersonCam;
     public GameObject testCommonThirdPersonFollowCam;
-    private Camera mainPlayerCamera;
+    public Camera mainPlayerCamera;
     public Transform thirdPersonFollowPlace;
     //public Transform aimLocateSpace;
     private HPlayerStateMachine stateMachine;
@@ -22,7 +23,8 @@ public class HTestCharacterShoot : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        //mainPlayerCamera = GameObject.FindWithTag("PlayerCamera").GetComponent<Camera>();
+        // if(mainPlayerCamera==null)
+        //     mainPlayerCamera = GameObject.FindWithTag("PlayerCamera").GetComponent<Camera>();
         SetCommonThirdPersonFollowCamera(testCommonThirdPersonFollowCam);
         stateMachine = gameObject.GetComponent<HPlayerStateMachine>();
         stateMachine.SetInThirdPersonCamera(true);

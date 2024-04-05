@@ -9,6 +9,8 @@ public class YGunShootPre : MonoBehaviour
     public Transform thirdPersonFollowPlace;
     public Transform thirdPersonCommonFollowPlace;
     public Transform aimTargetReticle;
+    public GameObject effectToSpawn;
+    public Transform gunTrans;
     // Start is called before the first frame update
     void Start()
     {
