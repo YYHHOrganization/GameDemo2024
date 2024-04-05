@@ -41,15 +41,25 @@ public class YSkillLaserController : YLaserBase
                 Debug.Log("hitsthhhh" + hit.transform.name);
                 GameObject hitObject = hit.transform.gameObject;
                 
+                string Tag = hitObject.tag;
                 //HandleHitProj
-                if (hitObject.CompareTag("CouldBroken")) //test
+                if (Tag == "CouldBroken"||Tag == "Shield") //test // "Puppet"只是测试 其实是怪这种
                 {
                     // 如果射线打中了**
                     Debug.Log("distance11: " + distance);
-                    //YFractureExplosionObject fractureExplosionObject = hitObject.GetComponent<YFractureExplosionObject>();
-                    YFractureExplosionObject fractureExplosionObject 
-                        = hitObject.GetComponentInParent<YFractureExplosionObject>();
-                    fractureExplosionObject.TriggerExplosion(hit.point);
+                    if(Tag == "CouldBroken")
+                    {
+                        //YFractureExplosionObject fractureExplosionObject = hitObject.GetComponent<YFractureExplosionObject>();
+                        YFractureExplosionObject fractureExplosionObject 
+                            = hitObject.GetComponentInParent<YFractureExplosionObject>();
+                        fractureExplosionObject.TriggerExplosion(hit.point);
+                    }
+                    else if(Tag == "Shield")
+                    {
+                        Debug.Log("Shhhhhhhhhhh");
+                        //hitObject.GetComponent<YHandleHitPuppet>().HandleHitPuppet();
+                        hitObject.GetComponentInParent<YPatrolAI>().die();
+                    }
                     
                     distance = Vector3.Distance(transform.position, hit.point);
                     LaserVfx.SetFloat("laserLength", distance / dis2laserLength);

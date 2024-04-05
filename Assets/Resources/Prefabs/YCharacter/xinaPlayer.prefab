@@ -7537,6 +7537,7 @@ GameObject:
   - component: {fileID: 6689848993444827907}
   - component: {fileID: 3860963088046949238}
   - component: {fileID: 7968344716266950165}
+  - component: {fileID: 4081891351771664520}
   m_Layer: 3
   m_Name: xinaPlayer
   m_TagString: Player
@@ -7729,6 +7730,29 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!136 &4081891351771664520
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7622521978615817382}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.3
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &7649821635023435075
 GameObject:
   m_ObjectHideFlags: 0
