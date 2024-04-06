@@ -854,7 +854,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &380215614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -903,7 +903,7 @@ Transform:
   m_GameObject: {fileID: 380215613}
   serializedVersion: 2
   m_LocalRotation: {x: 0.11554427, y: 0.0265404, z: -0.0017965621, w: 0.9929461}
-  m_LocalPosition: {x: 0.868, y: 1.443, z: -2.112237}
+  m_LocalPosition: {x: 0.868, y: 1.071, z: -1.333237}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2924,7 +2924,7 @@ Transform:
   m_GameObject: {fileID: 2067675097}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.868, y: 0.703, z: -0.292}
+  m_LocalPosition: {x: 0.868, y: 0.331, z: 0.487}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3277,7 +3277,7 @@ Transform:
   m_GameObject: {fileID: 9212233327419451714}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.868, y: 1.443, z: -2.112237}
+  m_LocalPosition: {x: 0, y: 1.04, z: -2.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3788,7 +3788,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 60
+  field of view: 60.000004
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -5564,7 +5564,7 @@ Animator:
   m_GameObject: {fileID: 3414731992621876034}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: bca39eb843046964aada4660464982fe, type: 3}
-  m_Controller: {fileID: 9100000, guid: a8c53c01fcdcae84b8b0bd16bd2b87a3, type: 2}
+  m_Controller: {fileID: 9100000, guid: 495d5c0e0e18b914bb5d78dc26b0562d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -5596,6 +5596,8 @@ MonoBehaviour:
   effectToSpawn: {fileID: 951597447830266652, guid: 5eecf59f53b39784a957e2f335d0ad04,
     type: 3}
   gunTrans: {fileID: 204381625}
+  muzzleToSpawn: {fileID: 616948713816818060, guid: a9e6619ed84cc724eadac8205abff37d,
+    type: 3}
 --- !u!1 &4138949252540207283
 GameObject:
   m_ObjectHideFlags: 0

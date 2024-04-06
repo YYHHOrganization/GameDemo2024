@@ -21,6 +21,8 @@ public class HPlayerStateMachine : MonoBehaviour
     private int isWalkingHash;
     private int isRunningHash;
     private int isJumpingHash;
+    private int velocityXHash;
+    private int velocityZHash;
     private int isSkill1Hash;
     private float rotationFactorPerFrame = 15.0f;
 
@@ -56,12 +58,18 @@ public class HPlayerStateMachine : MonoBehaviour
     public Camera playerCamera;
 
     private bool isInThirdPersonCamera = false;
+    
     public void SetInThirdPersonCamera(bool value)
     {
         isInThirdPersonCamera = value;
     }
     
     #region Gets and Sets
+    
+    public bool IsInThirdPersonCamera
+    {
+        get { return isInThirdPersonCamera; }
+    }
     
     public HCharacterSkillBase SkillScript
     {
@@ -239,6 +247,8 @@ public class HPlayerStateMachine : MonoBehaviour
         isJumpingHash = Animator.StringToHash("isJumping");
         jumpCountHash = Animator.StringToHash("jumpCount");
         isSkill1Hash = Animator.StringToHash("isSkill1");
+        velocityXHash = Animator.StringToHash("VelocityX");
+        velocityZHash = Animator.StringToHash("VelocityZ");
         
         skillScript = GetComponent<HCharacterSkillBase>();
         
@@ -366,6 +376,11 @@ public class HPlayerStateMachine : MonoBehaviour
         if (!isInThirdPersonCamera)
         {
             HandleRotation();
+        }
+        else
+        {
+            animator.SetFloat(velocityXHash, appliedMovement.x);
+            animator.SetFloat(velocityZHash, appliedMovement.z);
         }
         
         _currentState.UpdateStates(); //逻辑上，先Update自己，有substate的话再Update Substate

@@ -11,6 +11,8 @@ public class YGunShootPre : MonoBehaviour
     public Transform aimTargetReticle;
     public GameObject[] effectToSpawn;
     public Transform gunTrans;
+
+    public GameObject muzzlePrefab;
     // Start is called before the first frame update
     void Start()
     {

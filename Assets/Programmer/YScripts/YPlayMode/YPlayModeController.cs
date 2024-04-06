@@ -5,6 +5,7 @@ using Cinemachine;
 using Unity.VisualScripting;
 //using UnityEditor.Build;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.LowLevel;
 
 /// <summary>
@@ -109,6 +110,7 @@ public class YPlayModeController : MonoBehaviour
         // testCharacterShoot.effectToSpawn = yGunShootPre.effectToSpawn[0];
         testCharacterShoot.effectToSpawn = yGunShootPre.effectToSpawn;
         testCharacterShoot.gunTrans = yGunShootPre.gunTrans;
+        testCharacterShoot.muzzleToSpawn = yGunShootPre.muzzlePrefab;
         
         
         // testCharacterShoot.thirdAimCamera.gameObject.SetActive(false);
@@ -122,6 +124,10 @@ public class YPlayModeController : MonoBehaviour
             testCharacterShoot.SetMainPlayerCamera(PlayerCamera.GetComponent<Camera>());
             testCharacterShoot.enabled = true;
             FreeLookCamera.SetActive(false);
+            //动态替换成新的状态机
+            var op = Addressables.LoadAssetAsync<RuntimeAnimatorController>("rogueLikeAnimatorController");
+            RuntimeAnimatorController go = op.WaitForCompletion() as RuntimeAnimatorController;
+            curCharacter.GetComponent<Animator>().runtimeAnimatorController = go;
         }
         else
         {
