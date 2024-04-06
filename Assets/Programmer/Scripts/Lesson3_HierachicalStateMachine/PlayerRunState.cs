@@ -10,8 +10,12 @@ public class PlayerRunState : HPlayerBaseState
     }
     public override void EnterState()
     {
-        _ctx.Animator.SetBool(_ctx.IsWalkingHash, true);
-        _ctx.Animator.SetBool(_ctx.IsRunningHash, true);
+        if (!_ctx.IsInThirdPersonCamera)
+        {
+            _ctx.Animator.SetBool(_ctx.IsWalkingHash, true);
+            _ctx.Animator.SetBool(_ctx.IsRunningHash, true);
+        }
+        
         HAudioManager.instance.Play("RunFootStepOnGround", _ctx.gameObject);
     }
 

@@ -12,8 +12,11 @@ public class HPlayerIdleState : HPlayerBaseState
     }
     public override void EnterState()
     {
-        _ctx.Animator.SetBool(_ctx.IsWalkingHash, false);
-        _ctx.Animator.SetBool(_ctx.IsRunningHash, false);
+        if (_ctx.IsInThirdPersonCamera)
+        {
+            _ctx.Animator.SetBool(_ctx.IsWalkingHash, false);
+            _ctx.Animator.SetBool(_ctx.IsRunningHash, false);
+        }
         _ctx.AppliedMovementX = 0;
         _ctx.AppliedMovementZ = 0;
         HAudioManager.instance.Stop(_ctx.gameObject);

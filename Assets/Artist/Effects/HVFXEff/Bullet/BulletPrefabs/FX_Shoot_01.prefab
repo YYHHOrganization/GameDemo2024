@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1107690103808197860}
-  - component: {fileID: 9055996216459841470}
   - component: {fileID: 8360533190403894756}
   - component: {fileID: 1530547469155931894}
   - component: {fileID: 383882352970822643}
@@ -36,24 +35,6 @@ Transform:
   - {fileID: 4620672225734794299}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9055996216459841470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 951597447830266652}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f8b9d85d920bc042a7f4ad66be17a7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 100
-  fireRate: 10
-  muzzlePrefab: {fileID: 616948713816818060, guid: a9e6619ed84cc724eadac8205abff37d,
-    type: 3}
-  hitPrefab: {fileID: 2313415394178803880, guid: eb4422f5a388fc2458f74048e53b706c,
-    type: 3}
 --- !u!65 &8360533190403894756
 BoxCollider:
   m_ObjectHideFlags: 0

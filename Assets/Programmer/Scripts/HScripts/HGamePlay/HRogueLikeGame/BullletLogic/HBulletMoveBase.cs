@@ -12,22 +12,22 @@ public class HBulletMoveBase : MonoBehaviour
 
     void Start()
     {
-        if (muzzlePrefab != null)
-        {
-            var muzzleVFX = Instantiate(muzzlePrefab, transform.position, Quaternion.identity);
-            muzzleVFX.transform.forward = gameObject.transform.forward;
-            var psMuzzle = muzzleVFX.GetComponent<ParticleSystem>();
-            if (psMuzzle != null)
-            {
-                Destroy(muzzleVFX, psMuzzle.main.duration);
-            }
-            else
-            {
-                var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
-                Destroy(muzzleVFX, psChild.main.duration);
-            }
-            Destroy(muzzleVFX, 10f);
-        }
+        // if (muzzlePrefab != null)
+        // {
+        //     var muzzleVFX = Instantiate(muzzlePrefab, transform.position, Quaternion.identity);
+        //     muzzleVFX.transform.forward = gameObject.transform.forward;
+        //     var psMuzzle = muzzleVFX.GetComponent<ParticleSystem>();
+        //     if (psMuzzle != null)
+        //     {
+        //         Destroy(muzzleVFX, psMuzzle.main.duration);
+        //     }
+        //     else
+        //     {
+        //         var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+        //         Destroy(muzzleVFX, psChild.main.duration);
+        //     }
+        //     Destroy(muzzleVFX, 10f);
+        // }
     }
 
     void Update()
