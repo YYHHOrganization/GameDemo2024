@@ -106,8 +106,10 @@ public class YPlayModeController : MonoBehaviour
         testCharacterShoot.thirdPersonFollowPlace = yGunShootPre.thirdPersonFollowPlace;
         testCharacterShoot.thirdPersonCommonFollowPlace = yGunShootPre.thirdPersonCommonFollowPlace;
         testCharacterShoot.aimTargetReticle = yGunShootPre.aimTargetReticle;
+        // testCharacterShoot.effectToSpawn = yGunShootPre.effectToSpawn[0];
         testCharacterShoot.effectToSpawn = yGunShootPre.effectToSpawn;
         testCharacterShoot.gunTrans = yGunShootPre.gunTrans;
+        
         
         // testCharacterShoot.thirdAimCamera.gameObject.SetActive(false);
         thirdAimCamera.gameObject.SetActive(false);

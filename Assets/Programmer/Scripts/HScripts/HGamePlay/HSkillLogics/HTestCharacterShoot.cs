@@ -3,6 +3,12 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
+//
+enum MyShootEnum
+{
+    ShootFromMuzzle,
+    ShootLaserFromMuzzle
+}
 public class HTestCharacterShoot : MonoBehaviour
 {
     public Cinemachine.CinemachineVirtualCamera thirdAimCamera;
@@ -16,7 +22,7 @@ public class HTestCharacterShoot : MonoBehaviour
     
     public Transform thirdPersonCommonFollowPlace;
     public Transform aimTargetReticle;
-    public GameObject effectToSpawn;
+    public GameObject[] effectToSpawn;
     private LayerMask layerMask;
 
     public Transform gunTrans;
@@ -43,26 +49,32 @@ public class HTestCharacterShoot : MonoBehaviour
     {
         mainPlayerCamera = camera;
     }
-    
+    int currentShootClass = 0;
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
             //FaceToPlayerCameraDirection();
             thirdAimCamera.gameObject.SetActive(true);
-            StartCoroutine(CalculateScreenRayForShoot());
+            HandleOrdinaryShoot();
+            SetOnWeap0n();
+            // StartCoroutine(CalculateScreenRayForShoot());
         }
         else if (Input.GetMouseButton(0))
         {
+            
             //PrepareForShoot();
-        } else if(Input.GetMouseButtonUp(0))
+        } 
+        else if(Input.GetMouseButtonUp(0))
         {
             thirdAimCamera.gameObject.SetActive(false);
             aimTargetReticle.gameObject.SetActive(false);
+            SetOffShoot();
             //FaceToPlayerCameraDirection();
             StopAllCoroutines();
         }
         RotateCharacterWithMouse2();
+        HandleContinueShoot();
 
         if (Input.GetMouseButtonDown(1))
         {
@@ -71,6 +83,55 @@ public class HTestCharacterShoot : MonoBehaviour
         else if(Input.GetMouseButtonUp(1))
         {
             thirdAimCamera.m_Lens.FieldOfView = 60f;
+        }
+        
+        //按下中键切换射击模式
+        if (Input.GetMouseButtonDown(2))
+        {
+            currentShootClass = (currentShootClass + 1) % MyShootEnum.GetNames(typeof(MyShootEnum)).Length;
+            // SetOnWeap0n();
+        }
+        
+    }
+
+    bool shootContinueOn = false;
+    void SetOnWeap0n()
+    {
+        //ui更改
+        if (currentShootClass == MyShootEnum.ShootLaserFromMuzzle.GetHashCode())
+        {
+            if (LaserEff == null)
+            {
+                LaserEff = Instantiate(effectToSpawn[MyShootEnum.ShootLaserFromMuzzle.GetHashCode()], gunTrans.position, thirdPersonFollowPlace.rotation);
+                Debug.Log("LaserEff出生: " + LaserEff);
+            }
+            shootContinueOn = true;
+        }
+    }
+    void SetOffShoot()
+    {
+        shootContinueOn = false;
+        if(LaserEff!=null)
+            Destroy(LaserEff);
+    }
+    void HandleOrdinaryShoot()
+    {
+        //如果当前是ShootFromMuzzle，就调用ShootBulletFromMuzzle
+        //如果当前是ShootLaserFromMuzzle，就调用YShootLaserFromMuzzle
+        if(currentShootClass == MyShootEnum.ShootFromMuzzle.GetHashCode())
+        {
+            StartCoroutine(CalculateScreenRayForShoot());
+        }
+    }
+    void HandleContinueShoot()
+    {
+        if (shootContinueOn == false)
+        {
+            return;
+        }
+        if(currentShootClass == MyShootEnum.ShootLaserFromMuzzle.GetHashCode())
+        {
+            YCalculateScreenRayForLaser();
         }
         
     }
@@ -105,6 +166,7 @@ public class HTestCharacterShoot : MonoBehaviour
         }
         
     }
+
     
     private void ShootBulletFromMuzzle(bool needShootHelp,bool hitButNoNeedHelp, Vector3 hitPosition)
     {
@@ -126,12 +188,12 @@ public class HTestCharacterShoot : MonoBehaviour
                 //打到怪，近似处理，辅助瞄准
                 Vector3 dir = hitPosition - gunTrans.position;
                 //instantiate effectToSpawn at gunTrans.position, with rotation to shotDir
-                Effects = Instantiate(effectToSpawn, gunTrans.position, Quaternion.LookRotation(dir), this.transform);
+                Effects = Instantiate(effectToSpawn[MyShootEnum.ShootFromMuzzle.GetHashCode()], gunTrans.position, Quaternion.LookRotation(dir), this.transform);
                 Destroy(Effects, 10f);
             }
             else {
                 //没有打到任何东西，进入这个逻辑
-                Effects = Instantiate(effectToSpawn, gunTrans.position, thirdPersonFollowPlace.rotation);
+                Effects = Instantiate(effectToSpawn[MyShootEnum.ShootFromMuzzle.GetHashCode()], gunTrans.position, thirdPersonFollowPlace.rotation);
                 Destroy(Effects, 10f);
             }
             
@@ -215,7 +277,67 @@ public class HTestCharacterShoot : MonoBehaviour
         
     }
     
-    
+    void YCalculateScreenRayForLaser()
+    {
+        aimTargetReticle.gameObject.SetActive(true);
+        if (LaserEff == null)
+        {
+            LaserEff = Instantiate(effectToSpawn[MyShootEnum.ShootLaserFromMuzzle.GetHashCode()], gunTrans.position, thirdPersonFollowPlace.rotation);
+            //Debug.Log("LaserEff出生: " + LaserEff);
+        }
+        
+        GameObject historyObject = gameObject;
+        //中心位置射出1条射线，检测射中的物体
+        Vector3 hitPosition = new Vector3();
+        float middleX = Screen.width * 0.5f;
+        float middleY = Screen.height * 0.5f;
+        bool hitButNoNeedHelp = false;
+            
+        Ray middleRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, 0));
+        RaycastHit hit2;
+        if (Physics.Raycast(middleRay, out hit2, 100, layerMask))
+        {
+            hitButNoNeedHelp = true;
+            // Debug.Log("hitButNoNeedHelp: " + hit2.collider.gameObject.name);
+            hitPosition = hit2.point;
+        }
+        // Debug.Log("hitButNoNeedHelp: " + hitButNoNeedHelp);
+        YShootLaserFromMuzzle(hitButNoNeedHelp,hitPosition);
+        
+    }
+    private GameObject LaserEff;
+    private void YShootLaserFromMuzzle(bool hitButNoNeedHelp, Vector3 hitPosition)
+    {
+        //由枪口位置向屏幕中心所指的位置发射子弹
+        // Debug.Log("enterLLLLLLLLLLLLLL");
+        if (thirdPersonFollowPlace)
+        {
+            // Debug.Log("ShootBulletFromMuzzle");
+            //
+            float middleX = Screen.width * 0.5f;
+            float middleY = Screen.height * 0.5f;
+            Ray shotRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, 0));
+            Vector3 shotDir = shotRay.direction;
+            //rotation is from gunTrans.rotation to shotDir
+
+            // Effects = Instantiate(effectToSpawn, gunTrans.position, Quaternion.identity, this.transform);
+            if (hitButNoNeedHelp)
+            {
+                //打到怪，近似处理，辅助瞄准
+                Vector3 dir = hitPosition - gunTrans.position;
+                //instantiate effectToSpawn at gunTrans.position, with rotation to shotDir
+                LaserEff.transform.position = gunTrans.position;
+                LaserEff.transform.rotation = Quaternion.LookRotation(dir);
+            }
+            else 
+            {
+                LaserEff.transform.position = gunTrans.position;
+                LaserEff.transform.rotation = thirdPersonFollowPlace.rotation;
+                Debug.Log("LaserEffrotate: " + LaserEff.transform.rotation);
+            }
+            
+        }
+    }
     private void CalculateScreenRayForShootManyRays()
     {
         float middleX = Screen.width * 0.5f;

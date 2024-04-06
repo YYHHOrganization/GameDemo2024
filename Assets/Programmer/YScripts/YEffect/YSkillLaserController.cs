@@ -43,7 +43,7 @@ public class YSkillLaserController : YLaserBase
                 
                 string Tag = hitObject.tag;
                 //HandleHitProj
-                if (Tag == "CouldBroken"||Tag == "Shield") //test // "Puppet"只是测试 其实是怪这种
+                if (Tag == "CouldBroken"||Tag == "Enemy"||Tag=="CouldHit") //test // "Puppet"只是测试 其实是怪这种
                 {
                     // 如果射线打中了**
                     Debug.Log("distance11: " + distance);
@@ -54,7 +54,7 @@ public class YSkillLaserController : YLaserBase
                             = hitObject.GetComponentInParent<YFractureExplosionObject>();
                         fractureExplosionObject.TriggerExplosion(hit.point);
                     }
-                    else if(Tag == "Shield")
+                    else if(Tag == "Enemy")
                     {
                         Debug.Log("Shhhhhhhhhhh");
                         //hitObject.GetComponent<YHandleHitPuppet>().HandleHitPuppet();
