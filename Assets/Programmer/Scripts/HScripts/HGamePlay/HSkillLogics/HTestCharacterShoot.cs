@@ -17,6 +17,7 @@ public class HTestCharacterShoot : MonoBehaviour
     public Transform thirdPersonCommonFollowPlace;
     public Transform aimTargetReticle;
     public GameObject effectToSpawn;
+    private LayerMask layerMask;
 
     public Transform gunTrans;
     // Start is called before the first frame update
@@ -29,6 +30,8 @@ public class HTestCharacterShoot : MonoBehaviour
         stateMachine = gameObject.GetComponent<HPlayerStateMachine>();
         stateMachine.SetInThirdPersonCamera(true);
         aimTargetReticle.gameObject.SetActive(false);
+        layerMask = 1<<LayerMask.NameToLayer("Player");
+        layerMask=~layerMask;
     }
 
     public void SetCommonThirdPersonFollowCamera(GameObject virtualCamera)
@@ -60,6 +63,15 @@ public class HTestCharacterShoot : MonoBehaviour
             StopAllCoroutines();
         }
         RotateCharacterWithMouse2();
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            thirdAimCamera.m_Lens.FieldOfView = 20f;
+        }
+        else if(Input.GetMouseButtonUp(1))
+        {
+            thirdAimCamera.m_Lens.FieldOfView = 60f;
+        }
         
     }
     
@@ -147,8 +159,9 @@ public class HTestCharacterShoot : MonoBehaviour
                 {
                     Ray ray = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX + i * deltaX, middleY + j * deltaY, 0));
                     RaycastHit hit;
-                    if(Physics.Raycast(ray, out hit, 100))
+                    if(Physics.Raycast(ray, out hit, 100, layerMask))
                     {
+                        Debug.Log(hit.collider.gameObject.name);
                         if (hit.collider.gameObject.CompareTag("Enemy"))
                         {
                             hitPosition = hit.point;
@@ -188,7 +201,7 @@ public class HTestCharacterShoot : MonoBehaviour
             
             Ray middleRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, 0));
             RaycastHit hit2;
-            if (Physics.Raycast(middleRay, out hit2, 100))
+            if (Physics.Raycast(middleRay, out hit2, 100, layerMask))
             {
                 if (!needShootHelp)
                 {
