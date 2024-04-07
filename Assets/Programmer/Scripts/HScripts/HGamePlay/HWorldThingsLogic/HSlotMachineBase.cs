@@ -43,12 +43,14 @@ public class HSlotMachineBase : MonoBehaviour
     void CalculateTheResult()
     {
         Debug.Log(chooseItemCount + " " + chooseItemID);
-        if (camera)
-        {
-            camera.gameObject.SetActive(true);
-        }
+        
         if (chooseItemID != "-1")
         {
+            if(!yPlanningTable.Instance.worldItems.ContainsKey(chooseItemID))
+            {
+                HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","想要不劳而获？");
+                return;
+            }
             string itemName = yPlanningTable.Instance.worldItems[chooseItemID].chineseName;
             HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","你失去了" + chooseItemCount + "个" + itemName + ", 换取了一次抽奖机会！");
             int num = Random.Range(0, 10000);
@@ -58,6 +60,10 @@ public class HSlotMachineBase : MonoBehaviour
             }
             else
                 HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","愿你的血脉永远鼓动，旅途永远坦然，诡计永不败露。");
+        }
+        if (camera)
+        {
+            camera.gameObject.SetActive(true);
         }
         
         List<int> rollResults = new List<int>();

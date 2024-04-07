@@ -15,7 +15,8 @@ public class YDieState : YBaseState
     {
         base.OnStateEnter();
         patrolAI.animator.SetInteger("AnimState", 3);
-        patrolAI.mNavMeshAgent.ResetPath();
+        //patrolAI.mNavMeshAgent.ResetPath();
+        patrolAI.mNavMeshAgent.enabled = false;
         if (patrolAI.SpotLightWander) patrolAI.SpotLightWander.SetActive(false);
         if (patrolAI.SpotLightChase) patrolAI.SpotLightChase.SetActive(false);    
         
@@ -25,6 +26,9 @@ public class YDieState : YBaseState
         
         //瓦解
         patrolAI.DisintegrateDissolveVFX.SetActive(true);
+        
+        //爆炸
+        patrolAI.DieExplosionEff.SetActive(true);
     }
 
     public override Type Tick()

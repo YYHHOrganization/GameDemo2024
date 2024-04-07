@@ -59,7 +59,7 @@ public class YWanderState : YBaseState
         while(IsPathBlock())
         {
             FindRandomDis();
-            Debug.Log("Wall!!");
+           // Debug.Log("Wall!!");
         }
         if (partrolAI.isDead == true)
         {
@@ -71,6 +71,7 @@ public class YWanderState : YBaseState
     public override void OnStateEnter()
     {
         FindRandomDis();
+        partrolAI.mNavMeshAgent.enabled = false;
         // partrolAI.animator.SetInteger("AnimState", 0);
         // if (partrolAI.SpotLightWander) partrolAI.SpotLightWander.SetActive(true);
         // if (partrolAI.SpotLightChase) partrolAI.SpotLightChase.SetActive(false);
@@ -124,7 +125,7 @@ public class YWanderState : YBaseState
         //旋转
         desiredRotation = Quaternion.LookRotation(mDirection);
 
-        Debug.Log("Got Direction");
+        //Debug.Log("Got Direction");
     }
 
     //寻找目标

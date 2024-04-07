@@ -48,12 +48,14 @@ public class HTestCharacterShoot : MonoBehaviour
         aimTargetReticle.gameObject.SetActive(false);
         layerMask = 1<<LayerMask.NameToLayer("Player");
         layerMask=~layerMask;
-        GameObject muzzle = Instantiate(muzzleToSpawn, gunTrans.position, Quaternion.identity, gunTrans);
+        GameObject muzzle = Instantiate(muzzleToSpawn, gunTrans.position, thirdPersonFollowPlace.rotation, gunTrans);
         muzzleVFX = muzzle.GetComponent<ParticleSystem>();
         muzzleVFX.Stop();
 
         animator = GetComponent<Animator>();
         animator.SetLayerWeight(1,0);
+        
+        ShowWeaponChangeMessage();
     }
 
     public void SetCommonThirdPersonFollowCamera(GameObject virtualCamera)
@@ -107,21 +109,33 @@ public class HTestCharacterShoot : MonoBehaviour
         if (Input.GetMouseButtonDown(2))
         {
             currentShootClass = (currentShootClass + 1) % MyShootEnum.GetNames(typeof(MyShootEnum)).Length;
-            // SetOnWeap0n();
+            ShowWeaponChangeMessage();
         }
         
     }
 
     bool shootContinueOn = false;
-    void SetOnWeap0n()
+    void ShowWeaponChangeMessage()
     {
         //ui更改
+        if (currentShootClass == MyShootEnum.ShootFromMuzzle.GetHashCode())
+        {
+            HMessageShowMgr.Instance.ShowMessage("ROGUE_CURRENT_WEAPON_GUN1");
+        }
+        else if (currentShootClass == MyShootEnum.ShootLaserFromMuzzle.GetHashCode())
+        {
+            HMessageShowMgr.Instance.ShowMessage("ROGUE_CURRENT_WEAPON_GUN2");
+        }
+    }
+    void SetOnWeap0n()
+    {
+        
         if (currentShootClass == MyShootEnum.ShootLaserFromMuzzle.GetHashCode())
         {
             if (LaserEff == null)
             {
                 LaserEff = Instantiate(effectToSpawn[MyShootEnum.ShootLaserFromMuzzle.GetHashCode()], gunTrans.position, thirdPersonFollowPlace.rotation);
-                Debug.Log("LaserEff出生: " + LaserEff);
+                //Debug.Log("LaserEff出生: " + LaserEff);
             }
             shootContinueOn = true;
         }

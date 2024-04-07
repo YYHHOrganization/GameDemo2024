@@ -38,7 +38,7 @@ public class YSkillLaserController : YLaserBase
             if (Physics.Raycast(transform.position, transform.forward, out hit, maxDistance, 
                     1 << LayerMask.NameToLayer("LayerBroken")))
             {
-                Debug.Log("hitsthhhh" + hit.transform.name);
+                //Debug.Log("hitsthhhh" + hit.transform.name);
                 GameObject hitObject = hit.transform.gameObject;
                 
                 string Tag = hitObject.tag;

@@ -37,15 +37,22 @@ public class YChaseState : YBaseState
             if (patrolAI.SpotLightChase) patrolAI.SpotLightChase.SetActive(false);
             // patrolAI.mNavMeshAgent.destination= null;
             //不再追踪
-            patrolAI.mNavMeshAgent.ResetPath();
+            patrolAI.mNavMeshAgent.enabled = false;
+            // patrolAI.mNavMeshAgent.ResetPath();
             return typeof(YWanderState);
         }
         if (patrolAI.isDead == true)
         {
             //不再追踪
-            patrolAI.mNavMeshAgent.ResetPath();
+            patrolAI.mNavMeshAgent.enabled = false;
+            // patrolAI.mNavMeshAgent.ResetPath();
             return typeof(YDieState);
         }
         return null;
+    }
+    //enter
+    public override void OnStateEnter()
+    {
+        patrolAI.mNavMeshAgent.enabled = true;
     }
 }

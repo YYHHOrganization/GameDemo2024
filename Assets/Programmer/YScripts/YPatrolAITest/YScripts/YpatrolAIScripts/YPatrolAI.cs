@@ -31,6 +31,8 @@ public class YPatrolAI : MonoBehaviour
 
     public GameObject Mesh;
     public GameObject DisintegrateDissolveVFX;
+    
+    public GameObject DieExplosionEff;
     private void Awake()
     {
         InitStateMachine();
