@@ -147,7 +147,39 @@ public class yPlanningTable : MonoBehaviour
         ReadInteractiveGroupCSV("Assets/Designer/CsvTable/InteractiveGroup/InteractiveGroupCSVFile.csv", 
             interactiveGroups);
         ReadAllMessages();
+        ReadAllRogueLikeThings();
         ReadAudios();
+    }
+
+    private void ReadAllRogueLikeThings()
+    {
+        ReadRogueCharacterBaseAttributes();
+    }
+
+    public Dictionary<int, RogueCharacterBaseAttribute> rogueCharacterBaseAttributes = new Dictionary<int, RogueCharacterBaseAttribute>();
+    private void ReadRogueCharacterBaseAttributes()
+    {
+        string filePath = "Assets/Designer/CsvTable/RogueLike/RogueCharacterAttributeBaseCSVFile.csv";
+        string[] fileData = File.ReadAllLines(filePath);
+        for (int i = 3; i < fileData.Length; i++)
+        {
+            string[] rowData = fileData[i].Split(',');
+            int id = int.Parse(rowData[0]);
+            RogueCharacterBaseAttribute rogueCharacterBaseAttribute = new RogueCharacterBaseAttribute();
+            rogueCharacterBaseAttribute.rogueMoveSpeed = float.Parse(rowData[4]);
+            rogueCharacterBaseAttribute.rogueShootRate = float.Parse(rowData[5]);
+            rogueCharacterBaseAttribute.rogueShootRange = float.Parse(rowData[6]);
+            rogueCharacterBaseAttribute.rogueBulletDamage = float.Parse(rowData[7]);
+            rogueCharacterBaseAttribute.rogueBulletSpeed = float.Parse(rowData[8]);
+            rogueCharacterBaseAttribute.rogueCharacterHealth = int.Parse(rowData[9]);
+            rogueCharacterBaseAttribute.rogueCharacterShield = int.Parse(rowData[10]);
+            rogueCharacterBaseAttribute.RogueCharacterBaseWeapon = (MyShootEnum)Enum.Parse(typeof(MyShootEnum), rowData[11]);
+            rogueCharacterBaseAttribute.rogueStartXingqiong = int.Parse(rowData[12]);
+            rogueCharacterBaseAttribute.rogueStartXinyongdian = int.Parse(rowData[13]);
+            rogueCharacterBaseAttribute.rogueCharacterIconLink = rowData[14];
+            rogueCharacterBaseAttributes.Add(id, rogueCharacterBaseAttribute);
+        }
+        
     }
     
     //定义一个eff 用于存放特效 其中有每个特效的名称和id

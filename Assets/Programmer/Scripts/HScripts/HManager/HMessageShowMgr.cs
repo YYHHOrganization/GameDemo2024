@@ -160,6 +160,7 @@ public class HMessageShowMgr : MonoBehaviour
     
     private void ShowMessageKind6(MessageBoxBaseStruct message, Action confirmAction, Action cancelAction, Action closeAction, GameObject gameObject = null)
     {
+        YTriggerEvents.RaiseOnMouseLeftShoot(false);
         YTriggerEvents.RaiseOnMouseLockStateChanged(false);
         YPlayModeController.Instance.LockPlayerInput(true);
         
@@ -177,6 +178,7 @@ public class HMessageShowMgr : MonoBehaviour
         Button cancelButton = go.transform.Find("CancelButton").GetComponent<Button>();
         cancelButton.onClick.AddListener(() =>
         {
+            YTriggerEvents.RaiseOnMouseLeftShoot(true);
             Debug.Log("Cancel");
             YPlayModeController.Instance.LockPlayerInput(false);
             transform.SetAsFirstSibling();
@@ -188,6 +190,7 @@ public class HMessageShowMgr : MonoBehaviour
         Button closeButton = go.transform.Find("ReturnButton").GetComponent<Button>();
         closeButton.onClick.AddListener(() =>
         {
+            YTriggerEvents.RaiseOnMouseLeftShoot(true);
             Debug.Log("Close");
             YPlayModeController.Instance.LockPlayerInput(false);
             transform.SetAsFirstSibling();
@@ -199,6 +202,7 @@ public class HMessageShowMgr : MonoBehaviour
         Button confirmButton = go.transform.Find("ConfirmButton").GetComponent<Button>();
         confirmButton.onClick.AddListener(() =>
         {
+            YTriggerEvents.RaiseOnMouseLeftShoot(true);
             Debug.Log("Confirm");
             YPlayModeController.Instance.LockPlayerInput(false);
             transform.SetAsFirstSibling();

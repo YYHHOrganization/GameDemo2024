@@ -5,29 +5,15 @@ using UnityEngine;
 
 public class HBulletMoveBase : MonoBehaviour
 {
-    public float speed;
-    public float fireRate;
-    public GameObject muzzlePrefab;
+    private float speed;
     public GameObject hitPrefab;
-
+    private float bulletRange = 10f;
+    private Vector3 originPos;
     void Start()
     {
-        // if (muzzlePrefab != null)
-        // {
-        //     var muzzleVFX = Instantiate(muzzlePrefab, transform.position, Quaternion.identity);
-        //     muzzleVFX.transform.forward = gameObject.transform.forward;
-        //     var psMuzzle = muzzleVFX.GetComponent<ParticleSystem>();
-        //     if (psMuzzle != null)
-        //     {
-        //         Destroy(muzzleVFX, psMuzzle.main.duration);
-        //     }
-        //     else
-        //     {
-        //         var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
-        //         Destroy(muzzleVFX, psChild.main.duration);
-        //     }
-        //     Destroy(muzzleVFX, 10f);
-        // }
+        originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        bulletRange = HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRange"];
+        speed = HRougeAttributeManager.Instance.characterValueAttributes["RogueBulletSpeed"];
     }
 
     void Update()
@@ -35,6 +21,10 @@ public class HBulletMoveBase : MonoBehaviour
         if (speed != 0)
         {
             transform.position += transform.forward * (speed * Time.deltaTime);
+            if(Vector3.Distance(originPos, transform.position) >= bulletRange)
+            {
+                Destroy(gameObject);
+            }
         }
         else
         {
@@ -49,6 +39,7 @@ public class HBulletMoveBase : MonoBehaviour
         ContactPoint contact = co.contacts[0];
         Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
         Vector3 pos = contact.point;
+        //Debug.Log("Bullet Hit: " + co.gameObject.name);
         
         string Tag = co.gameObject.tag;
         if(Tag == "CouldBroken")

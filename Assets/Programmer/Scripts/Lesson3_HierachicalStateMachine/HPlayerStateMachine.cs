@@ -219,6 +219,12 @@ public class HPlayerStateMachine : MonoBehaviour
     }
     
     #endregion
+
+
+    public void SetRunMultiplierSpeed(float runSpeed)
+    {
+        runMultiplier = runSpeed;
+    }
     
     private void Awake()
     {
