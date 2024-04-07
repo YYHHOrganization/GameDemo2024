@@ -10,6 +10,7 @@ public enum ItemType
     Character,
     CommonItem,
     LevelNecessary, //通关所需要的物品
+    RogueMoney,
 }
 
 public enum TreasureType
@@ -20,6 +21,25 @@ public enum TreasureType
     VeryVeryGoodChest,
     ChestKeepGiving,
     WangxiayitongRunChest,
+}
+
+public class RogueCharacterBaseAttribute
+{
+    public string characterId;
+    public string characterName;
+    public string characterChineseName;
+    public string characterDescription;
+    public float rogueMoveSpeed;
+    public float rogueShootRate;
+    public float rogueShootRange;
+    public float rogueBulletDamage;
+    public float rogueBulletSpeed;
+    public int rogueCharacterHealth;
+    public int rogueCharacterShield;
+    public MyShootEnum RogueCharacterBaseWeapon;
+    public int rogueStartXingqiong;
+    public int rogueStartXinyongdian;
+    public string rogueCharacterIconLink;
 }
 
 public class HOpenWorldItemStruct

@@ -106,4 +106,11 @@ public class YTriggerEvents : MonoBehaviour
         OnGiveOutItemInBagForSlotMachine?.Invoke(null, new YTriggerGivingItemEventArgs{itemId = id, itemCount = count});
     }
     
+    //是否开启鼠标左键射击的监听
+    public static event EventHandler<YTriggerEventArgs> OnMouseLeftShoot;
+    public static void RaiseOnMouseLeftShoot(bool activated)
+    {
+        OnMouseLeftShoot?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
+    
 }

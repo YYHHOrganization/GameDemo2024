@@ -121,8 +121,11 @@ public class YPlayModeController : MonoBehaviour
             // testCharacterShoot.SetMainPlayerCamera(PlayerCamera.GetComponent<Camera>());
             // testCharacterShoot.testCommonThirdPersonFollowCam.gameObject.SetActive(true);
             testCommonThirdPersonFollowCam.SetActive(true);
+            //记录当前的角色，把初始数值赋值上去
+            HRougeAttributeManager.Instance.ResetEveryAttributeWithCharacter(yPlanningTable.Instance.rogueCharacterBaseAttributes[characterIndex], characterIndex);
             testCharacterShoot.SetMainPlayerCamera(PlayerCamera.GetComponent<Camera>());
             testCharacterShoot.enabled = true;
+            testCharacterShoot.SetCharacterAttribute();
             FreeLookCamera.SetActive(false);
             //动态替换成新的状态机
             var op = Addressables.LoadAssetAsync<RuntimeAnimatorController>("rogueLikeAnimatorController");

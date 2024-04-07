@@ -66,6 +66,17 @@ public class HItemCounter : MonoBehaviour
         {
             worldItemCounts.Add(itemId, count);
         }
+        if(itemId == "20000012")
+        {
+            HRougeAttributeManager.Instance.characterValueAttributes["RogueXingqiong"] = worldItemCounts[itemId];
+            HRougeAttributeManager.Instance.UpdateEverythingInAttributePanel();
+        }
+        else if(itemId == "20000013")
+        {
+            HRougeAttributeManager.Instance.characterValueAttributes["RogueXinyongdian"] = worldItemCounts[itemId];
+            HRougeAttributeManager.Instance.UpdateEverythingInAttributePanel();
+        }
+        
     }
     
     public void RemoveItem(string itemId, int count)
@@ -73,11 +84,22 @@ public class HItemCounter : MonoBehaviour
         if (worldItemCounts.ContainsKey(itemId))
         {
             worldItemCounts[itemId] -= count;
+            if(itemId == "20000012")
+            {
+                HRougeAttributeManager.Instance.characterValueAttributes["RogueXingqiong"] = worldItemCounts[itemId];
+                HRougeAttributeManager.Instance.UpdateEverythingInAttributePanel();
+            }
+            else if(itemId == "20000013")
+            {
+                HRougeAttributeManager.Instance.characterValueAttributes["RogueXinyongdian"] = worldItemCounts[itemId];
+                HRougeAttributeManager.Instance.UpdateEverythingInAttributePanel();
+            }
             if (worldItemCounts[itemId] <= 0)
             {
                 worldItemCounts.Remove(itemId);
             }
         }
+        
     }
     
     public int CheckCountWithItemId(string itemId)

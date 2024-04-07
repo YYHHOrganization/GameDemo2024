@@ -42,8 +42,15 @@ public class YChooseCharacterPanel : BasePanel
         {
             Pop();
             //Push(new YChooseScreenplayPanel());//其实并不是 而是应该直接让角色在场景中活动，但是先这样吧
-            
-            Push(new YMainPlayModeOriginPanel());
+            if (YLevelManager.GetCurrentLevelIndex() != 2)
+            {
+                Push(new YMainPlayModeOriginPanel());
+            }
+            else
+            {
+                HRougeAttributeManager.Instance.PushAttributePanel();
+            }
+                
             //销毁YChooseCharacterShowPlace
             GameObject.Destroy(YChooseCharacterShowPlace);
             //然后应该把那些加载出来 

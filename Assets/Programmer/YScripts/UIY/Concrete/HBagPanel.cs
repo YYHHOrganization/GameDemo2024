@@ -14,6 +14,7 @@ public class HBagPanel : BasePanel
 
     public override void OnEnter()
     {
+        YTriggerEvents.RaiseOnMouseLeftShoot(false);
         exitButton = uiTool.GetOrAddComponentInChilden<Button>("ExitButton");
         //呼出鼠标
         YTriggerEvents.RaiseOnMouseLockStateChanged(false);
@@ -21,6 +22,7 @@ public class HBagPanel : BasePanel
         exitButton.onClick.AddListener(() =>
         {
             Pop();
+            YTriggerEvents.RaiseOnMouseLeftShoot(true);
             HPlayerSkillManager.instance.SetBagBeenPushed(false);
         });
     }

@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 //
-enum MyShootEnum
+public enum MyShootEnum
 {
     ShootFromMuzzle,
     ShootLaserFromMuzzle
@@ -32,6 +33,10 @@ public class HTestCharacterShoot : MonoBehaviour
     private ParticleSystem muzzleVFX;
 
     private Animator animator;
+
+    private float shootRate = 0.5f;
+
+    private float shootRange = 10f;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +48,10 @@ public class HTestCharacterShoot : MonoBehaviour
         // if(mainPlayerCamera==null)
         //     mainPlayerCamera = GameObject.FindWithTag("PlayerCamera").GetComponent<Camera>();
         SetCommonThirdPersonFollowCamera(testCommonThirdPersonFollowCam);
-        stateMachine = gameObject.GetComponent<HPlayerStateMachine>();
+        if (!stateMachine)
+        {
+            stateMachine = gameObject.GetComponent<HPlayerStateMachine>();
+        }
         stateMachine.SetInThirdPersonCamera(true);
         aimTargetReticle.gameObject.SetActive(false);
         layerMask = 1<<LayerMask.NameToLayer("Player");
@@ -56,6 +64,25 @@ public class HTestCharacterShoot : MonoBehaviour
         animator.SetLayerWeight(1,0);
         
         ShowWeaponChangeMessage();
+        YTriggerEvents.OnMouseLeftShoot+=HandleOrdinaryShoot;
+    }
+
+    private bool canAimAndShoot = true;
+    void HandleOrdinaryShoot(object sender, YTriggerEventArgs e)
+    {
+        canAimAndShoot = e.activated;
+    }
+
+    public void SetCharacterAttribute()
+    {
+        if (HRougeAttributeManager.Instance.characterValueAttributes.ContainsKey("RogueMoveSpeed"))
+        {
+            stateMachine = gameObject.GetComponent<HPlayerStateMachine>();
+            stateMachine.SetRunMultiplierSpeed(HRougeAttributeManager.Instance.characterValueAttributes["RogueMoveSpeed"]);
+            shootRate = 1.0f / HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRate"];
+            shootRange = HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRange"];
+            Debug.Log("SHOOTRATE!!!" + shootRate);
+        }
     }
 
     public void SetCommonThirdPersonFollowCamera(GameObject virtualCamera)
@@ -68,11 +95,34 @@ public class HTestCharacterShoot : MonoBehaviour
         mainPlayerCamera = camera;
     }
     int currentShootClass = 0;
+    
+    // public bool IsTouchUI
+    // {
+    //     get
+    //     {
+    //         GameObject currentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+    //         if (currentSelectedGameObject)
+    //         {
+    //             Debug.Log(currentSelectedGameObject.name + currentSelectedGameObject.layer + "sssssss");
+    //             // UI 层固定值为5 。不喜欢可以换成LayerMask 获取
+    //             if (currentSelectedGameObject.layer == 5)
+    //             {
+    //                 return true;
+    //             }
+    //         }
+    //
+    //         return false;
+    //     }
+    // }
+    //
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (!canAimAndShoot)
+                return;
             //FaceToPlayerCameraDirection();
+            //todo:加一个事件判断是否点击到UI，如果此时在UI上点击，就不发射子弹，直接return
             thirdAimCamera.gameObject.SetActive(true);
             HandleOrdinaryShoot();
             SetOnWeap0n();
@@ -191,7 +241,8 @@ public class HTestCharacterShoot : MonoBehaviour
                 rot.x -= 360;
             if (rot2.x > 180)
                 rot2.x -= 360;
-            rot.x = Mathf.Clamp(rot.x, VerticalRotMin, VerticalRotMax);
+            rot.x = Mathf.Clamp(rot.x, VerticalRotMin+35, VerticalRotMax-35);
+            //todo:有个bug，子弹有概率打到自己身上，目前还没有排查出来为什么
             rot2.x = Mathf.Clamp(rot2.x, VerticalRotMin+20, VerticalRotMax-20);
             thirdPersonFollowPlace.localRotation = Quaternion.Euler(rot);
             thirdPersonCommonFollowPlace.localRotation = Quaternion.Euler(rot2);
@@ -253,7 +304,7 @@ public class HTestCharacterShoot : MonoBehaviour
                 {
                     Ray ray = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX + i * deltaX, middleY + j * deltaY, 0));
                     RaycastHit hit;
-                    if(Physics.Raycast(ray, out hit, 100, layerMask))
+                    if(Physics.Raycast(ray, out hit, shootRange, layerMask))
                     {
                         //Debug.Log(hit.collider.gameObject.name);
                         if (hit.collider.gameObject.CompareTag("Enemy"))
@@ -299,7 +350,7 @@ public class HTestCharacterShoot : MonoBehaviour
                 }
             }
             ShootBulletFromMuzzle(needShootHelp,hitButNoNeedHelp,hitPosition);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(shootRate);
         }
         
     }
