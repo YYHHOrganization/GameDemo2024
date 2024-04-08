@@ -21,10 +21,12 @@ public class HMessageShowMgr : MonoBehaviour
     private string aSimpleMessageUIKind4Link = "aSimpleMessageUIKind4Link"; 
     private GameObject canvas;
     private TMP_Text messageKind2Content;
+    private TMP_Text messageKind7Content;
 
     private string messageConfirmBoxLink = "MessageConfirmBox";
     private string messageGiveoutBoxLink = "MessageGiveoutBox";
     private Transform messageKind5Panel;
+    private Transform messageKind7Panel;
     
     //单例模式
     private static HMessageShowMgr instance;
@@ -53,7 +55,9 @@ public class HMessageShowMgr : MonoBehaviour
         messageKind1Panel = messagePanel.Find("messageKind1Prefab");
         messageKind2Panel = messagePanel.Find("messageKind2Prefab");
         messageKind5Panel = messagePanel.Find("messageKind5Prefab");
+        messageKind7Panel = messagePanel.Find("messageKind7Prefab");
         messageKind2Content = messageKind2Panel.GetComponentInChildren<TMP_Text>();
+        messageKind7Content = messageKind7Panel.GetComponentInChildren<TMP_Text>();
     }
 
     private void ShowMessageKind1(MessageBoxBaseStruct message)
@@ -81,6 +85,20 @@ public class HMessageShowMgr : MonoBehaviour
         messageKind2Content.text = messageContent;
         string messageLink = message.MessageLink;
         var op2 = Addressables.InstantiateAsync(messageLink, messageKind2Panel);
+        GameObject go = op2.WaitForCompletion();
+        DoMessageTransitionEffect(go.transform, message.MessageTransitionEffect, message.MessageShowTime);
+        YPlayModeController.Instance.LockPlayerInput(true);
+    }
+    
+    private void ShowMessageKind7(MessageBoxBaseStruct message)
+    {
+        transform.SetAsLastSibling();
+        messageKind7Panel.gameObject.SetActive(true);
+        //弹出在中间的弹窗，比如游戏的教程，可以有加载的教程内容链接,按x键直接关闭
+        string messageContent = message.MessageContent;
+        messageKind7Content.text = messageContent;
+        string messageLink = message.MessageLink;
+        var op2 = Addressables.InstantiateAsync(messageLink, messageKind7Panel);
         GameObject go = op2.WaitForCompletion();
         DoMessageTransitionEffect(go.transform, message.MessageTransitionEffect, message.MessageShowTime);
         YPlayModeController.Instance.LockPlayerInput(true);
@@ -257,6 +275,9 @@ public class HMessageShowMgr : MonoBehaviour
                     break;
                 case 4:
                     ShowMessageKind4(message);
+                    break;
+                case 7:
+                    ShowMessageKind7(message);
                     break;
                     
             }

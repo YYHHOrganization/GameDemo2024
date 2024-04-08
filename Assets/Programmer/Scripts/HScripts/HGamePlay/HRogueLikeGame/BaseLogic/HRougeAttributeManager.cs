@@ -95,4 +95,10 @@ public class HRougeAttributeManager : MonoBehaviour
         return characterIcon;
     }
 
+    public void AddAttributeValue(string name, float value)
+    {
+        characterValueAttributes[name] += value;
+        UpdateEverythingInAttributePanel();
+    }
+
 }

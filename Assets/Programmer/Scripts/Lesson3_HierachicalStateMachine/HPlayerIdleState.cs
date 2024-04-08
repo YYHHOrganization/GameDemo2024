@@ -12,7 +12,7 @@ public class HPlayerIdleState : HPlayerBaseState
     }
     public override void EnterState()
     {
-        if (_ctx.IsInThirdPersonCamera)
+        if (!_ctx.IsInThirdPersonCamera)
         {
             _ctx.Animator.SetBool(_ctx.IsWalkingHash, false);
             _ctx.Animator.SetBool(_ctx.IsRunningHash, false);

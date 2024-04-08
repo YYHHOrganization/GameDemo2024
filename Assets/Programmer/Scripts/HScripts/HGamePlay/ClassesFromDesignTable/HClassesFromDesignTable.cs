@@ -42,6 +42,26 @@ public class RogueCharacterBaseAttribute
     public string rogueCharacterIconLink;
 }
 
+public class RogueItemBaseAttribute
+{
+    public string itemId;
+    public string itemName;
+    public string itemChineseName;
+    public int rogueItemGetKind;
+    public string rogueItemDescription;
+    public string rogueItemKind;
+    public string rogueItemFunc;
+    public string rogueItemFuncParams;
+    public float rogueItemLastTime;
+    public string rogueItemIconLink;
+    public bool rogueItemIsImage;
+    public string rogueItemFollowXingshen;
+    public string rogueItemPrefabLink;
+    public bool rogueItemShowInBag;
+    public int starLevel;
+    public string itemFollowXingshenChinese;
+}
+
 public class HOpenWorldItemStruct
 {
     public int id;

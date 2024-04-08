@@ -154,6 +154,7 @@ public class yPlanningTable : MonoBehaviour
     private void ReadAllRogueLikeThings()
     {
         ReadRogueCharacterBaseAttributes();
+        ReadRogueItemBaseAttributes();
     }
 
     public Dictionary<int, RogueCharacterBaseAttribute> rogueCharacterBaseAttributes = new Dictionary<int, RogueCharacterBaseAttribute>();
@@ -179,7 +180,38 @@ public class yPlanningTable : MonoBehaviour
             rogueCharacterBaseAttribute.rogueCharacterIconLink = rowData[14];
             rogueCharacterBaseAttributes.Add(id, rogueCharacterBaseAttribute);
         }
-        
+    }
+    
+    public Dictionary<string, RogueItemBaseAttribute> rogueItemBases = new Dictionary<string, RogueItemBaseAttribute>();
+
+    private void ReadRogueItemBaseAttributes()
+    {
+        string filePath = "Assets/Designer/CsvTable/RogueLike/RogueItemCSVFile.csv";
+        string[] fileData = File.ReadAllLines(filePath);
+        for (int i = 3; i < fileData.Length; i++)
+        {
+            string[] rowData = fileData[i].Split(',');
+            string itemId = rowData[0];
+            RogueItemBaseAttribute rogueItemBaseAttribute = new RogueItemBaseAttribute();
+            rogueItemBaseAttribute.itemId = rowData[0];
+            rogueItemBaseAttribute.itemName = rowData[1];
+            rogueItemBaseAttribute.itemChineseName = rowData[2];
+            rogueItemBaseAttribute.rogueItemGetKind = int.Parse(rowData[3]);
+            rogueItemBaseAttribute.rogueItemDescription = rowData[4];
+            rogueItemBaseAttribute.rogueItemKind = rowData[5];
+            rogueItemBaseAttribute.rogueItemFunc = rowData[6];
+            rogueItemBaseAttribute.rogueItemFuncParams = rowData[7];
+            rogueItemBaseAttribute.rogueItemLastTime = float.Parse(rowData[8]);
+            rogueItemBaseAttribute.rogueItemIconLink = rowData[9];
+            rogueItemBaseAttribute.rogueItemIsImage = bool.Parse(rowData[10]);
+            rogueItemBaseAttribute.rogueItemFollowXingshen = rowData[11];
+            rogueItemBaseAttribute.rogueItemPrefabLink = rowData[12];
+            rogueItemBaseAttribute.rogueItemShowInBag = bool.Parse(rowData[13]);
+            rogueItemBaseAttribute.starLevel = int.Parse(rowData[14]);
+            rogueItemBaseAttribute.itemFollowXingshenChinese = rowData[15];
+            
+            rogueItemBases.Add(itemId, rogueItemBaseAttribute);
+        }
     }
     
     //定义一个eff 用于存放特效 其中有每个特效的名称和id

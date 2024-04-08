@@ -224,6 +224,8 @@ public class HTestCharacterShoot : MonoBehaviour
     
     void RotateCharacterWithMouse2()
     {
+        if (!canAimAndShoot)
+            return;
         var rotInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         var rot = transform.eulerAngles;
         var rot2 = transform.eulerAngles;
@@ -304,7 +306,7 @@ public class HTestCharacterShoot : MonoBehaviour
                 {
                     Ray ray = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX + i * deltaX, middleY + j * deltaY, 0));
                     RaycastHit hit;
-                    if(Physics.Raycast(ray, out hit, shootRange, layerMask))
+                    if(Physics.Raycast(ray, out hit, HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRange"], layerMask))
                     {
                         //Debug.Log(hit.collider.gameObject.name);
                         if (hit.collider.gameObject.CompareTag("Enemy"))
@@ -350,7 +352,7 @@ public class HTestCharacterShoot : MonoBehaviour
                 }
             }
             ShootBulletFromMuzzle(needShootHelp,hitButNoNeedHelp,hitPosition);
-            yield return new WaitForSeconds(shootRate);
+            yield return new WaitForSeconds(1.0f/HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRate"]);
         }
         
     }

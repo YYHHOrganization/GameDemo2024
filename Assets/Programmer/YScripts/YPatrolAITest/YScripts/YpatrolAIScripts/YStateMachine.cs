@@ -9,7 +9,7 @@ public class YStateMachine : MonoBehaviour
     private Dictionary<Type, YBaseState> mDicAvailStates;
 
     public YBaseState CurrentState { get; private set; }
-    //ÊÂ¼ş***
+    //äº‹ä»¶***
     public event Action<YBaseState> OnStateChanged;
 
     public void SetStates(Dictionary<Type,YBaseState> dicStates)
@@ -20,16 +20,16 @@ public class YStateMachine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Èç¹û´ËÊ±Ã»ÓĞ×´Ì¬ ½«µÚÒ»¸ö×´Ì¬¸³Öµ¸øËû
+        //å¦‚æœæ­¤æ—¶æ²¡æœ‰çŠ¶æ€ å°†ç¬¬ä¸€ä¸ªçŠ¶æ€èµ‹å€¼ç»™ä»–
         if(CurrentState==null)
         {
             CurrentState = mDicAvailStates.Values.First();
         }
-        //YbasestateÖĞÓĞ·½·¨tick  Èç¹û²¢²»ÇĞ»»×´Ì¬ tick¾Í·µ»Ønull ·ñÔò¾ÍÊÇËµÃ÷ÒªÇĞ»»×´Ì¬
-        //Èç¹ûÏÂÒ»×´Ì¬ÓëÒÔ´ËÊ±µÄ×´Ì¬Ò»Ñù ²»¹ÜtickÓë·ñ ¶¼²»ĞèÒª»»×´Ì¬£¬·ñÔòÒª»»
+        //Ybasestateä¸­æœ‰æ–¹æ³•tick  å¦‚æœå¹¶ä¸åˆ‡æ¢çŠ¶æ€ tickå°±è¿”å›null å¦åˆ™å°±æ˜¯è¯´æ˜è¦åˆ‡æ¢çŠ¶æ€
+        //å¦‚æœä¸‹ä¸€çŠ¶æ€ä¸ä»¥æ­¤æ—¶çš„çŠ¶æ€ä¸€æ · ä¸ç®¡tickä¸å¦ éƒ½ä¸éœ€è¦æ¢çŠ¶æ€ï¼Œå¦åˆ™è¦æ¢
         var nextState = CurrentState?.Tick();
            
-        //ÇĞ»»×´Ì¬
+        //åˆ‡æ¢çŠ¶æ€
         if(nextState!=null&&nextState!=CurrentState.GetType())
         {
             switchState(nextState);

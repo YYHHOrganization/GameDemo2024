@@ -71,6 +71,7 @@ public class YPatrolAI : MonoBehaviour
         
         //moveCameraScripts.cameraShakeFunc();
         //litjson.cameraShakeFunc();
+        //todo:已经打到玩家了，玩家扣血
     }
     //还有个beattack 先弄个一击必杀吧
     public void die()
