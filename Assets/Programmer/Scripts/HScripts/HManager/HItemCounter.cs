@@ -28,31 +28,66 @@ public class HItemCounter : MonoBehaviour
     }
     
     private Dictionary<string, int> worldItemCounts = new Dictionary<string, int>();
+    private Dictionary<string, int> rogueItemCounts = new Dictionary<string, int>();
 
     public Dictionary<string, int> WorldItemCounts
     {
         get => worldItemCounts;
+    }
+    
+    public Dictionary<string, int> RogueItemCounts
+    {
+        get => rogueItemCounts;
     }
 
     public int GetDictLength()
     {
         return worldItemCounts.Count;
     }
-    
-    private void DebugDictionary()
+
+    public int GetRogueDictLength()
     {
-        foreach (var item in worldItemCounts)
-        {
-            Debug.Log(item.Key + " " + item.Value);
-        }
+        return rogueItemCounts.Count;
     }
+    
+    // private void DebugDictionary()
+    // {
+    //     foreach (var item in worldItemCounts)
+    //     {
+    //         Debug.Log(item.Key + " " + item.Value);
+    //     }
+    // }
 
     private void Update()
     {
-        if (debugMode)
+        // if (debugMode)
+        // {
+        //     DebugDictionary();
+        //     debugMode = false;
+        // }
+    }
+
+    public void AddItemInRogue(string itemId, int count)
+    {
+        if (rogueItemCounts.ContainsKey(itemId))
         {
-            DebugDictionary();
-            debugMode = false;
+            rogueItemCounts[itemId] += count;
+        }
+        else
+        {
+            rogueItemCounts.Add(itemId, count);
+        }
+    }
+    
+    public void RemoveItemInRogue(string itemId, int count)
+    {
+        if (rogueItemCounts.ContainsKey(itemId))
+        {
+            rogueItemCounts[itemId] -= count;
+            if (rogueItemCounts[itemId] <= 0)
+            {
+                rogueItemCounts.Remove(itemId);
+            }
         }
     }
 

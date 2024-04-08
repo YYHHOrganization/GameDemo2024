@@ -62,6 +62,7 @@ public class HBulletMoveBase : MonoBehaviour
             if (patrolAI != null)
             {
                 patrolAI.die();
+                //todo:写一个伤害的函数
             }
         }
 

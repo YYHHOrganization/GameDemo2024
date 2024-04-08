@@ -33,6 +33,7 @@ public class HBagPanelBaseLogic : MonoBehaviour
     {
         LoadBaseInfos();
         InstantiateAllItems();
+        InstantiateAllRogueItems();
     }
 
     private void LoadBaseInfos()
@@ -54,6 +55,28 @@ public class HBagPanelBaseLogic : MonoBehaviour
         itemBaseDescription.text = "<color=red>你似乎来到了没有知识的荒漠......</color>";
         itemDetailDescription.text = "<color=red>烫烫烫烫烫烫烫烫烫</color>";
         itemDescriptionCount.text = "<color=red>× -1</color>";
+    }
+
+    private void InstantiateAllRogueItems()
+    {
+        int itemKindCount = HItemCounter.Instance.GetRogueDictLength();
+        if (itemKindCount == 0)
+        {
+            ShowItemDetailNothing();
+        }
+        Dictionary<string, int> rogueItemCounts = HItemCounter.Instance.RogueItemCounts;
+        bool isFirstItem = true;
+        foreach (var item in rogueItemCounts)
+        {
+            string itemId = item.Key;
+            int itemCount = item.Value;
+            InstantiateAnRogueItem(itemId, itemCount);
+            if (isFirstItem)
+            {
+                ShowRogueItemDetail(itemId, itemCount);
+                isFirstItem = false;
+            }
+        }
     }
     
     private void InstantiateAllItems()
@@ -121,6 +144,80 @@ public class HBagPanelBaseLogic : MonoBehaviour
             string tmpItemId = itemId;
             ShowItemDetail(tmpItemId, itemCount);
         });
+    }
+    
+    private void InstantiateAnRogueItem(string itemId, int itemCount)
+    {
+        //实例化一个物品
+        GameObject item = Instantiate(Resources.Load<GameObject>(itemShowLink), ItemContent);
+        TMP_Text itemCountText = item.GetComponentInChildren<TMP_Text>();
+        itemCountText.text = itemCount.ToString();
+        
+        RogueItemBaseAttribute thisItem = yPlanningTable.Instance.rogueItemBases[itemId];
+        
+        //设置物品的图标
+        Image itemIcon = item.transform.Find("ItemIcon").GetComponent<Image>();
+        string iconLink = thisItem.rogueItemIconLink;
+        var op2 = Addressables.LoadAssetAsync<Sprite>(iconLink);
+        Sprite go = op2.WaitForCompletion();
+        itemIcon.sprite = go;
+        
+        //设置背景颜色和物品星级
+        Image bgImage = item.transform.Find("BgImage").GetComponent<Image>();
+        int starLevel = thisItem.starLevel;
+        switch (starLevel)
+        {
+            case 3:
+                bgImage.color = new Color(0.251f,0.8078f,1,0.8196f);
+                break;
+            case 4:
+                bgImage.color = new Color(1, 0.251f, 0.847f, 0.8196f);
+                break;
+            case 5:
+                bgImage.color = new Color(1,0.741f,0.251f,0.8196f);
+                break;
+            default:
+                bgImage.color = new Color(0.251f,0.8078f,1,0.6196f);
+                break;
+        }
+        Transform starGroupParent = item.transform.Find("Stars");
+        for (int i = 0; i < starLevel; i++)
+        {
+            starGroupParent.GetChild(i).gameObject.SetActive(true);
+        }
+        
+        //添加点击的监听事件
+        item.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            string tmpItemId = itemId;
+            ShowRogueItemDetail(tmpItemId, itemCount);
+        });
+    }
+
+    private void ShowRogueItemDetail(string itemId, int itemCount)
+    {
+        RogueItemBaseAttribute thisItem = yPlanningTable.Instance.rogueItemBases[itemId];
+        detailItemIcon.sprite = Addressables.LoadAssetAsync<Sprite>(thisItem.rogueItemIconLink).WaitForCompletion();
+        detailItemName.text = thisItem.itemChineseName;
+        detailItemKind.text = thisItem.itemFollowXingshenChinese;
+        itemBaseDescription.text = thisItem.rogueItemDescription;
+        itemDetailDescription.text = "暂时还没有写好";
+        switch (thisItem.starLevel)
+        {
+            case 3:
+                itemDescriptionBg.color = new Color(0.251f,0.8078f,1,0.6196f);
+                break;
+            case 4:
+                itemDescriptionBg.color = new Color(1, 0.251f, 0.847f, 0.6196f);
+                break;
+            case 5:
+                itemDescriptionBg.color = new Color(1,0.741f,0.251f,0.6196f);
+                break;
+            default:
+                itemDescriptionBg.color = new Color(0.251f,0.8078f,1,0.6196f);
+                break;
+        }
+        itemDescriptionCount.text = "×" + itemCount.ToString();
     }
 
     private void ShowItemDetail(string itemId, int itemCount)
