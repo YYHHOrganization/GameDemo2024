@@ -5,6 +5,9 @@ using UnityEngine.Rendering.Universal;
 
 public class YRoomNode : YRouge_Node
 {
+    RoomType roomType;
+    //脚本
+    public YRouge_RoomBase roomScript;
     
     public YRoomNode(Vector2Int bottomLeftAreaCorner, Vector2Int topRightAreaCorner, YRouge_Node parentNode,int index) : base(parentNode)
     {
@@ -23,7 +26,12 @@ public class YRoomNode : YRouge_Node
     {
         get { return (int)(TopRightAreaCorner.y - BottomLeftAreaCorner.y); }
     }
-
-
+    
+    //房间类型
+    public RoomType RoomType
+    {
+        get => roomType;
+        set => roomType = value;
+    }
    
 }

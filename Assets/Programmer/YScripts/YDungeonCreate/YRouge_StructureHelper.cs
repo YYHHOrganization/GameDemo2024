@@ -96,3 +96,26 @@ public enum RelativePosition
     Right,
     Left,
 }
+
+//房间类型 战斗房 挑战房 冒险房（枘凿） 游戏机房（对赌）  boss房 道具房 商店房
+public enum RoomType
+{
+    BattleRoom,//战斗房
+    ChallengeRoom,//挑战房
+    AdventureRoom,//冒险房
+    GameRoom,//游戏机房
+    BossRoom,//boss房
+    ItemRoom,//道具房
+    ShopRoom,//商店房
+}
+
+public struct StructWithRoomListAndCorridorList
+{
+    public StructWithRoomListAndCorridorList(List<YRoomNode> roomList, List<YRouge_Node> corridorList)
+    {
+        this.roomList = roomList;
+        this.corridorList = corridorList;
+    }
+    public List<YRoomNode> roomList;
+    public List<YRouge_Node> corridorList;
+}
