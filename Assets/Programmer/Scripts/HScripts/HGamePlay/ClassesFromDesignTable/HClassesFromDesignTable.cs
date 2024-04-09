@@ -40,6 +40,7 @@ public class RogueCharacterBaseAttribute
     public int rogueStartXingqiong;
     public int rogueStartXinyongdian;
     public string rogueCharacterIconLink;
+    public int rogueCharacterHealthUpperBoundBase;
 }
 
 public class RogueItemBaseAttribute
@@ -47,7 +48,7 @@ public class RogueItemBaseAttribute
     public string itemId;
     public string itemName;
     public string itemChineseName;
-    public int rogueItemGetKind;
+    public string rogueItemGetKind;
     public string rogueItemDescription;
     public string rogueItemKind;
     public string rogueItemFunc;
@@ -60,6 +61,7 @@ public class RogueItemBaseAttribute
     public bool rogueItemShowInBag;
     public int starLevel;
     public string itemFollowXingshenChinese;
+    public bool rogueItemNameShowDefault;
 }
 
 public class HOpenWorldItemStruct

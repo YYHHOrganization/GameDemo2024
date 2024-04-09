@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.UI;
@@ -188,12 +190,14 @@ public class yPlanningTable : MonoBehaviour
             rogueCharacterBaseAttribute.rogueStartXingqiong = int.Parse(rowData[12]);
             rogueCharacterBaseAttribute.rogueStartXinyongdian = int.Parse(rowData[13]);
             rogueCharacterBaseAttribute.rogueCharacterIconLink = rowData[14];
+            rogueCharacterBaseAttribute.rogueCharacterHealthUpperBoundBase = int.Parse(rowData[15]);
+            
             rogueCharacterBaseAttributes.Add(id, rogueCharacterBaseAttribute);
         }
     }
     
     public Dictionary<string, RogueItemBaseAttribute> rogueItemBases = new Dictionary<string, RogueItemBaseAttribute>();
-
+    public List<string> rogueItemKeys = new List<string>();
     private void ReadRogueItemBaseAttributes()
     {
         string filePath = "Assets/Designer/CsvTable/RogueLike/RogueItemCSVFile.csv";
@@ -206,7 +210,7 @@ public class yPlanningTable : MonoBehaviour
             rogueItemBaseAttribute.itemId = rowData[0];
             rogueItemBaseAttribute.itemName = rowData[1];
             rogueItemBaseAttribute.itemChineseName = rowData[2];
-            rogueItemBaseAttribute.rogueItemGetKind = int.Parse(rowData[3]);
+            rogueItemBaseAttribute.rogueItemGetKind = rowData[3];
             rogueItemBaseAttribute.rogueItemDescription = rowData[4];
             rogueItemBaseAttribute.rogueItemKind = rowData[5];
             rogueItemBaseAttribute.rogueItemFunc = rowData[6];
@@ -219,8 +223,10 @@ public class yPlanningTable : MonoBehaviour
             rogueItemBaseAttribute.rogueItemShowInBag = bool.Parse(rowData[13]);
             rogueItemBaseAttribute.starLevel = int.Parse(rowData[14]);
             rogueItemBaseAttribute.itemFollowXingshenChinese = rowData[15];
+            rogueItemBaseAttribute.rogueItemNameShowDefault = bool.Parse(rowData[16]);
             
             rogueItemBases.Add(itemId, rogueItemBaseAttribute);
+            rogueItemKeys.Add(itemId);
         }
     }
     

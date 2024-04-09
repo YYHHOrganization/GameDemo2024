@@ -54,32 +54,45 @@ public class HRogueAttributeBaseLogic : MonoBehaviour
         xinyongdianText.text = HRougeAttributeManager.Instance.characterValueAttributes["RogueXinyongdian"].ToString();
     }
 
-    public void SetHealthAndShield()
+    public void SetHealthAndShieldOnUI()
     {
         int health = (int)HRougeAttributeManager.Instance.characterValueAttributes["RogueCharacterHealth"];
         int shield = (int)HRougeAttributeManager.Instance.characterValueAttributes["RogueCharacterShield"];
+        int healthUpperBound =
+            (int)HRougeAttributeManager.Instance.characterValueAttributes["RogueCharacterHealthUpperBound"];
         //all set false
         for (int i = 0; i < heartAndShieldPanel.childCount; i++)
         {
             heartAndShieldPanel.GetChild(i).GetComponent<Image>().fillAmount = 1;
+            if (i < 12)
+            {
+                heartAndShieldPanel.GetChild(i).GetChild(0).GetComponent<Image>().fillAmount = 1;
+                heartAndShieldPanel.GetChild(i).GetChild(0).gameObject.SetActive(false);
+            }
             heartAndShieldPanel.GetChild(i).gameObject.SetActive(false);
         }
-        for (int i = 0; i < health/2; i++)
+        
+        for (int i = 0; i < healthUpperBound / 2; i++)
         {
             heartAndShieldPanel.GetChild(i).gameObject.SetActive(true);
         }
+        for(int i = 0; i< health / 2; i++)
+        {
+            heartAndShieldPanel.GetChild(i).GetChild(0).gameObject.SetActive(true);
+        }
         if(health % 2==1)
         {
-            heartAndShieldPanel.GetChild(health / 2).gameObject.SetActive(true);
-            heartAndShieldPanel.GetChild(health / 2).gameObject.GetComponent<Image>().fillAmount = 0.5f;
+            heartAndShieldPanel.GetChild(health / 2).GetChild(0).gameObject.SetActive(true);
+            heartAndShieldPanel.GetChild(health / 2).GetChild(0).gameObject.GetComponent<Image>().fillAmount = 0.5f;
         }
+        
         for (int i = 0; i < shield/2; i++)
         {
             heartAndShieldPanel.GetChild(i+12).gameObject.SetActive(true);
         }
         if(shield % 2==1)
         {
-            heartAndShieldPanel.GetChild(health / 2+12).gameObject.SetActive(true);
+            heartAndShieldPanel.GetChild(shield / 2+12).gameObject.SetActive(true);
             heartAndShieldPanel.GetChild(shield / 2+12).gameObject.GetComponent<Image>().fillAmount = 0.5f;
         }
     }
@@ -93,7 +106,6 @@ public class HRogueAttributeBaseLogic : MonoBehaviour
             if (isDetailOpen)
             {
                 SetRogueAttributeText();
-                SetHealthAndShield();
                 detailTip.text = "I键关闭详细面板";
             }
             else
