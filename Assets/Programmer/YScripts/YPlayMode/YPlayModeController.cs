@@ -116,7 +116,7 @@ public class YPlayModeController : MonoBehaviour
         // testCharacterShoot.thirdAimCamera.gameObject.SetActive(false);
         thirdAimCamera.gameObject.SetActive(false);
         //如果当前关卡是第3个关卡
-        if (curLevelID == 2)
+        if (curLevelID == 2 || curLevelID == 3) 
         {
             // testCharacterShoot.SetMainPlayerCamera(PlayerCamera.GetComponent<Camera>());
             // testCharacterShoot.testCommonThirdPersonFollowCam.gameObject.SetActive(true);

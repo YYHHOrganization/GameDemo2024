@@ -119,3 +119,4 @@ public struct StructWithRoomListAndCorridorList
     public List<YRoomNode> roomList;
     public List<YRouge_Node> corridorList;
 }
+

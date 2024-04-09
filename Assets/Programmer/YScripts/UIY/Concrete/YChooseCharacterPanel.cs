@@ -42,7 +42,7 @@ public class YChooseCharacterPanel : BasePanel
         {
             Pop();
             //Push(new YChooseScreenplayPanel());//其实并不是 而是应该直接让角色在场景中活动，但是先这样吧
-            if (YLevelManager.GetCurrentLevelIndex() != 2)
+            if (YLevelManager.GetCurrentLevelIndex() != 2&&YLevelManager.GetCurrentLevelIndex() != 3)
             {
                 Push(new YMainPlayModeOriginPanel());
             }

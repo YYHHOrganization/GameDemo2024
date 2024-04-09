@@ -32,6 +32,7 @@ public class YDungeonCreator : MonoBehaviour
     List<Vector3Int> corridorWallHorizontalPositions;
     List<Vector3Int> corridorWallVerticalPositions;
     
+    public Vector3Int originPosition;
     // Start is called before the first frame update
     void Start()
     {
@@ -61,7 +62,7 @@ public class YDungeonCreator : MonoBehaviour
         roomType.GenerateRoomType(roomList);
         //生成Room的脚本
         YRouge_CreateItem createItem = new YRouge_CreateItem();
-        createItem.GenerateRoomScript(roomList,this.transform);
+        createItem.GenerateRoomScript(roomList,this.transform,originPosition);
         
         GameObject wallParent = new GameObject("WallParent");
         wallParent.transform.parent = transform;
@@ -103,6 +104,9 @@ public class YDungeonCreator : MonoBehaviour
         GameObject CorridorParent = new GameObject("CorridorParent");
         CorridorParent.transform.parent = transform;
         CrrateCorridorWall(CorridorParent.transform);
+        
+        //移动到（-400，0，-400）
+        //transform.position = new Vector3(-400, 0, -400);
     }
 
     private void CrrateCorridorWall(Transform CorridorParent)
@@ -161,7 +165,8 @@ public class YDungeonCreator : MonoBehaviour
 
     private void CreateDoor(Vector3Int doorPosition, GameObject doorParent, GameObject doorPrefab, int id)
     {
-        GameObject door = Instantiate(doorPrefab, doorPosition, Quaternion.identity,doorParent.transform);
+        // GameObject door = Instantiate(doorPrefab, doorPosition, Quaternion.identity,doorParent.transform);
+        GameObject door = Instantiate(doorPrefab, doorPosition+originPosition, Quaternion.identity,doorParent.transform);
         //将wall存入他相应的房间的wallList中
         YRouge_RoomBase roomBase = roomList[id].roomScript;
         if (roomBase != null)
@@ -173,7 +178,7 @@ public class YDungeonCreator : MonoBehaviour
     
     private void CreateWall(Vector3Int wallPosition, Transform wallParent, GameObject wallPrefab)
     {
-        GameObject wall = Instantiate(wallPrefab, wallPosition, Quaternion.identity,wallParent);
+        GameObject wall = Instantiate(wallPrefab, wallPosition+originPosition, Quaternion.identity,wallParent);
         //将wall存入他相应的房间的wallList中
     }
     
@@ -186,7 +191,7 @@ public class YDungeonCreator : MonoBehaviour
     /// <param name="id"></param>
     private void CreateWall(Vector3Int wallPosition, GameObject wallParent, GameObject wallPrefab,int id)
     {
-        GameObject wall = Instantiate(wallPrefab, wallPosition, Quaternion.identity,wallParent.transform);
+        GameObject wall = Instantiate(wallPrefab, wallPosition+originPosition, Quaternion.identity,wallParent.transform);
         //将wall存入他相应的房间的wallList中
         YRouge_RoomBase roomBase = roomList[id].roomScript;
         if (roomBase != null)
@@ -224,7 +229,8 @@ public class YDungeonCreator : MonoBehaviour
         //it means that the mesh will be rendered with the material floorMaterial
         GameObject floor = new GameObject("Mesh"+bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
         
-        floor.transform.position = new Vector3(0, 0, 0);
+        // floor.transform.position = new Vector3(0, 0, 0);
+        floor.transform.position = originPosition;
         floor.transform.localScale = new Vector3(1, 1, 1);
         floor.GetComponent<MeshFilter>().mesh = mesh;
         floor.GetComponent<MeshRenderer>().material = floorMaterial;
@@ -297,7 +303,8 @@ public class YDungeonCreator : MonoBehaviour
         //it means that the mesh will be rendered with the material floorMaterial
         GameObject floor = new GameObject("Mesh"+bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
         
-        floor.transform.position = new Vector3(0, 0, 0);
+        // floor.transform.position = new Vector3(0, 0, 0);
+        floor.transform.position = originPosition;
         floor.transform.localScale = new Vector3(1, 1, 1);
         floor.GetComponent<MeshFilter>().mesh = mesh;
         floor.GetComponent<MeshRenderer>().material = floorMaterial;

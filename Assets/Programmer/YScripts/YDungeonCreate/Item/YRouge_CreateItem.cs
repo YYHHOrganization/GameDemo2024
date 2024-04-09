@@ -21,21 +21,25 @@ public class YRouge_CreateItem
     //玩家进入这个房间，然后这个房间的脚本就会被激活，然后进行相应的逻辑
     //同时这个room脚本得知道什么门是属于这个房间的，然后在这个房间的脚本中控制门的开关
     Transform parent;
-    public void GenerateRoomScript(List<YRoomNode> allRoomNodes,Transform parent)
+    public void GenerateRoomScript(List<YRoomNode> allRoomNodes,Transform parent,Vector3Int originPosition)
     {
         this.parent = parent;
         foreach (var roomNode in allRoomNodes)
         {
-            GenerateSingleRoomScript(roomNode, this.parent);
+            GenerateSingleRoomScript(roomNode, this.parent,originPosition);
         }
     }
-    void GenerateSingleRoomScript(YRoomNode roomNode,Transform parent)
+    void GenerateSingleRoomScript(YRoomNode roomNode,Transform parent,Vector3Int originPosition)
     {
         //弄一个新的gameobject出来,然后把这个gameobject放到房间中间,挂上对应的脚本
         GameObject roomGameObject = new GameObject();
-        roomGameObject.transform.position = new Vector3((roomNode.BottomLeftAreaCorner.x + roomNode.TopRightAreaCorner.x) / 2, 0,
-            (roomNode.BottomLeftAreaCorner.y + roomNode.TopRightAreaCorner.y) / 2);
         roomGameObject.transform.parent = parent;
+        roomGameObject.transform.position = new Vector3(
+            (roomNode.BottomLeftAreaCorner.x + roomNode.TopRightAreaCorner.x) / 2, 0,
+            (roomNode.BottomLeftAreaCorner.y + roomNode.TopRightAreaCorner.y) / 2) + originPosition;
+        // roomGameObject.transform.localPosition = new Vector3((roomNode.BottomLeftAreaCorner.x + roomNode.TopRightAreaCorner.x) / 2, 0,
+        //     (roomNode.BottomLeftAreaCorner.y + roomNode.TopRightAreaCorner.y) / 2);
+        
         // if(roomTypeToScript.ContainsKey(roomNode.RoomType))
         // {
         //     roomGameObject.AddComponent(roomTypeToScript[roomNode.RoomType]);
