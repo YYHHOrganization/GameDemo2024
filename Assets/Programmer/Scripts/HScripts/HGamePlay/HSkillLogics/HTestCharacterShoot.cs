@@ -243,8 +243,7 @@ public class HTestCharacterShoot : MonoBehaviour
                 rot.x -= 360;
             if (rot2.x > 180)
                 rot2.x -= 360;
-            rot.x = Mathf.Clamp(rot.x, VerticalRotMin+35, VerticalRotMax-35);
-            //todo:有个bug，子弹有概率打到自己身上，目前还没有排查出来为什么
+            rot.x = Mathf.Clamp(rot.x, VerticalRotMin+25, VerticalRotMax-25);
             rot2.x = Mathf.Clamp(rot2.x, VerticalRotMin+20, VerticalRotMax-20);
             thirdPersonFollowPlace.localRotation = Quaternion.Euler(rot);
             thirdPersonCommonFollowPlace.localRotation = Quaternion.Euler(rot2);
