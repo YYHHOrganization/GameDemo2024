@@ -28,6 +28,8 @@ public class HBagPanelBaseLogic : MonoBehaviour
     public TMP_Text itemDescriptionCount;
 
     private string itemShowLink = "Prefabs/UI/singleUnit/AnItemInBagPanel";
+
+    public Button rogueItemUseButton;
     
     private void Start()
     {
@@ -77,6 +79,31 @@ public class HBagPanelBaseLogic : MonoBehaviour
                 isFirstItem = false;
             }
         }
+        rogueItemUseButton.GetComponent<Button>().onClick.AddListener(
+            ()=>
+            {
+                if (nowClickItemId!=null)
+                {
+                    HRougeAttributeManager.Instance.UsePositiveItem(nowClickItemId);
+                    HItemCounter.Instance.RemoveItemInRogue(nowClickItemId, 1);
+                    RefleshBagPanel();
+                }
+            });
+    }
+    
+    private void RemoveAndDestroyAllChildren(Transform parent)
+    {
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Destroy(parent.GetChild(i).gameObject);
+        }
+    }
+
+    private void RefleshBagPanel()
+    {
+        RemoveAndDestroyAllChildren(ItemContent.transform);
+        InstantiateAllItems();
+        InstantiateAllRogueItems();
     }
     
     private void InstantiateAllItems()
@@ -100,7 +127,8 @@ public class HBagPanelBaseLogic : MonoBehaviour
             }
         }
     }
-    
+
+    private string nowClickItemId;
     private void InstantiateAnItem(string itemId, int itemCount)
     {
         //实例化一个物品
@@ -190,6 +218,7 @@ public class HBagPanelBaseLogic : MonoBehaviour
         item.GetComponent<Button>().onClick.AddListener(() =>
         {
             string tmpItemId = itemId;
+            nowClickItemId = tmpItemId;
             ShowRogueItemDetail(tmpItemId, itemCount);
         });
     }
@@ -218,6 +247,14 @@ public class HBagPanelBaseLogic : MonoBehaviour
                 break;
         }
         itemDescriptionCount.text = "×" + itemCount.ToString();
+        if (thisItem.rogueItemKind == "Positive")
+        {
+            rogueItemUseButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            rogueItemUseButton.gameObject.SetActive(false);
+        }
     }
 
     private void ShowItemDetail(string itemId, int itemCount)

@@ -7,7 +7,7 @@ using UnityEngine;
 public class HRogueItemBase : MonoBehaviour
 {
     //肉鸽玩法的物品道具基类，其他物品道具继承于这个基类
-    public string itemId;
+    private string itemId;
     private RogueItemBaseAttribute rogueItemBaseAttribute;
 
     private GameObject getUI;
@@ -15,10 +15,12 @@ public class HRogueItemBase : MonoBehaviour
     private bool isPickedUp;
 
     private TMP_Text itemChineseName;
-    // Start is called before the first frame update
-    void Start()
+    private bool canShowName = false;
+    
+    public void SetItemIDAndShow(string id, RogueItemBaseAttribute rogueItemAttribute)
     {
-        rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
+        itemId = id;
+        rogueItemBaseAttribute = rogueItemAttribute;
         getUI = GetComponentInChildren<Canvas>().gameObject;
         getUI.gameObject.SetActive(false);
         isPickedUp = false;
@@ -37,6 +39,10 @@ public class HRogueItemBase : MonoBehaviour
             string funcName = rogueItemBaseAttribute.rogueItemFunc;
             string funcParams = rogueItemBaseAttribute.rogueItemFuncParams;
             UseNegativeItem(funcName, funcParams);
+            HMessageShowMgr.Instance.ShowMessage("ROGUE_USE_NEGATIVE_ITEM", "你使用了被动道具——"+rogueItemBaseAttribute.itemChineseName);
+        }
+        else if (rogueItemBaseAttribute.rogueItemKind == "Positive")
+        {
             this.gameObject.SetActive(false);
             Destroy(this.gameObject, 0.5f);
         }
@@ -57,8 +63,23 @@ public class HRogueItemBase : MonoBehaviour
         string attributeName = (string)paramList[0];
         float attributeValue = float.Parse(paramList[1]);
         HRougeAttributeManager.Instance.AddAttributeValue(attributeName, attributeValue);
+        this.gameObject.SetActive(false);
+        Destroy(this.gameObject, 0.5f);
     }
 
+    public void AddHeartOrShield(string funcParams)
+    {
+        //根据funcParams的内容，决定加血/加护盾，或者是加血量上限/加护盾上限
+        string[] paramList = funcParams.Split(';');
+        string attributeName = (string)paramList[0];
+        int attributeValue = int.Parse(paramList[1]);
+        if (HRougeAttributeManager.Instance.AddHeartOrShield(attributeName, attributeValue))
+        {
+            this.gameObject.SetActive(false);
+            Destroy(this.gameObject, 0.5f);
+        }
+    }
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -67,7 +88,15 @@ public class HRogueItemBase : MonoBehaviour
             getUI.gameObject.SetActive(true);
             if (itemChineseName)
             {
-                itemChineseName.text = rogueItemBaseAttribute.itemChineseName;
+                if (rogueItemBaseAttribute.rogueItemNameShowDefault)
+                {
+                    itemChineseName.text = rogueItemBaseAttribute.itemChineseName;
+                }
+                else
+                {
+                    itemChineseName.text = "???";
+                }
+                
             }
             if (!isPickedUp && Input.GetKey(KeyCode.F))
             {
