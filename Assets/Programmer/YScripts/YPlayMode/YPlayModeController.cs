@@ -31,7 +31,7 @@ public class YPlayModeController : MonoBehaviour
         YTriggerEvents.OnShortcutKeyInteractionStateChanged += SetNameUILabel;
     }
     HCameraLayoutManager CameraLayoutManager;
-    GameObject curCharacter;
+    public GameObject curCharacter;
     private GameObject FreeLookCamera;
     GameObject PlayerCamera; 
     

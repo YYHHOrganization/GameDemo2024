@@ -141,6 +141,7 @@ public class yPlanningTable : MonoBehaviour
         ReadCameraCSV("Assets/Designer/CsvTable/CameraCSVFile.csv",
             cameraNamesList,cameraUINameList,cameraStructs);
         ReadOpenWorldThings();
+        ReadRogueRoomItem();
         effs =new List<ScriptableRendererFeature>();
         
         //读取机关表格
@@ -149,6 +150,15 @@ public class yPlanningTable : MonoBehaviour
         ReadAllMessages();
         ReadAllRogueLikeThings();
         ReadAudios();
+    }
+
+    private void ReadRogueRoomItem()
+    {
+        string roomItemLink = "RogueRoomCSVFile.csv";
+        YRogue_RoomAndItemManager.Instance.ReadRoomCSVFile(roomItemLink);
+        
+        string enemyLink = "RogueEnemyCSVFile.csv";
+        YRogue_RoomAndItemManager.Instance.ReadEnemyCSVFile(enemyLink);
     }
 
     private void ReadAllRogueLikeThings()
@@ -562,6 +572,20 @@ public class yPlanningTable : MonoBehaviour
         }
         UpdateTableList("destination",destinationList,destinationListInUI);
     }
+    
+    //rogueLike 更新角色生成位置初始为 出生房中央
+    public void UpdateCharacterGeneratePlace(int levelID,string placeName)
+    {
+        // if (CharacterGeneratePlace.Count <= levelID)
+        // {
+        //     Debug.LogError("CharacterGeneratePlace.Count <= levelID");
+        // }
+        // else
+        // {
+        //     CharacterGeneratePlace[levelID] = placeName;
+        // }
+    }
+    
     public void ReadAnimationCSV(string filePath, 
         List<string> noMoveList, List<string> noMoveListInUI, 
         List<string> moveList, List<string> moveListInUI)

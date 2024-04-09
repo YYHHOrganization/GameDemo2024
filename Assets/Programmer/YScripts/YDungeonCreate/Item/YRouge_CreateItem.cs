@@ -33,6 +33,8 @@ public class YRouge_CreateItem
     {
         //弄一个新的gameobject出来,然后把这个gameobject放到房间中间,挂上对应的脚本
         GameObject roomGameObject = new GameObject();
+        //它的名字是房间的名字
+        roomGameObject.name = roomNode.RoomType.ToString();
         roomGameObject.transform.parent = parent;
         roomGameObject.transform.position = new Vector3(
             (roomNode.BottomLeftAreaCorner.x + roomNode.TopRightAreaCorner.x) / 2, 0,
@@ -49,6 +51,10 @@ public class YRouge_CreateItem
         if(roomNode.RoomType == RoomType.BattleRoom)
         {
             roomBase = roomGameObject.AddComponent<YRouge_BattleRoom>();
+        }
+        else if(roomNode.RoomType == RoomType.BornRoom)
+        {
+            roomBase = roomGameObject.AddComponent<YRouge_BornRoom>();
         }
         else if(roomNode.RoomType == RoomType.ItemRoom)
         {

@@ -145,6 +145,8 @@ public static class YLevelManager
         YScreenPlayController.Instance.EnterNewLevel();
         
         yPlanningTable.Instance.EnterNewLevel(levelID);
+        
+        
     }
     public static void SetCurrentLevelIndex(int index)
     {

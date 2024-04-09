@@ -5,9 +5,13 @@ using UnityEngine.AddressableAssets;
 
 public class YRouge_GameRoom : YRouge_RoomBase
 {
+    
     // Start is called before the first frame update
     void Start()
     {
+        base.Start();
+        roomType = RoomType.GameRoom;
+        
         //Debug.Log(roomNode.RoomType);
         string name = "SlotMachineRouge";
         
@@ -25,9 +29,11 @@ public class YRouge_GameRoom : YRouge_RoomBase
         //         (roomNode.BottomLeftAreaCorner.y + roomNode.TopRightAreaCorner.y) / 2);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void SetResultOn()
     {
+        base.SetResultOn();
+        
         
     }
+
 }

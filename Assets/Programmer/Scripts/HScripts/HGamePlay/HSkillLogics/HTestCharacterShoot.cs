@@ -55,6 +55,7 @@ public class HTestCharacterShoot : MonoBehaviour
         stateMachine.SetInThirdPersonCamera(true);
         aimTargetReticle.gameObject.SetActive(false);
         layerMask = 1<<LayerMask.NameToLayer("Player");
+        layerMask += (1<<LayerMask.NameToLayer("IgnoreBullet"));
         layerMask=~layerMask;
         GameObject muzzle = Instantiate(muzzleToSpawn, gunTrans.position, thirdPersonFollowPlace.rotation, gunTrans);
         muzzleVFX = muzzle.GetComponent<ParticleSystem>();
@@ -243,7 +244,7 @@ public class HTestCharacterShoot : MonoBehaviour
                 rot.x -= 360;
             if (rot2.x > 180)
                 rot2.x -= 360;
-            rot.x = Mathf.Clamp(rot.x, VerticalRotMin+25, VerticalRotMax-25);
+            rot.x = Mathf.Clamp(rot.x, VerticalRotMin+35, VerticalRotMax-35);
             rot2.x = Mathf.Clamp(rot2.x, VerticalRotMin+20, VerticalRotMax-20);
             thirdPersonFollowPlace.localRotation = Quaternion.Euler(rot);
             thirdPersonCommonFollowPlace.localRotation = Quaternion.Euler(rot2);
@@ -263,7 +264,7 @@ public class HTestCharacterShoot : MonoBehaviour
             //
             float middleX = Screen.width * 0.5f;
             float middleY = Screen.height * 0.5f;
-            Ray shotRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, 0));
+            Ray shotRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, -3));
             Vector3 shotDir = shotRay.direction;
             //rotation is from gunTrans.rotation to shotDir
 
@@ -303,7 +304,7 @@ public class HTestCharacterShoot : MonoBehaviour
             {
                 for(int j=-1; j<=1; j++)
                 {
-                    Ray ray = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX + i * deltaX, middleY + j * deltaY, 0));
+                    Ray ray = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX + i * deltaX, middleY + j * deltaY, -3));
                     RaycastHit hit;
                     if(Physics.Raycast(ray, out hit, HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRange"], layerMask))
                     {
@@ -340,7 +341,7 @@ public class HTestCharacterShoot : MonoBehaviour
             //     }
             // }
             
-            Ray middleRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, 0));
+            Ray middleRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, -3));
             RaycastHit hit2;
             if (Physics.Raycast(middleRay, out hit2, 100, layerMask))
             {
@@ -372,7 +373,7 @@ public class HTestCharacterShoot : MonoBehaviour
         float middleY = Screen.height * 0.5f;
         bool hitButNoNeedHelp = false;
             
-        Ray middleRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, 0));
+        Ray middleRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, -3));
         RaycastHit hit2;
         if (Physics.Raycast(middleRay, out hit2, 100, layerMask))
         {

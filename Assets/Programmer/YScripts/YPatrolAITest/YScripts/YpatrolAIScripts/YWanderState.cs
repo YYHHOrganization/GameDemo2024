@@ -26,7 +26,8 @@ public class YWanderState : YBaseState
     }
     public override Type Tick()
     {      
-        var chaseTarget = CheckForAggro();
+        //var chaseTarget = CheckForAggro();
+        var chaseTarget = YPlayModeController.Instance.curCharacter.transform;
         if(chaseTarget)
         {
             partrolAI.setTarget(chaseTarget);
@@ -70,8 +71,9 @@ public class YWanderState : YBaseState
     //每次转换回来的时候 重新找一个目的地mDestination
     public override void OnStateEnter()
     {
-        FindRandomDis();
-        partrolAI.mNavMeshAgent.enabled = false;
+        // FindRandomDis();
+        // partrolAI.mNavMeshAgent.enabled = false;
+        
         // partrolAI.animator.SetInteger("AnimState", 0);
         // if (partrolAI.SpotLightWander) partrolAI.SpotLightWander.SetActive(true);
         // if (partrolAI.SpotLightChase) partrolAI.SpotLightChase.SetActive(false);
@@ -139,7 +141,10 @@ public class YWanderState : YBaseState
         var angle = transform.rotation * startingAngle;
         var direction = angle * Vector3.forward;
         var pos = transform.position;
-        for (var i = 0; i < 24; i++)
+        int lineCount = 1;
+        // stepAngle = Quaternion.AngleAxis(120/lineCount, Vector3.up);
+        stepAngle = Quaternion.AngleAxis(60, Vector3.up);
+        for (var i = 0; i < lineCount; i++)
         {
             if (Physics.Raycast(pos, direction, out hit,YGameSetting.AggroRadius))
             {

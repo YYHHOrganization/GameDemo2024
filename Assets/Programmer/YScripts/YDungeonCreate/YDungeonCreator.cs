@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class YDungeonCreator : MonoBehaviour
 {
@@ -37,14 +39,21 @@ public class YDungeonCreator : MonoBehaviour
     void Start()
     {
         CreateDungeon();
+        //监听是否开始新的一关
+        YTriggerEvents.OnEnterNewLevel += EnterNewLevel;
     }
 
+    void EnterNewLevel(object sender, YTriggerEventArgs e)
+    {
+        BakeNavMesh();
+    }
     
     List<YRoomNode> roomList ;
     List<YRouge_Node> corridorList ;
     public void CreateDungeon()
     {
         DestroyAllChildren();
+        
         YDungeonGenerator generator = new YDungeonGenerator(dungeonWidth, dungeonLength);
         StructWithRoomListAndCorridorList ListOfRooms = generator.CalculateRooms(
             maxIterations,
@@ -107,7 +116,16 @@ public class YDungeonCreator : MonoBehaviour
         
         //移动到（-400，0，-400）
         //transform.position = new Vector3(-400, 0, -400);
+        // BakeNavMesh();
     }
+
+    //NavMesh()
+    public NavMeshSurface surface;
+    public void BakeNavMesh()
+    {
+        surface.BuildNavMesh();
+    }
+    
 
     private void CrrateCorridorWall(Transform CorridorParent)
     {
@@ -220,7 +238,8 @@ public class YDungeonCreator : MonoBehaviour
         {
             uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
         }
-        int[] triangles = new int[] {0, 1, 2, 2, 1, 3};//三角形顶点索引,这里表示两个三角形,一个是012,另一个是213,这样就构成了一个矩形
+        // 逆时针
+        int[] triangles = new int[] { 0,1,2,2,1,3};
         Mesh mesh = new Mesh();
         mesh.vertices = vertices;
         mesh.uv = uvs;
@@ -229,9 +248,18 @@ public class YDungeonCreator : MonoBehaviour
         //it means that the mesh will be rendered with the material floorMaterial
         GameObject floor = new GameObject("Mesh"+bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
         
-        // floor.transform.position = new Vector3(0, 0, 0);
         floor.transform.position = originPosition;
         floor.transform.localScale = new Vector3(1, 1, 1);
+        
+        // floor.transform.position = new Vector3(0, 0, 0);
+        //获取中心位置
+        GameObject roomparent = room.roomScript.gameObject;
+        floor.transform.parent = roomparent.transform;
+        Vector3 meshCenterPos = new Vector3((bottomLeftCorner.x + topRightCorner.x) / 2, 0, (bottomLeftCorner.y + topRightCorner.y) / 2) + originPosition;
+        floor.transform.RotateAround( meshCenterPos, Vector3.right, 180);
+        
+        
+        //绕着自身中心点旋转180度
         floor.GetComponent<MeshFilter>().mesh = mesh;
         floor.GetComponent<MeshRenderer>().material = floorMaterial;
         floor.transform.parent = transform;

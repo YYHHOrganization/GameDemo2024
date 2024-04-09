@@ -107,6 +107,7 @@ public enum RoomType
     BossRoom,//boss房
     ItemRoom,//道具房
     ShopRoom,//商店房
+    BornRoom,//出生房
 }
 
 public struct StructWithRoomListAndCorridorList
@@ -120,3 +121,23 @@ public struct StructWithRoomListAndCorridorList
     public List<YRouge_Node> corridorList;
 }
 
+public struct RoomData
+{
+    public RoomType roomType;
+    public int roomID;
+    public List<RoomItemData> roomItemDataList;
+}
+
+public struct RoomItemData
+{
+    public int FixedItemID;
+    public int FixedItemCount;
+    public string addressableLink;
+    public string UILayoutType;
+}
+
+public struct EnemyData
+{
+    public int enemyID;
+    public string addressableLink;
+}
