@@ -21,7 +21,7 @@ public class YPatrolAI : MonoBehaviour
     //lambda表达式 传入team 传出mTeam
     public Team team => mTeam;
     public YStateMachine stateMachine => GetComponent<YStateMachine>();
-
+    
     public NavMeshAgent mNavMeshAgent;
 
     public GameObject SpotLightWander;
@@ -33,6 +33,8 @@ public class YPatrolAI : MonoBehaviour
     public GameObject DisintegrateDissolveVFX;
     
     public GameObject DieExplosionEff;
+    
+    public Action OnDie;
     private void Awake()
     {
         InitStateMachine();
@@ -77,6 +79,7 @@ public class YPatrolAI : MonoBehaviour
     public void die()
     {
         isDead = true;
+        OnDie?.Invoke();
         Destroy(gameObject, 5f);
     }
 }

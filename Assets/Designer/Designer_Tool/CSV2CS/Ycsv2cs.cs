@@ -196,7 +196,8 @@ public class Ycsv2cs : MonoBehaviour
 
             /*————————解析表格字符串————————————*/
             JsonData jsonData = new JsonData();
-            for (int i = 3; i < fileLineContent.Length - 1; i++)
+            // for (int i = 3; i < fileLineContent.Length - 1; i++)
+            for (int i = 3; i < fileLineContent.Length; i++)
             {
                 string[] lineContents = fileLineContent[i].Split(new string[] { "," }, System.StringSplitOptions.None);
                 JsonData classLine = new JsonData();

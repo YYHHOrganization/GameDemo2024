@@ -32,20 +32,69 @@ public class YRouge_BattleRoom : YRouge_RoomBase
             //曾将没有转表工具时是用的以下方法做的
             // ReadRoomItem();
             // GenerateRoomItem();
+            
+            //生成怪物
             ReadBattleRoomData();
             isFirstTimeInRoom = false;
+            SetAllDoorsUp();
+            
+            //然后应该去监听这个房间的怪是不是全死了
+            //如果全死了就把门打开
+            AddListenerOfEnemy();
             
             // SetAllDoorsUp();//第一次进入房间门会关
         }
         
-        //生成怪物
+        
         
     }
+    int dieEnemyCount = 0;
+    private void AddListenerOfEnemy()
+    {
+        dieEnemyCount = 0;
+        foreach (var enemy in enemies)
+        {
+            YPatrolAI patrolAI = enemy.GetComponent<YPatrolAI>();
+            if (patrolAI != null)
+            {
+                patrolAI.OnDie += OnEnemyDie;
+            }
+            else
+            {
+                
+            }
+            
+        }
+    }
+    
+    private void OnEnemyDie()
+    {
+        dieEnemyCount++;
+        if (dieEnemyCount == enemies.Count)
+        {
+            RoomWin();
+        }
+    }
+
+    private void RoomWin()
+    {
+        //监听关闭?但是这个房间的怪都死了 怪都被销毁了
+        
+        SetAllDoorsDown();//门打开
+        //出现宝箱,或者掉落道具等等
+        
+    }
+
 
     void ReadBattleRoomData()
     {
         //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
+        
         int randomIndex = Random.Range(0, SD_BattleRoomCSVFile.Class_Dic.Count);
+        
+        //test:全是蜘蛛
+        randomIndex = 3;//test!!!后面记得关掉
+        
         Class_BattleRoomCSVFile battleRoomData = SD_BattleRoomCSVFile.Class_Dic["6662000"+randomIndex];
 
         //70000000;70000001
@@ -56,7 +105,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         string[] enemyCounts = battleRoomData._EnemyCountField().Split(';');
         for (int i =0;i<enemyCounts.Length;i++)
         {
-            string[] enemyCountRange = enemyCounts[i].Split('.');
+            string[] enemyCountRange = enemyCounts[i].Split(':');
             int minCount = int.Parse(enemyCountRange[0]);
             int maxCount = int.Parse(enemyCountRange[1]);
             int enemyCount = Random.Range(minCount, maxCount);
@@ -66,7 +115,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
                 //一只只生成这个怪
                 string enemyID = enemyIDs[i];
                 string EnemyAddressLink = SD_RogueEnemyCSVFile.Class_Dic[enemyID].addressableLink;
-                GameObject enemy = Instantiate(Resources.Load<GameObject>(EnemyAddressLink));
+                GameObject enemy = Addressables.InstantiateAsync(EnemyAddressLink, transform).WaitForCompletion();
                 enemy.transform.parent = EnemyParent.transform;
                 enemy.transform.position = transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
                 enemies.Add(enemy);
