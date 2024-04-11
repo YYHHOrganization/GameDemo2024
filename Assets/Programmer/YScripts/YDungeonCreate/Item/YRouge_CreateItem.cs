@@ -71,7 +71,7 @@ public class YRouge_CreateItem
         else
         {
             //默认战斗房间 没做的先战斗吧
-            roomBase = roomGameObject.AddComponent<YRouge_BattleRoom>();
+            roomBase = roomGameObject.AddComponent<YRouge_ItemRoom>();
         }
         //相互赋值
         if(roomBase != null)

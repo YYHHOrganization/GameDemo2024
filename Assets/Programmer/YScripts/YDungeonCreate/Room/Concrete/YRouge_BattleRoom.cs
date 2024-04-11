@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,12 +6,13 @@ using UnityEngine.AddressableAssets;
 
 public class YRouge_BattleRoom : YRouge_RoomBase
 {
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        base.Start();
         roomType = RoomType.BattleRoom;
+        base.Start();
+        
     }
     bool isFirstTimeInRoom = true;
     public override void SetResultOn()

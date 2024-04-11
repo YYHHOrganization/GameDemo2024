@@ -200,12 +200,31 @@ public class HRougeAttributeManager : MonoBehaviour
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
     }
+    public void RollingARandomItem(Transform transform,Vector3 biasposition)
+    {
+        int index = UnityEngine.Random.Range(0, yPlanningTable.Instance.rogueItemBases.Count);
+        string itemId = yPlanningTable.Instance.rogueItemKeys[index];
+        RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
+        string itemPrefabLink = rogueItemBaseAttribute.rogueItemPrefabLink;
+        GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
+        item.transform.position += biasposition;
+        item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
+    }
+    
 
-    private void GiveOutAnFixedItem(string itemId)
+    public void GiveOutAnFixedItem(string itemId)
     {
         RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
         string itemPrefabLink = rogueItemBaseAttribute.rogueItemPrefabLink;
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, player.transform).WaitForCompletion();
+        item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
+    }
+    public void GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition)
+    {
+        RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
+        string itemPrefabLink = rogueItemBaseAttribute.rogueItemPrefabLink;
+        GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
+        item.transform.position += biasposition;
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
     }
 

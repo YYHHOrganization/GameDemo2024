@@ -39,7 +39,8 @@ public class YRouge_RoomBase : MonoBehaviour
     public void Start()
     {
         SetAllDoorsPosition();
-        
+
+        GenerateIcon();
         
         //在房间中心生成一个trigger，当玩家进入这个trigger的时候，房间的逻辑就会被激活
         // GameObject trigger = new GameObject();
@@ -53,6 +54,21 @@ public class YRouge_RoomBase : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("IgnoreBullet");
         
     }
+
+    private void GenerateIcon()
+    {
+        //YmapBattleRoomIcon
+        string Link = "YmapIcon_"+roomType.ToString();
+        var op = Addressables.LoadAssetAsync<GameObject>(Link);
+        GameObject go = op.WaitForCompletion() as GameObject;
+        if (go == null)
+        {
+            return;
+        }
+        GameObject iconGo = Instantiate(go, transform);
+        iconGo.transform.parent = transform;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

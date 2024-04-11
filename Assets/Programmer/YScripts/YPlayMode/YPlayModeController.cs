@@ -131,6 +131,18 @@ public class YPlayModeController : MonoBehaviour
             var op = Addressables.LoadAssetAsync<RuntimeAnimatorController>("rogueLikeAnimatorController");
             RuntimeAnimatorController go = op.WaitForCompletion() as RuntimeAnimatorController;
             curCharacter.GetComponent<Animator>().runtimeAnimatorController = go;
+            
+            
+            GameObject RogueLittleMapCamera = Addressables.LoadAssetAsync<GameObject>("YLittleMapCamera").WaitForCompletion();
+            GameObject LittleMapCamera = Instantiate(RogueLittleMapCamera);
+            
+            CameraLayoutManager.puppetCamera = LittleMapCamera.GetComponent<Camera>();
+            CameraLayoutManager.SetLittleMapCameraLittle();
+            
+            //将人物icon加到角色身上
+            //YmapCharacterIcon
+            GameObject mapCharacterIcon = Addressables.LoadAssetAsync<GameObject>("YmapCharacterIcon").WaitForCompletion();
+            GameObject mapCharacterIconGo = Instantiate(mapCharacterIcon, player.transform);
         }
         else
         {
