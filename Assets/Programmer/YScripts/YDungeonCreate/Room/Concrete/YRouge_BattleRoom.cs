@@ -8,12 +8,17 @@ using Debug = UnityEngine.Debug;
 public class YRouge_BattleRoom : YRouge_RoomBase
 {
 
+    List<GameObject> enemies = new List<GameObject>();
+    GameObject EnemyParent;
     // Start is called before the first frame update
     void Start()
     {
         roomType = RoomType.BattleRoom;
         base.Start();
         
+        EnemyParent = new GameObject();
+        EnemyParent.transform.parent = transform;
+        EnemyParent.name = "EnemyParent";
     }
     bool isFirstTimeInRoom = true;
     public override void SetResultOn()
@@ -43,7 +48,34 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         int randomIndex = Random.Range(0, SD_BattleRoomCSVFile.Class_Dic.Count);
         Class_BattleRoomCSVFile battleRoomData = SD_BattleRoomCSVFile.Class_Dic["6662000"+randomIndex];
 
-        string enemyIDs = battleRoomData._EnemyIDField();
+        //70000000;70000001
+        string[] enemyIDs = battleRoomData._EnemyIDField().Split(';');
+        
+        
+        //0.4;9.15 怪物个数/对应前面那个/0.4;9.15的意思是这种怪可能会出现从0-4的个数
+        string[] enemyCounts = battleRoomData._EnemyCountField().Split(';');
+        for (int i =0;i<enemyCounts.Length;i++)
+        {
+            string[] enemyCountRange = enemyCounts[i].Split('.');
+            int minCount = int.Parse(enemyCountRange[0]);
+            int maxCount = int.Parse(enemyCountRange[1]);
+            int enemyCount = Random.Range(minCount, maxCount);
+            
+            for (int j = 0; j < enemyCount; j++)
+            {
+                //一只只生成这个怪
+                string enemyID = enemyIDs[i];
+                string EnemyAddressLink = SD_RogueEnemyCSVFile.Class_Dic[enemyID].addressableLink;
+                GameObject enemy = Instantiate(Resources.Load<GameObject>(EnemyAddressLink));
+                enemy.transform.parent = EnemyParent.transform;
+                enemy.transform.position = transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
+                enemies.Add(enemy);
+                
+                //生成怪物
+                // HRougeAttributeManager.Instance.GenerateEnemy(enemyIDs[randomEnemyIndex], transform);
+            }
+        }
+        
         
     }
     
