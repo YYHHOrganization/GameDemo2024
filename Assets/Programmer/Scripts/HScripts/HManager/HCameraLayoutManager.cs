@@ -48,6 +48,18 @@ public class HCameraLayoutManager : MonoBehaviour
         var camera = puppetCamera.gameObject.GetComponent<Camera>();
         camera.depth = 0.2f;
     }
+    
+    public void SetLittleMapCameraLittle()
+    {
+        playerCamera.gameObject.SetActive(true);
+        puppetCamera.gameObject.SetActive(true);
+        
+        SetPlayerOutputViewportRect(0,0,1,1);
+        SetPuppetOutputViewportRect(0.82f,0.7f,0.3f,0.3f);
+        
+        var camera = puppetCamera.gameObject.GetComponent<Camera>();
+        camera.depth = 0.2f;
+    }
 
     private void Awake()
     {

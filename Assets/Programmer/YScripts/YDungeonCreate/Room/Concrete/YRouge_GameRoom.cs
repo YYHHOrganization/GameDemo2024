@@ -9,8 +9,9 @@ public class YRouge_GameRoom : YRouge_RoomBase
     // Start is called before the first frame update
     void Start()
     {
-        base.Start();
         roomType = RoomType.GameRoom;
+        base.Start();
+        
         
         //Debug.Log(roomNode.RoomType);
         string name = "SlotMachineRouge";

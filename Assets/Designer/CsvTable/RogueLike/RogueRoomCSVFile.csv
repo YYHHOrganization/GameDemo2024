@@ -1,7 +1,7 @@
 ﻿ID号,房间类型,房间名称,房间内容来源表,房间内容,物品ID,房间固定开出物品ID,房间固定开出物品数量
 ID,房间,RoomName,SourceType,RoomContent,ItemID,FixedItemID,FixedItemCount
 房间类型ID为66600xxx,对应那个enum，后面还可以引入别的,,"","a:b:c|表示对应后面的物品ID,从索引a到索引a+b，抽取c个作为奖励",后面用:表示数量,用英文分号分隔,用英文分号分隔
-66600000,BattleRoom,战斗房,RogueEnemyCSVFile.csv,0:0:0,"",70000000,20
+66600000,BattleRoom,战斗房,RogueEnemyCSVFile.csv,0:0:0,"",70000000,4
 66600001,ChallengeRoom,挑战房,0:0:0,0:0:0,"",70000000,6
 66600002,AdventureRoom,冒险房,0:0:0,0:0:0,"",-1,-1
 66600003,GameRoom,游戏机房,0:0:0,0:0:0,"",70000002,1
