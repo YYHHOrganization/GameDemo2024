@@ -1,8 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Debug = UnityEngine.Debug;
 
 public class YRouge_BattleRoom : YRouge_RoomBase
 {
@@ -23,8 +24,10 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         //如果不是第一次进这个房间就不生成怪物
         if (isFirstTimeInRoom)
         {
-            ReadRoomItem();
-            GenerateRoomItem();
+            //曾将没有转表工具时是用的以下方法做的
+            // ReadRoomItem();
+            // GenerateRoomItem();
+            ReadBattleRoomData();
             isFirstTimeInRoom = false;
             
             // SetAllDoorsUp();//第一次进入房间门会关
@@ -34,5 +37,14 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         
     }
 
+    void ReadBattleRoomData()
+    {
+        //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
+        int randomIndex = Random.Range(0, SD_BattleRoomCSVFile.Class_Dic.Count);
+        Class_BattleRoomCSVFile battleRoomData = SD_BattleRoomCSVFile.Class_Dic["6662000"+randomIndex];
+
+        string enemyIDs = battleRoomData._EnemyIDField();
+        
+    }
     
 }
