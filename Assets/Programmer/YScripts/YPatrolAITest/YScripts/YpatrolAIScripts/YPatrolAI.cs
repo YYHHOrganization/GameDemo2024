@@ -78,6 +78,7 @@ public class YPatrolAI : MonoBehaviour
     //还有个beattack 先弄个一击必杀吧
     public void die()
     {
+        if(isDead)return;
         isDead = true;
         OnDie?.Invoke();
         Destroy(gameObject, 5f);

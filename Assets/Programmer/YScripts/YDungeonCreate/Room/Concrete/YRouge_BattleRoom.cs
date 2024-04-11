@@ -61,7 +61,8 @@ public class YRouge_BattleRoom : YRouge_RoomBase
             }
             else
             {
-                
+                HRogueEnemyPatrolAI hRogueEnemyPatrolAI = enemy.GetComponent<HRogueEnemyPatrolAI>();
+                hRogueEnemyPatrolAI.OnDie += OnEnemyDie;
             }
             
         }
@@ -93,7 +94,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         int randomIndex = Random.Range(0, SD_BattleRoomCSVFile.Class_Dic.Count);
         
         //test:全是蜘蛛
-        randomIndex = 3;//test!!!后面记得关掉
+        // randomIndex = 3;//test!!!后面记得关掉
         
         Class_BattleRoomCSVFile battleRoomData = SD_BattleRoomCSVFile.Class_Dic["6662000"+randomIndex];
 

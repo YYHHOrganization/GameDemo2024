@@ -73,6 +73,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     public Image enemyHealthImage;
 
+    public Action OnDie;
+
     private void Awake()
     {
         InitStateMachine();
@@ -267,7 +269,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             Destroy(this.gameObject, 1f);
         };
         
-        
+        OnDie?.Invoke();
         
     }
 }
