@@ -27,7 +27,12 @@ public class YWanderState : YBaseState
     public override Type Tick()
     {      
         //var chaseTarget = CheckForAggro();
-        var chaseTarget = YPlayModeController.Instance.curCharacter.transform;
+        Transform chaseTarget=null;
+        if (YPlayModeController.Instance.curCharacter)
+        {
+            chaseTarget = YPlayModeController.Instance.curCharacter.transform;
+        }
+     
         if(chaseTarget)
         {
             partrolAI.setTarget(chaseTarget);
