@@ -21,5 +21,10 @@ public class Class_RogueEnemyCSVFile {
 		string value = addressableLink;
 		return value;
 	}
+	public string RogueEnemyWanderType { get; set; }    //敌人巡逻类型
+	  public string _RogueEnemyWanderType (){
+		string value = RogueEnemyWanderType;
+		return value;
+	}
 	}
 	
