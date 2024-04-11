@@ -52,7 +52,7 @@ public class YRouge_ItemRoom : YRouge_RoomBase
             for (int i = 0; i < itemCount; i++)
             {
                 int randomItemIndex = Random.Range(0, itemIDList.Count);
-                HRougeAttributeManager.Instance.GiveOutAnFixedItem(itemIDList[randomItemIndex], transform,itemPosition[i]+new Vector3(0,0.3f,0));
+                HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(itemIDList[randomItemIndex], transform,itemPosition[i]+new Vector3(0,0.3f,0));
                 itemIDList.RemoveAt(randomItemIndex);
                 GenerateEffPlatform(transform,itemPosition[i]);
             }
@@ -65,7 +65,7 @@ public class YRouge_ItemRoom : YRouge_RoomBase
     {
         for (int i = 0; i < itemCount; i++)
         {
-            HRougeAttributeManager.Instance.RollingARandomItem(transform,itemPosition[i]+new Vector3(0,0.3f,0));
+            HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform,itemPosition[i]+new Vector3(0,0.3f,0));
             GenerateEffPlatform(transform,itemPosition[i]);
         }
     }
@@ -131,7 +131,7 @@ public class YRouge_ItemRoom : YRouge_RoomBase
     {
         // 66610003
         Class_ItemRoomCSVFile itemRoomData = SD_ItemRoomCSVFile.Class_Dic["66610003"];
-        HRougeAttributeManager.Instance.GiveOutAnFixedItem(itemRoomData.ItemIDField, transform,new Vector3(0,0.3f,0));
+        HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(itemRoomData.ItemIDField, transform,new Vector3(0,0.3f,0));
     }
 
     // Update is called once per frame

@@ -33,6 +33,9 @@ public class HRogueEnemyCommonWanderState : HRogueEnemyBaseState
             mPatrolAI.StopAllCoroutines();
             return typeof(HRogueEnemyCommonChaseState);
         }
+        
+        if (mPatrolAI.isDead)
+            return null;
 
         return null;
     }

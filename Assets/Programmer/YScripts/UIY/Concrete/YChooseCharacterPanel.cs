@@ -48,7 +48,7 @@ public class YChooseCharacterPanel : BasePanel
             }
             else
             {
-                HRougeAttributeManager.Instance.PushAttributePanel();
+                HRoguePlayerAttributeAndItemManager.Instance.PushAttributePanel();
             }
                 
             //销毁YChooseCharacterShowPlace

@@ -12,8 +12,8 @@ public class HBulletMoveBase : MonoBehaviour
     void Start()
     {
         originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        bulletRange = HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRange"];
-        speed = HRougeAttributeManager.Instance.characterValueAttributes["RogueBulletSpeed"];
+        bulletRange = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRange"];
+        speed = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueBulletSpeed"];
     }
 
     void Update()
@@ -54,7 +54,7 @@ public class HBulletMoveBase : MonoBehaviour
             }
             
         }
-        else if(Tag == "Enemy")
+        else if (Tag == "Enemy")
         {
             Debug.Log("Shhhhhhhhhhh");
             //hitObject.GetComponent<YHandleHitPuppet>().HandleHitPuppet();
@@ -63,6 +63,12 @@ public class HBulletMoveBase : MonoBehaviour
             {
                 patrolAI.die();
                 //todo:写一个伤害的函数
+            }
+
+            HRogueEnemyPatrolAI enemyPatrolAI = co.gameObject.GetComponentInParent<HRogueEnemyPatrolAI>();
+            if (enemyPatrolAI != null)
+            {
+                enemyPatrolAI.ChangeHealth(-(int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterCurDamage"]);
             }
         }
 

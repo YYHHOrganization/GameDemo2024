@@ -21,8 +21,8 @@ public class HSlotMachineBase : MonoBehaviour
     
     void Start()
     {
-        slotsRoot = GameObject.Find("Slots");
-        rotateHand = GameObject.Find("RotateHand");
+        slotsRoot = transform.Find("Slots").gameObject;
+        rotateHand = transform.Find("RotateHand").gameObject;
         animator = GetComponent<Animator>();
         shakeHash = Animator.StringToHash("isShaking");
         for(int i = 0; i < slotsRoot.gameObject.transform.childCount; i++)

@@ -21,10 +21,10 @@ public class HRogueItemBase : MonoBehaviour
     {
         itemId = id;
         rogueItemBaseAttribute = rogueItemAttribute;
-        getUI = GetComponentInChildren<Canvas>().gameObject;
+        getUI = transform.Find("ShowCanvas/Panel").gameObject;
         getUI.gameObject.SetActive(false);
         isPickedUp = false;
-        itemChineseName = getUI.transform.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+        itemChineseName = getUI.transform.GetChild(1).GetComponent<TMP_Text>();
     }
 
     protected virtual void GetToBagAndShowEffects()
@@ -62,7 +62,7 @@ public class HRogueItemBase : MonoBehaviour
         string[] paramList = funcParams.Split(';');
         string attributeName = (string)paramList[0];
         float attributeValue = float.Parse(paramList[1]);
-        HRougeAttributeManager.Instance.AddAttributeValue(attributeName, attributeValue);
+        HRoguePlayerAttributeAndItemManager.Instance.AddAttributeValue(attributeName, attributeValue);
         this.gameObject.SetActive(false);
         Destroy(this.gameObject, 0.5f);
     }
@@ -73,7 +73,7 @@ public class HRogueItemBase : MonoBehaviour
         string[] paramList = funcParams.Split(';');
         string attributeName = (string)paramList[0];
         int attributeValue = int.Parse(paramList[1]);
-        if (HRougeAttributeManager.Instance.AddHeartOrShield(attributeName, attributeValue))
+        if (HRoguePlayerAttributeAndItemManager.Instance.AddHeartOrShield(attributeName, attributeValue))
         {
             this.gameObject.SetActive(false);
             Destroy(this.gameObject, 0.5f);
@@ -84,7 +84,7 @@ public class HRogueItemBase : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            getUI.GetComponentInChildren<HRotateToPlayerCamera>().enabled = true;
+            getUI.GetComponentInParent<HRotateToPlayerCamera>().enabled = true;
             getUI.gameObject.SetActive(true);
             if (itemChineseName)
             {
