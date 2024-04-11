@@ -5,7 +5,7 @@ using UnityEngine;
 public class HEnemyBulletMoveBase : MonoBehaviour
 {
     public float bulletSpeed;
-    public float bulletDamage;
+    public int bulletDamage;
     public float bulletRange;
     private Vector3 originPos;
     public GameObject hitPrefab;
@@ -20,7 +20,7 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         {
             if (hasShootTarget && shootTarget != null)
             {
-                transform.LookAt(shootTarget);
+                transform.LookAt(new Vector3(shootTarget.position.x, 0, shootTarget.position.z));
                 transform.position += transform.forward * (bulletSpeed * Time.deltaTime);
             }
             else
@@ -70,14 +70,8 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         }
         else if(Tag == "Player")  //子弹打到了Player，给Player传递伤害
         {
-            Debug.Log("Shhhhhhhhhhh");
-            //hitObject.GetComponent<YHandleHitPuppet>().HandleHitPuppet();
-            YPatrolAI patrolAI = co.gameObject.GetComponentInParent<YPatrolAI>();
-            if (patrolAI != null)
-            {
-                patrolAI.die();
-                //todo:写一个伤害的函数
-            }
+            //bulletDamage 是伤害，要把伤害传递给角色
+            HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(-bulletDamage);
         }
 
         if(hitPrefab != null)

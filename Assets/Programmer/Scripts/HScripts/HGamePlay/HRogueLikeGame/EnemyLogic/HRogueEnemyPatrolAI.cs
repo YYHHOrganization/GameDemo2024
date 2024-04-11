@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class HRogueEnemyPatrolAI : MonoBehaviour
@@ -52,20 +54,24 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     
     [Header("Chase状态下的参数")] 
     public float chaseNoTargetWaitMaxTime = 5f; //角色离开范围多少秒后，怪物会返回Wander状态
-    public int shootBulletDamage = 1;
     
     [Header("Attack状态下的参数")] 
     public float attackRange = 1f;
     public int enemyDamage = 2;
     public float bulletChaseShootInterval = 1f;
-    
+
+    [Header("其他属性面板")] public int health = 5;
 
     # endregion
 
     private int isWalkingHash;
     private int isAttackingHash;
+    private int isDeadHash;
     public int IsAttackingHash => isAttackingHash;
     private Transform shootOrigin;
+    private int maxHealth;
+
+    public Image enemyHealthImage;
 
     private void Awake()
     {
@@ -74,11 +80,13 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         mNavMeshAgent = GetComponent<NavMeshAgent>();
         isWalkingHash = Animator.StringToHash("isWalking");
         isAttackingHash = Animator.StringToHash("isAttacking");
+        isDeadHash = Animator.StringToHash("isDead");
         shootOrigin = transform.Find("ShootOrigin");
         if(bulletPrefabLink!=null)
             bulletPrefab = Addressables.LoadAssetAsync<GameObject>(bulletPrefabLink).WaitForCompletion();
         string wanderType1 = SD_RogueEnemyCSVFile.Class_Dic["70000001"].RogueEnemyWanderType;
         wanderType = (RogueEnemyWanderType)Enum.Parse(typeof(RogueEnemyWanderType), wanderType1);
+        maxHealth = health;
     }
     
 
@@ -127,12 +135,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         //wanderType = Enum.Parse(SD_RogueEnemyCSVFile.Class_Dic["70000001"].RogueEnemyWanderType));
         
     }
-
-    public void die()
-    {
-        isDead = true;
-        Destroy(gameObject, 5f);
-    }
+    
 
     public void EnemyMoveRandomly()
     {
@@ -221,6 +224,51 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
                     yield return new WaitForSeconds(bulletShootInterval);
             }
         }
+    }
+
+    private void UpdateEnemyHeathAndShieldUI()
+    {
+        //enemyHealthImage.fillAmount
+        if (enemyHealthImage)
+        {
+            enemyHealthImage.fillAmount = health * 1.0f / maxHealth;
+        }
+    }
+
+    public void ChangeHealth(int value)
+    {
+        health += value;
+        UpdateEnemyHeathAndShieldUI();
+        if (health <= 0 && !isDead)
+        {
+            SetEnemyDie();
+            isDead = true;
+        }
+        else if (health > maxHealth)
+        {
+            health = maxHealth;
+        }
+    }
+
+    private void SetEnemyDie()
+    {
+        Debug.Log("You should really die!!!!");
+        StopAllCoroutines();
+        animator.SetBool(isDeadHash, true);
+        mNavMeshAgent.enabled = false;
+        GameObject mesh = Mesh;
+        DissolvingControllery dissolving = mesh.GetComponent<DissolvingControllery>();
+        dissolving.SetMaterialsPropAndBeginDissolve(mesh,1f);
+        HRogueCameraManager.Instance.ShakeCamera(15f, 0.1f);
+        DisintegrateDissolveVFX.SetActive(true);
+        DieExplosionEff.SetActive(true);
+        transform.DOScale(0.01f, 0.8f).SetEase(Ease.InExpo).onComplete = () =>
+        {
+            Destroy(this.gameObject, 1f);
+        };
+        
+        
+        
     }
 }
 

@@ -7,21 +7,22 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-public class HRougeAttributeManager : MonoBehaviour
+public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 {
     //单例模式
-    private static HRougeAttributeManager _instance;
+    private static HRoguePlayerAttributeAndItemManager _instance;
     private HRoguePlayerAttributePanel attributePanel;
     private int characterIndex;
     private Sprite characterIcon;
     private GameObject player;
-    public static HRougeAttributeManager Instance
+    private Camera camera;
+    public static HRoguePlayerAttributeAndItemManager Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = FindObjectOfType<HRougeAttributeManager>();
+                _instance = FindObjectOfType<HRoguePlayerAttributeAndItemManager>();
             }
 
             return _instance;
@@ -56,6 +57,7 @@ public class HRougeAttributeManager : MonoBehaviour
         characterValueAttributes.Add("RogueXingqiong", characterBaseAttribute.rogueStartXingqiong);
         characterValueAttributes.Add("RogueXinyongdian", characterBaseAttribute.rogueStartXinyongdian);
         characterValueAttributes.Add("RogueCharacterHealthUpperBound", characterBaseAttribute.rogueCharacterHealthUpperBoundBase);
+        characterValueAttributes.Add("RogueCharacterCurDamage", characterBaseAttribute.rogueBulletDamage);
         characterBaseWeapon = characterBaseAttribute.RogueCharacterBaseWeapon;
         characterIndex = index;
         this.player = player;
@@ -107,6 +109,12 @@ public class HRougeAttributeManager : MonoBehaviour
         {
             characterValueAttributes[name] = 1.0f;
         }
+
+        //todo:未来的可扩展性，比如说有的角色的伤害是根据当前的血量来决定的，那么这里就要做一些特残的处理
+        if (name == "RogueBulletDamage")
+        {
+            characterValueAttributes["RogueCharacterCurDamage"] = characterValueAttributes[name];
+        }
         UpdateEverythingInAttributePanel();
     }
 
@@ -138,6 +146,15 @@ public class HRougeAttributeManager : MonoBehaviour
     
     #endregion
 
+
+    public void ChangeHealth(int value)
+    {
+        if (value < 0)
+        {
+            HRogueCameraManager.Instance.ShakeCamera(10,0.2f);
+        }
+        AddHeartOrShield("Health", value);
+    }
     public bool AddHeartOrShield(string name, int value)
     {
         //暂时逻辑简单起见，道具直接销毁，不考虑血量到上限的时候捡不起来，默认都能捡起来
@@ -184,10 +201,15 @@ public class HRougeAttributeManager : MonoBehaviour
         UpdateEverythingInAttributePanel();
         if(characterValueAttributes["RogueCharacterHealth"] <= 0 || characterValueAttributes["RogueCharacterHealthUpperBound"] <= 0)
         {
-            Debug.Log("You died!");
+            SetPlayerDie();
         }
         
         return true;
+    }
+
+    private void SetPlayerDie()
+    {
+        player.GetComponent<HPlayerStateMachine>().IsDie = true;
     }
 
     //随机roll出一个道具，指定其父节点（也就算是生成位置）
@@ -267,6 +289,12 @@ public class HRougeAttributeManager : MonoBehaviour
         player.transform.DOLocalRotate(new Vector3(180, 0, 0), 2f, RotateMode.LocalAxisAdd);
         yield return new WaitForSeconds(lastTime);
         player.transform.DOLocalRotate(new Vector3(180, 0, 0), 2f, RotateMode.LocalAxisAdd);
+    }
+
+    
+    public void ShakeCameraWithProperties()
+    {
+        
     }
 
 }

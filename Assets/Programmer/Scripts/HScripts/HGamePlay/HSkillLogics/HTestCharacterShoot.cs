@@ -76,12 +76,12 @@ public class HTestCharacterShoot : MonoBehaviour
 
     public void SetCharacterAttribute()
     {
-        if (HRougeAttributeManager.Instance.characterValueAttributes.ContainsKey("RogueMoveSpeed"))
+        if (HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes.ContainsKey("RogueMoveSpeed"))
         {
             stateMachine = gameObject.GetComponent<HPlayerStateMachine>();
-            stateMachine.SetRunMultiplierSpeed(HRougeAttributeManager.Instance.characterValueAttributes["RogueMoveSpeed"]);
-            shootRate = 1.0f / HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRate"];
-            shootRange = HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRange"];
+            stateMachine.SetRunMultiplierSpeed(HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueMoveSpeed"]);
+            shootRate = 1.0f / HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRate"];
+            shootRange = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRange"];
             Debug.Log("SHOOTRATE!!!" + shootRate);
         }
     }
@@ -306,7 +306,7 @@ public class HTestCharacterShoot : MonoBehaviour
                 {
                     Ray ray = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX + i * deltaX, middleY + j * deltaY, -3));
                     RaycastHit hit;
-                    if(Physics.Raycast(ray, out hit, HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRange"], layerMask))
+                    if(Physics.Raycast(ray, out hit, HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRange"], layerMask))
                     {
                         //Debug.Log(hit.collider.gameObject.name);
                         if (hit.collider.gameObject.CompareTag("Enemy"))
@@ -352,7 +352,7 @@ public class HTestCharacterShoot : MonoBehaviour
                 }
             }
             ShootBulletFromMuzzle(needShootHelp,hitButNoNeedHelp,hitPosition);
-            yield return new WaitForSeconds(1.0f/HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRate"]);
+            yield return new WaitForSeconds(1.0f/HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRate"]);
         }
         
     }

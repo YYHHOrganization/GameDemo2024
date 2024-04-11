@@ -84,7 +84,7 @@ public class HBagPanelBaseLogic : MonoBehaviour
             {
                 if (nowClickItemId!=null)
                 {
-                    HRougeAttributeManager.Instance.UsePositiveItem(nowClickItemId);
+                    HRoguePlayerAttributeAndItemManager.Instance.UsePositiveItem(nowClickItemId);
                     HItemCounter.Instance.RemoveItemInRogue(nowClickItemId, 1);
                     RefleshBagPanel();
                 }

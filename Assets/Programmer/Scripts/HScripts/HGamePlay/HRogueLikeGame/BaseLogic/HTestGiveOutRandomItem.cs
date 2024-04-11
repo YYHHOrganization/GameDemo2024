@@ -16,6 +16,6 @@ public class HTestGiveOutRandomItem : MonoBehaviour
 
     private void GiveOutARandomItem()
     {
-        HRougeAttributeManager.Instance.RollingARandomItem(this.transform.GetChild(0).transform);
+        HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(this.transform.GetChild(0).transform);
     }
 }

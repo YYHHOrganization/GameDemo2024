@@ -13,7 +13,14 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
     
     public override Type Tick()
     {
-        mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
+        if (mPatrolAI.mNavMeshAgent.enabled)
+        {
+            mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
+        }
+
+        if (mPatrolAI.isDead)
+            return null;
+        
         // /transform.LookAt(patrolAI.mTarget);
         // //transform.Translate(Vector3.forward*Time.deltaTime*YGameSetting.PatrolAISpeed);
         //

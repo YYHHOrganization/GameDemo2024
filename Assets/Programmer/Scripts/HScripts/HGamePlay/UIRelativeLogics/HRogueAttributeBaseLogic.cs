@@ -31,9 +31,9 @@ public class HRogueAttributeBaseLogic : MonoBehaviour
 
     private void Start()
     {
-        if (HRougeAttributeManager.Instance.GetCharacterIcon())
+        if (HRoguePlayerAttributeAndItemManager.Instance.GetCharacterIcon())
         {
-            characterIcon.sprite = HRougeAttributeManager.Instance.GetCharacterIcon();
+            characterIcon.sprite = HRoguePlayerAttributeAndItemManager.Instance.GetCharacterIcon();
         }
         
     }
@@ -45,21 +45,21 @@ public class HRogueAttributeBaseLogic : MonoBehaviour
 
     public void SetRogueAttributeText()
     {
-        shootRangeText.text = HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRange"].ToString();
-        shootRateText.text = HRougeAttributeManager.Instance.characterValueAttributes["RogueShootRate"].ToString();
-        bulletDamageText.text = HRougeAttributeManager.Instance.characterValueAttributes["RogueBulletDamage"].ToString();
-        moveSpeedText.text = HRougeAttributeManager.Instance.characterValueAttributes["RogueMoveSpeed"].ToString();
-        bulletSpeed.text = HRougeAttributeManager.Instance.characterValueAttributes["RogueBulletSpeed"].ToString();
-        xingqiongText.text = HRougeAttributeManager.Instance.characterValueAttributes["RogueXingqiong"].ToString();
-        xinyongdianText.text = HRougeAttributeManager.Instance.characterValueAttributes["RogueXinyongdian"].ToString();
+        shootRangeText.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRange"].ToString();
+        shootRateText.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRate"].ToString();
+        bulletDamageText.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueBulletDamage"].ToString();
+        moveSpeedText.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueMoveSpeed"].ToString();
+        bulletSpeed.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueBulletSpeed"].ToString();
+        xingqiongText.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXingqiong"].ToString();
+        xinyongdianText.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXinyongdian"].ToString();
     }
 
     public void SetHealthAndShieldOnUI()
     {
-        int health = (int)HRougeAttributeManager.Instance.characterValueAttributes["RogueCharacterHealth"];
-        int shield = (int)HRougeAttributeManager.Instance.characterValueAttributes["RogueCharacterShield"];
+        int health = (int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterHealth"];
+        int shield = (int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterShield"];
         int healthUpperBound =
-            (int)HRougeAttributeManager.Instance.characterValueAttributes["RogueCharacterHealthUpperBound"];
+            (int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterHealthUpperBound"];
         //all set false
         for (int i = 0; i < heartAndShieldPanel.childCount; i++)
         {

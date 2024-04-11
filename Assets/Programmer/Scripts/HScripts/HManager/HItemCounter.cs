@@ -103,13 +103,13 @@ public class HItemCounter : MonoBehaviour
         }
         if(itemId == "20000012")
         {
-            HRougeAttributeManager.Instance.characterValueAttributes["RogueXingqiong"] = worldItemCounts[itemId];
-            HRougeAttributeManager.Instance.UpdateEverythingInAttributePanel();
+            HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXingqiong"] = worldItemCounts[itemId];
+            HRoguePlayerAttributeAndItemManager.Instance.UpdateEverythingInAttributePanel();
         }
         else if(itemId == "20000013")
         {
-            HRougeAttributeManager.Instance.characterValueAttributes["RogueXinyongdian"] = worldItemCounts[itemId];
-            HRougeAttributeManager.Instance.UpdateEverythingInAttributePanel();
+            HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXinyongdian"] = worldItemCounts[itemId];
+            HRoguePlayerAttributeAndItemManager.Instance.UpdateEverythingInAttributePanel();
         }
         
     }
@@ -121,13 +121,13 @@ public class HItemCounter : MonoBehaviour
             worldItemCounts[itemId] -= count;
             if(itemId == "20000012")
             {
-                HRougeAttributeManager.Instance.characterValueAttributes["RogueXingqiong"] = worldItemCounts[itemId];
-                HRougeAttributeManager.Instance.UpdateEverythingInAttributePanel();
+                HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXingqiong"] = worldItemCounts[itemId];
+                HRoguePlayerAttributeAndItemManager.Instance.UpdateEverythingInAttributePanel();
             }
             else if(itemId == "20000013")
             {
-                HRougeAttributeManager.Instance.characterValueAttributes["RogueXinyongdian"] = worldItemCounts[itemId];
-                HRougeAttributeManager.Instance.UpdateEverythingInAttributePanel();
+                HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXinyongdian"] = worldItemCounts[itemId];
+                HRoguePlayerAttributeAndItemManager.Instance.UpdateEverythingInAttributePanel();
             }
             if (worldItemCounts[itemId] <= 0)
             {
