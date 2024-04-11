@@ -77,6 +77,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         shootOrigin = transform.Find("ShootOrigin");
         if(bulletPrefabLink!=null)
             bulletPrefab = Addressables.LoadAssetAsync<GameObject>(bulletPrefabLink).WaitForCompletion();
+        string wanderType1 = SD_RogueEnemyCSVFile.Class_Dic["70000001"].RogueEnemyWanderType;
+        wanderType = (RogueEnemyWanderType)Enum.Parse(typeof(RogueEnemyWanderType), wanderType1);
     }
     
 
@@ -121,6 +123,9 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     public void AttackFunc()
     {
         //todo:已经打到玩家了，玩家扣血
+
+        //wanderType = Enum.Parse(SD_RogueEnemyCSVFile.Class_Dic["70000001"].RogueEnemyWanderType));
+        
     }
 
     public void die()
