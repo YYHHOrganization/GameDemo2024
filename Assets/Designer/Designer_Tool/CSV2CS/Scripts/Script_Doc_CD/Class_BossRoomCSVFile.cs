@@ -21,5 +21,15 @@ public class Class_BossRoomCSVFile {
 		string value = EnemyCountField;
 		return value;
 	}
+	public string OtherItemIDField { get; set; }    //其他物品
+	  public string _OtherItemIDField (){
+		string value = OtherItemIDField;
+		return value;
+	}
+	public string OtherItemCountField { get; set; }    //其他物品个数
+	  public string _OtherItemCountField (){
+		string value = OtherItemCountField;
+		return value;
+	}
 	}
 	

@@ -52,7 +52,7 @@ public class YRouge_ItemRoom : YRouge_RoomBase
             for (int i = 0; i < itemCount; i++)
             {
                 int randomItemIndex = Random.Range(0, itemIDList.Count);
-                HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(itemIDList[randomItemIndex], transform,itemPosition[i]+new Vector3(0,0.3f,0));
+                HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(itemIDList[randomItemIndex], transform,itemPosition[i]+new Vector3(0,0.5f,0));
                 itemIDList.RemoveAt(randomItemIndex);
                 GenerateEffPlatform(transform,itemPosition[i]);
             }
@@ -65,7 +65,7 @@ public class YRouge_ItemRoom : YRouge_RoomBase
     {
         for (int i = 0; i < itemCount; i++)
         {
-            HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform,itemPosition[i]+new Vector3(0,0.3f,0));
+            HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform,itemPosition[i]+new Vector3(0,0.5f,0));
             GenerateEffPlatform(transform,itemPosition[i]);
         }
     }

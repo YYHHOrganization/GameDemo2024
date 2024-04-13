@@ -1,5 +1,5 @@
-﻿boss房间类型ID/66621000开始都是boss房的类型,描述,怪物类型可以出现的分号表示这几个都可能出现,怪物个数/对应前面那个/0.4;9.15的意思是这种怪可能会出现从0-4的个数
-BossRoomTypeID,Describe,EnemyIDField,EnemyCountField
-int,string,string,string
-66621000,简单boss,70000000;70000001,4:10;3:10
-66621001,多怪boss,70000000;70000001,1:10;10:15
+﻿boss房间类型ID/66621000开始都是boss房的类型,描述,怪物类型可以出现的分号表示这几个都可能出现,怪物个数/对应前面那个/0.4;9.15的意思是这种怪可能会出现从0-4的个数,其他物品,其他物品个数
+BossRoomTypeID,Describe,EnemyIDField,EnemyCountField,OtherItemIDField,OtherItemCountField
+int,string,string,string,string,string
+66621000,简单boss,70000000;70000001,4:10;3:10,30000000,1:1
+66621001,多怪boss,70000000;70000001,1:10;10:15,30000000,1:1

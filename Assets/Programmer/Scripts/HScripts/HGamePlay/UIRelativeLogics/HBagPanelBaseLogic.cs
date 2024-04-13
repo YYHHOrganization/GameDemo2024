@@ -47,6 +47,8 @@ public class HBagPanelBaseLogic : MonoBehaviour
         int xinYongdianNum = HItemCounter.Instance.CheckCountWithItemId(xinYongdianId);
         xingQiongNumber.text = xingQiongNum.ToString();
         xinyongdianNumber.text = xinYongdianNum.ToString();
+        
+        rogueItemUseButton.gameObject.SetActive(false);
     }
     
     private void ShowItemDetailNothing()

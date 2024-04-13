@@ -83,7 +83,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         
         SetAllDoorsDown();//门打开
         //出现宝箱,或者掉落道具等等
-        
+        HOpenWorldTreasureManager.Instance.InstantiateATreasureAndSetInfoWithTypeId("10000011", transform.position, transform);
     }
 
 

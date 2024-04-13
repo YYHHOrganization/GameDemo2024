@@ -52,7 +52,46 @@ public class DissolvingControllery : MonoBehaviour
         
         StartCoroutine(DissolveProp(prop, PropList,delay));
     }
-    
+    public void SetBeginAndEndAndMaterialsPropAndBeginDissolve(GameObject go,float delay,float begin,float end)
+    {
+        
+        Renderer[] PropList = null;
+        
+        MaterialPropertyBlock prop = null;
+        
+        PropList = go.GetComponentsInChildren<Renderer>(true);
+        prop = new MaterialPropertyBlock();
+        
+        
+        StartCoroutine(DissolveProp(prop, PropList,delay,begin,end));
+    }
+    public IEnumerator DissolveProp(MaterialPropertyBlock prop , Renderer[] PropList ,float delay,float begin,float end)
+    {
+        prop.SetFloat("_DissolveAmount",begin);
+        yield return new WaitForSeconds(delay);
+        if(end<begin)
+        {
+            dissolveRate = -dissolveRate;
+            float counter = begin;
+        
+            if (prop.GetFloat("_DissolveAmount") != null)
+            {
+                while (prop.GetFloat("_DissolveAmount") > end)//eg :1-0
+                {
+                    counter += dissolveRate;
+                    prop.SetFloat("_DissolveAmount",counter);
+                    for (int i = 0; i < PropList.Length; i++)
+                    {
+                        PropList[i].SetPropertyBlock(prop);
+                    }
+                    yield return new WaitForSeconds(refreshRate);
+                }
+            }
+
+        }
+        
+    }
+
     IEnumerator DissolveProp(MaterialPropertyBlock prop , Renderer[] PropList ,float delay)
     {
         yield return new WaitForSeconds(delay);

@@ -49,7 +49,7 @@ public class YPlayModeController : MonoBehaviour
         set => isAfterEnterPuppetPanel = value;
     }
 
-    
+    int curLevelID;
     public void SetCharacter(int characterIndex)
     {
         PlayerDieFlag = false;
@@ -57,7 +57,7 @@ public class YPlayModeController : MonoBehaviour
         int id = yPlanningTable.Instance.selectNames2Id["character"];
         string path = "Prefabs/YCharacter/"+yPlanningTable.Instance.SelectTable[id][characterIndex]+"Player";
 
-        int curLevelID = YLevelManager.GetCurrentLevelIndex();
+        curLevelID = YLevelManager.GetCurrentLevelIndex();
         Transform GeneratePlace = yPlanningTable.Instance.GetCharacterGeneratePlace(curLevelID);
 
         GameObject player =
@@ -341,5 +341,10 @@ public class YPlayModeController : MonoBehaviour
         YGameRoot.Instance.Push(new YLossAndNextLevelPanel());
         
     }
-   
+
+    public void SetRogueCharacterPlace()
+    {
+        Transform GeneratePlace = yPlanningTable.Instance.GetCharacterGeneratePlace(curLevelID);
+        curCharacter.transform.position = GeneratePlace.position;
+    }
 }
