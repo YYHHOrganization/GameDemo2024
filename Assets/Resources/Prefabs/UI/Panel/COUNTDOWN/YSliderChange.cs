@@ -12,6 +12,7 @@ public class YSliderChange : MonoBehaviour
     public float end = 1f;
     private float timer = 0f;
     public YLoadPanel yLoadPanel;
+    public YRogueLoadPanel yRogueLoadPanel;
     
     //协程
     IEnumerator CountDown(float start, float end, float duration,Slider slider)
@@ -36,6 +37,16 @@ public class YSliderChange : MonoBehaviour
         this.time = duration;
         timer = 0f;
         this.yLoadPanel = yLoadPanel;
+        StartCoroutine(CountDown(start, end, duration,slider));
+        
+    }
+    public void SetSliderOn(float start, float end, float duration,Slider slider,YRogueLoadPanel yLoadPanel) 
+    {
+        this.start = start;
+        this.end = end;
+        this.time = duration;
+        timer = 0f;
+        this.yRogueLoadPanel = yLoadPanel;
         StartCoroutine(CountDown(start, end, duration,slider));
         
     }

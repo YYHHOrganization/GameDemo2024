@@ -68,11 +68,20 @@ public class YRouge_CreateItem
         {
             roomBase = roomGameObject.AddComponent<YRouge_ChallengeRoom>();
         }
+        // else if(roomNode.RoomType == RoomType.ShopRoom)
+        // {
+        //     roomBase = roomGameObject.AddComponent<YRouge_ShopRoom>();
+        // }
+        else if(roomNode.RoomType == RoomType.BossRoom)
+        {
+            roomBase = roomGameObject.AddComponent<YRouge_BossRoom>();
+        }
         else
         {
             //默认战斗房间 没做的先战斗吧
             roomBase = roomGameObject.AddComponent<YRouge_ItemRoom>();
         }
+        
         //相互赋值
         if(roomBase != null)
             GiveRoomNodeToRoomBase(roomNode, roomBase);

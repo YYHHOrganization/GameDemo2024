@@ -77,6 +77,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     public Class_RogueEnemyCSVFile enemy;
 
+    public Action OnDie;
+
     private void Awake()
     {
         animator = gameObject.GetComponentInChildren<Animator>();
@@ -284,7 +286,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             Destroy(this.gameObject, 1f);
         };
         
-        
+        OnDie?.Invoke();
         
     }
     

@@ -30,6 +30,7 @@ public class HSlotMachineBase : MonoBehaviour
             slots.Add(slotsRoot.gameObject.transform.GetChild(i));
         }
         YTriggerEvents.OnGiveOutItemInBagForSlotMachine += SetIdAndCount;
+        camera.gameObject.SetActive(false);
     }
 
     private string chooseItemID = "-1";

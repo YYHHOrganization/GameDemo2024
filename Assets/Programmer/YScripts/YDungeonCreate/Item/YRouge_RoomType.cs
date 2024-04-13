@@ -53,7 +53,7 @@ public class YRouge_RoomType
         for (int i = 0; i < ElseRoomCount; i++)
         {
             //普通战斗房间 现在作为测试，先都是道具房间
-            roomTypeList.Add(RoomType.ItemRoom);
+            roomTypeList.Add(RoomType.BattleRoom);
         }
         for (int i = 0; i < allRoomNodes.Count; i++)
         {

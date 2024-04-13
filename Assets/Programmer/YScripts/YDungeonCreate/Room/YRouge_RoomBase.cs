@@ -96,7 +96,7 @@ public class YRouge_RoomBase : MonoBehaviour
     {
         foreach (var door in doors)
         {
-            door.transform.localPosition = new Vector3(door.transform.localPosition.x, -10, door.transform.localPosition.z);
+            door.transform.localPosition = new Vector3(door.transform.localPosition.x, -11, door.transform.localPosition.z);
         }
     }
     //让门上升
@@ -112,7 +112,7 @@ public class YRouge_RoomBase : MonoBehaviour
     {
         foreach (var door in doors)
         {
-            door.transform.DOLocalMoveY(-10, 1f).SetEase(Ease.OutBounce);
+            door.transform.DOLocalMoveY(-11, 1f).SetEase(Ease.OutBounce);
         }
     }
     

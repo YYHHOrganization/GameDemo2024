@@ -96,6 +96,13 @@ public class HOpenWorldTreasureManager : MonoBehaviour
         }
     }
     
+    public void InstantiateATreasureAndSetInfoWithTypeId(string treasureTypeId, Vector3 position, Transform root)
+    {
+        var op = Addressables.InstantiateAsync(treasureTypes[treasureTypeId].addressableLink, position, Quaternion.identity, root.transform);
+        GameObject result = op.WaitForCompletion();
+        result.GetComponent<HOpenWorldTreasure>().SetTreasure(treasureTypes[treasureTypeId]);
+    }
+    
     private void InstantiateTreasure(string name, Vector3 position, string root)
     {
         Addressables.InstantiateAsync(name, position, Quaternion.identity, GameObject.Find(root).transform).Completed += OnInstantiateDone;

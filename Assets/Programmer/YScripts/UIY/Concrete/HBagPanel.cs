@@ -21,7 +21,7 @@ public class HBagPanel : BasePanel
         YPlayModeController.Instance.LockPlayerInput(false);
         exitButton.onClick.AddListener(() =>
         {
-            Pop();
+            RemoveSelfPanel();
             YTriggerEvents.RaiseOnMouseLeftShoot(true);
             HPlayerSkillManager.instance.SetBagBeenPushed(false);
         });

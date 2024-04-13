@@ -8,7 +8,7 @@ public class YInteractSlotmachine : YIInteractiveGroup
     public void Start()
     {
         base.Start();
-        slotmachine = GameObject.Find("SlotMachineNew");
+        
     }
     
     public override void SetResultOn()
@@ -26,6 +26,8 @@ public class YInteractSlotmachine : YIInteractiveGroup
     
     public override void EnterField(bool isEnter, GameObject TriggergameObject,Transform showUIPlace)
     {
+        if(slotmachine == null)
+            slotmachine = transform.Find("main/SlotMachineNew").gameObject;
         base.EnterField(isEnter, TriggergameObject,showUIPlace);
         if (isEnter)
         {
