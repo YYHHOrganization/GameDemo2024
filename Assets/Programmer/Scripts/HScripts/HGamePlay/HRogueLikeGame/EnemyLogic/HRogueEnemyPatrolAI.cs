@@ -41,26 +41,27 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     
     public RogueEnemyWanderType wanderType;
     public RogueEnemyChaseType chaseType;
-    public float wanderSpeed = 1f;
-    public float chaseSpeed = 2f;
-    public string bulletPrefabLink;
-    public float playerSensitiveDis = 5f; //玩家敏感距离，玩家进入这个距离后，怪物会进入chase状态
+    private string bulletPrefabLink;
+    private GameObject bulletPrefab;
 
-    [Header("Wander状态下的参数")] public float wanderMaxStopTime = 2f;
-    public float wanderMaxMoveTime = 10f;
-    public float bulletShootInterval = 1f;
+    private string chaseBulletPrefabLink;
+    private GameObject chaseBulletPrefab;
+
+    private float wanderMaxStopTime = 2f;
+    private float wanderMaxMoveTime = 10f;
     public float jumpStopMaxInterval = 2f;
     public float maxJumpHeight = 2f;
     
     [Header("Chase状态下的参数")] 
     public float chaseNoTargetWaitMaxTime = 5f; //角色离开范围多少秒后，怪物会返回Wander状态
+    public float chaseMaxAcceleration = 8f;
     
     [Header("Attack状态下的参数")] 
     public float attackRange = 1f;
     public int enemyDamage = 2;
     public float bulletChaseShootInterval = 1f;
 
-    [Header("其他属性面板")] public int health = 5;
+    private int health;
 
     # endregion
 
@@ -72,21 +73,38 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private int maxHealth;
 
     public Image enemyHealthImage;
+    public string enemyID;
+
+    public Class_RogueEnemyCSVFile enemy;
 
     private void Awake()
     {
-        InitStateMachine();
         animator = gameObject.GetComponentInChildren<Animator>();
         mNavMeshAgent = GetComponent<NavMeshAgent>();
         isWalkingHash = Animator.StringToHash("isWalking");
         isAttackingHash = Animator.StringToHash("isAttacking");
         isDeadHash = Animator.StringToHash("isDead");
         shootOrigin = transform.Find("ShootOrigin");
-        if(bulletPrefabLink!=null)
-            bulletPrefab = Addressables.LoadAssetAsync<GameObject>(bulletPrefabLink).WaitForCompletion();
-        string wanderType1 = SD_RogueEnemyCSVFile.Class_Dic["70000001"].RogueEnemyWanderType;
+        ReadTableAndSetAttribute();
+    }
+
+    private void ReadTableAndSetAttribute()
+    {
+        enemy = SD_RogueEnemyCSVFile.Class_Dic[enemyID];
+        string wanderType1 = enemy.RogueEnemyWanderType;
         wanderType = (RogueEnemyWanderType)Enum.Parse(typeof(RogueEnemyWanderType), wanderType1);
+        string chaseType1 = enemy.RogueEnemyChaseType;
+        chaseType = (RogueEnemyChaseType)Enum.Parse(typeof(RogueEnemyChaseType), chaseType1);
+        health = enemy._RogueEnemyStartHealth();
         maxHealth = health;
+
+        bulletPrefabLink = enemy.RogueEnemyWanderBulletLink;
+        if(bulletPrefabLink!=null && bulletPrefabLink!="null")
+            bulletPrefab = Addressables.LoadAssetAsync<GameObject>(bulletPrefabLink).WaitForCompletion();
+        chaseBulletPrefabLink = enemy.RogueEnemyChaseBulletPrefab;
+        if(chaseBulletPrefabLink!=null && chaseBulletPrefabLink!="null")
+            chaseBulletPrefab = Addressables.LoadAssetAsync<GameObject>(chaseBulletPrefabLink).WaitForCompletion();
+        InitStateMachine();
     }
     
 
@@ -151,7 +169,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         while (true)
         {
             float moveTime = Random.Range(0, wanderMaxMoveTime);
-            float moveDistance = wanderSpeed * moveTime;
+            float moveDistance = enemy._RogueEnemyWanderSpeed() * moveTime;
             int count = 0; //开一个计数器，防止怪物卡死
             while (isMoving)
             {
@@ -163,7 +181,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
                 
                 while (transform.position != destination && isMoving)
                 {
-                    transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime*wanderSpeed);
+                    transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * enemy._RogueEnemyWanderSpeed());
                     count++;
                     if (count == 100)
                     {
@@ -194,8 +212,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             isMoving = false;
         }
     }
-
-    private GameObject bulletPrefab;
+    
     public void ShootBulletForward(bool trackPlayer = false, bool isChasing=false)
     {
         /*
@@ -219,9 +236,9 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
                     bullet.gameObject.GetComponent<HEnemyBulletMoveBase>().SetTarget(mTarget);
                 }
                 if(isChasing)
-                    yield return new WaitForSeconds(bulletChaseShootInterval);
+                    yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
                 else
-                    yield return new WaitForSeconds(bulletShootInterval);
+                    yield return new WaitForSeconds(enemy._RogueEnemyWanderShootInterval());
             }
         }
     }
@@ -270,6 +287,21 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         
         
     }
+    
+    //这里往后来写一些射击子弹的逻辑
+    public IEnumerator ShootCircle()
+    {
+        //每隔一段时间发射一圈环形子弹
+        while (true)
+        {
+            for (int i = 0; i < 360; i += 30)
+            {
+                Vector3 shootDirection = new Vector3(Mathf.Sin(i * Mathf.Deg2Rad), 0.4f, Mathf.Cos(i * Mathf.Deg2Rad));
+                GameObject bullet = Instantiate(chaseBulletPrefab, transform.position + shootDirection * 2 , Quaternion.Euler(0, i, 0));
+            }
+            yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
+        }
+    }
 }
 
 public enum RogueEnemyTeam
@@ -293,8 +325,9 @@ public enum RogueEnemyChaseType
     JustChase, //只是追击
     ChaseAndShootPlayer, //追击并且射击玩家
     ChaseAndShootRandom, //朝着随机方向射击
-    ChaseAWhileAndGoBackToWander, //追击一段时间后返回Wander状态
     AddSthToPlayer, //比如说远程攻击的怪，会降下落雷之类的
+    JustGoToAttackState, //直接进入攻击状态，一般来说可能是远程攻击的怪物这种
+    ChaseAndShootSpecial, //追击并且射击子弹，但是子弹有特殊的效果，由函数来决定
 }
 
 public enum RogueEnemyAttackType

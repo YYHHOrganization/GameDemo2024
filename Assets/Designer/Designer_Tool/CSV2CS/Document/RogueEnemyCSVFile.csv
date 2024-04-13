@@ -1,6 +1,6 @@
-﻿敌人ID，从70000000开始，到71000000都是敌人,敌人英文名,敌人中文名,addressable链接,敌人巡逻类型
-enemyID,RogueEnemyName,RogueEnemyChineseName,addressableLink,RogueEnemyWanderType
-int,string,string,string,string
-70000000,YEnemySpider,忆域蜘蛛,YEnemySpider,ShootBulletForwardWithoutMove
-70000001,HEnemyMonsterCommon1,独眼小小宝,Duyanxiaoxiaobao,ShootBulletForwardWithoutMove
-70000002,HEnemyMonsterCommon1,独眼小小宝,Duyanxiaoxiaobao,ShootBulletForwardWithoutMove
+﻿敌人ID，从70000000开始，到71000000都是敌人,敌人英文名,敌人中文名,addressable链接,敌人巡逻类型,敌人巡逻速度,敌人巡逻子弹Prefab的Link,敌人巡逻玩家敏感距离,敌人巡逻射击子弹间隔（不射击的填-1）,追击玩家的最大速度,敌人追击类型,敌人射击子弹的函数(没有填Normal),敌人追击时的射击间隔,敌人追击时射击子弹PrefabLink,敌人初始生命值,敌人巡逻时伤害,敌人追击时伤害,是否追不到敌人就返回Wander,追不到返回Wander的时间,是否受击进入Chase状态
+enemyID,RogueEnemyName,RogueEnemyChineseName,addressableLink,RogueEnemyWanderType,RogueEnemyWanderSpeed,RogueEnemyWanderBulletLink,RogueWanderPlayerSensitivePlayerDis,RogueEnemyWanderShootInterval,RogueEnemyChaseMaxSpeed,RogueEnemyChaseType,RogueEnemyChaseShootFunc,RogueEnemyChaseShootInterval,RogueEnemyChaseBulletPrefab,RogueEnemyStartHealth,EnemyWanderDamage,EnemyChaseDamage,IsEnemyReturnWander,ReturnWanderTime,BeHurtThenToChase
+int,string,string,string,string,float,string,float,float,float,string,string,float,string,int,int,int,int,float,int
+70000000,YEnemySpider,忆域蜘蛛,YEnemySpider,ShootBulletForwardWithoutMove,2,null,10,-1,3,JustChase,Normal,-1,null,5,1,1,1,3,0
+70000001,Duyanxiaoxiaobao,独眼小小宝,Duyanxiaoxiaobao,ShootBulletForwardWithoutMove,2,BulletCommon01Enemy,10,1.5,3,ChaseAndShootPlayer,Normal,1,BulletCommon01Enemy,5,1,1,1,5,0
+70000002,Duyanxiaoxiaobao(Error),独眼小小宝（错误）,DuyanxiaoxiaobaoError,ShootBulletForwardWithMove,3,BulletCommon01Enemy,15,1.5,4,ChaseAndShootSpecial,ShootCircle,4,BulletBig01Enemy,15,2,4,0,10,1

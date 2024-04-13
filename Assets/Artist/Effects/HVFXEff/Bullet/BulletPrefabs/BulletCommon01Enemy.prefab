@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1530547469155931894}
   - component: {fileID: 8369360917300617935}
   m_Layer: 3
-  m_Name: FX_Shoot_01Enemy
+  m_Name: BulletCommon01Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,8 +54,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.25, y: 0.25, z: 3}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.55879056, y: 0.47671753, z: 3}
+  m_Center: {x: -0.014109859, y: 0.047575433, z: 0}
 --- !u!54 &1530547469155931894
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -95,9 +95,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 106063fc8aa151e408954be09716f18f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSpeed: 15
+  bulletSpeed: 10
   bulletDamage: 1
-  bulletRange: 20
+  bulletRange: 10
   hitPrefab: {fileID: 2313415394178803880, guid: eb4422f5a388fc2458f74048e53b706c,
     type: 3}
 --- !u!1 &2452928782321649683

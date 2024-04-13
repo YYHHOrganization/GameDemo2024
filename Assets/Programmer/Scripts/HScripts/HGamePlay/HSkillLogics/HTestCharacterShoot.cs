@@ -37,6 +37,8 @@ public class HTestCharacterShoot : MonoBehaviour
     private float shootRate = 0.5f;
 
     private float shootRange = 10f;
+
+    private GameObject curBulletPrefab;
     // Start is called before the first frame update
     void Start()
     {
@@ -83,6 +85,8 @@ public class HTestCharacterShoot : MonoBehaviour
             shootRate = 1.0f / HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRate"];
             shootRange = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRange"];
             Debug.Log("SHOOTRATE!!!" + shootRate);
+
+            curBulletPrefab = HRoguePlayerAttributeAndItemManager.Instance.CurBulletPrefab;
         }
     }
 
@@ -251,6 +255,15 @@ public class HTestCharacterShoot : MonoBehaviour
         }
         
     }
+    
+    private void RandomGetThisShootBulletPrefab(string type)
+    {
+        //获取当前的子弹预制体，因为可能会随机发射某一种子弹
+        if (type == "origin")
+        {
+            curBulletPrefab = HRoguePlayerAttributeAndItemManager.Instance.GetRandomCurBulletPrefab();
+        }
+    }
 
     
     private void ShootBulletFromMuzzle(bool needShootHelp,bool hitButNoNeedHelp, Vector3 hitPosition)
@@ -260,13 +273,13 @@ public class HTestCharacterShoot : MonoBehaviour
         GameObject Effects;
         if (thirdPersonFollowPlace)
         {
-            // Debug.Log("ShootBulletFromMuzzle");
-            //
+            RandomGetThisShootBulletPrefab("origin"); //todo：暂时都是只有一种武器类型，写成origin比较合适
             float middleX = Screen.width * 0.5f;
             float middleY = Screen.height * 0.5f;
             Ray shotRay = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX, middleY, -3));
             Vector3 shotDir = shotRay.direction;
             //rotation is from gunTrans.rotation to shotDir
+            
 
             // Effects = Instantiate(effectToSpawn, gunTrans.position, Quaternion.identity, this.transform);
             if (needShootHelp || hitButNoNeedHelp)
@@ -274,12 +287,12 @@ public class HTestCharacterShoot : MonoBehaviour
                 //打到怪，近似处理，辅助瞄准
                 Vector3 dir = hitPosition - gunTrans.position;
                 //instantiate effectToSpawn at gunTrans.position, with rotation to shotDir
-                Effects = Instantiate(effectToSpawn[MyShootEnum.ShootFromMuzzle.GetHashCode()], gunTrans.position, Quaternion.LookRotation(dir), gunTrans.transform);
+                Effects = Instantiate(curBulletPrefab, gunTrans.position, Quaternion.LookRotation(dir), gunTrans.transform);
                 Destroy(Effects, 10f);
             }
             else {
                 //没有打到任何东西，进入这个逻辑
-                Effects = Instantiate(effectToSpawn[MyShootEnum.ShootFromMuzzle.GetHashCode()], gunTrans.position, thirdPersonFollowPlace.rotation,gunTrans.transform);
+                Effects = Instantiate(curBulletPrefab, gunTrans.position, thirdPersonFollowPlace.rotation,gunTrans.transform);
                 Destroy(Effects, 10f);
             }
             

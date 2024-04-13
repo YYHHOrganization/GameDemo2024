@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
 {
@@ -13,13 +15,10 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
     
     public override Type Tick()
     {
-        if (mPatrolAI.mNavMeshAgent.enabled)
-        {
-            mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
-        }
-
         if (mPatrolAI.isDead)
             return null;
+        
+        mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
         
         // /transform.LookAt(patrolAI.mTarget);
         // //transform.Translate(Vector3.forward*Time.deltaTime*YGameSetting.PatrolAISpeed);
@@ -45,6 +44,9 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
         if (mPatrolAI.mTarget)
         {
             mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
+            //trick:感觉这里给敌人设置不同的速度等参数会更好，不然召唤出来之后他们的逻辑都是完全一样的
+            mPatrolAI.mNavMeshAgent.speed = Random.Range(1, mPatrolAI.enemy._RogueEnemyChaseMaxSpeed());
+            mPatrolAI.mNavMeshAgent.acceleration = Random.Range(2, mPatrolAI.chaseMaxAcceleration);
         }
     }
     
@@ -62,6 +64,12 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
         {
             SetNavmeshDestination();
             mPatrolAI.ShootBulletForward(true,true);
+        }
+        else if (mPatrolAI.chaseType == RogueEnemyChaseType.ChaseAndShootSpecial)
+        {
+            string funcName = mPatrolAI.enemy.RogueEnemyChaseShootFunc;
+            //startCorotine
+            mPatrolAI.StartCoroutine(funcName);
         }
     }
 }

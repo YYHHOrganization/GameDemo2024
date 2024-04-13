@@ -10643,7 +10643,7 @@ Transform:
   m_GameObject: {fileID: 4819722486266218286}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: 0.466, z: 1.56}
+  m_LocalPosition: {x: 0.03, y: 0.92, z: 1.56}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20898,21 +20898,15 @@ MonoBehaviour:
   DieExplosionEff: {fileID: 3424232774059175681}
   wanderType: 0
   chaseType: 1
-  wanderSpeed: 2
-  chaseSpeed: 2
-  bulletPrefabLink: BulletCommon01
-  playerSensitiveDis: 5
-  wanderMaxStopTime: 2
-  wanderMaxMoveTime: 10
-  bulletShootInterval: 1.5
   jumpStopMaxInterval: 2
   maxJumpHeight: 2
   chaseNoTargetWaitMaxTime: 5
+  chaseMaxAcceleration: 8
   attackRange: 0.1
   enemyDamage: 2
   bulletChaseShootInterval: 1
-  health: 5
   enemyHealthImage: {fileID: 4288103336634326303}
+  enemyID: 70000001
 --- !u!114 &5447862675269842280
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -224,6 +224,8 @@ public class HPlayerStateMachine : MonoBehaviour
     public void SetRunMultiplierSpeed(float runSpeed)
     {
         runMultiplier = runSpeed;
+        if (runMultiplier <= 1)
+            runMultiplier = 1;
     }
     
     private void Awake()

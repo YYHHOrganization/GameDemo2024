@@ -20,7 +20,7 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         {
             if (hasShootTarget && shootTarget != null)
             {
-                transform.LookAt(new Vector3(shootTarget.position.x, 0, shootTarget.position.z));
+                transform.LookAt(new Vector3(shootTarget.position.x, 1, shootTarget.position.z));
                 transform.position += transform.forward * (bulletSpeed * Time.deltaTime);
             }
             else
