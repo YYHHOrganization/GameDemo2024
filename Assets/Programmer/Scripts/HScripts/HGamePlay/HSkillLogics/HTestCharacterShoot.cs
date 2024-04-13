@@ -120,8 +120,14 @@ public class HTestCharacterShoot : MonoBehaviour
     //     }
     // }
     //
+    private bool isPlayerDie = false;
+    public void SetPlayerDie()
+    {
+        isPlayerDie = true;
+    }
     private void Update()
     {
+        if (isPlayerDie) return;
         if (Input.GetMouseButtonDown(0))
         {
             if (!canAimAndShoot)
@@ -269,6 +275,7 @@ public class HTestCharacterShoot : MonoBehaviour
     private void ShootBulletFromMuzzle(bool needShootHelp,bool hitButNoNeedHelp, Vector3 hitPosition)
     {
         muzzleVFX.Play();
+        HAudioManager.Instance.Play("RogueShootGunAudio", this.gameObject.transform.GetChild(0).gameObject);
         //由枪口位置向屏幕中心所指的位置发射子弹
         GameObject Effects;
         if (thirdPersonFollowPlace)

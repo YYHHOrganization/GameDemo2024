@@ -223,6 +223,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     private void SetPlayerDie()
     {
         player.GetComponent<HPlayerStateMachine>().IsDie = true;
+        player.GetComponent<HTestCharacterShoot>().SetPlayerDie();
     }
 
     //随机roll出一个道具，指定其父节点（也就算是生成位置）

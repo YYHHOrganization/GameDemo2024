@@ -45,17 +45,19 @@ public class YChooseCharacterPanel : BasePanel
             if (YLevelManager.GetCurrentLevelIndex() != 2&&YLevelManager.GetCurrentLevelIndex() != 3)
             {
                 Push(new YMainPlayModeOriginPanel());
+                HAudioManager.instance.Play("StartPlayerModeMusic", HAudioManager.instance.gameObject);
             }
             else
             {
                 HRoguePlayerAttributeAndItemManager.Instance.PushAttributePanel();
+                HAudioManager.Instance.Play("StartRogueAudio", HAudioManager.instance.gameObject);
             }
                 
             //销毁YChooseCharacterShowPlace
             GameObject.Destroy(YChooseCharacterShowPlace);
             //然后应该把那些加载出来 
             YPlayModeController.Instance.SetCharacter(curChooseCharacterIndex);
-            HAudioManager.instance.Play("StartPlayerModeMusic", HAudioManager.instance.gameObject);
+            
         });
         Debug.Log("角色数量"+yPlanningTable.Instance.GetCharacterNum());
         //循环遍历角色列表
