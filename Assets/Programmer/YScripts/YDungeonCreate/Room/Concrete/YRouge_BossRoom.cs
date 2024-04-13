@@ -130,7 +130,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         string[] enemyIDs = bossRoomData._EnemyIDField().Split(';');
         
         
-        //0.4;9.15 怪物个数/对应前面那个/0.4;9.15的意思是这种怪可能会出现从0-4的个数
+        //0:4;9:15 怪物个数/对应前面那个/0:4;9:15的意思是这种怪可能会出现从0-4的个数
         string[] enemyCounts = bossRoomData._EnemyCountField().Split(';');
         for (int i =0;i<enemyCounts.Length;i++)
         {

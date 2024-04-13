@@ -14,6 +14,7 @@ public class YPlayerDieState : HPlayerBaseState, IRootState
         InitializeSubState();
         //Debug.Log("now in fall state");
         _ctx.Animator.SetBool("isDie", true);
+        YGameRoot.Instance.Push(new YRogueLossAndAgainPanel());
     }
 
     public override void UpdateState()
