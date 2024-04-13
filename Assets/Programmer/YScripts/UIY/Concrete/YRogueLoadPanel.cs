@@ -13,7 +13,7 @@ public class YRogueLoadPanel : BasePanel
     Slider slider = null;
     YSliderChange sliderChange = null;
     
-    public float loadFakeTime = 1f;
+    public float loadFakeTime = 2f;
     public float loadFinalTime = 0.1f;
     private int RogueLevel;
     public YRogueLoadPanel() : base(new UIType(path)){}
@@ -31,6 +31,7 @@ public class YRogueLoadPanel : BasePanel
         //     .GetComponent<YSliderChange>().SetSliderOn(0,0.9f,0.2f);
         slider = uiTool.GetOrAddComponentInChilden<Slider>("LoadSlider");
         sliderChange = slider.GetComponent<YSliderChange>();
+        loadFakeTime = YRogueDungeonManager.Instance.loadFakeTime;
         sliderChange.SetSliderOn(0,1f,loadFakeTime,slider,this);  
         uiTool.GetOrAddComponentInChilden<TMP_Text>("LevelStr").text = (RogueLevel+1).ToString();
     }

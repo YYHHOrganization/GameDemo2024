@@ -9,7 +9,15 @@ public class YRouge_RoomBase : MonoBehaviour
     public YRoomNode roomNode;
     protected RoomType roomType;
     protected RoomData roomData;
-
+    
+    //房间的初始space
+    roomSpaceKeep roomSpaceKeep;
+    protected GameObject roomLittleMapMask;
+    public void SetRoomNodeSpace(roomSpaceKeep roomSpaceKeep)
+    {
+        this.roomSpaceKeep = roomSpaceKeep;
+    }
+    
     private GameObject floor;
     //floor get set
     public GameObject Floor
@@ -36,23 +44,55 @@ public class YRouge_RoomBase : MonoBehaviour
     // Start is called before the first frame update
     
     BoxCollider boxCollider = null;
+    int roomWidth;
+    int roomLength;
     public void Start()
     {
         SetAllDoorsPosition();
 
         GenerateIcon();
         
+        roomWidth = roomNode.TopRightAreaCorner.x - roomNode.BottomLeftAreaCorner.x;
+        roomLength = roomNode.TopRightAreaCorner.y - roomNode.BottomLeftAreaCorner.y;
         //在房间中心生成一个trigger，当玩家进入这个trigger的时候，房间的逻辑就会被激活
         // GameObject trigger = new GameObject();
         // trigger.transform.parent = this.transform;
         // trigger.transform.localPosition = new Vector3(0, 0, 0);
         boxCollider = gameObject.AddComponent<BoxCollider>();
         boxCollider.isTrigger = true;
-        boxCollider.size = new Vector3(10, 10, 10);
+        // boxCollider.size = new Vector3(10, 10, 10);
+        boxCollider.size = new Vector3(roomWidth-0.5f, 10, roomLength-0.5f);
         boxCollider.center = new Vector3(0, 0, 0);
         
         gameObject.layer = LayerMask.NameToLayer("IgnoreBullet");
         
+        //生成一个黑色mask mask在地图上 大小根据roomSpaceKeep的大小来确定
+        GenerateLittleMapMask();
+        
+    }
+
+    private void GenerateLittleMapMask()
+    {
+        //生成一个黑色mask mask在地图上 大小根据roomSpaceKeep的大小来确定
+        string AddressLink = "YPlaneMask";
+        var op = Addressables.InstantiateAsync(AddressLink);
+        roomLittleMapMask  = op.WaitForCompletion() as GameObject;
+        roomLittleMapMask.transform.position = new Vector3
+        (roomSpaceKeep.bottomLeft.x + roomSpaceKeep.width / 2,
+            150,
+            roomSpaceKeep.bottomLeft.y + roomSpaceKeep.length / 2) + YRogueDungeonManager.Instance.RogueDungeonOriginPos;
+        
+        roomLittleMapMask.transform.parent = transform;
+        
+        // // mask.AddComponent<MeshFilter>();
+        // var meshFilter = mask.AddComponent<MeshFilter>();
+        // //plane
+        // meshFilter.mesh = GameObject.CreatePrimitive(PrimitiveType.Plane).GetComponent<MeshFilter>().mesh; 
+        // var meshRenderer = mask.AddComponent<MeshRenderer>();
+        // meshRenderer.material = new Material(Shader.Find("Unlit/Color"));
+        // meshRenderer.material.color = new Color(250, 250, 200);
+        
+        roomLittleMapMask.transform.localScale = new Vector3(roomSpaceKeep.width/10.0f+0.05f, 1, roomSpaceKeep.length/10.0f+0.05f);
     }
 
     private void GenerateIcon()
@@ -71,12 +111,19 @@ public class YRouge_RoomBase : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (YRogueDungeonManager.Instance.flagGameBegin == false) return;
         if (other.CompareTag("Player"))
         {
             Debug.Log("玩家进入房间！！");
             //玩家进入房间，房间的逻辑就会被激活
             SetResultOn();
+            SetMaskOff();//后面这个要改为进入房间而不是激活房间的时候显示
         }
+    }
+
+    private void SetMaskOff()
+    {
+        Destroy(roomLittleMapMask);
     }
 
     public virtual void SetResultOn()

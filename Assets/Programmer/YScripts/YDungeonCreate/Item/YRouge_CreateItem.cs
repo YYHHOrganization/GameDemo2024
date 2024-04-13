@@ -21,15 +21,20 @@ public class YRouge_CreateItem
     //玩家进入这个房间，然后这个房间的脚本就会被激活，然后进行相应的逻辑
     //同时这个room脚本得知道什么门是属于这个房间的，然后在这个房间的脚本中控制门的开关
     Transform parent;
-    public void GenerateRoomScript(List<YRoomNode> allRoomNodes,Transform parent,Vector3Int originPosition)
+    public void GenerateRoomScript(List<YRoomNode> allRoomNodes,Transform parent,Vector3Int originPosition,List<roomSpaceKeep> roomSpacesKeepList)
     {
         this.parent = parent;
-        foreach (var roomNode in allRoomNodes)
+        // foreach (var roomNode in allRoomNodes)
+        // {
+        //     GenerateSingleRoomScript(roomNode, this.parent,originPosition);
+        // }
+        
+        for(int i = 0; i < allRoomNodes.Count; i++)
         {
-            GenerateSingleRoomScript(roomNode, this.parent,originPosition);
+            GenerateSingleRoomScript(allRoomNodes[i], this.parent,originPosition,roomSpacesKeepList[i]);
         }
     }
-    void GenerateSingleRoomScript(YRoomNode roomNode,Transform parent,Vector3Int originPosition)
+    void GenerateSingleRoomScript(YRoomNode roomNode,Transform parent,Vector3Int originPosition,roomSpaceKeep roomSpacekeep)
     {
         //弄一个新的gameobject出来,然后把这个gameobject放到房间中间,挂上对应的脚本
         GameObject roomGameObject = new GameObject();
@@ -84,12 +89,14 @@ public class YRouge_CreateItem
         
         //相互赋值
         if(roomBase != null)
-            GiveRoomNodeToRoomBase(roomNode, roomBase);
+            GiveRoomNodeToRoomBase(roomNode, roomBase,roomSpacekeep);
     }
 
-    private void GiveRoomNodeToRoomBase(YRoomNode roomNode, YRouge_RoomBase roomBase)
+    private void GiveRoomNodeToRoomBase(YRoomNode roomNode, YRouge_RoomBase roomBase,roomSpaceKeep roomSpaceKeep)
     {
         roomNode.roomScript = roomBase;
         roomBase.roomNode = roomNode;
+        roomBase.SetRoomNodeSpace(roomSpaceKeep);
     }
+    
 }
