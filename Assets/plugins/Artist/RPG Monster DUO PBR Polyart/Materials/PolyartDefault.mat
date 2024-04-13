@@ -25,7 +25,8 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _USEEMISSION_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -158,17 +159,17 @@ Material:
     - _Surface: 0
     - _UVSec: 0
     - _UseAlphaClipping: 0
-    - _UseEmission: 0
+    - _UseEmission: 1
     - _UseOcclusion: 0
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 4.594794, g: 1.0036006, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveColor: {r: 4.976976, g: 0.3551512, b: 0, a: 0}
-    - _EmissionColor: {r: 5.992157, g: 5.992157, b: 5.992157, a: 1}
+    - _EmissionColor: {r: 6.964404, g: 0.3613606, b: 0.3613606, a: 1}
     - _EmissionMapChannelMask: {r: 1, g: 1, b: 1, a: 0}
     - _IndirectLightMinColor: {r: 0.09999997, g: 0.09999997, b: 0.09999997, a: 1}
     - _OcclusionMapChannelMask: {r: 1, g: 0, b: 0, a: 0}

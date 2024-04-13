@@ -26,5 +26,80 @@ public class Class_RogueEnemyCSVFile {
 		string value = RogueEnemyWanderType;
 		return value;
 	}
+	public string RogueEnemyWanderSpeed { get; set; }    //敌人巡逻速度
+	  public float _RogueEnemyWanderSpeed (){
+		float value = float.Parse(RogueEnemyWanderSpeed);
+		return value;
+	}
+	public string RogueEnemyWanderBulletLink { get; set; }    //敌人巡逻子弹Prefab的Link
+	  public string _RogueEnemyWanderBulletLink (){
+		string value = RogueEnemyWanderBulletLink;
+		return value;
+	}
+	public string RogueWanderPlayerSensitivePlayerDis { get; set; }    //敌人巡逻玩家敏感距离
+	  public float _RogueWanderPlayerSensitivePlayerDis (){
+		float value = float.Parse(RogueWanderPlayerSensitivePlayerDis);
+		return value;
+	}
+	public string RogueEnemyWanderShootInterval { get; set; }    //敌人巡逻射击子弹间隔（不射击的填-1）
+	  public float _RogueEnemyWanderShootInterval (){
+		float value = float.Parse(RogueEnemyWanderShootInterval);
+		return value;
+	}
+	public string RogueEnemyChaseMaxSpeed { get; set; }    //追击玩家的最大速度
+	  public float _RogueEnemyChaseMaxSpeed (){
+		float value = float.Parse(RogueEnemyChaseMaxSpeed);
+		return value;
+	}
+	public string RogueEnemyChaseType { get; set; }    //敌人追击类型
+	  public string _RogueEnemyChaseType (){
+		string value = RogueEnemyChaseType;
+		return value;
+	}
+	public string RogueEnemyChaseShootFunc { get; set; }    //敌人射击子弹的函数(没有填Normal)
+	  public string _RogueEnemyChaseShootFunc (){
+		string value = RogueEnemyChaseShootFunc;
+		return value;
+	}
+	public string RogueEnemyChaseShootInterval { get; set; }    //敌人追击时的射击间隔
+	  public float _RogueEnemyChaseShootInterval (){
+		float value = float.Parse(RogueEnemyChaseShootInterval);
+		return value;
+	}
+	public string RogueEnemyChaseBulletPrefab { get; set; }    //敌人追击时射击子弹PrefabLink
+	  public string _RogueEnemyChaseBulletPrefab (){
+		string value = RogueEnemyChaseBulletPrefab;
+		return value;
+	}
+	public string RogueEnemyStartHealth { get; set; }    //敌人初始生命值
+	public int _RogueEnemyStartHealth (){
+		int value = int.Parse(RogueEnemyStartHealth);
+		return value;
+	}
+	public string EnemyWanderDamage { get; set; }    //敌人巡逻时伤害
+	public int _EnemyWanderDamage (){
+		int value = int.Parse(EnemyWanderDamage);
+		return value;
+	}
+	public string EnemyChaseDamage { get; set; }    //敌人追击时伤害
+	public int _EnemyChaseDamage (){
+		int value = int.Parse(EnemyChaseDamage);
+		return value;
+	}
+	public string IsEnemyReturnWander { get; set; }    //是否追不到敌人就返回Wander
+	public int _IsEnemyReturnWander (){
+		int value = int.Parse(IsEnemyReturnWander);
+		return value;
+	}
+	public string ReturnWanderTime { get; set; }    //追不到返回Wander的时间
+	  public float _ReturnWanderTime (){
+		float value = float.Parse(ReturnWanderTime);
+		return value;
+	}
+	public string BeHurtThenToChase { get; set; }    //是否受击进入Chase状态
+	public int _BeHurtThenToChase (){
+		int value = int.Parse(BeHurtThenToChase);
+		return value;
+	}
 	}
 	

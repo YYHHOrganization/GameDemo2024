@@ -28,7 +28,7 @@ public class HRogueEnemyCommonWanderState : HRogueEnemyBaseState
             }
         }
 
-        if (mPatrolAI.mTarget && mPatrolAI.CheckIfTargetIsNear(mPatrolAI.playerSensitiveDis) || goToChase)
+        if (mPatrolAI.mTarget && mPatrolAI.CheckIfTargetIsNear(mPatrolAI.enemy._RogueWanderPlayerSensitivePlayerDis()) || goToChase)
         {
             mPatrolAI.StopAllCoroutines();
             return typeof(HRogueEnemyCommonChaseState);

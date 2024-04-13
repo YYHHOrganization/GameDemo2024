@@ -16,6 +16,10 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     private Sprite characterIcon;
     private GameObject player;
     private Camera camera;
+    private List<GameObject> bulletPrefabs = new List<GameObject>();
+    private int bulletPrefabLength = 0;
+    private GameObject curBulletPrefab;
+    public GameObject CurBulletPrefab => curBulletPrefab;
     public static HRoguePlayerAttributeAndItemManager Instance
     {
         get
@@ -28,6 +32,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
             return _instance;
         }
     }
+    
 
     private void Awake()
     {
@@ -63,6 +68,8 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         this.player = player;
         characterIcon = Addressables.LoadAssetAsync<Sprite>(characterBaseAttribute.rogueCharacterIconLink)
             .WaitForCompletion();
+
+        curBulletPrefab = Addressables.LoadAssetAsync<GameObject>("BasicBullet").WaitForCompletion();
         GiveOutOriginThing(characterBaseAttribute);
     }
 
@@ -95,6 +102,12 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
             attributePanel.uiTool.Get<HRogueAttributeBaseLogic>().SetRogueAttributeText();
             attributePanel.uiTool.Get<HRogueAttributeBaseLogic>().SetHealthAndShieldOnUI();
         }
+        UpdateCharacterStateMachine();
+    }
+
+    private void UpdateCharacterStateMachine()
+    {
+        player.GetComponent<HPlayerStateMachine>().SetRunMultiplierSpeed(characterValueAttributes["RogueMoveSpeed"]);
     }
     
     public Sprite GetCharacterIcon()
@@ -279,6 +292,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         float effectTime = float.Parse(effectNameAndTimeArray[1]);
         //用反射找到effectName对应的函数
         System.Reflection.MethodInfo method = this.GetType().GetMethod(effectName);
+        StopCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
         StartCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
     }
 
@@ -291,10 +305,32 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         player.transform.DOLocalRotate(new Vector3(180, 0, 0), 2f, RotateMode.LocalAxisAdd);
     }
 
-    
-    public void ShakeCameraWithProperties()
+    public void ReplaceCurBulletType(string type)
     {
-        
+        var op = Addressables.LoadAssetAsync<GameObject>(type).WaitForCompletion();
+        curBulletPrefab = op;
     }
+
+    public void AddBulletType(string type)
+    {
+        var op = Addressables.LoadAssetAsync<GameObject>(type).WaitForCompletion();
+        bulletPrefabs.Add(op);
+        bulletPrefabLength++;
+    }
+
+    public GameObject GetRandomCurBulletPrefab()
+    {
+        //利用random的特性，有90%的基础概率直接是curcurBulletPrefab，10%的概率是bulletPrefabs中的随机一个
+        if (bulletPrefabLength==0 || UnityEngine.Random.Range(0, 10) < 9)
+        {
+            return curBulletPrefab;
+        }
+        else
+        {
+            return bulletPrefabs[UnityEngine.Random.Range(0, bulletPrefabLength)];
+        }
+    }
+
+    
 
 }

@@ -43,9 +43,14 @@ public class HRogueItemBase : MonoBehaviour
         }
         else if (rogueItemBaseAttribute.rogueItemKind == "Positive")
         {
-            this.gameObject.SetActive(false);
-            Destroy(this.gameObject, 0.5f);
+            SetActiveFalseAndDestroy(0.5f);
         }
+    }
+
+    private void SetActiveFalseAndDestroy(float time = 0f)
+    {
+        this.gameObject.SetActive(false);
+        Destroy(this.gameObject, time);
     }
 
     protected virtual void UseNegativeItem(string funcName, string funcParams)
@@ -63,8 +68,7 @@ public class HRogueItemBase : MonoBehaviour
         string attributeName = (string)paramList[0];
         float attributeValue = float.Parse(paramList[1]);
         HRoguePlayerAttributeAndItemManager.Instance.AddAttributeValue(attributeName, attributeValue);
-        this.gameObject.SetActive(false);
-        Destroy(this.gameObject, 0.5f);
+        SetActiveFalseAndDestroy(0.5f);
     }
 
     public void AddHeartOrShield(string funcParams)
@@ -75,9 +79,67 @@ public class HRogueItemBase : MonoBehaviour
         int attributeValue = int.Parse(paramList[1]);
         if (HRoguePlayerAttributeAndItemManager.Instance.AddHeartOrShield(attributeName, attributeValue))
         {
-            this.gameObject.SetActive(false);
-            Destroy(this.gameObject, 0.5f);
+            SetActiveFalseAndDestroy(0.5f);
         }
+    }
+
+    private void DecreaseMoney(string attributeName, int value)
+    {
+        switch (attributeName)
+        {
+            case "RogueXingqiong":
+                HItemCounter.Instance.RemoveItem("20000012", value);
+                break;
+            case "RogueXinyongdian":
+                HItemCounter.Instance.RemoveItem("20000013", value);
+                break;
+        }
+        SetActiveFalseAndDestroy(0.5f);
+    }
+
+    public void AddMoney(string funcParams)
+    {
+        string[] paramList = funcParams.Split(';');
+        string attributeName = (string)paramList[0];
+        int attributeValue = int.Parse(paramList[1]);
+        if (attributeValue < 0)
+        {
+            DecreaseMoney(attributeName, attributeValue);
+        }
+        switch (attributeName)
+        {
+            case "RogueXingqiong":
+                HItemCounter.Instance.AddItem("20000012", attributeValue);
+                break;
+            case "RogueXinyongdian":
+                HItemCounter.Instance.AddItem("20000013", attributeValue);
+                break;
+        }
+        SetActiveFalseAndDestroy(0.5f);
+    }
+
+    public void SetBillboardEffect()
+    {
+        if (rogueItemBaseAttribute.rogueItemIsImage)
+        {
+            getUI.GetComponentInParent<HRotateToPlayerCamera>().enabled = true;
+        }
+    }
+    
+    public void SetOrAddBulletType(string funcParams)
+    {
+        string[] paramList = funcParams.Split(';');
+        string operation = (string)paramList[0];
+        string bulletType = (string)paramList[1];
+        if (operation == "Replace")
+        {
+            HRoguePlayerAttributeAndItemManager.Instance.ReplaceCurBulletType(bulletType);
+        }
+        else if (operation == "Add")
+        {
+            HRoguePlayerAttributeAndItemManager.Instance.AddBulletType(bulletType);
+        }
+        SetActiveFalseAndDestroy(0.5f);
     }
     
     private void OnTriggerEnter(Collider other)
