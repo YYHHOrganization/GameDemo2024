@@ -292,6 +292,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         float effectTime = float.Parse(effectNameAndTimeArray[1]);
         //用反射找到effectName对应的函数
         System.Reflection.MethodInfo method = this.GetType().GetMethod(effectName);
+        StopCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
         StartCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
     }
 
