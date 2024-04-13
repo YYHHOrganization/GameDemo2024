@@ -141,3 +141,14 @@ public struct EnemyData
     public int enemyID;
     public string addressableLink;
 }
+
+public struct roomSpaceKeep
+{
+    //存储长和宽即可
+    public int width;
+    public int length;
+    //右上角坐标
+    public Vector2Int topRight;
+    //左下角坐标
+    public Vector2Int bottomLeft;
+}

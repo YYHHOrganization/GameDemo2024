@@ -345,6 +345,13 @@ public class YPlayModeController : MonoBehaviour
     public void SetRogueCharacterPlace()
     {
         Transform GeneratePlace = yPlanningTable.Instance.GetCharacterGeneratePlace(curLevelID);
+        // YRogueDungeonManager.Instance.SetflagGameBegin(true);
         curCharacter.transform.position = GeneratePlace.position;
+    }
+
+    public void SetRogueCharacterPlaceFarAway()
+    {
+        Vector3 pos = new Vector3(-400, 500, -400);
+        curCharacter.transform.position = pos;
     }
 }

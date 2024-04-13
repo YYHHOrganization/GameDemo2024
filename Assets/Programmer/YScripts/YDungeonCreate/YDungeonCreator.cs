@@ -66,12 +66,15 @@ public class YDungeonCreator : MonoBehaviour
         roomList = ListOfRooms.roomList;
         corridorList = ListOfRooms.corridorList;
         
+        //暂存一下space 用于mask
+        roomSpacesKeepList = generator.GetRoomSpacesKeep();
+        
         //创建房间类型
         YRouge_RoomType roomType = new YRouge_RoomType();
         roomType.GenerateRoomType(roomList);
         //生成Room的脚本
         YRouge_CreateItem createItem = new YRouge_CreateItem();
-        createItem.GenerateRoomScript(roomList,this.transform,originPosition);
+        createItem.GenerateRoomScript(roomList,this.transform,originPosition,roomSpacesKeepList);
         
         GameObject wallParent = new GameObject("WallParent");
         wallParent.transform.parent = transform;
@@ -415,6 +418,10 @@ public class YDungeonCreator : MonoBehaviour
             }
         }
     }
-    
-    
+
+    List<roomSpaceKeep> roomSpacesKeepList;
+    public List<roomSpaceKeep> GetRoomSpacesKeep()
+    {
+        return roomSpacesKeepList;
+    }
 }

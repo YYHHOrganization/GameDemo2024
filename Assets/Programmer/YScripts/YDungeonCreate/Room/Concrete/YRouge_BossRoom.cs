@@ -54,9 +54,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         
         
     }
-
     
-
     int dieEnemyCount = 0;
     private void AddListenerOfEnemy()
     {
@@ -93,7 +91,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         SetAllDoorsDown();//门打开
         //出现宝箱,或者掉落道具等等
         Vector3 treasurePos = transform.position + new Vector3(-2, 0, -2);
-        HOpenWorldTreasureManager.Instance.InstantiateATreasureAndSetInfoWithTypeId("10000012", transform.position, transform);
+        HOpenWorldTreasureManager.Instance.InstantiateATreasureAndSetInfoWithTypeId("10000012", treasurePos, transform);
         // boss 房 出现传送门
         //生成传送门
         //应该是一开始把所有都读进来，然后需要的时候再生成，比如有的是一开始就生成，有的是打完再生成，有的是进房间就生成等等
