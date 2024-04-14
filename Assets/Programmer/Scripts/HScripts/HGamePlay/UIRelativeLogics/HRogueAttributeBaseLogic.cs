@@ -42,6 +42,7 @@ public class HRogueAttributeBaseLogic : MonoBehaviour
     {
         
     }
+    
 
     public void SetRogueAttributeText()
     {
@@ -52,6 +53,11 @@ public class HRogueAttributeBaseLogic : MonoBehaviour
         bulletSpeed.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueBulletSpeed"].ToString();
         xingqiongText.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXingqiong"].ToString();
         xinyongdianText.text = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXinyongdian"].ToString();
+    }
+
+    public void ShowHeartAndShield(bool shouldShow)
+    {
+        heartAndShieldPanel.gameObject.SetActive(shouldShow);
     }
 
     public void SetHealthAndShieldOnUI()

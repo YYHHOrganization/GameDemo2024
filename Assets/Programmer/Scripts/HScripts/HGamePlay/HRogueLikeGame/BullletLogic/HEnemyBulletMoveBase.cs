@@ -12,6 +12,7 @@ public class HEnemyBulletMoveBase : MonoBehaviour
     void Start()
     {
         originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        //Destroy(gameObject, 10f);todo：有个bug就是偶尔敌人的子弹会一直追踪玩家，因为打不到东西不会destroy，看看后面要不要修这个bug
     }
 
     void Update()

@@ -24,6 +24,12 @@ public class YRogue_RoomAndItemManager : MonoBehaviour
         }
     }
 
+    public GameObject currentRoom;
+    public void SetCurRoom(GameObject room)
+    {
+        currentRoom = room;
+    }
+    
     List<RoomData> roomDataList;
     //读取表对应的东西，存入RoomData
     // 读取CSV文件并解析数据

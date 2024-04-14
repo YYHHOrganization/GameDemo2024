@@ -46,6 +46,13 @@ public class YRouge_RoomBase : MonoBehaviour
     BoxCollider boxCollider = null;
     int roomWidth;
     int roomLength;
+    
+    protected List<GameObject> enemies = new List<GameObject>();
+
+    public List<GameObject> Enemies
+    {
+        get { return enemies; }
+    }
     public void Start()
     {
         SetAllDoorsPosition();
@@ -129,6 +136,7 @@ public class YRouge_RoomBase : MonoBehaviour
     public virtual void SetResultOn()
     {
         // SetAllDoorsUp();
+        YRogue_RoomAndItemManager.Instance.SetCurRoom(gameObject);
     }
 
     // Update is called once per frame
