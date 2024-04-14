@@ -10,6 +10,7 @@ public class YRouge_BornRoom : YRouge_RoomBase
         roomType = RoomType.BornRoom;
         base.Start();
         
+        roomLittleMapMask.SetActive(false);
         //更新一下出生位置
         GameObject goBornPlace = new GameObject();
         goBornPlace.name = "RogueBornPlace";

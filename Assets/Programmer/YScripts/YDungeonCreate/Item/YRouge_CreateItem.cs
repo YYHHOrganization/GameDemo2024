@@ -53,17 +53,26 @@ public class YRouge_CreateItem
         //     
         // }
         YRouge_RoomBase roomBase = null;
-        if(roomNode.RoomType == RoomType.BattleRoom)
-        {
-            roomBase = roomGameObject.AddComponent<YRouge_BattleRoom>();
-        }
-        else if(roomNode.RoomType == RoomType.BornRoom)
+        
+        if(roomNode.RoomType == RoomType.BornRoom)
         {
             roomBase = roomGameObject.AddComponent<YRouge_BornRoom>();
+        }
+        else if(roomNode.RoomType == RoomType.BossRoom)
+        {
+            roomBase = roomGameObject.AddComponent<YRouge_BossRoom>();
         }
         else if(roomNode.RoomType == RoomType.ItemRoom)
         {
             roomBase = roomGameObject.AddComponent<YRouge_ItemRoom>();
+        }
+        else if(roomNode.RoomType == RoomType.AdventureRoom)
+        {
+            roomBase = roomGameObject.AddComponent<YRouge_AdventureRoom>();
+        }
+        else if(roomNode.RoomType == RoomType.ShopRoom)
+        {
+            roomBase = roomGameObject.AddComponent<YRouge_ShopRoom>();
         }
         else if(roomNode.RoomType == RoomType.GameRoom)
         {
@@ -73,18 +82,15 @@ public class YRouge_CreateItem
         {
             roomBase = roomGameObject.AddComponent<YRouge_ChallengeRoom>();
         }
-        // else if(roomNode.RoomType == RoomType.ShopRoom)
+        
+        // else if(roomNode.RoomType == RoomType.BattleRoom)
         // {
-        //     roomBase = roomGameObject.AddComponent<YRouge_ShopRoom>();
+        //     roomBase = roomGameObject.AddComponent<YRouge_BattleRoom>();
         // }
-        else if(roomNode.RoomType == RoomType.BossRoom)
-        {
-            roomBase = roomGameObject.AddComponent<YRouge_BossRoom>();
-        }
         else
         {
             //默认战斗房间 没做的先战斗吧
-            roomBase = roomGameObject.AddComponent<YRouge_ItemRoom>();
+            roomBase = roomGameObject.AddComponent<YRouge_BattleRoom>();
         }
         
         //相互赋值

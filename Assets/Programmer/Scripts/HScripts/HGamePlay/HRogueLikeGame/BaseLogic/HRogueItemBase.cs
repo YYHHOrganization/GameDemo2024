@@ -16,6 +16,14 @@ public class HRogueItemBase : MonoBehaviour
 
     private TMP_Text itemChineseName;
     private bool canShowName = false;
+
+    //如果是商店物品
+    private bool isShop = false;
+    //购买的货币
+    private string buyCurrency;
+    //货币数量 即价格
+    private int howMuch;
+    
     
     public void SetItemIDAndShow(string id, RogueItemBaseAttribute rogueItemAttribute)
     {
@@ -26,6 +34,19 @@ public class HRogueItemBase : MonoBehaviour
         isPickedUp = false;
         itemChineseName = getUI.transform.GetChild(1).GetComponent<TMP_Text>();
     }
+    public void SetItemIDAndShow(string id, RogueItemBaseAttribute rogueItemAttribute,bool isShop,string buyCurrency,int howMuch)
+    {
+        itemId = id;
+        rogueItemBaseAttribute = rogueItemAttribute;
+        getUI = transform.Find("ShowCanvas/Panel").gameObject;
+        getUI.gameObject.SetActive(false);
+        isPickedUp = false;
+        itemChineseName = getUI.transform.GetChild(1).GetComponent<TMP_Text>();
+        this.isShop = isShop;
+        this.buyCurrency = buyCurrency;
+        this.howMuch = howMuch;
+    }
+    
 
     protected virtual void GetToBagAndShowEffects()
     {
@@ -162,8 +183,18 @@ public class HRogueItemBase : MonoBehaviour
             }
             if (!isPickedUp && Input.GetKey(KeyCode.F))
             {
-                GetToBagAndShowEffects();
-                isPickedUp = true;
+                if (isShop)
+                {
+                    //如果是商店，那么就要 点击了F直接购买，扣除钱
+                    //同时应该判断钱是否够
+                    OnShopItemPickUp(buyCurrency, howMuch);
+                }
+                else
+                {
+                    GetToBagAndShowEffects();
+                    isPickedUp = true;
+                }
+               
             }
         }
     }
@@ -174,8 +205,17 @@ public class HRogueItemBase : MonoBehaviour
         {
             if (!isPickedUp && Input.GetKey(KeyCode.F))
             {
-                GetToBagAndShowEffects();
-                isPickedUp = true;
+                if (isShop)
+                {
+                    //如果是商店，那么就要 点击了F直接购买，扣除钱
+                    //同时应该判断钱是否够
+                    OnShopItemPickUp(buyCurrency, howMuch);
+                }
+                else
+                {
+                    GetToBagAndShowEffects();
+                    isPickedUp = true;
+                }
             }
         }
     }
@@ -191,6 +231,23 @@ public class HRogueItemBase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+    }
+    
+    void OnShopItemPickUp(string itemId, int count)
+    {
+        //如果是商店，那么就要 点击了F直接购买，扣除钱
+        //同时应该判断钱是否够
+        bool isEnough = HItemCounter.Instance.CheckAndRemoveItemInRogue(itemId, count);
+        if (isEnough)
+        {
+            GetToBagAndShowEffects();
+            isPickedUp = true;
+        }
+        else
+        {
+            HMessageShowMgr.Instance.ShowMessage("ROGUE_SHOP_NO_MONEY", "对不起我们不做慈善，你的钱不够啦！");
+        }
         
     }
 }

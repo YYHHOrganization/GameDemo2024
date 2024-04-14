@@ -10,6 +10,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
 
     List<GameObject> enemies = new List<GameObject>();
     GameObject EnemyParent;
+    Class_BattleRoomCSVFile battleRoomData;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,7 +42,6 @@ public class YRouge_BattleRoom : YRouge_RoomBase
             //然后应该去监听这个房间的怪是不是全死了
             //如果全死了就把门打开
             AddListenerOfEnemy();
-            
             // SetAllDoorsUp();//第一次进入房间门会关
         }
         
@@ -84,6 +84,33 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         SetAllDoorsDown();//门打开
         //出现宝箱,或者掉落道具等等
         HOpenWorldTreasureManager.Instance.InstantiateATreasureAndSetInfoWithTypeId("10000011", transform.position, transform);
+        
+        //按照概率生成道具
+        GenerateRoomItemDaojuNew();
+    }
+
+    private void GenerateRoomItemDaojuNew()
+    {
+        string[] DropItemIDs = battleRoomData._DropItemIDField().Split(':'); 
+        string[] DropItemProbabilitys = battleRoomData._DropItemIDProbabilityField().Split(':');
+        for (int i = 0; i < DropItemIDs.Length; i++)
+        {
+            float probability = float.Parse(DropItemProbabilitys[i]);
+            if (Random.Range(0, 1f) < probability)
+            {
+                string DropItemID = DropItemIDs[i];
+                Vector3 position = new Vector3(Random.Range(-7, 7), 0.3f, Random.Range(-7, 7));
+                if (DropItemID == "all")
+                {
+                    HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform, position);
+                }
+                else
+                {
+                    HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(DropItemID, transform,position);
+                }
+            }
+        }
+        
     }
 
 
@@ -96,7 +123,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         //test:全是蜘蛛
         // randomIndex = 3;//test!!!后面记得关掉
         
-        Class_BattleRoomCSVFile battleRoomData = SD_BattleRoomCSVFile.Class_Dic["6662000"+randomIndex];
+        battleRoomData = SD_BattleRoomCSVFile.Class_Dic["6662000"+randomIndex];
 
         //70000000;70000001
         string[] enemyIDs = battleRoomData._EnemyIDField().Split(';');

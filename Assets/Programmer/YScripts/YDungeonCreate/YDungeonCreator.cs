@@ -171,7 +171,7 @@ public class YDungeonCreator : MonoBehaviour
             for(int j = 0; j < roomDoorHorizontalPositions[i].Count; j++)
             {
                 GameObject doorParent = roomList[i].roomScript.gameObject;
-                CreateDoor(roomDoorHorizontalPositions[i][j], doorParent, doorHorizontal, i);
+                CreateHorizontalDoor(roomDoorHorizontalPositions[i][j], doorParent, doorHorizontal, i);
             }
         }
         for (int i = 0; i < roomDoorVerticalPositions.Count; i++)
@@ -179,12 +179,12 @@ public class YDungeonCreator : MonoBehaviour
             for(int j = 0; j < roomDoorVerticalPositions[i].Count; j++)
             {
                 GameObject doorParent = roomList[i].roomScript.gameObject;
-                CreateDoor(roomDoorVerticalPositions[i][j], doorParent, doorVertical, i);
+                CreateVerticalDoor(roomDoorVerticalPositions[i][j], doorParent, doorVertical, i);
             }
         }
     }
 
-    private void CreateDoor(Vector3Int doorPosition, GameObject doorParent, GameObject doorPrefab, int id)
+    private void CreateHorizontalDoor(Vector3Int doorPosition, GameObject doorParent, GameObject doorPrefab, int id)
     {
         // GameObject door = Instantiate(doorPrefab, doorPosition, Quaternion.identity,doorParent.transform);
         GameObject door = Instantiate(doorPrefab, doorPosition+originPosition, Quaternion.identity,doorParent.transform);
@@ -192,7 +192,18 @@ public class YDungeonCreator : MonoBehaviour
         YRouge_RoomBase roomBase = roomList[id].roomScript;
         if (roomBase != null)
         {
-            roomBase.doors.Add(door);
+            roomBase.horizontaldoors.Add(door);
+        }
+    }
+    private void CreateVerticalDoor(Vector3Int doorPosition, GameObject doorParent, GameObject doorPrefab, int id)
+    {
+        // GameObject door = Instantiate(doorPrefab, doorPosition, Quaternion.identity,doorParent.transform);
+        GameObject door = Instantiate(doorPrefab, doorPosition+originPosition, Quaternion.identity,doorParent.transform);
+        //将wall存入他相应的房间的wallList中
+        YRouge_RoomBase roomBase = roomList[id].roomScript;
+        if (roomBase != null)
+        {
+            roomBase.vertiacaldoors.Add(door);
         }
         
     }

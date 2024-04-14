@@ -248,6 +248,18 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
     }
     
+    public void RollingARandomItem(Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
+    {
+        int index = UnityEngine.Random.Range(0, yPlanningTable.Instance.rogueItemBases.Count);
+        string itemId = yPlanningTable.Instance.rogueItemKeys[index];
+        RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
+        string itemPrefabLink = rogueItemBaseAttribute.rogueItemPrefabLink;
+        GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
+        item.transform.position += biasposition;
+        //item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
+        item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute,isShop,buyCurrency,howMuch);
+    }
+    
 
     public void GiveOutAnFixedItem(string itemId)
     {
@@ -263,6 +275,14 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
         item.transform.position += biasposition;
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
+    }
+    public void GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
+    {
+        RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
+        string itemPrefabLink = rogueItemBaseAttribute.rogueItemPrefabLink;
+        GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
+        item.transform.position += biasposition;
+        item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute,isShop,buyCurrency,howMuch);
     }
 
     public void UsePositiveItem(string id)

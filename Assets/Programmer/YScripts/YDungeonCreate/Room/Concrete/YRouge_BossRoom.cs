@@ -22,7 +22,13 @@ public class YRouge_BossRoom : YRouge_RoomBase
         
         ReadBattleRoomData();
         
+        //生成Boss房的特殊门
+        GenerateBossSpecialDoor();
+        
     }
+
+    
+
     bool isFirstTimeInRoom = true;
     public override void SetResultOn()
     {
@@ -96,6 +102,30 @@ public class YRouge_BossRoom : YRouge_RoomBase
         //生成传送门
         //应该是一开始把所有都读进来，然后需要的时候再生成，比如有的是一开始就生成，有的是打完再生成，有的是进房间就生成等等
         GenerateOtherItems(bossRoomData);
+        GenerateRoomItemDaojuNew();
+    }
+    private void GenerateRoomItemDaojuNew()
+    {
+        string[] DropItemIDs = bossRoomData._DropItemIDField().Split(':'); 
+        string[] DropItemProbabilitys = bossRoomData._DropItemIDProbabilityField().Split(':');
+        for (int i = 0; i < DropItemIDs.Length; i++)
+        {
+            float probability = float.Parse(DropItemProbabilitys[i]);
+            if (Random.Range(0, 1f) < probability)
+            {
+                string DropItemID = DropItemIDs[i];
+                Vector3 position = new Vector3(Random.Range(-7, 7), 0.3f, Random.Range(-7, 7));
+                if (DropItemID == "all")
+                {
+                    HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform, position);
+                }
+                else
+                {
+                    HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(DropItemID, transform,position);
+                }
+            }
+        }
+        
     }
 
     private void GeneratePortal()
@@ -188,5 +218,30 @@ public class YRouge_BossRoom : YRouge_RoomBase
         }
         
     }
-    
+    private void GenerateBossSpecialDoor()
+    {
+        string AddLink = "YHorizontalDoorBoss";
+        //在所有门的位置生成特殊门 public List<GameObject> doors=new List<GameObject>();
+        foreach (var door in horizontaldoors)
+        {
+            
+            GameObject doorBoss = Addressables.InstantiateAsync(AddLink, transform).WaitForCompletion();
+            doorBoss.transform.position = new Vector3( door.transform.position.x, 0, door.transform.position.z);
+            doorBoss.transform.rotation = door.transform.rotation;
+            doorBoss.transform.parent = transform;
+            
+        }
+        
+        AddLink = "YVertiacalDoorBoss";
+        foreach (var door in vertiacaldoors)
+        {
+            GameObject doorBoss = Addressables.InstantiateAsync(AddLink, transform).WaitForCompletion();
+            doorBoss.transform.position = new Vector3( door.transform.position.x, 0, door.transform.position.z);
+            doorBoss.transform.rotation = door.transform.rotation;
+            doorBoss.transform.parent = transform;
+            
+        }
+        
+        //GameObject door = Addressables.InstantiateAsync(AddLink, transform).WaitForCompletion();
+    }
 }

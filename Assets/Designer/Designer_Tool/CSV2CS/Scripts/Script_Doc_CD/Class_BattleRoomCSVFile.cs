@@ -21,5 +21,15 @@ public class Class_BattleRoomCSVFile {
 		string value = EnemyCountField;
 		return value;
 	}
+	public string DropItemIDField { get; set; }    //有概率掉落的道具，也可能不掉
+	  public string _DropItemIDField (){
+		string value = DropItemIDField;
+		return value;
+	}
+	public string DropItemIDProbabilityField { get; set; }    //有概率掉落的道具，也可能不掉
+	  public string _DropItemIDProbabilityField (){
+		string value = DropItemIDProbabilityField;
+		return value;
+	}
 	}
 	

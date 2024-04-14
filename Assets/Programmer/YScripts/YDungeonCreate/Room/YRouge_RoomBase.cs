@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -34,7 +35,11 @@ public class YRouge_RoomBase : MonoBehaviour
     // }
     
     //如果门要下降 y-》localpos -10
-    public List<GameObject> doors=new List<GameObject>();
+    
+    // public List<GameObject> doors=new List<GameObject>();
+    public List<GameObject> horizontaldoors=new List<GameObject>();
+    public List<GameObject> vertiacaldoors=new List<GameObject>();
+    
     //doors get set
     // public List<GameObject> Doors
     // {
@@ -121,6 +126,14 @@ public class YRouge_RoomBase : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            SetResultOff();
+        }
+    }
+
     private void SetMaskOff()
     {
         Destroy(roomLittleMapMask);
@@ -130,18 +143,23 @@ public class YRouge_RoomBase : MonoBehaviour
     {
         // SetAllDoorsUp();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public virtual void SetResultOff()
     {
-        
+        // SetAllDoorsUp();
     }
+
+    
     
     //如果门要下降 y-》localpos -10
     //设置所有门的初始位置
     public void SetAllDoorsPosition()
     {
-        foreach (var door in doors)
+        foreach (var door in horizontaldoors)
+        {
+            door.transform.localPosition = new Vector3(door.transform.localPosition.x, -11, door.transform.localPosition.z);
+        }
+        foreach (var door in vertiacaldoors)
         {
             door.transform.localPosition = new Vector3(door.transform.localPosition.x, -11, door.transform.localPosition.z);
         }
@@ -149,7 +167,11 @@ public class YRouge_RoomBase : MonoBehaviour
     //让门上升
     public void SetAllDoorsUp()
     {
-        foreach (var door in doors)
+        foreach (var door in horizontaldoors)
+        {
+            door.transform.DOLocalMoveY(0, 1f).SetEase(Ease.OutBounce);
+        }
+        foreach (var door in vertiacaldoors)
         {
             door.transform.DOLocalMoveY(0, 1f).SetEase(Ease.OutBounce);
         }
@@ -157,7 +179,11 @@ public class YRouge_RoomBase : MonoBehaviour
     //让门下降
     public void SetAllDoorsDown()
     {
-        foreach (var door in doors)
+        foreach (var door in horizontaldoors)
+        {
+            door.transform.DOLocalMoveY(-11, 1f).SetEase(Ease.OutBounce);
+        }
+        foreach (var door in vertiacaldoors)
         {
             door.transform.DOLocalMoveY(-11, 1f).SetEase(Ease.OutBounce);
         }
