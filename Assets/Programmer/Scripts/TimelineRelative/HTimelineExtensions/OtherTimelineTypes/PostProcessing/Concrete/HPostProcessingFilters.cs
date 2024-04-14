@@ -190,4 +190,27 @@ public class HPostProcessingFilters : HPostProcessingBase
         List<int> shouldLerp = input.shouldLerp;
     }
 
+    public void SetPostProcessingWithNameAndTime(string effect, float time)
+    {
+        StartCoroutine(SetPostProcessingEffect(effect, time));
+
+    }
+
+    IEnumerator SetPostProcessingEffect(string effect, float time)
+    {
+        float originValue = 0f;
+        LensDistortion lensDistortion;
+        switch (effect)
+        {
+            case "xiaojingxi":
+                if(postProcessVolume.profile.TryGet<LensDistortion>(out lensDistortion))
+                {
+                    lensDistortion.intensity.value = 1f;
+                    yield return new WaitForSeconds(time);
+                    lensDistortion.intensity.value = originValue;
+                }
+                break;
+        }
+    }
+
 }

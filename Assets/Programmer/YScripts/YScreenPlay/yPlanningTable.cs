@@ -77,6 +77,7 @@ public class yPlanningTable : MonoBehaviour
     public List<string> postEffectTypes = new List<string>();
     public List<List<int>> postEffectShouldLerp = new List<List<int>>();
     //存储特效的结构体
+    public bool isCultural = false;
     public struct PostEffectStruct
     {
         public string effectName;
@@ -201,6 +202,10 @@ public class yPlanningTable : MonoBehaviour
     private void ReadRogueItemBaseAttributes()
     {
         string filePath = "Assets/Designer/CsvTable/RogueLike/RogueItemCSVFile.csv";
+        if (isCultural)
+        {
+            filePath = "Assets/Designer/CsvTable/RogueLike/RogueItemCSVFileCulture.csv";
+        }
         string[] fileData = File.ReadAllLines(filePath);
         for (int i = 3; i < fileData.Length; i++)
         {

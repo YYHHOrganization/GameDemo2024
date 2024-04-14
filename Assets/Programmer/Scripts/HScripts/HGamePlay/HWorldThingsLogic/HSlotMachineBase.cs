@@ -141,10 +141,10 @@ public class HSlotMachineBase : MonoBehaviour
             HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg",newContent);
         }
         
-        for(int i=0;i<rollResults.Count;i++)
-        {
-            Debug.Log("Slot " + i + " result is " + rollResults[i]);
-        }
+        // for(int i=0;i<rollResults.Count;i++)
+        // {
+        //     Debug.Log("Slot " + i + " result is " + rollResults[i]);
+        // }
     }
 
     IEnumerator PlayTheGame(List<int> rollResults)

@@ -6,8 +6,7 @@ using UnityEngine.AddressableAssets;
 
 public class YRouge_BossRoom : YRouge_RoomBase
 {
-
-    List<GameObject> enemies = new List<GameObject>();
+    
     GameObject EnemyParent;
     public Class_BossRoomCSVFile bossRoomData;
     // Start is called before the first frame update

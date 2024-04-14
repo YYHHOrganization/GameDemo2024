@@ -48,21 +48,28 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 
     public Dictionary<string, float> characterValueAttributes = new Dictionary<string, float>();
     public MyShootEnum characterBaseWeapon;
+    public List<string> attributesWithNoMoney = new List<string>();
 
     public void ResetEveryAttributeWithCharacter(RogueCharacterBaseAttribute characterBaseAttribute, int index, GameObject player)
     {
         characterValueAttributes.Clear();
         characterValueAttributes.Add("RogueMoveSpeed", characterBaseAttribute.rogueMoveSpeed);
+        attributesWithNoMoney.Add("RogueMoveSpeed");
         characterValueAttributes.Add("RogueShootRate", characterBaseAttribute.rogueShootRate);
+        attributesWithNoMoney.Add("RogueShootRate");
         characterValueAttributes.Add("RogueShootRange", characterBaseAttribute.rogueShootRange);
+        attributesWithNoMoney.Add("RogueShootRange");
         characterValueAttributes.Add("RogueBulletDamage", characterBaseAttribute.rogueBulletDamage);
+        attributesWithNoMoney.Add("RogueBulletDamage");
         characterValueAttributes.Add("RogueBulletSpeed", characterBaseAttribute.rogueBulletSpeed);
+        attributesWithNoMoney.Add("RogueBulletSpeed");
         characterValueAttributes.Add("RogueCharacterHealth", characterBaseAttribute.rogueCharacterHealth);
         characterValueAttributes.Add("RogueCharacterShield", characterBaseAttribute.rogueCharacterShield);
         characterValueAttributes.Add("RogueXingqiong", characterBaseAttribute.rogueStartXingqiong);
         characterValueAttributes.Add("RogueXinyongdian", characterBaseAttribute.rogueStartXinyongdian);
         characterValueAttributes.Add("RogueCharacterHealthUpperBound", characterBaseAttribute.rogueCharacterHealthUpperBoundBase);
         characterValueAttributes.Add("RogueCharacterCurDamage", characterBaseAttribute.rogueBulletDamage);
+        attributesWithNoMoney.Add("RogueCharacterCurDamage");
         characterBaseWeapon = characterBaseAttribute.RogueCharacterBaseWeapon;
         characterIndex = index;
         this.player = player;
@@ -71,6 +78,14 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 
         curBulletPrefab = Addressables.LoadAssetAsync<GameObject>("BasicBullet").WaitForCompletion();
         GiveOutOriginThing(characterBaseAttribute);
+    }
+
+    public void ShowHeartAndShield(bool show)
+    {
+        if (attributePanel != null)
+        {
+            attributePanel.uiTool.Get<HRogueAttributeBaseLogic>().ShowHeartAndShield(show);
+        }
     }
 
     //给出初始的物品
@@ -237,7 +252,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
     }
-    public void RollingARandomItem(Transform transform,Vector3 biasposition)
+    public GameObject RollingARandomItem(Transform transform,Vector3 biasposition)
     {
         int index = UnityEngine.Random.Range(0, yPlanningTable.Instance.rogueItemBases.Count);
         string itemId = yPlanningTable.Instance.rogueItemKeys[index];
@@ -246,6 +261,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
         item.transform.position += biasposition;
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
+        return item;
     }
     
     public void RollingARandomItem(Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
@@ -268,13 +284,14 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, player.transform).WaitForCompletion();
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
     }
-    public void GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition)
+    public GameObject GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition)
     {
         RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
         string itemPrefabLink = rogueItemBaseAttribute.rogueItemPrefabLink;
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
         item.transform.position += biasposition;
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
+        return item;
     }
     public void GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
     {
@@ -285,6 +302,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute,isShop,buyCurrency,howMuch);
     }
 
+
     public void UsePositiveItem(string id)
     {
         var positiveItem = yPlanningTable.Instance.rogueItemBases[id];
@@ -293,6 +311,37 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         //找到HRogueItemBase类型的类（不要用new的语法），调用funcName的函数，把funcParams传入进去
         System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
         method.Invoke(this, new object[] {funcParams});
+    }
+
+    public void GiveOutRuanmeiItem(string funcParams)
+    {
+        StartCoroutine(GiveOutItemForRuanmei(funcParams));
+    }
+
+    public void RollingAnItemThenUseImmediately(string id)
+    {
+        GameObject itemTmp = GiveOutAnFixedItem(id,player.transform,new Vector3(0,1000f,0));
+        HRogueItemBase itemBase = itemTmp.GetComponent<HRogueItemBase>();
+        itemBase.GetToBagAndShowEffects();
+    }
+
+    private IEnumerator GiveOutItemForRuanmei(string funcParams)
+    {
+        string[] paramList = funcParams.Split('!');
+        for (int i = 0; i < paramList.Length; i++)
+        {
+            string xingshen = paramList[i];
+            foreach(var item in yPlanningTable.Instance.rogueItemBases)
+            {
+                if (item.Value.rogueItemFollowXingshen == xingshen) 
+                {
+                    GameObject itemTmp = GiveOutAnFixedItem(item.Key,player.transform,new Vector3(0,1000f,0));
+                    HRogueItemBase itemBase = itemTmp.GetComponent<HRogueItemBase>();
+                    itemBase.GetToBagAndShowEffects();
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+        }
     }
     
     public void ShowAllNegativeItemName(string funcParams)
@@ -316,6 +365,24 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         System.Reflection.MethodInfo method = this.GetType().GetMethod(effectName);
         StopCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
         StartCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
+    }
+
+    public void Heiyuanbaihua(string funcParams)
+    {
+        //todo:还未完成
+        Debug.Log("Heiyuanbaihua!!!!");
+    }
+
+    public void HurtEveryEnemyInRoom(string funcParams)
+    {
+        //todo:还未完成
+        Debug.Log("HurtEveryEnemyInRoom!!!!");
+    }
+    
+    public void FrozenRoomEnemy(string funcParams)
+    {
+        //todo:还未完成
+        Debug.Log("FrozenRoomEnemy!!!!");
     }
 
     public IEnumerator RotatePlayer(float lastTime)

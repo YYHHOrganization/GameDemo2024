@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 
@@ -48,7 +49,7 @@ public class HRogueItemBase : MonoBehaviour
     }
     
 
-    protected virtual void GetToBagAndShowEffects()
+    public virtual void GetToBagAndShowEffects()
     {
         if (rogueItemBaseAttribute.rogueItemShowInBag) //需要显示在背包当中
         {
@@ -64,9 +65,10 @@ public class HRogueItemBase : MonoBehaviour
         }
         else if (rogueItemBaseAttribute.rogueItemKind == "Positive")
         {
-            SetActiveFalseAndDestroy(0.5f);
+            SetActiveFalseAndDestroy(5f);
         }
     }
+    
 
     private void SetActiveFalseAndDestroy(float time = 0f)
     {
@@ -89,7 +91,7 @@ public class HRogueItemBase : MonoBehaviour
         string attributeName = (string)paramList[0];
         float attributeValue = float.Parse(paramList[1]);
         HRoguePlayerAttributeAndItemManager.Instance.AddAttributeValue(attributeName, attributeValue);
-        SetActiveFalseAndDestroy(0.5f);
+        SetActiveFalseAndDestroy(5f);
     }
 
     public void AddHeartOrShield(string funcParams)
@@ -100,7 +102,7 @@ public class HRogueItemBase : MonoBehaviour
         int attributeValue = int.Parse(paramList[1]);
         if (HRoguePlayerAttributeAndItemManager.Instance.AddHeartOrShield(attributeName, attributeValue))
         {
-            SetActiveFalseAndDestroy(0.5f);
+            SetActiveFalseAndDestroy(5f);
         }
     }
 
@@ -115,7 +117,7 @@ public class HRogueItemBase : MonoBehaviour
                 HItemCounter.Instance.RemoveItem("20000013", value);
                 break;
         }
-        SetActiveFalseAndDestroy(0.5f);
+        SetActiveFalseAndDestroy(5f);
     }
 
     public void AddMoney(string funcParams)
@@ -136,15 +138,13 @@ public class HRogueItemBase : MonoBehaviour
                 HItemCounter.Instance.AddItem("20000013", attributeValue);
                 break;
         }
-        SetActiveFalseAndDestroy(0.5f);
+        SetActiveFalseAndDestroy(5f);
     }
 
     public void SetBillboardEffect()
     {
-        if (rogueItemBaseAttribute.rogueItemIsImage)
-        {
-            getUI.GetComponentInParent<HRotateToPlayerCamera>().enabled = true;
-        }
+        if (!getUI.GetComponentInParent<HRotateToPlayerCamera>()) return;
+        getUI.GetComponentInParent<HRotateToPlayerCamera>().enabled = true;
     }
     
     public void SetOrAddBulletType(string funcParams)
@@ -160,14 +160,211 @@ public class HRogueItemBase : MonoBehaviour
         {
             HRoguePlayerAttributeAndItemManager.Instance.AddBulletType(bulletType);
         }
+        SetActiveFalseAndDestroy(5f);
+    }
+    
+    # region 40~62
+
+    public void SetEveryItemName(string funcParams)
+    {
+        foreach (var item in yPlanningTable.Instance.rogueItemBases)
+        {
+            item.Value.rogueItemNameShowDefault = bool.Parse(funcParams);
+        }
+        SetActiveFalseAndDestroy(5f);
+    }
+
+    public void AddEnemyHealth(string funcParams)
+    {
+        string[] paramList = funcParams.Split(';');
+        float value = float.Parse(paramList[1]);
+        string type = paramList[0];
+        var enemy = SD_RogueEnemyCSVFile.Class_Dic;
+        //遍历敌人表，对每个敌人的生命值进行操作
+        if (type == "AddUpperHealth")
+        {
+            foreach (var enemyData in enemy)
+            {
+                string upperHealth = enemyData.Value.RogueEnemyStartHealth;
+                int changeHealth = (int)(float.Parse(upperHealth) + value);
+                if (changeHealth < 1) changeHealth = 1;
+                enemyData.Value.RogueEnemyStartHealth = changeHealth.ToString();
+            }
+        }
+        else if (type == "MultiplyUpperHealth")
+        {
+            foreach (var enemyData in enemy)
+            {
+                string upperHealth = enemyData.Value.RogueEnemyStartHealth;
+                int changeHealth = (int)(float.Parse(upperHealth) * value);
+                if (changeHealth < 1) changeHealth = 1;
+                enemyData.Value.RogueEnemyStartHealth = changeHealth.ToString();
+            }
+        }
+        SetActiveFalseAndDestroy(5f);
+    }
+
+    public void GetAllBlessWithKind(string funcParams)
+    {
+        HRoguePlayerAttributeAndItemManager.Instance.GiveOutRuanmeiItem(funcParams);
+        SetActiveFalseAndDestroy(5f);
+    }
+    
+    public void SetAttributeWithCertainLogic(string funcParams)
+    {
+        string[] paramList = funcParams.Split(';');
+        string logic = paramList[0];
+        int value = int.Parse(paramList[1]);
+        Dictionary<string, float> characterAttributes =
+            HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes;
+        List<string> attributes = HRoguePlayerAttributeAndItemManager.Instance.attributesWithNoMoney;
+        
+        switch (logic)
+        {
+            case "AddAll":
+                for (int i = 0; i < attributes.Count; i++)
+                {
+                    characterAttributes[attributes[i]] += value;
+                    if(characterAttributes[attributes[i]] < 1.0f)  //角色的各种普通属性的最小值是1
+                    {
+                        characterAttributes[attributes[i]] = 1.0f;
+                    }
+                }
+                break;
+            case "AddMin":
+                float minValue = float.MaxValue;
+                int minIndex = -1;
+                for (int i = 0; i < attributes.Count; i++)
+                {
+                    if (characterAttributes[attributes[i]] < minValue)
+                    {
+                        minValue = characterAttributes[attributes[i]];
+                        minIndex = i;
+                    }
+                }
+                characterAttributes[attributes[minIndex]] += value;
+                if(characterAttributes[attributes[minIndex]] < 1.0f) 
+                {
+                    characterAttributes[attributes[minIndex]] = 1.0f;
+                }
+                break;
+            case "AddMax":
+                float maxValue = float.MinValue;
+                int maxIndex = -1;
+                for (int i = 0; i < attributes.Count; i++)
+                {
+                    if (characterAttributes[attributes[i]] > maxValue)
+                    {
+                        maxValue = characterAttributes[attributes[i]];
+                        maxIndex = i;
+                    }
+                }
+                characterAttributes[attributes[maxIndex]] += value;
+                if(characterAttributes[attributes[maxIndex]] < 1.0f) 
+                {
+                    characterAttributes[attributes[maxIndex]] = 1.0f;
+                }
+                break;
+                
+            case "Avg":
+                float sumValue = 0;
+                for (int i = 0; i < attributes.Count; i++)
+                {
+                    sumValue += characterAttributes[attributes[i]];
+                }
+                float avgValue = sumValue / attributes.Count;
+                for(int i = 0; i < attributes.Count; i++)
+                {
+                    characterAttributes[attributes[i]] = avgValue;
+                    if(characterAttributes[attributes[i]] < 1.0f) 
+                    {
+                        characterAttributes[attributes[i]] = 1.0f;
+                    }
+                }
+
+                break;
+            
+            case "Random":
+                int randomIndex = UnityEngine.Random.Range(0, attributes.Count);
+                characterAttributes[attributes[randomIndex]] += value;
+                if(characterAttributes[attributes[randomIndex]] < 1.0f) 
+                {
+                    characterAttributes[attributes[randomIndex]] = 1.0f;
+                }
+                break;
+                
+        }
+        HRoguePlayerAttributeAndItemManager.Instance.UpdateEverythingInAttributePanel();
+        SetActiveFalseAndDestroy(5f);
+        
+    }
+
+    public void Yongdongguguzhong(string funcParams)
+    {
+        Debug.Log("Yongdongguguzhong");
+        //todo：还没有写完
+    }
+
+    public void SetShopItemPriceMultiply(string funcParams)
+    {
+        Debug.Log("SetShopItemPriceMultiply");
+        //todo：还没有写完
+    }
+
+    public void SetCameraPostProcessingEffect(string funcParams)
+    {
+        string[] paramList = funcParams.Split(';');
+        string funcName = paramList[0];
+        float lastTime = float.Parse(paramList[1]);
+        HPostProcessingFilters.Instance.SetPostProcessingWithNameAndTime(funcName,lastTime);
+        SetActiveFalseAndDestroy(5f); 
+    }
+    
+    public void Bishangshuangyan(string funcParams)
+    {
+        switch (funcParams)
+        {
+            case "Left":
+                HRoguePlayerAttributeAndItemManager.Instance.ShowHeartAndShield(false);
+                break;
+            case "None":
+                HRoguePlayerAttributeAndItemManager.Instance.ShowHeartAndShield(true);
+                break;
+            case "Both":
+                HRoguePlayerAttributeAndItemManager.Instance.ShowHeartAndShield(false);
+                break;
+        }
         SetActiveFalseAndDestroy(0.5f);
     }
+
+    public void GiveARandomItemWithIdRange(string funcParams)
+    {
+        string startId = funcParams.Split(':')[0];
+        string endId = funcParams.Split(':')[1];
+        int randomIndex = UnityEngine.Random.Range(int.Parse(startId), int.Parse(endId));
+        string randomId = randomIndex.ToString();
+        HRoguePlayerAttributeAndItemManager.Instance.RollingAnItemThenUseImmediately(randomId);
+        SetActiveFalseAndDestroy(0.5f);
+    }
+    
+    
+    public void HurtEveryEnemyInRoom(int value)
+    {
+        List<GameObject> enemies =
+            YRogue_RoomAndItemManager.Instance.currentRoom.GetComponent<YRouge_RoomBase>().Enemies;
+        if (enemies!=null && enemies.Count > 0)  //当前是战斗房
+        {
+            
+        }
+    }
+    
+    #endregion
     
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            getUI.GetComponentInParent<HRotateToPlayerCamera>().enabled = true;
+            //getUI.GetComponentInParent<HRotateToPlayerCamera>().enabled = true;
             getUI.gameObject.SetActive(true);
             if (itemChineseName)
             {
@@ -227,6 +424,8 @@ public class HRogueItemBase : MonoBehaviour
             getUI.gameObject.SetActive(false);
         }
     }
+    
+    
 
     // Update is called once per frame
     void Update()

@@ -9,6 +9,7 @@ using Debug = UnityEngine.Debug;
 public class YRouge_ItemRoom : YRouge_RoomBase
 {
     // Start is called before the first frame update
+    private List<GameObject> items = new List<GameObject>();
     void Start()
     {
         roomType = RoomType.ItemRoom;
@@ -52,7 +53,7 @@ public class YRouge_ItemRoom : YRouge_RoomBase
             for (int i = 0; i < itemCount; i++)
             {
                 int randomItemIndex = Random.Range(0, itemIDList.Count);
-                HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(itemIDList[randomItemIndex], transform,itemPosition[i]+new Vector3(0,0.5f,0));
+                items.Add(HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(itemIDList[randomItemIndex], transform,itemPosition[i]+new Vector3(0,0.5f,0)));
                 itemIDList.RemoveAt(randomItemIndex);
                 GenerateEffPlatform(transform,itemPosition[i]);
             }
@@ -65,7 +66,7 @@ public class YRouge_ItemRoom : YRouge_RoomBase
     {
         for (int i = 0; i < itemCount; i++)
         {
-            HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform,itemPosition[i]+new Vector3(0,0.5f,0));
+            items.Add(HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform,itemPosition[i]+new Vector3(0,0.5f,0)));
             GenerateEffPlatform(transform,itemPosition[i]);
         }
     }
@@ -138,5 +139,18 @@ public class YRouge_ItemRoom : YRouge_RoomBase
     void Update()
     {
         
+    }
+    
+    public override void SetResultOn()
+    {
+        base.SetResultOn();
+        //所有的道具Icon面向玩家
+        foreach (var item in items)
+        {
+            if (item!=null && item.GetComponent<HRogueItemBase>())
+            {
+                item.GetComponent<HRogueItemBase>().SetBillboardEffect();
+            }
+        }
     }
 }
