@@ -222,6 +222,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 
     private void SetPlayerDie()
     {
+        if (player.GetComponent<HPlayerStateMachine>().IsDie) return;
         player.GetComponent<HPlayerStateMachine>().IsDie = true;
         player.GetComponent<HTestCharacterShoot>().SetPlayerDie();
     }
@@ -322,7 +323,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     public GameObject GetRandomCurBulletPrefab()
     {
         //利用random的特性，有90%的基础概率直接是curcurBulletPrefab，10%的概率是bulletPrefabs中的随机一个
-        if (bulletPrefabLength==0 || UnityEngine.Random.Range(0, 10) < 9)
+        if (bulletPrefabLength==0 || UnityEngine.Random.Range(0, 100) < 80)
         {
             return curBulletPrefab;
         }

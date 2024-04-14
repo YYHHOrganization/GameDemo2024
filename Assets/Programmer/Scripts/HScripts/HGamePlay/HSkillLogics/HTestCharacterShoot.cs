@@ -124,10 +124,14 @@ public class HTestCharacterShoot : MonoBehaviour
     public void SetPlayerDie()
     {
         isPlayerDie = true;
+        ResetToNoShootStatus();
     }
     private void Update()
     {
-        if (isPlayerDie) return;
+        if (isPlayerDie)
+        {
+            return;
+        }
         if (Input.GetMouseButtonDown(0))
         {
             if (!canAimAndShoot)
@@ -147,12 +151,7 @@ public class HTestCharacterShoot : MonoBehaviour
         } 
         else if(Input.GetMouseButtonUp(0))
         {
-            thirdAimCamera.gameObject.SetActive(false);
-            aimTargetReticle.gameObject.SetActive(false);
-            SetOffShoot();
-            //FaceToPlayerCameraDirection();
-            StopAllCoroutines();
-            animator.SetLayerWeight(1,0);
+            ResetToNoShootStatus();
         }
         RotateCharacterWithMouse2();
         HandleContinueShoot();
@@ -173,6 +172,16 @@ public class HTestCharacterShoot : MonoBehaviour
             ShowWeaponChangeMessage();
         }
         
+    }
+
+    private void ResetToNoShootStatus()
+    {
+        thirdAimCamera.gameObject.SetActive(false);
+        aimTargetReticle.gameObject.SetActive(false);
+        SetOffShoot();
+        //FaceToPlayerCameraDirection();
+        StopAllCoroutines();
+        animator.SetLayerWeight(1,0);
     }
 
     bool shootContinueOn = false;
