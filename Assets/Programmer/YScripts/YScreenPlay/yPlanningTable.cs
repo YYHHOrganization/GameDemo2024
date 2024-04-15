@@ -229,6 +229,7 @@ public class yPlanningTable : MonoBehaviour
             rogueItemBaseAttribute.starLevel = int.Parse(rowData[14]);
             rogueItemBaseAttribute.itemFollowXingshenChinese = rowData[15];
             rogueItemBaseAttribute.rogueItemNameShowDefault = bool.Parse(rowData[16]);
+            rogueItemBaseAttribute.rogueItemUSEInScreen = bool.Parse(rowData[17]);
             
             rogueItemBases.Add(itemId, rogueItemBaseAttribute);
             rogueItemKeys.Add(itemId);

@@ -41,7 +41,7 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000037,RandomShootThunderBullet,雷电影的祝福：有较小概率发射雷电子弹,1,有较小概率发射雷电子弹，打到敌人触发触电效果（还没做完）,Negative,SetOrAddBulletType,Add;ThunderBullet,-1,AddThunderBulletIcon,false,leidianjiangjun,ThunderBulletPlayerPrefab,true,4,所属——巴尔泽布,false,false
 80000038,RemoveBulletWithThunder,纯美赐福：将子弹替换为雷属性颜色（伤害不变）,1,将子弹替换为紫色子弹，伤害不变,Negative,SetOrAddBulletType,Replace;PurpleBulletCommon,-1,ReplaceBulletIcon,false,chunmei,PurpleBulletPlayerPrefab,false,3,所属——伊德莉拉,false,false
 80000039,RandomShootStoneBullet,毁灭赐福：有较小概率发射陨石子弹,1,有较小概率发射陨石子弹，伤害+1,Negative,SetOrAddBulletType,Add;StoneBullet,-1,AddStoneBulletIcon,false,huimie,StoneBulletPlayerPrefab,true,4,所属——毁灭：纳努克,false,false
-80000040,RandomGiveSomePreciousItem,花火妙妙包：一定会给出令人难忘的物品,1,随机给出1~2个优质道具，好坏不知,Negative,GiveARandomItemWithIdRange,80000041:80000059,-1,huahuomiaomiaobaoIcon,true,huahuo,Huahuomiaomiaobao,true,5,所属——花火,true,false
+80000040,RandomGiveSomePreciousItem,花火妙妙包：一定会给出令人难忘的物品,1,随机给出1~2个优质道具，好坏不知,Negative,GiveARandomItemWithIdRange,80000041!80000059,-1,huahuomiaomiaobaoIcon,true,huahuo,Huahuomiaomiaobao,true,5,所属——花火,true,false
 80000041,DontShowAnyName,谜语人的聚会：屏蔽全部道具的名字,1,屏蔽全部主动道具和被动道具的名称,Negative,SetEveryItemName,false,-1,XiaokouchangkaiIcon,true,huanyu,ShowEveryItemFalse,true,5,所属——欢愉：阿哈,false,false
 80000042,ShowEveryItemName,智识赐福：显示全部道具名称,1,显示全部主动道具和被动道具的名称,Negative,SetEveryItemName,true,-1,XiaokouchangkaiIcon,true,zhishi,ShowEveryItemTrue,true,5,所属——智识：博识尊,false,false
 80000043,HurtRoomEnemyOne,主动道具：冥火大公的鞋,1,主动道具：使用时可以对全房间敌人造成1点伤害，每15s可使用一次,Positive,HurtEveryEnemyInRoom,-1;Time;15,-1,HurtEnemyInRoomIcon,true,huimie,MinghuoDagongShoe,true,5,所属——毁灭：纳努克,false,true
