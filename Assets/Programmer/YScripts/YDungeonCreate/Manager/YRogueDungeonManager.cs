@@ -63,4 +63,12 @@ public class YRogueDungeonManager : MonoBehaviour
     {
         flagGameBegin = b;
     }
+    
+    
+    //存储当前所有房间的script
+    public List<YRouge_RoomBase> roomBaseLists;
+    public List<YRouge_RoomBase> GetRoomBaseList()
+    {
+        return dungeonCreator.GetRoomBaseList();
+    }
 }

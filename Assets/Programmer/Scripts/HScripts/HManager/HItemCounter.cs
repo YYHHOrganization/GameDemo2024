@@ -90,6 +90,32 @@ public class HItemCounter : MonoBehaviour
             }
         }
     }
+    public bool CheckAndRemoveItemInRogue(string itemId, int count)
+    {
+        if (rogueItemCounts.ContainsKey(itemId))
+        {
+            //如果数量不够
+            if(rogueItemCounts[itemId] - count <0)
+            {
+                return false;
+            }
+            rogueItemCounts[itemId] -= count;
+            if (rogueItemCounts[itemId] <= 0)
+            {
+                rogueItemCounts.Remove(itemId);
+            }
+        }
+        else if(worldItemCounts.ContainsKey(itemId))
+        {
+            if(worldItemCounts[itemId] - count < 0)
+            {
+                return false;
+            }
+            RemoveItem(itemId, count);
+        }
+        
+        return true;
+    }
 
     public void AddItem(string itemId, int count)
     {

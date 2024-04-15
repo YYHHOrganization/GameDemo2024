@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using DG.Tweening;
+
 
 public class YRouge_RoomBase : MonoBehaviour
 {
@@ -34,7 +36,11 @@ public class YRouge_RoomBase : MonoBehaviour
     // }
     
     //如果门要下降 y-》localpos -10
-    public List<GameObject> doors=new List<GameObject>();
+    
+    // public List<GameObject> doors=new List<GameObject>();
+    public List<GameObject> horizontaldoors=new List<GameObject>();
+    public List<GameObject> vertiacaldoors=new List<GameObject>();
+    
     //doors get set
     // public List<GameObject> Doors
     // {
@@ -53,6 +59,8 @@ public class YRouge_RoomBase : MonoBehaviour
     {
         get { return enemies; }
     }
+    
+    bool isFirstTimeInRoom = true;
     public void Start()
     {
         SetAllDoorsPosition();
@@ -122,9 +130,32 @@ public class YRouge_RoomBase : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("玩家进入房间！！");
+            YRogue_RoomAndItemManager.Instance.SetCurRoom(gameObject);
             //玩家进入房间，房间的逻辑就会被激活
-            SetResultOn();
-            SetMaskOff();//后面这个要改为进入房间而不是激活房间的时候显示
+            EnterRoom();
+            
+            if (isFirstTimeInRoom)
+            {
+                SetMaskOff();//后面这个要改为进入房间而不是激活房间的时候显示
+                isFirstTimeInRoom = false;
+                YTriggerEvents.RaiseOnEnterRoomType(true,roomType);
+                // YTriggerEvents.OnEnterRoomType += EnterRoom; 启用监听时
+                FirstEnterRoom();
+                //触发进入房间事件
+            }
+        }
+    }
+
+    protected virtual void FirstEnterRoom()
+    {
+        
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            ExitRoom();
         }
     }
 
@@ -133,23 +164,27 @@ public class YRouge_RoomBase : MonoBehaviour
         Destroy(roomLittleMapMask);
     }
 
-    public virtual void SetResultOn()
+    public virtual void EnterRoom()
     {
         // SetAllDoorsUp();
-        YRogue_RoomAndItemManager.Instance.SetCurRoom(gameObject);
+    }
+    
+    public virtual void ExitRoom()
+    {
+        // SetAllDoorsUp();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     
     //如果门要下降 y-》localpos -10
     //设置所有门的初始位置
     public void SetAllDoorsPosition()
     {
-        foreach (var door in doors)
+        foreach (var door in horizontaldoors)
+        {
+            door.transform.localPosition = new Vector3(door.transform.localPosition.x, -11, door.transform.localPosition.z);
+        }
+        foreach (var door in vertiacaldoors)
         {
             door.transform.localPosition = new Vector3(door.transform.localPosition.x, -11, door.transform.localPosition.z);
         }
@@ -157,7 +192,11 @@ public class YRouge_RoomBase : MonoBehaviour
     //让门上升
     public void SetAllDoorsUp()
     {
-        foreach (var door in doors)
+        foreach (var door in horizontaldoors)
+        {
+            door.transform.DOLocalMoveY(0, 1f).SetEase(Ease.OutBounce);
+        }
+        foreach (var door in vertiacaldoors)
         {
             door.transform.DOLocalMoveY(0, 1f).SetEase(Ease.OutBounce);
         }
@@ -165,7 +204,11 @@ public class YRouge_RoomBase : MonoBehaviour
     //让门下降
     public void SetAllDoorsDown()
     {
-        foreach (var door in doors)
+        foreach (var door in horizontaldoors)
+        {
+            door.transform.DOLocalMoveY(-11, 1f).SetEase(Ease.OutBounce);
+        }
+        foreach (var door in vertiacaldoors)
         {
             door.transform.DOLocalMoveY(-11, 1f).SetEase(Ease.OutBounce);
         }
@@ -214,5 +257,36 @@ public class YRouge_RoomBase : MonoBehaviour
         
         
         
+    }
+
+    protected void GenerateFromItemIDArray(string[] itemIDArray, string[] itemCounts)
+    {
+        for (int i = 0; i < itemIDArray.Length; i++)
+        {
+            string[] itemCountRange = itemCounts[i].Split(':');
+            int minCount = int.Parse(itemCountRange[0]);
+            int maxCount = int.Parse(itemCountRange[1]);
+            int itemCount = Random.Range(minCount, maxCount);
+            
+            for(int j = 0; j < itemCount; j++)
+            {
+                string itemID = itemIDArray[i];
+                Class_RogueCommonItemCSVFile itemData = SD_RogueCommonItemCSVFile.Class_Dic[itemID];
+                string itemAddressLink =itemData.addressableLink;
+                GameObject item = Addressables.InstantiateAsync(itemAddressLink, transform).WaitForCompletion();
+                item.transform.parent = transform;
+                item.transform.position = transform.position;
+                if(itemData.GeneratePlace == "middle")
+                {
+                    item.transform.position = transform.position;
+                }
+                else if (itemData.GeneratePlace == "random")
+                {
+                    item.transform.position = transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
+                }
+            }
+            
+        }
+
     }
 }

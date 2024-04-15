@@ -141,9 +141,9 @@ public class YRouge_ItemRoom : YRouge_RoomBase
         
     }
     
-    public override void SetResultOn()
+    public override void EnterRoom()
     {
-        base.SetResultOn();
+        base.EnterRoom();
         //所有的道具Icon面向玩家
         foreach (var item in items)
         {

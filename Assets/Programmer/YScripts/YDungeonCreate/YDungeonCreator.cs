@@ -50,6 +50,8 @@ public class YDungeonCreator : MonoBehaviour
     
     List<YRoomNode> roomList ;
     List<YRouge_Node> corridorList ;
+    
+    List<YRouge_RoomBase> roomBaseList;
     public void CreateDungeon()
     {
         DestroyAllChildren();
@@ -74,7 +76,7 @@ public class YDungeonCreator : MonoBehaviour
         roomType.GenerateRoomType(roomList);
         //生成Room的脚本
         YRouge_CreateItem createItem = new YRouge_CreateItem();
-        createItem.GenerateRoomScript(roomList,this.transform,originPosition,roomSpacesKeepList);
+        roomBaseList = createItem.GenerateRoomScript(roomList,this.transform,originPosition,roomSpacesKeepList);
         
         GameObject wallParent = new GameObject("WallParent");
         wallParent.transform.parent = transform;
@@ -121,7 +123,11 @@ public class YDungeonCreator : MonoBehaviour
         //transform.position = new Vector3(-400, 0, -400);
         // BakeNavMesh();
     }
-
+    
+    public List<YRouge_RoomBase> GetRoomBaseList()
+    {
+        return roomBaseList;
+    }
     //NavMesh()
     public NavMeshSurface surface;
     public void BakeNavMesh()
@@ -171,7 +177,7 @@ public class YDungeonCreator : MonoBehaviour
             for(int j = 0; j < roomDoorHorizontalPositions[i].Count; j++)
             {
                 GameObject doorParent = roomList[i].roomScript.gameObject;
-                CreateDoor(roomDoorHorizontalPositions[i][j], doorParent, doorHorizontal, i);
+                CreateHorizontalDoor(roomDoorHorizontalPositions[i][j], doorParent, doorHorizontal, i);
             }
         }
         for (int i = 0; i < roomDoorVerticalPositions.Count; i++)
@@ -179,12 +185,12 @@ public class YDungeonCreator : MonoBehaviour
             for(int j = 0; j < roomDoorVerticalPositions[i].Count; j++)
             {
                 GameObject doorParent = roomList[i].roomScript.gameObject;
-                CreateDoor(roomDoorVerticalPositions[i][j], doorParent, doorVertical, i);
+                CreateVerticalDoor(roomDoorVerticalPositions[i][j], doorParent, doorVertical, i);
             }
         }
     }
 
-    private void CreateDoor(Vector3Int doorPosition, GameObject doorParent, GameObject doorPrefab, int id)
+    private void CreateHorizontalDoor(Vector3Int doorPosition, GameObject doorParent, GameObject doorPrefab, int id)
     {
         // GameObject door = Instantiate(doorPrefab, doorPosition, Quaternion.identity,doorParent.transform);
         GameObject door = Instantiate(doorPrefab, doorPosition+originPosition, Quaternion.identity,doorParent.transform);
@@ -192,7 +198,18 @@ public class YDungeonCreator : MonoBehaviour
         YRouge_RoomBase roomBase = roomList[id].roomScript;
         if (roomBase != null)
         {
-            roomBase.doors.Add(door);
+            roomBase.horizontaldoors.Add(door);
+        }
+    }
+    private void CreateVerticalDoor(Vector3Int doorPosition, GameObject doorParent, GameObject doorPrefab, int id)
+    {
+        // GameObject door = Instantiate(doorPrefab, doorPosition, Quaternion.identity,doorParent.transform);
+        GameObject door = Instantiate(doorPrefab, doorPosition+originPosition, Quaternion.identity,doorParent.transform);
+        //将wall存入他相应的房间的wallList中
+        YRouge_RoomBase roomBase = roomList[id].roomScript;
+        if (roomBase != null)
+        {
+            roomBase.vertiacaldoors.Add(door);
         }
         
     }

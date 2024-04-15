@@ -147,11 +147,19 @@ public class HUIRogueQuestionPage : MonoBehaviour
     private void ExitPanel()
     {
         HMessageShowMgr.Instance.ShowMessage("ANSWER_RIGHT_QUESTION_CNT", "您答对了" + correctCnt + "道题目！");
+        //trigger 宝箱出现，根据correctCnt给内容
+        GiveReward();
+        
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
         gameObject.transform.parent.parent.SetAsFirstSibling();
         gameObject.SetActive(false);
         this.transform.parent.gameObject.SetActive(false);
         Destroy(gameObject, 2f);
         YPlayModeController.Instance.LockPlayerInput(false);
+    }
+    
+    private void GiveReward()
+    {
+        YTriggerEvents.RaiseOnCompleteRoom(true, correctCnt);
     }
 }
