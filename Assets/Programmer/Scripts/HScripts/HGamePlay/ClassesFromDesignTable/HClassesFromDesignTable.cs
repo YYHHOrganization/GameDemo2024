@@ -62,6 +62,7 @@ public class RogueItemBaseAttribute
     public int starLevel;
     public string itemFollowXingshenChinese;
     public bool rogueItemNameShowDefault;
+    public bool rogueItemUSEInScreen; //是否为屏幕有快捷键的物品
 }
 
 public class HOpenWorldItemStruct

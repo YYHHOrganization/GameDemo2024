@@ -171,7 +171,16 @@ public class HTestCharacterShoot : MonoBehaviour
             currentShootClass = (currentShootClass + 1) % MyShootEnum.GetNames(typeof(MyShootEnum)).Length;
             ShowWeaponChangeMessage();
         }
-        
+
+        CheckIfCanUsePositiveScreenItem();
+    }
+
+    private void CheckIfCanUsePositiveScreenItem()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            HRogueItemFuncUtility.Instance.ReleasePositiveScreenItem();
+        }
     }
 
     private void ResetToNoShootStatus()

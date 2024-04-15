@@ -7,6 +7,12 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+public enum ScreenPositiveItemCheckType
+{
+    Time,
+    RoomCount,
+}
+
 public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 {
     //单例模式
@@ -20,6 +26,17 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     private int bulletPrefabLength = 0;
     private GameObject curBulletPrefab;
     public GameObject CurBulletPrefab => curBulletPrefab;
+    private GameObject curScreenPositiveItem; //todo:当前玩家拥有的主动道具，后面如果有多个，在切换的时候从一个List当中去读
+    
+    private string curScreenPositiveFunc;
+    private string curScreenPositiveFuncParams;
+    private Enum screenPositiveCheckType; //检查类型，比如说
+    private int curScreenPositiveItemRoomCounter;
+    private float curScreenPositiveItemTimeCounter;
+    
+    public string CurScreenPositiveFunc => curScreenPositiveFunc;
+    public string CurScreenPositiveFuncParams => curScreenPositiveFuncParams;
+    
     public static HRoguePlayerAttributeAndItemManager Instance
     {
         get
@@ -31,6 +48,11 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 
             return _instance;
         }
+    }
+
+    public GameObject GetPlayer()
+    {
+        return player;
     }
     
 
@@ -308,6 +330,30 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
         return item;
     }
+
+    //添加屏幕主动道具的类型
+    public void SetScreenPositiveItem(string funcName, string funcParams)
+    {
+        curScreenPositiveFunc = funcName;
+        curScreenPositiveFuncParams = funcParams;
+        string[] strs = funcParams.Split(';');
+        if (strs[0] == "Time")
+        {
+            screenPositiveCheckType = ScreenPositiveItemCheckType.Time;
+            curScreenPositiveItemTimeCounter = float.Parse(strs[1]);
+            
+        }
+        else if (strs[0] == "RoomCount")
+        {
+            screenPositiveCheckType = ScreenPositiveItemCheckType.RoomCount;
+            curScreenPositiveItemRoomCounter = int.Parse(strs[1]);
+        }
+
+        string realFuncParams = strs[2];
+        HRogueItemFuncUtility.Instance.RegisterEnterNewRoomPositiveFuncWithCounter(funcName, realFuncParams);
+        
+    }
+    
     public GameObject GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
     {
         RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
@@ -317,16 +363,18 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute,isShop,buyCurrency,howMuch);
         return item;
     }
-
-
+    
     public void UsePositiveItem(string id)
     {
         var positiveItem = yPlanningTable.Instance.rogueItemBases[id];
         string funcName = positiveItem.rogueItemFunc;
         string funcParams = positiveItem.rogueItemFuncParams;
-        //找到HRogueItemBase类型的类（不要用new的语法），调用funcName的函数，把funcParams传入进去
-        System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
-        method.Invoke(this, new object[] {funcParams});
+        string[] funcs = funcName.Split(':');
+        string[] funcParamArray = funcParams.Split(':');
+        for(int i=0;i<funcs.Length;i++)
+        {
+            HRogueItemFuncUtility.Instance.UsePositiveItemInBag(funcs[i], funcParamArray[i]);
+        }
     }
 
     public void GiveOutRuanmeiItem(string funcParams)
@@ -360,55 +408,6 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         }
     }
     
-    public void ShowAllNegativeItemName(string funcParams)
-    {
-        Debug.Log("now we are in ShowAllNegativeItemNameFunc");
-        foreach (var item in yPlanningTable.Instance.rogueItemBases)
-        {
-            if (item.Value.rogueItemKind == "Negative")
-            {
-                item.Value.rogueItemNameShowDefault = true;
-            }
-        }
-    }
-    
-    public void ShowEffectWithNameAndTime(string effectNameAndTime)
-    {
-        string[] effectNameAndTimeArray = effectNameAndTime.Split(';');
-        string effectName = effectNameAndTimeArray[0];
-        float effectTime = float.Parse(effectNameAndTimeArray[1]);
-        //用反射找到effectName对应的函数
-        System.Reflection.MethodInfo method = this.GetType().GetMethod(effectName);
-        StopCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
-        StartCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
-    }
-
-    public void Heiyuanbaihua(string funcParams)
-    {
-        //todo:还未完成
-        Debug.Log("Heiyuanbaihua!!!!");
-    }
-
-    public void HurtEveryEnemyInRoom(string funcParams)
-    {
-        //todo:还未完成
-        Debug.Log("HurtEveryEnemyInRoom!!!!");
-    }
-    
-    public void FrozenRoomEnemy(string funcParams)
-    {
-        //todo:还未完成
-        Debug.Log("FrozenRoomEnemy!!!!");
-    }
-
-    public IEnumerator RotatePlayer(float lastTime)
-    {
-        Debug.Log("RotatePlayer!!!!");
-        //保存Player的旋转参数，然后旋转180度，过lastTime之后复原
-        player.transform.DOLocalRotate(new Vector3(180, 0, 0), 2f, RotateMode.LocalAxisAdd);
-        yield return new WaitForSeconds(lastTime);
-        player.transform.DOLocalRotate(new Vector3(180, 0, 0), 2f, RotateMode.LocalAxisAdd);
-    }
 
     public void ReplaceCurBulletType(string type)
     {

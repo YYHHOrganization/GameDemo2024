@@ -92,10 +92,11 @@ public class HItemCounter : MonoBehaviour
     }
     public bool CheckAndRemoveItemInRogue(string itemId, int count)
     {
+        if(count<=0) return true;
         if (rogueItemCounts.ContainsKey(itemId))
         {
             //如果数量不够
-            if(rogueItemCounts[itemId] - count <0)
+            if(rogueItemCounts[itemId] - count < 0)
             {
                 return false;
             }
@@ -103,6 +104,7 @@ public class HItemCounter : MonoBehaviour
             if (rogueItemCounts[itemId] <= 0)
             {
                 rogueItemCounts.Remove(itemId);
+                return true;
             }
         }
         else if(worldItemCounts.ContainsKey(itemId))
@@ -112,9 +114,10 @@ public class HItemCounter : MonoBehaviour
                 return false;
             }
             RemoveItem(itemId, count);
+            return true;
         }
         
-        return true;
+        return false;
     }
 
     public void AddItem(string itemId, int count)

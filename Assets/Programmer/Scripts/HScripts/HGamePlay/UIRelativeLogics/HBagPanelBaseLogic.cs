@@ -64,10 +64,10 @@ public class HBagPanelBaseLogic : MonoBehaviour
     private void InstantiateAllRogueItems()
     {
         int itemKindCount = HItemCounter.Instance.GetRogueDictLength();
-        if (itemKindCount == 0)
-        {
-            ShowItemDetailNothing();
-        }
+        // if (itemKindCount == 0)
+        // {
+        //     ShowItemDetailNothing();
+        // }
         Dictionary<string, int> rogueItemCounts = HItemCounter.Instance.RogueItemCounts;
         bool isFirstItem = true;
         foreach (var item in rogueItemCounts)
@@ -104,6 +104,7 @@ public class HBagPanelBaseLogic : MonoBehaviour
     private void RefleshBagPanel()
     {
         RemoveAndDestroyAllChildren(ItemContent.transform);
+        rogueItemUseButton.onClick.RemoveAllListeners();
         InstantiateAllItems();
         InstantiateAllRogueItems();
     }
@@ -249,7 +250,7 @@ public class HBagPanelBaseLogic : MonoBehaviour
                 break;
         }
         itemDescriptionCount.text = "×" + itemCount.ToString();
-        if (thisItem.rogueItemKind == "Positive")
+        if (thisItem.rogueItemKind == "Positive" && !thisItem.rogueItemUSEInScreen)
         {
             rogueItemUseButton.gameObject.SetActive(true);
         }
