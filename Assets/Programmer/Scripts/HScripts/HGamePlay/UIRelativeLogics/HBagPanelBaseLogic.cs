@@ -104,6 +104,7 @@ public class HBagPanelBaseLogic : MonoBehaviour
     private void RefleshBagPanel()
     {
         RemoveAndDestroyAllChildren(ItemContent.transform);
+        rogueItemUseButton.onClick.RemoveAllListeners();
         InstantiateAllItems();
         InstantiateAllRogueItems();
     }

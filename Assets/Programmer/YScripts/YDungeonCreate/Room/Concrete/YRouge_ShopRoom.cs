@@ -14,7 +14,14 @@ public class YRouge_ShopRoom : YRouge_RoomBase
         
         ReadItemRoomData();
     }
-    private string buyCurrency = "20000013";//"信用点";
+    private string buyCurrency;//"信用点";
+
+    public struct MyShopItem
+    {
+        public GameObject ShopItem;
+        public YShopPlatformRogue UI;
+    }
+    public List<MyShopItem> shopItems = new List<MyShopItem>();
     private void ReadItemRoomData()
     {
         //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
@@ -70,13 +77,22 @@ public class YRouge_ShopRoom : YRouge_RoomBase
                         buyCurrency:buyCurrency,
                         howMuch:CurrencyCount);
                 itemIDList.RemoveAt(randomItemIndex);
-                GenerateEffPlatform(transform,itemPosition[i],buyCurrency:buyCurrency,price:CurrencyCount);
+                YShopPlatformRogue shopPlatformRogue= GenerateEffPlatform(transform,itemPosition[i],buyCurrency:buyCurrency,price:CurrencyCount);
                 obj.GetComponent<HRogueItemBase>().SetBillboardEffect();
+
+                AddshopItem(obj,shopPlatformRogue);
             }
         }
         //生成道具
 
     }
+
+    private void AddshopItem(GameObject o,YShopPlatformRogue shopPlatformRogue)
+    {
+        shopItems.Add(new MyShopItem(){ShopItem = o,UI = shopPlatformRogue});
+    }
+    
+
     int iSeed = 10;
     private int GenerateShopCurrencyCount(string shopCurrencyCount)
     {
@@ -131,8 +147,9 @@ public class YRouge_ShopRoom : YRouge_RoomBase
                     isShop:true,
                     buyCurrency:buyCurrency,
                     howMuch:CurrencyCount);
-            GenerateEffPlatform(transform,itemPosition[i],buyCurrency:buyCurrency,price:CurrencyCount);
+            YShopPlatformRogue ShopPlatformRogue= GenerateEffPlatform(transform,itemPosition[i],buyCurrency:buyCurrency,price:CurrencyCount);
             obj.GetComponent<HRogueItemBase>().SetBillboardEffect();
+            AddshopItem(obj,ShopPlatformRogue);
         }
     }
 
@@ -185,7 +202,7 @@ public class YRouge_ShopRoom : YRouge_RoomBase
         return null;
     }
 
-    private void GenerateEffPlatform(Transform parent,Vector3 pos,int price,string buyCurrency)
+    private YShopPlatformRogue GenerateEffPlatform(Transform parent,Vector3 pos,int price,string buyCurrency)
     {
         // YPlatformRogue
         string AddLink = "YShopPlatformRogue";//"YPlatformRogue";
@@ -209,7 +226,9 @@ public class YRouge_ShopRoom : YRouge_RoomBase
         // //给这个shopplatform更改一下价格str
         // string priceStr = Random.Range(1, 10).ToString();//随机生成一个价格，但其实应该从item表格读取
         // priceStr = priceStr + "\n信\n用\n点";
-        itemEffPlatform.GetComponent<YShopPlatformRogue>().SetPriceStr(priceStr);
+        YShopPlatformRogue itemEffPlatformObj = itemEffPlatform.GetComponent<YShopPlatformRogue>();
+        itemEffPlatformObj.SetPriceStr(priceStr);
+        return itemEffPlatformObj;
     }
 
     private void testSpecialRoom()
@@ -219,9 +238,34 @@ public class YRouge_ShopRoom : YRouge_RoomBase
         HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(itemRoomData.ItemIDField, transform,new Vector3(0,0.3f,0));
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdatePrices(string currency, float multiplier)
     {
-        
+        foreach (var item in shopItems)
+        {
+            if(!item.ShopItem) continue;
+            HRogueItemBase obj = item.ShopItem.GetComponent<HRogueItemBase>();
+            string objCurrency = obj.BuyCurrency;
+            if(currency == objCurrency || currency == "all")
+            {
+                //todo:如果是rouge道具表，就再说吧
+                string currencyName = yPlanningTable.Instance.worldItems[objCurrency].chineseName;
+                int price = obj.HowMuch;
+                price = (int)(price * multiplier);
+                string priceStr = "<size=50%>" + price + "</size>";
+                if (multiplier > 1)
+                {
+                    priceStr = "<size=100%><color=red>"+price+ "</size></color>" + "\n" + currencyName;
+                }
+                else
+                {
+                    //13 114 0
+                    priceStr = "<size=100%><color=#0D7200>"+price+ "</size></color>" + "\n" + currencyName;
+                }
+                item.UI.SetPriceStr(priceStr);
+                obj.SetPrice(price);
+            }
+            
+        }
     }
+   
 }

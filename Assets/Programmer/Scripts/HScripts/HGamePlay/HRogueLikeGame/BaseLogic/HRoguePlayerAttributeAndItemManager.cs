@@ -7,6 +7,12 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+public enum ScreenPositiveItemCheckType
+{
+    Time,
+    RoomCount,
+}
+
 public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 {
     //单例模式
@@ -21,6 +27,16 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     private GameObject curBulletPrefab;
     public GameObject CurBulletPrefab => curBulletPrefab;
     private GameObject curScreenPositiveItem; //todo:当前玩家拥有的主动道具，后面如果有多个，在切换的时候从一个List当中去读
+    
+    private string curScreenPositiveFunc;
+    private string curScreenPositiveFuncParams;
+    private Enum screenPositiveCheckType; //检查类型，比如说
+    private int curScreenPositiveItemRoomCounter;
+    private float curScreenPositiveItemTimeCounter;
+    
+    public string CurScreenPositiveFunc => curScreenPositiveFunc;
+    public string CurScreenPositiveFuncParams => curScreenPositiveFuncParams;
+    
     public static HRoguePlayerAttributeAndItemManager Instance
     {
         get
@@ -315,9 +331,27 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         return item;
     }
 
-    public void AddScreenPositiveItem(string id)
+    //添加屏幕主动道具的类型
+    public void SetScreenPositiveItem(string funcName, string funcParams)
     {
-        //curScreenPositiveItem = 
+        curScreenPositiveFunc = funcName;
+        curScreenPositiveFuncParams = funcParams;
+        string[] strs = funcParams.Split(';');
+        if (strs[0] == "Time")
+        {
+            screenPositiveCheckType = ScreenPositiveItemCheckType.Time;
+            curScreenPositiveItemTimeCounter = float.Parse(strs[1]);
+            
+        }
+        else if (strs[0] == "RoomCount")
+        {
+            screenPositiveCheckType = ScreenPositiveItemCheckType.RoomCount;
+            curScreenPositiveItemRoomCounter = int.Parse(strs[1]);
+        }
+
+        string realFuncParams = strs[2];
+        HRogueItemFuncUtility.Instance.RegisterEnterNewRoomPositiveFuncWithCounter(funcName, realFuncParams);
+        
     }
     
     public GameObject GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)

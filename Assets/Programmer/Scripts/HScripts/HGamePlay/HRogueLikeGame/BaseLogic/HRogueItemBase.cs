@@ -22,9 +22,15 @@ public class HRogueItemBase : MonoBehaviour
     private bool isShop = false;
     //购买的货币
     private string buyCurrency;
+    public string BuyCurrency => buyCurrency; 
+    public int HowMuch => howMuch;
     //货币数量 即价格
     private int howMuch;
-    
+
+    public void SetPrice(int price)
+    {
+        howMuch = price;
+    }
     
     public void SetItemIDAndShow(string id, RogueItemBaseAttribute rogueItemAttribute)
     {
@@ -72,8 +78,10 @@ public class HRogueItemBase : MonoBehaviour
             }
             else
             {
+                string funcName = rogueItemBaseAttribute.rogueItemFunc;
+                string funcParams = rogueItemBaseAttribute.rogueItemFuncParams;
                 //这种主动道具需要在屏幕上显示，等待玩家使用
-                //HRoguePlayerAttributeAndItemManager.Instance.AddScreenPositiveItem(itemId);
+                HRoguePlayerAttributeAndItemManager.Instance.SetScreenPositiveItem(funcName, funcParams);
                 SetActiveFalseAndDestroy(0.5f);
             }
         }

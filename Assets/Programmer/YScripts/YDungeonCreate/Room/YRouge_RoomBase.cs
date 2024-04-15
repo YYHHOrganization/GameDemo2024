@@ -10,15 +10,24 @@ public class YRouge_RoomBase : MonoBehaviour
 {
     public YRoomNode roomNode;
     protected RoomType roomType;
+    public RoomType RoomType
+    {
+        get => roomType;
+    }
     protected RoomData roomData;
     
     //房间的初始space
     roomSpaceKeep roomSpaceKeep;
     protected GameObject roomLittleMapMask;
+    public GameObject RoomLittleMapMask
+    {
+        get => roomLittleMapMask;
+    }
     public void SetRoomNodeSpace(roomSpaceKeep roomSpaceKeep)
     {
         this.roomSpaceKeep = roomSpaceKeep;
     }
+    
     
     private GameObject floor;
     //floor get set
@@ -161,7 +170,8 @@ public class YRouge_RoomBase : MonoBehaviour
 
     private void SetMaskOff()
     {
-        Destroy(roomLittleMapMask);
+        //Destroy(roomLittleMapMask);
+        roomLittleMapMask.gameObject.SetActive(false);
     }
 
     public virtual void EnterRoom()

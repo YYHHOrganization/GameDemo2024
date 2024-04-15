@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using Random = UnityEngine.Random;
 
 public class HRogueItemFuncUtility : MonoBehaviour
 {
@@ -24,6 +27,12 @@ public class HRogueItemFuncUtility : MonoBehaviour
     {
         instance = this;
     }
+    
+    private Dictionary<string, string> enterNewRoomEffects = new Dictionary<string, string>();
+    private Dictionary<string, int> enterNewRoomEffectsCounter = new Dictionary<string, int>();
+    private Dictionary<string, int> enterNewRoomPositiveItemCounter = new Dictionary<string, int>();
+    private Dictionary<string, string> positiveItemEffects = new Dictionary<string, string>();
+    private bool couldUsePositiveScreenItem = false;
     
     //根据道具的功能字符串，返回对应的功能
     public void UseNegativeItem(string funcName, string funcParams)
@@ -238,20 +247,124 @@ public class HRogueItemFuncUtility : MonoBehaviour
         
     }
 
-    public void Yongdongguguzhong(string funcParams)
+    private bool firstRegistEnterNewRoomFunc = true;
+    private bool firstRegistEnterNewRoomPositiveFunc = true;
+    public void RegisterEnterNewRoomFunc(string funcParams)
     {
-        Debug.Log("Yongdongguguzhong");
-        //todo：还没有写完
+        string registerFunc = funcParams.Split('!')[0];
+        string Funcparams = funcParams.Split('!')[1];
+        if (firstRegistEnterNewRoomFunc)
+        {
+            YTriggerEvents.OnEnterRoomType += EnterNewRoomEffect;
+            firstRegistEnterNewRoomFunc = false;
+        }
+        
+        enterNewRoomEffects.Add(registerFunc, Funcparams);
+    }
+    
+    public void RegisterEnterNewRoomPositiveFuncWithCounter(string funcName, string funcParams)
+    {
+        if (enterNewRoomPositiveItemCounter.ContainsKey(funcName)) return;
+        enterNewRoomPositiveItemCounter.Add(funcName, 0);
+        if (firstRegistEnterNewRoomPositiveFunc)
+        {
+            YTriggerEvents.OnEnterRoomType += EnterNewRoomForPositiveItem;
+            firstRegistEnterNewRoomPositiveFunc = false;
+        }
+        
+        positiveItemEffects.Add(funcName, funcParams);
+    }
+    
+    private void EnterNewRoomForPositiveItem(object sender,YTriggerEnterRoomTypeEventArgs e)
+    {
+        string funcName = HRoguePlayerAttributeAndItemManager.Instance.CurScreenPositiveFunc;
+        enterNewRoomPositiveItemCounter[funcName]++;
+        Debug.Log("EnterNewRomm!! " + funcName + "    " + enterNewRoomPositiveItemCounter[funcName]);
+    }
+    
+    public void YongdongguguzhongEffect(string funcParams)
+    {
+        //这里写扣除信用点的效果
+        string[] parameters = funcParams.Split(";");
+        string moneyType = parameters[0];
+        float multiplier = float.Parse(parameters[1]);
+        int decreaseMoney = (int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueXinyongdian"];
+        DecreaseMoney(moneyType, (int)(decreaseMoney * (1-multiplier)));
+    }
+
+    // public bool canUsePositiveScreenItem()
+    // {
+    //     string curPositiveFunc = HRoguePlayerAttributeAndItemManager.Instance.CurScreenPositiveFunc;
+    //     if(enterNewRoomPositiveItemCounter[curPositiveFunc])
+    // }
+
+    //当角色释放这个技能的时候，就会触发这个函数
+    public void ReleasePositiveScreenItem()  //释放所有的屏幕上的主动道具技能
+    {
+        foreach (var effect in positiveItemEffects)
+        {
+            System.Reflection.MethodInfo method = this.GetType().GetMethod(effect.Key);
+            method.Invoke(this, new object[] {effect.Value});
+        }
+    }
+
+    public void HeiyuanbaihuaEffect(string funcParams)
+    {
+        int heiyuanbaihuaUseCnt = enterNewRoomPositiveItemCounter["HeiyuanbaihuaEffect"];
+        Debug.Log("Heiyuanbaihua!! " + heiyuanbaihuaUseCnt);
+        if (heiyuanbaihuaUseCnt < 5)
+        {
+            return;
+        }
+        else
+        {
+            enterNewRoomPositiveItemCounter["HeiyuanbaihuaEffect"] = 0;
+            int randomNum = Random.Range(0, 100);
+            if (randomNum <= 80) //恢复半心，20%扣除半心
+            {
+                AddHeartOrShield("Health;1");
+            }
+            else
+            {
+                AddHeartOrShield("Health;-1");
+            }
+        }
+    }
+
+    private void EnterNewRoomEffect(object sender,YTriggerEnterRoomTypeEventArgs e)
+    {
+        foreach (var effect in enterNewRoomEffects)
+        {
+            System.Reflection.MethodInfo method = this.GetType().GetMethod(effect.Key);
+            method.Invoke(this, new object[] {effect.Value});
+        }
+        //如果有计数器的效果，就要对计数器进行操作
+        // foreach (var effect in enterNewRoomEffectsCounter)
+        // {
+        //     enterNewRoomEffectsCounter[effect.Key]++;
+        // }
+        
     }
 
     public void SetShopItemPriceMultiply(string funcParams)
     {
-        Debug.Log("SetShopItemPriceMultiply");
-        //todo：还没有写完
+        string priceId = funcParams.Split(';')[0];
+        float multiplyValue = float.Parse(funcParams.Split(';')[1]);
+        List<YRouge_RoomBase> room = YRogueDungeonManager.Instance.GetRoomBaseList();
+        foreach (var roomBase in room)
+        {
+            if (roomBase.RoomType == RoomType.ShopRoom)
+            {
+                YRouge_ShopRoom shopRoom = roomBase.GetComponent<YRouge_ShopRoom>();
+                shopRoom.UpdatePrices(priceId, multiplyValue);
+            }
+        }
     }
 
     public void SetCameraPostProcessingEffect(string funcParams)
     {
+        int randomNumber = Random.Range(0, 100);
+        if (randomNumber <= 80) return;
         string[] paramList = funcParams.Split(';');
         string funcName = paramList[0];
         float lastTime = float.Parse(paramList[1]);
@@ -265,13 +378,40 @@ public class HRogueItemFuncUtility : MonoBehaviour
             case "Left":
                 HRoguePlayerAttributeAndItemManager.Instance.ShowHeartAndShield(false);
                 break;
-            case "None":
+            case "Right": //无法显示地图
+                ShowOrHideAllMap(false);
+                break;
+            case "None": // 显示全部的地图，被遮挡的部分
                 HRoguePlayerAttributeAndItemManager.Instance.ShowHeartAndShield(true);
+                ShowOrHideAllMap(true);
                 break;
             case "Both":
                 HRoguePlayerAttributeAndItemManager.Instance.ShowHeartAndShield(false);
+                ShowOrHideAllMap(false);
                 break;
         }
+    }
+
+    private void ShowOrHideAllMap(bool isShow)
+    {
+        if (isShow)
+        {
+            HCameraLayoutManager.Instance.SetLittleMapCamera(true);
+            List<YRouge_RoomBase> rooms = YRogueDungeonManager.Instance.GetRoomBaseList();
+            foreach (var room in rooms)
+            {
+                if(room && room.GetComponent<YRouge_RoomBase>())
+                {
+                    room.GetComponent<YRouge_RoomBase>().RoomLittleMapMask.SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            //直接把地图隐藏掉
+            HCameraLayoutManager.Instance.SetLittleMapCamera(false);
+        }
+        
     }
 
     public void GiveARandomItemWithIdRange(string funcParams)
@@ -293,6 +433,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
             Debug.Log("HurtEveryEnemyInRoom");
         }
     }
+    
     
     #endregion
     
