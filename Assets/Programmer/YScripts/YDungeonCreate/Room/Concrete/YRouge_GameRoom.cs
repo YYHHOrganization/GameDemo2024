@@ -30,9 +30,9 @@ public class YRouge_GameRoom : YRouge_RoomBase
         //         (roomNode.BottomLeftAreaCorner.y + roomNode.TopRightAreaCorner.y) / 2);
     }
 
-    public override void SetResultOn()
+    public override void EnterRoom()
     {
-        base.SetResultOn();
+        base.EnterRoom();
         
         
     }

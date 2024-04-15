@@ -1,9 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using DG.Tweening;
+
 
 public class YRouge_RoomBase : MonoBehaviour
 {
@@ -58,6 +59,8 @@ public class YRouge_RoomBase : MonoBehaviour
     {
         get { return enemies; }
     }
+    
+    bool isFirstTimeInRoom = true;
     public void Start()
     {
         SetAllDoorsPosition();
@@ -127,17 +130,32 @@ public class YRouge_RoomBase : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("玩家进入房间！！");
+            YRogue_RoomAndItemManager.Instance.SetCurRoom(gameObject);
             //玩家进入房间，房间的逻辑就会被激活
-            SetResultOn();
-            SetMaskOff();//后面这个要改为进入房间而不是激活房间的时候显示
+            EnterRoom();
+            
+            if (isFirstTimeInRoom)
+            {
+                SetMaskOff();//后面这个要改为进入房间而不是激活房间的时候显示
+                isFirstTimeInRoom = false;
+                YTriggerEvents.RaiseOnEnterRoomType(true,roomType);
+                // YTriggerEvents.OnEnterRoomType += EnterRoom; 启用监听时
+                FirstEnterRoom();
+                //触发进入房间事件
+            }
         }
+    }
+
+    protected virtual void FirstEnterRoom()
+    {
+        
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            SetResultOff();
+            ExitRoom();
         }
     }
 
@@ -146,13 +164,12 @@ public class YRouge_RoomBase : MonoBehaviour
         Destroy(roomLittleMapMask);
     }
 
-    public virtual void SetResultOn()
+    public virtual void EnterRoom()
     {
         // SetAllDoorsUp();
-        YRogue_RoomAndItemManager.Instance.SetCurRoom(gameObject);
     }
     
-    public virtual void SetResultOff()
+    public virtual void ExitRoom()
     {
         // SetAllDoorsUp();
     }
@@ -240,5 +257,36 @@ public class YRouge_RoomBase : MonoBehaviour
         
         
         
+    }
+
+    protected void GenerateFromItemIDArray(string[] itemIDArray, string[] itemCounts)
+    {
+        for (int i = 0; i < itemIDArray.Length; i++)
+        {
+            string[] itemCountRange = itemCounts[i].Split(':');
+            int minCount = int.Parse(itemCountRange[0]);
+            int maxCount = int.Parse(itemCountRange[1]);
+            int itemCount = Random.Range(minCount, maxCount);
+            
+            for(int j = 0; j < itemCount; j++)
+            {
+                string itemID = itemIDArray[i];
+                Class_RogueCommonItemCSVFile itemData = SD_RogueCommonItemCSVFile.Class_Dic[itemID];
+                string itemAddressLink =itemData.addressableLink;
+                GameObject item = Addressables.InstantiateAsync(itemAddressLink, transform).WaitForCompletion();
+                item.transform.parent = transform;
+                item.transform.position = transform.position;
+                if(itemData.GeneratePlace == "middle")
+                {
+                    item.transform.position = transform.position;
+                }
+                else if (itemData.GeneratePlace == "random")
+                {
+                    item.transform.position = transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
+                }
+            }
+            
+        }
+
     }
 }

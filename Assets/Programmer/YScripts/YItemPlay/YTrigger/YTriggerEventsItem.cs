@@ -26,6 +26,12 @@ public class YTriggerCountEventArgs : EventArgs
     public int count;
 }
 
+///肉鸽逻辑，进入一个信房间，传入房间类型和true or false
+public class YTriggerEnterRoomTypeEventArgs : EventArgs
+{
+    public bool activated;
+    public RoomType roomType;
+}
 //有 activated 用来看是否开启快捷键，以及需要有一个对应，
 // public class YShortCutKeyEventArgs : EventArgs
 // {
@@ -123,5 +129,12 @@ public class YTriggerEvents : MonoBehaviour
     public static void RaiseOnCompleteRoom(bool activated  ,int count)
     {
         OnCompleteRoom?.Invoke(null, new YTriggerCountEventArgs { activated = activated, count = count });
+    }
+    
+    //肉鸽逻辑，进入一个信房间，传入房间类型和true or false
+    public static event EventHandler<YTriggerEnterRoomTypeEventArgs> OnEnterRoomType;
+    public static void RaiseOnEnterRoomType(bool activated, RoomType roomType)
+    {
+        OnEnterRoomType?.Invoke(null, new YTriggerEnterRoomTypeEventArgs { activated = activated, roomType = roomType });
     }
 }

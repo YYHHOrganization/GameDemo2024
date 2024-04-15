@@ -50,6 +50,8 @@ public class YDungeonCreator : MonoBehaviour
     
     List<YRoomNode> roomList ;
     List<YRouge_Node> corridorList ;
+    
+    List<YRouge_RoomBase> roomBaseList;
     public void CreateDungeon()
     {
         DestroyAllChildren();
@@ -74,7 +76,7 @@ public class YDungeonCreator : MonoBehaviour
         roomType.GenerateRoomType(roomList);
         //生成Room的脚本
         YRouge_CreateItem createItem = new YRouge_CreateItem();
-        createItem.GenerateRoomScript(roomList,this.transform,originPosition,roomSpacesKeepList);
+        roomBaseList = createItem.GenerateRoomScript(roomList,this.transform,originPosition,roomSpacesKeepList);
         
         GameObject wallParent = new GameObject("WallParent");
         wallParent.transform.parent = transform;
@@ -121,7 +123,11 @@ public class YDungeonCreator : MonoBehaviour
         //transform.position = new Vector3(-400, 0, -400);
         // BakeNavMesh();
     }
-
+    
+    public List<YRouge_RoomBase> GetRoomBaseList()
+    {
+        return roomBaseList;
+    }
     //NavMesh()
     public NavMeshSurface surface;
     public void BakeNavMesh()

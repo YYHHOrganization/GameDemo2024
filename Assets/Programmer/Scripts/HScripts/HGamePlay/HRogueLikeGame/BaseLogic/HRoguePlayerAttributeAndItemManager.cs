@@ -226,6 +226,20 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
                 }
             }
         }
+        if(characterValueAttributes["RogueCharacterHealth"]>24) //满血的时候，盾也是满的
+        {
+            characterValueAttributes["RogueCharacterShield"] = 24;
+        }
+
+        if (characterValueAttributes["RogueCharacterShield"] > 24)
+        {
+            characterValueAttributes["RogueCharacterShield"] = 24;
+        }
+
+        if (characterValueAttributes["RogueCharacterHealthUpperBound"] > 24)
+        {
+            characterValueAttributes["RogueCharacterHealthUpperBound"] = 24;
+        }
         UpdateEverythingInAttributePanel();
         if(characterValueAttributes["RogueCharacterHealth"] <= 0 || characterValueAttributes["RogueCharacterHealthUpperBound"] <= 0)
         {
@@ -264,7 +278,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         return item;
     }
     
-    public void RollingARandomItem(Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
+    public GameObject RollingARandomItem(Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
     {
         int index = UnityEngine.Random.Range(0, yPlanningTable.Instance.rogueItemBases.Count);
         string itemId = yPlanningTable.Instance.rogueItemKeys[index];
@@ -274,6 +288,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         item.transform.position += biasposition;
         //item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute,isShop,buyCurrency,howMuch);
+        return item;
     }
     
 
@@ -293,13 +308,14 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
         return item;
     }
-    public void GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
+    public GameObject GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
     {
         RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
         string itemPrefabLink = rogueItemBaseAttribute.rogueItemPrefabLink;
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, transform).WaitForCompletion();
         item.transform.position += biasposition;
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute,isShop,buyCurrency,howMuch);
+        return item;
     }
 
 

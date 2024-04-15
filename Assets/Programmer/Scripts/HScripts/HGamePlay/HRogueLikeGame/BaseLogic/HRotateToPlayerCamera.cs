@@ -18,9 +18,17 @@ public class HRotateToPlayerCamera : MonoBehaviour
     }
 
     void Update() {
-        if(!playerCamera) {
-            playerCamera = GameObject.FindWithTag("PlayerCamera").gameObject.GetComponent<Camera>();
-            return;
+        if(!playerCamera)
+        {
+            GameObject camera = GameObject.FindWithTag("PlayerCamera");
+            if (camera)
+            {
+                playerCamera = camera.GetComponent<Camera>();
+            }
+            else
+            {
+                return;
+            }
         }
         transform.LookAt(playerCamera.transform, Vector3.up);
     }

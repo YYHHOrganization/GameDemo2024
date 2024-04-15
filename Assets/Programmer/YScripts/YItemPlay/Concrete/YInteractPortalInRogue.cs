@@ -54,7 +54,7 @@ public class YInteractPortalInRogue : YIInteractiveGroup
     public void ShowUp()
     {
         DissolvingControllery dissolving = gameObject.GetComponent<DissolvingControllery>();
-        dissolving.SetBeginAndEndAndMaterialsPropAndBeginDissolve(MeshToDissolve,1f,1,0);
+        dissolving.SetBeginAndEndAndMaterialsPropAndBeginDissolve(MeshToDissolve,0.5f,1,0);
         
         
         StartCoroutine(ShowPortalInside());
@@ -63,8 +63,8 @@ public class YInteractPortalInRogue : YIInteractiveGroup
 
     private IEnumerator ShowPortalInside()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         InsidePortalToSHow.SetActive(true);
-        InsidePortalToSHow.transform.DOScale(Vector3.zero, 1f).From(true);
+        InsidePortalToSHow.transform.DOScale(Vector3.one, 1f);
     }
 }

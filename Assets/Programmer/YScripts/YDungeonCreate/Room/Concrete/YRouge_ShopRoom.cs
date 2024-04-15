@@ -19,6 +19,10 @@ public class YRouge_ShopRoom : YRouge_RoomBase
     {
         //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
         int randomIndex = Random.Range(0, SD_ShopRoomCSVFile.Class_Dic.Count);
+        
+        //TEST
+        // randomIndex = 9;
+        
         Debug.Log("randomIndex: " + randomIndex);
         
         // Class_ItemRoomCSVFile itemRoomData = SD_ItemRoomCSVFile.Class_Dic["ItemRoom" + randomIndex];
@@ -58,7 +62,7 @@ public class YRouge_ShopRoom : YRouge_RoomBase
                 int CurrencyCount = GenerateShopCurrencyCount(ShopCurrencyCount);
                 int randomItemIndex = Random.Range(0, itemIDList.Count);
                 
-                HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem
+                GameObject obj = HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem
                     (itemIDList[randomItemIndex], 
                         transform,
                         itemPosition[i]+new Vector3(0,0.5f,0),
@@ -67,6 +71,7 @@ public class YRouge_ShopRoom : YRouge_RoomBase
                         howMuch:CurrencyCount);
                 itemIDList.RemoveAt(randomItemIndex);
                 GenerateEffPlatform(transform,itemPosition[i],buyCurrency:buyCurrency,price:CurrencyCount);
+                obj.GetComponent<HRogueItemBase>().SetBillboardEffect();
             }
         }
         //生成道具
@@ -120,13 +125,14 @@ public class YRouge_ShopRoom : YRouge_RoomBase
             int CurrencyCount = GenerateShopCurrencyCount(ShopCurrencyCount);
             //先暂时都信用点吧
             
-            HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem
+            GameObject obj = HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem
                 (transform,
                     itemPosition[i]+new Vector3(0,0.5f,0),
                     isShop:true,
                     buyCurrency:buyCurrency,
                     howMuch:CurrencyCount);
             GenerateEffPlatform(transform,itemPosition[i],buyCurrency:buyCurrency,price:CurrencyCount);
+            obj.GetComponent<HRogueItemBase>().SetBillboardEffect();
         }
     }
 

@@ -7,7 +7,6 @@ using Debug = UnityEngine.Debug;
 
 public class YRouge_BattleRoom : YRouge_RoomBase
 {
-
     List<GameObject> enemies = new List<GameObject>();
     GameObject EnemyParent;
     Class_BattleRoomCSVFile battleRoomData;
@@ -22,32 +21,40 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         EnemyParent.name = "EnemyParent";
     }
     bool isFirstTimeInRoom = true;
-    public override void SetResultOn()
+    public override void EnterRoom()
     {
-        base.SetResultOn();
-        
-        //如果是第一次近这个房间就读取配置表，然后生成物品
-        //如果不是第一次进这个房间就不生成怪物
-        if (isFirstTimeInRoom)
-        {
-            //曾将没有转表工具时是用的以下方法做的
-            // ReadRoomItem();
-            // GenerateRoomItem();
-            
-            //生成怪物
-            ReadBattleRoomData();
-            isFirstTimeInRoom = false;
-            SetAllDoorsUp();
-            
-            //然后应该去监听这个房间的怪是不是全死了
-            //如果全死了就把门打开
-            AddListenerOfEnemy();
-            // SetAllDoorsUp();//第一次进入房间门会关
-        }
-        
-        
-        
+        // base.EnterRoom();
+        //
+        // //如果是第一次近这个房间就读取配置表，然后生成物品
+        // //如果不是第一次进这个房间就不生成怪物
+        // if (isFirstTimeInRoom)
+        // {
+        //     //曾将没有转表工具时是用的以下方法做的
+        //     // ReadRoomItem();
+        //     // GenerateRoomItem();
+        //     
+        //     //生成怪物
+        //     ReadBattleRoomData();
+        //     isFirstTimeInRoom = false;
+        //     SetAllDoorsUp();
+        //     
+        //     //然后应该去监听这个房间的怪是不是全死了
+        //     //如果全死了就把门打开
+        //     AddListenerOfEnemy();
+        //     // SetAllDoorsUp();//第一次进入房间门会关
+        // }
     }
+
+    protected override void FirstEnterRoom()
+    {
+        base.FirstEnterRoom();
+        ReadBattleRoomData();
+        SetAllDoorsUp();
+        //然后应该去监听这个房间的怪是不是全死了
+        //如果全死了就把门打开
+        AddListenerOfEnemy();
+    }
+
     int dieEnemyCount = 0;
     private void AddListenerOfEnemy()
     {
@@ -100,14 +107,16 @@ public class YRouge_BattleRoom : YRouge_RoomBase
             {
                 string DropItemID = DropItemIDs[i];
                 Vector3 position = new Vector3(Random.Range(-7, 7), 0.3f, Random.Range(-7, 7));
+                GameObject itemRandom;
                 if (DropItemID == "all")
                 {
-                    HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform, position);
+                    itemRandom = HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform, position);
                 }
                 else
                 {
-                    HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(DropItemID, transform,position);
+                    itemRandom = HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(DropItemID, transform,position);
                 }
+                itemRandom.GetComponent<HRogueItemBase>().SetBillboardEffect();
             }
         }
         

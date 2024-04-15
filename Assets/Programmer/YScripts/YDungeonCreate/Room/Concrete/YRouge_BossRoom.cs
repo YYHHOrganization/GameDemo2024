@@ -29,35 +29,41 @@ public class YRouge_BossRoom : YRouge_RoomBase
     
 
     bool isFirstTimeInRoom = true;
-    public override void SetResultOn()
+    public override void EnterRoom()
     {
-        base.SetResultOn();
+        base.EnterRoom();
         
-        //如果是第一次近这个房间就读取配置表，然后生成物品
-        //如果不是第一次进这个房间就不生成怪物
-        if (isFirstTimeInRoom)
-        {
-            //曾将没有转表工具时是用的以下方法做的
-            // ReadRoomItem();
-            // GenerateRoomItem();
-            
-            //生成怪物
-            
-            GenerateEmemies(bossRoomData);
-            // GenerateOtherItems(bossRoomData);
-            
-            isFirstTimeInRoom = false;
-            SetAllDoorsUp();
-            
-            //然后应该去监听这个房间的怪是不是全死了
-            //如果全死了就把门打开
-            AddListenerOfEnemy();
-            
-            // SetAllDoorsUp();//第一次进入房间门会关
-        }
-        
-        
-        
+        // //如果是第一次近这个房间就读取配置表，然后生成物品
+        // //如果不是第一次进这个房间就不生成怪物
+        // if (isFirstTimeInRoom)
+        // {
+        //     //曾将没有转表工具时是用的以下方法做的
+        //     // ReadRoomItem();
+        //     // GenerateRoomItem();
+        //     
+        //     //生成怪物
+        //     
+        //     GenerateEmemies(bossRoomData);
+        //     // GenerateOtherItems(bossRoomData);
+        //     
+        //     isFirstTimeInRoom = false;
+        //     SetAllDoorsUp();
+        //     
+        //     //然后应该去监听这个房间的怪是不是全死了
+        //     //如果全死了就把门打开
+        //     AddListenerOfEnemy();
+        //     
+        //     // SetAllDoorsUp();//第一次进入房间门会关
+        // }
+    }
+    protected override void FirstEnterRoom()
+    {
+        base.FirstEnterRoom();
+        GenerateEmemies(bossRoomData);
+        SetAllDoorsUp();
+        //然后应该去监听这个房间的怪是不是全死了
+        //如果全死了就把门打开
+        AddListenerOfEnemy();
     }
     
     int dieEnemyCount = 0;
@@ -116,11 +122,13 @@ public class YRouge_BossRoom : YRouge_RoomBase
                 Vector3 position = new Vector3(Random.Range(-7, 7), 0.3f, Random.Range(-7, 7));
                 if (DropItemID == "all")
                 {
-                    HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform, position);
+                    GameObject lumine = HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform, position);
+                    lumine.GetComponent<HRogueItemBase>().SetBillboardEffect();
                 }
                 else
                 {
-                    HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(DropItemID, transform,position);
+                    GameObject lumine = HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(DropItemID, transform,position);
+                    lumine.GetComponent<HRogueItemBase>().SetBillboardEffect();
                 }
             }
         }
@@ -189,32 +197,33 @@ public class YRouge_BossRoom : YRouge_RoomBase
         string itemIDs = bossRoomData.OtherItemIDField;
         string[] itemIDArray = itemIDs.Split(';');
         string[] itemCounts = bossRoomData.OtherItemCountField.Split(';');
-        for (int i = 0; i < itemIDArray.Length; i++)
-        {
-            string[] itemCountRange = itemCounts[i].Split(':');
-            int minCount = int.Parse(itemCountRange[0]);
-            int maxCount = int.Parse(itemCountRange[1]);
-            int itemCount = Random.Range(minCount, maxCount);
-            
-            for(int j = 0; j < itemCount; j++)
-            {
-                string itemID = itemIDArray[i];
-                Class_RogueCommonItemCSVFile itemData = SD_RogueCommonItemCSVFile.Class_Dic[itemID];
-                string itemAddressLink =itemData.addressableLink;
-                GameObject item = Addressables.InstantiateAsync(itemAddressLink, transform).WaitForCompletion();
-                item.transform.parent = transform;
-                item.transform.position = transform.position;
-                if(itemData.GeneratePlace == "middle")
-                {
-                    item.transform.position = transform.position;
-                }
-                else if (itemData.GeneratePlace == "random")
-                {
-                    item.transform.position = transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
-                }
-            }
-            
-        }
+        GenerateFromItemIDArray(itemIDArray, itemCounts);
+        // for (int i = 0; i < itemIDArray.Length; i++)
+        // {
+        //     string[] itemCountRange = itemCounts[i].Split(':');
+        //     int minCount = int.Parse(itemCountRange[0]);
+        //     int maxCount = int.Parse(itemCountRange[1]);
+        //     int itemCount = Random.Range(minCount, maxCount);
+        //     
+        //     for(int j = 0; j < itemCount; j++)
+        //     {
+        //         string itemID = itemIDArray[i];
+        //         Class_RogueCommonItemCSVFile itemData = SD_RogueCommonItemCSVFile.Class_Dic[itemID];
+        //         string itemAddressLink =itemData.addressableLink;
+        //         GameObject item = Addressables.InstantiateAsync(itemAddressLink, transform).WaitForCompletion();
+        //         item.transform.parent = transform;
+        //         item.transform.position = transform.position;
+        //         if(itemData.GeneratePlace == "middle")
+        //         {
+        //             item.transform.position = transform.position;
+        //         }
+        //         else if (itemData.GeneratePlace == "random")
+        //         {
+        //             item.transform.position = transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
+        //         }
+        //     }
+        //     
+        // }
         
     }
     private void GenerateBossSpecialDoor()

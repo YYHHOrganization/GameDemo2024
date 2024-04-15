@@ -31,6 +31,7 @@ public class YRogue_RoomAndItemManager : MonoBehaviour
     }
     
     List<RoomData> roomDataList;
+
     //读取表对应的东西，存入RoomData
     // 读取CSV文件并解析数据
     public void ReadRoomCSVFile(string roomPath)

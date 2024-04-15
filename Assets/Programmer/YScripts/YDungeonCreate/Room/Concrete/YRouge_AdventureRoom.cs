@@ -16,14 +16,14 @@ public class YRouge_AdventureRoom : YRouge_RoomBase
         GenerateOtherItems(adventureRoomData);
     }
 
-    public override void SetResultOn()
+    public override void EnterRoom()
     {
-        base.SetResultOn();
+        base.EnterRoom();
         YTriggerEvents.OnCompleteRoom += RoomWin;
     }
-    public override void SetResultOff()
+    public override void ExitRoom()
     {
-        base.SetResultOff();
+        base.ExitRoom();
         YTriggerEvents.OnCompleteRoom -= RoomWin;
     }
 
@@ -74,32 +74,8 @@ public class YRouge_AdventureRoom : YRouge_RoomBase
         string itemIDs = adventureRoomCsvFile.OtherItemIDField;
         string[] itemIDArray = itemIDs.Split(';');
         string[] itemCounts = adventureRoomCsvFile.OtherItemCountField.Split(';');
-        for (int i = 0; i < itemIDArray.Length; i++)
-        {
-            string[] itemCountRange = itemCounts[i].Split(':');
-            int minCount = int.Parse(itemCountRange[0]);
-            int maxCount = int.Parse(itemCountRange[1]);
-            int itemCount = Random.Range(minCount, maxCount);
-            
-            for(int j = 0; j < itemCount; j++)
-            {
-                string itemID = itemIDArray[i];
-                Class_RogueCommonItemCSVFile itemData = SD_RogueCommonItemCSVFile.Class_Dic[itemID];
-                string itemAddressLink =itemData.addressableLink;
-                GameObject item = Addressables.InstantiateAsync(itemAddressLink, transform).WaitForCompletion();
-                item.transform.parent = transform;
-                item.transform.position = transform.position;
-                if(itemData.GeneratePlace == "middle")
-                {
-                    item.transform.position = transform.position;
-                }
-                else if (itemData.GeneratePlace == "random")
-                {
-                    item.transform.position = transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
-                }
-            }
-            
-        }
+        
+        GenerateFromItemIDArray(itemIDArray, itemCounts);
         
     }
   
