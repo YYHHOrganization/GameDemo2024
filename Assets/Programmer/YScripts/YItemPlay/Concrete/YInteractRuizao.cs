@@ -13,6 +13,8 @@ public class YInteractRuizao : YIInteractiveGroup
     
     public GameObject chest;
     public Transform chestTrans;
+    
+    public bool isRogue = false;
     public void Start()
     {
         base.Start();
@@ -37,7 +39,11 @@ public class YInteractRuizao : YIInteractiveGroup
         RuizaoMainGO = op.WaitForCompletion();
         
         YRuiZaoScripts ruizaoScripts = RuizaoMainGO.GetComponentInChildren<YRuiZaoScripts>();
-        ruizaoScripts.SetRuiZaoOn(this);
+        if(isRogue)
+            ruizaoScripts.SetRuiZaoOn(this, true);
+        else
+            ruizaoScripts.SetRuiZaoOn(this);    
+        
     }
 
     public void ExitAndWin()
@@ -54,9 +60,19 @@ public class YInteractRuizao : YIInteractiveGroup
         
         isOnce = true;
 
-        GetChestAndSetTrans();
-        // 显示宝箱的逻辑
-        chest.SetActive(true);
+        if (isRogue)
+        {
+            Vector3 treasurePos = chestTrans.transform.position;
+            string chestID = "10000012";
+            //给宝箱
+            HOpenWorldTreasureManager.Instance.InstantiateATreasureAndSetInfoWithTypeId(chestID, treasurePos, transform);
+        }
+        else
+        {
+            GetChestAndSetTrans();
+            // 显示宝箱的逻辑
+            chest.SetActive(true);
+        }
     }
 
     public void ExitAndNoWin()

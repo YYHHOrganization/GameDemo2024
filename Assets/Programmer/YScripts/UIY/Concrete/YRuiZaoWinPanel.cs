@@ -20,16 +20,20 @@ public class YRuiZaoWinPanel : BasePanel
         NextLevelButton = uiTool.GetOrAddComponentInChilden<Button>("WinButton");
         NextLevelButton.onClick.AddListener(()=>
         {
-            Pop();  
+            RemoveSelfPanel();
             Pop();
-            bool isAfterEnterPuppetPanel = YPlayModeController.Instance.IsAfterEnterPuppetPanel;
-            if (isAfterEnterPuppetPanel)
+
+            if (YPlayModeController.Instance.isRogue==false)
             {
-                Push(new YMainPlayModePanel());
-            }
-            else
-            {
-                Push(new YMainPlayModeOriginPanel());
+                bool isAfterEnterPuppetPanel = YPlayModeController.Instance.IsAfterEnterPuppetPanel;
+                if (isAfterEnterPuppetPanel)
+                {
+                    Push(new YMainPlayModePanel());
+                }
+                else
+                {
+                    Push(new YMainPlayModeOriginPanel());
+                }
             }
 
             yRuiZaoScripts.WinAndExit();

@@ -11,6 +11,11 @@ public class Class_BossRoomCSVFile {
 		string value = Describe;
 		return value;
 	}
+	public string RoomDifficultyLevel { get; set; }    //房间难度等级
+	public int _RoomDifficultyLevel (){
+		int value = int.Parse(RoomDifficultyLevel);
+		return value;
+	}
 	public string EnemyIDField { get; set; }    //怪物类型可以出现的分号表示这几个都可能出现
 	  public string _EnemyIDField (){
 		string value = EnemyIDField;

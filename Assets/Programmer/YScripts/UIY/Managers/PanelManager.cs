@@ -60,23 +60,50 @@ public class PanelManager
     /// <param name="panelToRemove"></param>
     public void RemovePanel(BasePanel panelToRemove)
     {
+        // panelToRemove.OnExit();
+        // if (panelStack.Contains(panelToRemove))
+        // {
+        //     BasePanel[] panelArray = panelStack.ToArray();//会将在栈顶的元素放在数组的最后
+        //     panelStack.Clear();
+        //
+        //     foreach (BasePanel panel in panelArray)
+        //     {
+        //         if (panel != panelToRemove)
+        //         {
+        //             panelStack.Push(panel);
+        //         }
+        //     }
+        // }
+        // if (panelStack.Count > 0)
+        // {
+        //     panel = panelStack.Peek();
+        //     panel.OnResume();
+        // }
+        //
+        
         panelToRemove.OnExit();
         if (panelStack.Contains(panelToRemove))
         {
-            BasePanel[] panelArray = panelStack.ToArray();
-            panelStack.Clear();
-        
-            foreach (BasePanel panel in panelArray)
+            Stack<BasePanel> tempStack = new Stack<BasePanel>();
+
+            while (panelStack.Count > 0)
             {
+                BasePanel panel = panelStack.Pop();
                 if (panel != panelToRemove)
                 {
-                    panelStack.Push(panel);
+                    tempStack.Push(panel);
                 }
             }
+            
+            while (tempStack.Count > 0)
+            {
+                panelStack.Push(tempStack.Pop());
+            }
         }
+
         if (panelStack.Count > 0)
         {
-            panel = panelStack.Peek();
+            BasePanel panel = panelStack.Peek();
             panel.OnResume();
         }
     }

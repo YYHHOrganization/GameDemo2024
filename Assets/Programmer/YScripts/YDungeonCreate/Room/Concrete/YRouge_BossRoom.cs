@@ -20,7 +20,6 @@ public class YRouge_BossRoom : YRouge_RoomBase
         EnemyParent.name = "EnemyParent";
         
         ReadBattleRoomData();
-        
         //生成Boss房的特殊门
         GenerateBossSpecialDoor();
         
@@ -65,7 +64,8 @@ public class YRouge_BossRoom : YRouge_RoomBase
         //如果全死了就把门打开
         AddListenerOfEnemy();
     }
-    
+
+
     int dieEnemyCount = 0;
     private void AddListenerOfEnemy()
     {
@@ -135,40 +135,57 @@ public class YRouge_BossRoom : YRouge_RoomBase
         
     }
 
-    private void GeneratePortal()
+    
+    
+    Class_BossRoomCSVFile GetRoomIDFromDifficulty()
     {
-        string PortalLink = "";
-        GameObject portal = Addressables.InstantiateAsync(PortalLink, transform).WaitForCompletion();
-        portal.transform.parent = transform;
+        //根据当前在第几层第几关来决定房间的难度
+        int curLevelID = YRogueDungeonManager.Instance.GetRogueLevel();
+        int RoomCount = SD_BossRoomCSVFile.Class_Dic.Count;
         
-        // YInteractPortalInRogue interactPortalInRogue = portal.GetComponent<YInteractPortalInRogue>();
-        // interactPortalInRogue.ShowUp();
-        
-        // DissolvingControllery dissolving = portal.GetComponent<DissolvingControllery>();
-        // dissolving.SetBeginAndEndAndMaterialsPropAndBeginDissolve(portal,1f,1,0);
+        int difficultyBias = 0;
+        //根据当前关卡来决定房间的难度
+        int rollTimes = 10;
+        Class_BossRoomCSVFile battleRoomData = null;//最后返回的房间数据,如果没有找到就返回最后一次的
+        for (int i = 0; i < rollTimes; i++)
+        {
+            int randomIndex = Random.Range(0, RoomCount);
+            string roomID = "6662100"+randomIndex;
+            battleRoomData = SD_BossRoomCSVFile.Class_Dic[roomID];
+            int difficulty = battleRoomData._RoomDifficultyLevel();
+            
+            //如果这个房间的难度 在当前关卡的难度的-difficultyBias+difficultyBias之间，那么就返回这个房间的ID
+            if (difficulty >= curLevelID - difficultyBias && difficulty <= curLevelID + difficultyBias)
+            {
+                return battleRoomData;
+            }
+        }
+        return battleRoomData;
     }
-
 
     void ReadBattleRoomData()
     {
         //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
+        bossRoomData = GetRoomIDFromDifficulty();
         
-        // int randomIndex = Random.Range(0, SD_BattleRoomCSVFile.Class_Dic.Count);
-        int randomIndex = Random.Range(0,SD_BossRoomCSVFile.Class_Dic.Count);
-        
-        //test:全是蜘蛛
-        // randomIndex = 3;//test!!!后面记得关掉
-        bossRoomData = SD_BossRoomCSVFile.Class_Dic["6662100"+randomIndex];
+        // // int randomIndex = Random.Range(0, SD_BattleRoomCSVFile.Class_Dic.Count);
+        // int randomIndex = Random.Range(0,SD_BossRoomCSVFile.Class_Dic.Count);
+        //
+        // //test:全是蜘蛛
+        // // randomIndex = 3;//test!!!后面记得关掉
+        // bossRoomData = SD_BossRoomCSVFile.Class_Dic["6662100"+randomIndex];
     }
-
-    private void GenerateEmemies(Class_BossRoomCSVFile bossRoomData)
+    private void GenerateEmemies(Class_BossRoomCSVFile classBossRoomCsvFile)
     {
         //70000000;70000001
         string[] enemyIDs = bossRoomData._EnemyIDField().Split(';');
         
-        
-        //0:4;9:15 怪物个数/对应前面那个/0:4;9:15的意思是这种怪可能会出现从0-4的个数
+        //0.4;9.15 怪物个数/对应前面那个/0.4;9.15的意思是这种怪可能会出现从0-4的个数
         string[] enemyCounts = bossRoomData._EnemyCountField().Split(';');
+        GenerateEnemyByData(enemyIDs, enemyCounts);
+    }
+    private void GenerateEnemyByData(string[] enemyIDs, string[] enemyCounts)
+    {
         for (int i =0;i<enemyCounts.Length;i++)
         {
             string[] enemyCountRange = enemyCounts[i].Split(':');
@@ -191,6 +208,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
             }
         }
     }
+
 
     private void GenerateOtherItems(Class_BossRoomCSVFile bossRoomData)
     {

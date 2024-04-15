@@ -20,7 +20,8 @@ public class YRuiZaoNextlevelPanel : BasePanel
         NextLevelButton = uiTool.GetOrAddComponentInChilden<Button>("NextLevelButton");
         NextLevelButton.onClick.AddListener(()=>
         {
-            Pop();  
+            // Pop();  
+            RemoveSelfPanel();
             yRuiZaoScripts.BtnClickChangeLevel();
         });
         
@@ -35,7 +36,7 @@ public class YRuiZaoNextlevelPanel : BasePanel
 
     public void ExitRuizao()
     {
-        Pop();
+        RemoveSelfPanel();
         Pop();
         Debug.Log("退出挑战");
         yRuiZaoScripts.ExitAndNoWin();

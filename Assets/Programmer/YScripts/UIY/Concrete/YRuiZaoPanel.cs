@@ -12,6 +12,10 @@ public class YRuiZaoPanel : BasePanel
     {
         this.yRuiZaoScripts = yRuiZaoScripts;
     }
+    public YRuiZaoPanel(YRuiZaoScripts yRuiZaoScripts,bool isRogue) : base(new UIType(path))
+    {
+        this.yRuiZaoScripts = yRuiZaoScripts;
+    }
     
     public override void OnEnter()
     {
@@ -64,7 +68,8 @@ public class YRuiZaoPanel : BasePanel
 
     public void ExitRuizao()
     {
-        Pop();
+        //Pop();
+        RemoveSelfPanel();
         Debug.Log("退出挑战");
         yRuiZaoScripts.ExitAndNoWin();
     }

@@ -181,7 +181,13 @@ public class HOpenWorldTreasure : MonoBehaviour
         panel.RemoveSelfPanel();
         StartCoroutine(showEachItemOnLeftScroll(items));
     }
-    
+
+    private void OnDestroy()
+    {
+        panel.RemoveSelfPanel();
+        StopAllCoroutines();
+    }
+
     IEnumerator showEachItemOnLeftScroll(List<ItemToShow> items)
     {
         YGameRoot.Instance.Push(panel);

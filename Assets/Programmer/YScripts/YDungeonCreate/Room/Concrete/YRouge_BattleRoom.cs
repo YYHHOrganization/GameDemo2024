@@ -23,26 +23,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
     bool isFirstTimeInRoom = true;
     public override void EnterRoom()
     {
-        // base.EnterRoom();
-        //
-        // //如果是第一次近这个房间就读取配置表，然后生成物品
-        // //如果不是第一次进这个房间就不生成怪物
-        // if (isFirstTimeInRoom)
-        // {
-        //     //曾将没有转表工具时是用的以下方法做的
-        //     // ReadRoomItem();
-        //     // GenerateRoomItem();
-        //     
-        //     //生成怪物
-        //     ReadBattleRoomData();
-        //     isFirstTimeInRoom = false;
-        //     SetAllDoorsUp();
-        //     
-        //     //然后应该去监听这个房间的怪是不是全死了
-        //     //如果全死了就把门打开
-        //     AddListenerOfEnemy();
-        //     // SetAllDoorsUp();//第一次进入房间门会关
-        // }
+        base.EnterRoom();
     }
 
     protected override void FirstEnterRoom()
@@ -54,6 +35,8 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         //如果全死了就把门打开
         AddListenerOfEnemy();
     }
+
+    
 
     int dieEnemyCount = 0;
     private void AddListenerOfEnemy()
@@ -122,24 +105,49 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         
     }
 
-
+    Class_BattleRoomCSVFile GetRoomIDFromDifficulty()
+    {
+        //根据当前在第几层第几关来决定房间的难度
+        int curLevelID = YRogueDungeonManager.Instance.GetRogueLevel();
+        int RoomCount = SD_BattleRoomCSVFile.Class_Dic.Count;
+        
+        int difficultyBias = 1;
+        //根据当前关卡来决定房间的难度
+        int rollTimes = 10;
+        Class_BattleRoomCSVFile battleRoomData = null;//最后返回的房间数据,如果没有找到就返回最后一次的
+        for (int i = 0; i < rollTimes; i++)
+        {
+            int randomIndex = Random.Range(0, RoomCount);
+            string roomID = "6662000"+randomIndex;
+            battleRoomData = SD_BattleRoomCSVFile.Class_Dic[roomID];
+            int difficulty = battleRoomData._RoomDifficultyLevel();
+            
+            //如果这个房间的难度 在当前关卡的难度的-difficultyBias+difficultyBias之间，那么就返回这个房间的ID
+            if (difficulty >= curLevelID - difficultyBias && difficulty <= curLevelID + difficultyBias)
+            {
+                return battleRoomData;
+            }
+        }
+        return battleRoomData;
+    }
     void ReadBattleRoomData()
     {
         //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
         
-        int randomIndex = Random.Range(0, SD_BattleRoomCSVFile.Class_Dic.Count);
-        
         //test:全是蜘蛛
         // randomIndex = 3;//test!!!后面记得关掉
+        battleRoomData = GetRoomIDFromDifficulty();
         
-        battleRoomData = SD_BattleRoomCSVFile.Class_Dic["6662000"+randomIndex];
-
         //70000000;70000001
         string[] enemyIDs = battleRoomData._EnemyIDField().Split(';');
         
-        
         //0.4;9.15 怪物个数/对应前面那个/0.4;9.15的意思是这种怪可能会出现从0-4的个数
         string[] enemyCounts = battleRoomData._EnemyCountField().Split(';');
+        GenerateEnemyByData(enemyIDs, enemyCounts);
+    }
+
+    private void GenerateEnemyByData(string[] enemyIDs, string[] enemyCounts)
+    {
         for (int i =0;i<enemyCounts.Length;i++)
         {
             string[] enemyCountRange = enemyCounts[i].Split(':');
@@ -161,8 +169,8 @@ public class YRouge_BattleRoom : YRouge_RoomBase
                 // HRougeAttributeManager.Instance.GenerateEnemy(enemyIDs[randomEnemyIndex], transform);
             }
         }
-        
-        
     }
+
+   
     
 }

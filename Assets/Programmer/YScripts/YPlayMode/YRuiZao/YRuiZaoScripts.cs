@@ -528,6 +528,16 @@ public class YRuiZaoScripts : MonoBehaviour
         this.yInteractRuizao = yInteractRuizao;
         
     }
+    public void SetRuiZaoOn(YInteractRuizao yInteractRuizao,bool isRogue)
+    {
+        //记录当前panel类型
+        //先当作是YMainPlayModePanel吧  如果没有呼出木偶也不可能解得开这个
+
+        YGameRoot.Instance.Push(new YRuiZaoPanel(this,isRogue));
+
+        this.yInteractRuizao = yInteractRuizao;
+        
+    }
 
     public void WinAndExit()
     {

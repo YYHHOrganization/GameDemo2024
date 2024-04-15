@@ -284,6 +284,23 @@ public class YRouge_RoomBase : MonoBehaviour
                 {
                     item.transform.position = transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
                 }
+                else if (itemData.GeneratePlace == "left")
+                {
+                    item.transform.position = transform.position + new Vector3(-5, 0, 0);
+                }
+                else if (itemData.GeneratePlace == "right")
+                {
+                    item.transform.position = transform.position + new Vector3(5, 0, 0);
+                }
+                else if (itemData.GeneratePlace == "up")
+                {
+                    item.transform.position = transform.position + new Vector3(0, 0, 5);
+                }
+                else if (itemData.GeneratePlace == "down")
+                {
+                    item.transform.position = transform.position + new Vector3(0, 0, -5);
+                    
+                }
             }
             
         }

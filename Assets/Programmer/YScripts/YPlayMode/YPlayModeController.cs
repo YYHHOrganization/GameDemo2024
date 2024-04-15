@@ -50,6 +50,7 @@ public class YPlayModeController : MonoBehaviour
     }
 
     int curLevelID;
+    public bool isRogue = false;
     public void SetCharacter(int characterIndex)
     {
         PlayerDieFlag = false;
@@ -118,6 +119,7 @@ public class YPlayModeController : MonoBehaviour
         //如果当前关卡是第3个关卡
         if (curLevelID == 2 || curLevelID == 3) 
         {
+            isRogue = true;
             // testCharacterShoot.SetMainPlayerCamera(PlayerCamera.GetComponent<Camera>());
             // testCharacterShoot.testCommonThirdPersonFollowCam.gameObject.SetActive(true);
             testCommonThirdPersonFollowCam.SetActive(true);
