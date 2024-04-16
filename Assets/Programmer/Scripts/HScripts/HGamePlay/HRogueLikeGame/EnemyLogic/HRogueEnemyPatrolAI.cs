@@ -79,6 +79,10 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     public Action OnDie;
 
+    private int hitPlayerDamage = -1; // 碰到玩家的伤害
+    
+    public string curStateName;
+
     private void Awake()
     {
         animator = gameObject.GetComponentInChildren<Animator>();
@@ -213,6 +217,11 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             //怪物要转身
             isMoving = false;
         }
+        else if (other.gameObject.CompareTag("Player"))
+        {
+            // 玩家碰到要扣血
+            HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(hitPlayerDamage);
+        }
     }
     
     public void ShootBulletForward(bool trackPlayer = false, bool isChasing=false)
@@ -235,7 +244,9 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
                 GameObject bullet = Instantiate(bulletPrefab, shootOrigin.position, shootOrigin.rotation);
                 if (trackPlayer)
                 {
-                    bullet.gameObject.GetComponent<HEnemyBulletMoveBase>().SetTarget(mTarget);
+                    var bulletScript = bullet.GetComponent<HEnemyBulletMoveBase>();
+                    bulletScript.SetTarget(mTarget);
+                    SetBulletBaseAttribute(bulletScript);
                 }
                 if(isChasing)
                     yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
@@ -243,6 +254,18 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
                     yield return new WaitForSeconds(enemy._RogueEnemyWanderShootInterval());
             }
         }
+    }
+
+    private void SetBulletBaseAttribute(HEnemyBulletMoveBase script)
+    {
+        string bulletAttribute = enemy.EnemyBulletAttribute;
+        string[] attributes = bulletAttribute.Split(';');
+        float speed = float.Parse(attributes[0]);
+        float range = float.Parse(attributes[1]);
+        if(curStateName == "wander")
+            script.SetBulletAttribute(speed, enemy._EnemyWanderDamage(), range);
+        else if(curStateName == "chase")
+            script.SetBulletAttribute(speed, enemy._EnemyChaseDamage(), range);
     }
 
     private void UpdateEnemyHeathAndShieldUI()
@@ -260,8 +283,9 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         UpdateEnemyHeathAndShieldUI();
         if (health <= 0 && !isDead)
         {
-            SetEnemyDie();
             isDead = true;
+            SetEnemyDie();
+            
         }
         else if (health > maxHealth)
         {
@@ -300,6 +324,44 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             {
                 Vector3 shootDirection = new Vector3(Mathf.Sin(i * Mathf.Deg2Rad), 0.4f, Mathf.Cos(i * Mathf.Deg2Rad));
                 GameObject bullet = Instantiate(chaseBulletPrefab, transform.position + shootDirection * 2 , Quaternion.Euler(0, i, 0));
+                SetBulletBaseAttribute(bullet.GetComponent<HEnemyBulletMoveBase>());
+            }
+            yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
+        }
+    }
+
+    public IEnumerator ShootCircleInterval()  //也是环状射击子弹，不过一圈的每一颗子弹是间隔发射的
+    {
+        while (true)
+        {
+            for (int i = 0; i < 360; i += 15)
+            {
+                Vector3 shootDirection = new Vector3(Mathf.Sin(i * Mathf.Deg2Rad), 0.4f, Mathf.Cos(i * Mathf.Deg2Rad));
+                GameObject bullet = Instantiate(chaseBulletPrefab, transform.position + shootDirection * 2 , Quaternion.Euler(0, i, 0));
+                SetBulletBaseAttribute(bullet.GetComponent<HEnemyBulletMoveBase>());
+                yield return new WaitForSeconds(0.1f);
+            }
+            yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
+        }
+    }
+
+    public IEnumerator ShootBulletWall()
+    {
+        while (true)
+        {
+            //以发射中心为原点，发射一面子弹墙，每隔一段时间发射一次，子弹墙的数量和高度是随机的
+            //配置是4 * 4， 5*5 和 6*6
+            int bulletCnt = 2;
+            int wallSize = 2;
+            for (int i = 0; i < bulletCnt; i++)
+            {
+                for (int j = 0; j < bulletCnt; j++)
+                {
+                    Vector3 shootDirection = new Vector3(-wallSize / 2 + wallSize / bulletCnt*i,  0.4f + wallSize / bulletCnt*j, 0);
+                    GameObject bullet = Instantiate(chaseBulletPrefab, transform.position + shootDirection , Quaternion.identity);
+                    SetBulletBaseAttribute(bullet.GetComponent<HEnemyBulletMoveBase>());
+                    bullet.GetComponent<HEnemyBulletMoveBase>().SetTarget(mTarget);
+                }
             }
             yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
         }
@@ -326,7 +388,6 @@ public enum RogueEnemyChaseType
 {
     JustChase, //只是追击
     ChaseAndShootPlayer, //追击并且射击玩家
-    ChaseAndShootRandom, //朝着随机方向射击
     AddSthToPlayer, //比如说远程攻击的怪，会降下落雷之类的
     JustGoToAttackState, //直接进入攻击状态，一般来说可能是远程攻击的怪物这种
     ChaseAndShootSpecial, //追击并且射击子弹，但是子弹有特殊的效果，由函数来决定

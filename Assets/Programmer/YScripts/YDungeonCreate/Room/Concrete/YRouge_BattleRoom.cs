@@ -118,7 +118,8 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         for (int i = 0; i < rollTimes; i++)
         {
             int randomIndex = Random.Range(0, RoomCount);
-            string roomID = "6662000"+randomIndex;
+            int id = 66620000 + randomIndex;
+            string roomID = id.ToString();
             battleRoomData = SD_BattleRoomCSVFile.Class_Dic[roomID];
             int difficulty = battleRoomData._RoomDifficultyLevel();
             
@@ -159,6 +160,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
             {
                 //一只只生成这个怪
                 string enemyID = enemyIDs[i];
+                //test!!! 
                 string EnemyAddressLink = SD_RogueEnemyCSVFile.Class_Dic[enemyID].addressableLink;
                 GameObject enemy = Addressables.InstantiateAsync(EnemyAddressLink, transform).WaitForCompletion();
                 enemy.transform.parent = EnemyParent.transform;

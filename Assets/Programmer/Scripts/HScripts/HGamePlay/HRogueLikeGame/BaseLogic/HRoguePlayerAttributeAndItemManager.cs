@@ -201,7 +201,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     {
         if (value < 0)
         {
-            HRogueCameraManager.Instance.ShakeCamera(10,0.2f);
+            HRogueCameraManager.Instance.ShakeCamera(10,0.1f);
         }
         AddHeartOrShield("Health", value);
     }

@@ -54,6 +54,7 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
     public override void OnStateEnter()
     {
         mPatrolAI.mNavMeshAgent.enabled = true;
+        mPatrolAI.curStateName = "chase";
         
         //根据chase类型决定接下来的逻辑
         if (mPatrolAI.chaseType == RogueEnemyChaseType.JustChase)
@@ -70,6 +71,11 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
             string funcName = mPatrolAI.enemy.RogueEnemyChaseShootFunc;
             //startCorotine
             mPatrolAI.StartCoroutine(funcName);
+        }
+        else if (mPatrolAI.chaseType == RogueEnemyChaseType.AddSthToPlayer)
+        {
+            string funcName = mPatrolAI.enemy.RogueEnemyChaseShootFunc;
+            
         }
     }
 }
