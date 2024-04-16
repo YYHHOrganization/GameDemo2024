@@ -52,6 +52,7 @@ public class HRogueEnemyCommonWanderState : HRogueEnemyBaseState
     
     public override void OnStateEnter()
     {
+        mPatrolAI.curStateName = "wander";
         // 进入WanderState之后，就可以根据一些敌人类型来做处理了
         if(mPatrolAI.wanderType == RogueEnemyWanderType.ShootBulletForwardWithoutMove)
         {

@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class HEnemyBulletMoveBase : MonoBehaviour
 {
-    public float bulletSpeed;
-    public int bulletDamage;
-    public float bulletRange;
+    private float bulletSpeed = 5f;
+    public int bulletDamage = 1;
+    public float bulletRange = 10f;
     private Vector3 originPos;
     public GameObject hitPrefab;
     void Start()
     {
         originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        //Destroy(gameObject, 10f);todo：有个bug就是偶尔敌人的子弹会一直追踪玩家，因为打不到东西不会destroy，看看后面要不要修这个bug
+        Destroy(gameObject, 10f);
+    }
+
+    public void SetBulletAttribute(float speed, int damage, float range)
+    {
+        bulletSpeed = speed;
+        bulletDamage = damage;
+        bulletRange = range;
     }
 
     void Update()

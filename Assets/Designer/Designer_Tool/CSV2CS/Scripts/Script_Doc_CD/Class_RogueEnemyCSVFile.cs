@@ -101,5 +101,11 @@ public class Class_RogueEnemyCSVFile {
 		int value = int.Parse(BeHurtThenToChase);
 		return value;
 	}
+	public string EnemyBulletAttribute { get; set; }    //子弹速度;射程
+	  public string _EnemyBulletAttribute (){
+		string value = EnemyBulletAttribute;
+		return value;
+	}
+	public string EnemyLevel { get; set; }    //敌人难度等级（10表示最高）
 	}
 	

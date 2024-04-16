@@ -1,39 +1,95 @@
 fileFormatVersion: 2
 guid: a3010b0fc7044499ad34afdf5326f623
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: Body
-    100002: BottomEyeCover
-    100004: Crown
-    100006: EyeBall
-    100008: EyeCTRL
-    100010: Head
-    100012: //RootNode
-    100014: Side_L
-    100016: Side_R
-    100018: Slime
-    100020: Spine01
-    100022: UpperEyeCover
-    400000: Body
-    400002: BottomEyeCover
-    400004: Crown
-    400006: EyeBall
-    400008: EyeCTRL
-    400010: Head
-    400012: //RootNode
-    400014: Side_L
-    400016: Side_R
-    400018: Slime
-    400020: Spine01
-    400022: UpperEyeCover
-    4300000: Slime
-    7400000: IdleNormal
-    9500000: //RootNode
-    13700000: Slime
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Body
+  - first:
+      1: 100002
+    second: BottomEyeCover
+  - first:
+      1: 100004
+    second: Crown
+  - first:
+      1: 100006
+    second: EyeBall
+  - first:
+      1: 100008
+    second: EyeCTRL
+  - first:
+      1: 100010
+    second: Head
+  - first:
+      1: 100012
+    second: //RootNode
+  - first:
+      1: 100014
+    second: Side_L
+  - first:
+      1: 100016
+    second: Side_R
+  - first:
+      1: 100018
+    second: Slime
+  - first:
+      1: 100020
+    second: Spine01
+  - first:
+      1: 100022
+    second: UpperEyeCover
+  - first:
+      4: 400000
+    second: Body
+  - first:
+      4: 400002
+    second: BottomEyeCover
+  - first:
+      4: 400004
+    second: Crown
+  - first:
+      4: 400006
+    second: EyeBall
+  - first:
+      4: 400008
+    second: EyeCTRL
+  - first:
+      4: 400010
+    second: Head
+  - first:
+      4: 400012
+    second: //RootNode
+  - first:
+      4: 400014
+    second: Side_L
+  - first:
+      4: 400016
+    second: Side_R
+  - first:
+      4: 400018
+    second: Slime
+  - first:
+      4: 400020
+    second: Spine01
+  - first:
+      4: 400022
+    second: UpperEyeCover
+  - first:
+      43: 4300000
+    second: Slime
+  - first:
+      74: 7400000
+    second: IdleNormalSlime
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Slime
   externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 0
@@ -42,6 +98,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -60,8 +117,9 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: IdleNormal
+      name: IdleNormalSlime
       takeName: Take 001
+      internalID: 0
       firstFrame: 0
       lastFrame: 50
       wrapMode: 0
@@ -118,25 +176,36 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 0
     importBlendShapes: 1
     importCameras: 0
     importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.01
-    hasPreviousCalculatedGlobalScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -145,10 +214,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -158,13 +227,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
