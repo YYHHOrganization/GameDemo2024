@@ -43,7 +43,7 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000039,RandomShootStoneBullet,毁灭赐福：有较小概率发射陨石子弹,1,有较小概率发射陨石子弹，伤害+1,Negative,SetOrAddBulletType,Add;StoneBullet,-1,AddStoneBulletIcon,false,huimie,StoneBulletPlayerPrefab,true,4,所属——毁灭：纳努克,false,false
 80000040,RandomGiveSomePreciousItem,花火妙妙包：一定会给出令人难忘的物品,1,随机给出1~2个优质道具，好坏不知,Negative,GiveARandomItemWithIdRange,80000041!80000059,-1,huahuomiaomiaobaoIcon,true,huahuo,Huahuomiaomiaobao,true,5,所属——花火,true,false
 80000041,DontShowAnyName,谜语人的聚会：屏蔽全部道具的名字,1,屏蔽全部主动道具和被动道具的名称,Negative,SetEveryItemName,false,-1,XiaokouchangkaiIcon,true,huanyu,ShowEveryItemFalse,true,5,所属——欢愉：阿哈,false,false
-80000042,ShowEveryItemName,智识赐福：显示全部道具名称,1,显示全部主动道具和被动道具的名称,Negative,SetEveryItemName,true,-1,XiaokouchangkaiIcon,true,zhishi,ShowEveryItemTrue,true,5,所属——智识：博识尊,false,false
+80000042,Bishangzuoyan,她已闭上左眼：无法显示血量和护盾值,1,无法显示血量和护盾值,Negative,Bishangshuangyan,Left,-1,BishangshuangyanIcon,true,fuxuan,BishangshuangyanTwo,true,5,所属：符玄,false,false
 80000043,HurtRoomEnemyOne,主动道具：冥火大公的鞋,1,主动道具：使用时可以对全房间敌人造成1点伤害，每15s可使用一次,Positive,HurtEveryEnemyInRoom,Time;15;-1,-1,HurtEnemyInRoomIcon,true,huimie,MinghuoDagongShoe,true,5,所属——毁灭：纳努克,false,true
 80000044,UpperEnemyHealthBoundThree,药王秘传的独家秘方：全体新生成敌人血量+3,1,全部敌人的血量上限值+3,Negative,AddEnemyHealth,AddUpperHealth;3,-1,huahuomiaomiaobaoIcon,true,fengrao,UpperEnemyHealthBoundThree,false,5,所属——丰饶：药师,false,false
 80000045,DownEnemyHealthBoundHalf,丰饶孽物的根治之法：全体新生成敌人血量减半,1,全部敌人的血量上限减半,Negative,AddEnemyHealth,MultiplyUpperHealth;0.5,-1,huahuomiaomiaobaoIcon,true,xunlie,DownEnemyHealthBoundHalf,false,5,所属——巡猎：岚,false,false
@@ -61,7 +61,7 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000057,GongsiGuguzhong,公司咕咕钟：商店的商品价格提升25%,1,商店的商品价格提升25%,Negative,SetShopItemPriceMultiply,all;1.25,-1,GongsiguguzhongIcon,true,guguzhong,Gongsiguguzhong,true,5,所属：咕咕钟系列,false,false
 80000058,Bishangshuangyan,她已闭上双眼：无法显示血量和护盾值，无法显示地图,1,无法显示血量和护盾值，同时不显示地图,Negative,Bishangshuangyan,Both,-1,BishangshuangyanIcon,true,fuxuan,BishangshuangyanOne,true,5,所属：符玄,false,false
 80000059,XiaojingxiItem,小惊喜：进入房间有20%概率获得惊喜效果,1,进入房间有20%概率获得10s惊喜效果,Negative,RegisterEnterNewRoomFunc,SetCameraPostProcessingEffect!xiaojingxi;10,-1,FuningnaJingxiIcon,true,huanyu,FuningnaJingxi,true,5,所属——欢愉：阿哈,false,false
-80000060,Bishangzuoyan,她已闭上左眼：无法显示血量和护盾值,1,无法显示血量和护盾值,Negative,Bishangshuangyan,Left,-1,BishangshuangyanIcon,true,fuxuan,BishangshuangyanTwo,true,5,所属：符玄,false,false
+80000060,ShowEveryItemName,智识赐福：显示全部道具名称,1,显示全部主动道具和被动道具的名称,Negative,SetEveryItemName,true,-1,XiaokouchangkaiIcon,true,zhishi,ShowEveryItemTrue,true,5,所属——智识：博识尊,false,false
 80000061,Bishangyouyan,她已闭上右眼：无法显示地图,1,无法显示地图,Negative,Bishangshuangyan,Right,-1,BishangshuangyanIcon,true,fuxuan,BishangshuangyanThree,true,5,所属：符玄,false,false
 80000062,Zhengkaishuangyan,她已睁开双眼：显示当前层全部的地图、被遮挡的内容,1,显示当前层全部的地图、被遮挡的内容,Negative,Bishangshuangyan,None,-1,BishangshuangyanIcon,true,fuxuan,BishangshuangyanFour,true,5,所属：符玄,false,false
 80000063,ZhengkaiTianyan,她已睁开天眼：显示全部道具名称,1,显示全部主动道具和被动道具的名称,Negative,SetEveryItemName,true,-1,BishangshuangyanIcon,true,fuxuan,BishangshuangyanFive,true,5,所属：符玄,false,false

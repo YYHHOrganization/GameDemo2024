@@ -51,12 +51,8 @@ public class HRogueCameraManager : MonoBehaviour
 
     private void ResetCameraShake(object sender,YTriggerEnterRoomTypeEventArgs e)
     {
-        if (cinemachineBrain.ActiveVirtualCamera != null)
-        {
-            //if (debug) cineName = cinemachineBrain.ActiveVirtualCamera.VirtualCameraGameObject.name + "[CinemachineShake.cs]";//deubug 相机名称 
-            cinemachineVirtualCameraBase = cinemachineBrain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineVirtualCameraBase>();//获取当前虚拟相机的基类
-            cinemachineBasicMultiChannelPerlins = cinemachineVirtualCameraBase.GetComponentsInChildren<CinemachineBasicMultiChannelPerlin>();//获取该虚拟相机下的noise 设置
-        }
+        if (!cinemachineVirtualCameraBase) return;
+        cinemachineBasicMultiChannelPerlins = cinemachineVirtualCameraBase.GetComponentsInChildren<CinemachineBasicMultiChannelPerlin>();//获取该虚拟相机下的noise 设置
         if (cinemachineBasicMultiChannelPerlins.Length > 0)
         { 
             foreach (var item in cinemachineBasicMultiChannelPerlins)
@@ -66,6 +62,8 @@ public class HRogueCameraManager : MonoBehaviour
             }
         }
     }
+    
+    
 
     public void ShakeCamera(float intensity, float time, float frequency = 0.1f)
     {
@@ -102,7 +100,6 @@ public class HRogueCameraManager : MonoBehaviour
             // }
             if (shakeTimer <= 0)
             {
-                cinemachineVirtualCameraBase = cinemachineBrain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineVirtualCameraBase>();//获取当前虚拟相机的基类
                 cinemachineBasicMultiChannelPerlins = cinemachineVirtualCameraBase.GetComponentsInChildren<CinemachineBasicMultiChannelPerlin>();//获取该虚拟相机下的noise 设置
                 foreach (var item in cinemachineBasicMultiChannelPerlins)
                 {

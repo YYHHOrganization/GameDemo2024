@@ -259,6 +259,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
             firstRegistEnterNewRoomFunc = false;
         }
         
+        if(enterNewRoomEffects.ContainsKey(registerFunc)) return;
         enterNewRoomEffects.Add(registerFunc, Funcparams);
     }
     

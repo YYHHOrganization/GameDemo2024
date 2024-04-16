@@ -145,7 +145,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         
         int difficultyBias = 0;
         //根据当前关卡来决定房间的难度
-        int rollTimes = 10;
+        int rollTimes = 20;
         Class_BossRoomCSVFile battleRoomData = null;//最后返回的房间数据,如果没有找到就返回最后一次的
         for (int i = 0; i < rollTimes; i++)
         {
