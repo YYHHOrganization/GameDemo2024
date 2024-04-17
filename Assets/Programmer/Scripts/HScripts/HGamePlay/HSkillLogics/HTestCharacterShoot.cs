@@ -285,10 +285,12 @@ public class HTestCharacterShoot : MonoBehaviour
         //获取当前的子弹预制体，因为可能会随机发射某一种子弹
         if (type == "origin")
         {
-            curBulletPrefab = HRoguePlayerAttributeAndItemManager.Instance.GetRandomCurBulletPrefab();
+            int damage = 0;
+            curBulletPrefab = HRoguePlayerAttributeAndItemManager.Instance.GetRandomCurBulletPrefab(ref damage);
+            curBulletPrefab.GetComponent<HBulletMoveBase>().SetBulletDamageBias(damage);
         }
     }
-
+    
     
     private void ShootBulletFromMuzzle(bool needShootHelp,bool hitButNoNeedHelp, Vector3 hitPosition)
     {

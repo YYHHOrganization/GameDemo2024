@@ -53,6 +53,10 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
     //enter
     public override void OnStateEnter()
     {
+        if (mPatrolAI.chaseType == RogueEnemyChaseType.DontMove)
+        {
+            return;
+        }
         mPatrolAI.mNavMeshAgent.enabled = true;
         mPatrolAI.curStateName = "chase";
         

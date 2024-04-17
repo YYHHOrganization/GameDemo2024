@@ -40,9 +40,9 @@ public class HBagPanelBaseLogic : MonoBehaviour
 
     private void LoadBaseInfos()
     {
-        //显示星琼和信用点数
-        string xingQiongId = "20000000";
-        string xinYongdianId = "20000001";
+        //显示星琼和信用点数(现在测试的是Rouge版本，正常版本是2000001和2000002)
+        string xingQiongId = "20000012";
+        string xinYongdianId = "20000013";
         int xingQiongNum = HItemCounter.Instance.CheckCountWithItemId(xingQiongId);
         int xinYongdianNum = HItemCounter.Instance.CheckCountWithItemId(xinYongdianId);
         xingQiongNumber.text = xingQiongNum.ToString();
@@ -105,6 +105,7 @@ public class HBagPanelBaseLogic : MonoBehaviour
     {
         RemoveAndDestroyAllChildren(ItemContent.transform);
         rogueItemUseButton.onClick.RemoveAllListeners();
+        LoadBaseInfos();
         InstantiateAllItems();
         InstantiateAllRogueItems();
     }

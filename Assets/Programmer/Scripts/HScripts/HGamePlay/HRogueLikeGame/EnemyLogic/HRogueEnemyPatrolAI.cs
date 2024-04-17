@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
@@ -120,6 +121,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         {
             { typeof(HRogueEnemyCommonWanderState), new HRogueEnemyCommonWanderState(this) },
             { typeof(HRogueEnemyCommonChaseState), new HRogueEnemyCommonChaseState(this)},
+            {typeof(HRogueEnemyCommonBeFrozenState), new HRogueEnemyCommonBeFrozenState(this)}
 
         };
         GetComponent<HRogueEnemyCommonStateMachine>().SetStates(states);
@@ -166,6 +168,29 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         // 不走Nev Mesh系统，直接随机游走，这里可以配置怪物的移动速度，移动范围等，当然会和场景碰撞箱自动做碰撞检测
         StartCoroutine(WanderAndStopRandomly());
     }
+
+    public void SetFrozen(float frozenTime)
+    {
+        enemyIsFrozen = true;
+        animator.enabled = false;
+        this.frozenTime = frozenTime;
+        stateMachine.JustSwitchState(typeof(HRogueEnemyCommonBeFrozenState));
+    }
+
+    private bool enemyIsFrozen = false;
+    public float frozenTime = 5f;
+    public bool EnemyIsFrozen => enemyIsFrozen;
+    public IEnumerator FrozenEnemyItself()
+    {
+        GameObject frozenIce = Addressables.InstantiateAsync("IceOnEnemy", gameObject.transform).WaitForCompletion();
+        
+        yield return new WaitForSeconds(frozenTime);
+        enemyIsFrozen = false;
+        animator.enabled = true;
+        Destroy(frozenIce);
+        //Addressables.Release(frozenIce);
+    }
+
 
     private bool isMoving = true;
 
@@ -391,6 +416,7 @@ public enum RogueEnemyChaseType
     AddSthToPlayer, //比如说远程攻击的怪，会降下落雷之类的
     JustGoToAttackState, //直接进入攻击状态，一般来说可能是远程攻击的怪物这种
     ChaseAndShootSpecial, //追击并且射击子弹，但是子弹有特殊的效果，由函数来决定
+    DontMove,
 }
 
 public enum RogueEnemyAttackType

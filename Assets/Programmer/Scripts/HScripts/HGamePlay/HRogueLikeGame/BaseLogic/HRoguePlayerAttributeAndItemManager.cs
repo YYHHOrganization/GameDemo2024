@@ -30,12 +30,17 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     
     private string curScreenPositiveFunc;
     private string curScreenPositiveFuncParams;
-    private Enum screenPositiveCheckType; //检查类型，比如说
+    private ScreenPositiveItemCheckType screenPositiveCheckType; //检查类型，比如说
+    public ScreenPositiveItemCheckType ScreenPositiveCheckType => screenPositiveCheckType;
     private int curScreenPositiveItemRoomCounter;
     private float curScreenPositiveItemTimeCounter;
     
     public string CurScreenPositiveFunc => curScreenPositiveFunc;
     public string CurScreenPositiveFuncParams => curScreenPositiveFuncParams;
+    public int CurScreenPositiveItemRoomCounter => curScreenPositiveItemRoomCounter;
+    
+    private string thisPositiveScreenItemId;
+    public string ThisPositiveScreenItemId => thisPositiveScreenItemId;
     
     public static HRoguePlayerAttributeAndItemManager Instance
     {
@@ -140,6 +145,16 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
             attributePanel.uiTool.Get<HRogueAttributeBaseLogic>().SetHealthAndShieldOnUI();
         }
         UpdateCharacterStateMachine();
+    }
+
+    public void RefleshPositiveItemUI(int count)
+    {
+        //此时上限是curScreenPositiveItemRoomCounter
+        if (attributePanel != null)
+        {
+            attributePanel.uiTool.Get<HRogueAttributeBaseLogic>()
+                .SetPositiveItemCDCount(count, curScreenPositiveItemRoomCounter);
+        }
     }
 
     private void UpdateCharacterStateMachine()
@@ -319,7 +334,9 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         RogueItemBaseAttribute rogueItemBaseAttribute = yPlanningTable.Instance.rogueItemBases[itemId];
         string itemPrefabLink = rogueItemBaseAttribute.rogueItemPrefabLink;
         GameObject item = Addressables.InstantiateAsync(itemPrefabLink, player.transform).WaitForCompletion();
+        item.transform.SetParent(null);
         item.GetComponent<HRogueItemBase>().SetItemIDAndShow(itemId, rogueItemBaseAttribute);
+        item.GetComponent<HRogueItemBase>().SetBillboardEffect();
     }
     public GameObject GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition)
     {
@@ -332,26 +349,45 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     }
 
     //添加屏幕主动道具的类型
-    public void SetScreenPositiveItem(string funcName, string funcParams)
+    public void SetScreenPositiveItem(string funcName, string funcParams, string itemId)
     {
+        if (thisPositiveScreenItemId != null)
+        {
+            //说明已经有主动道具了，把原来的扔掉
+            GiveOutAnFixedItem(thisPositiveScreenItemId);
+            
+        }
+        thisPositiveScreenItemId = itemId;
         curScreenPositiveFunc = funcName;
         curScreenPositiveFuncParams = funcParams;
+        var thisItem = yPlanningTable.Instance.rogueItemBases[itemId];
+        string itemIconLink = thisItem.rogueItemIconLink;
+        
         string[] strs = funcParams.Split(';');
         if (strs[0] == "Time")
         {
             screenPositiveCheckType = ScreenPositiveItemCheckType.Time;
             curScreenPositiveItemTimeCounter = float.Parse(strs[1]);
+            if (attributePanel != null)
+            {
+                attributePanel.uiTool.Get<HRogueAttributeBaseLogic>().SetScreenPositiveItemRoomType(itemIconLink, 8); //时间有关的固定是8个槽位
+            }
+            //todo:Time类型的有点难，这里暂时先不做了，后面真有这种需求或者水平上来了再说
             
         }
         else if (strs[0] == "RoomCount")
         {
             screenPositiveCheckType = ScreenPositiveItemCheckType.RoomCount;
             curScreenPositiveItemRoomCounter = int.Parse(strs[1]);
+            if (attributePanel != null)
+            {
+                attributePanel.uiTool.Get<HRogueAttributeBaseLogic>().SetScreenPositiveItemRoomType(itemIconLink, curScreenPositiveItemRoomCounter);
+            }
+            string realFuncParams = strs[2];
+            HRogueItemFuncUtility.Instance.RegisterEnterNewRoomPositiveFuncWithCounter(funcName, realFuncParams);
         }
-
-        string realFuncParams = strs[2];
-        HRogueItemFuncUtility.Instance.RegisterEnterNewRoomPositiveFuncWithCounter(funcName, realFuncParams);
         
+        HMessageShowMgr.Instance.ShowMessage("ROGUE_USE_POSITIVESCREEN_ITEM", "你获得了主动道具——" + thisItem.itemChineseName);
     }
     
     public GameObject GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)
@@ -415,23 +451,28 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         curBulletPrefab = op;
     }
 
-    public void AddBulletType(string type)
+    private List<int> OtherbulletDamages = new List<int>();
+    public void AddBulletType(string type, int damageBias)
     {
         var op = Addressables.LoadAssetAsync<GameObject>(type).WaitForCompletion();
         bulletPrefabs.Add(op);
+        OtherbulletDamages.Add(damageBias);
         bulletPrefabLength++;
     }
 
-    public GameObject GetRandomCurBulletPrefab()
+    public GameObject GetRandomCurBulletPrefab(ref int damageBias)
     {
         //利用random的特性，有90%的基础概率直接是curcurBulletPrefab，10%的概率是bulletPrefabs中的随机一个
         if (bulletPrefabLength==0 || UnityEngine.Random.Range(0, 100) < 80)
         {
+            damageBias = 0;
             return curBulletPrefab;
         }
         else
         {
-            return bulletPrefabs[UnityEngine.Random.Range(0, bulletPrefabLength)];
+            int index = UnityEngine.Random.Range(0, bulletPrefabLength);
+            damageBias = OtherbulletDamages[index];
+            return bulletPrefabs[index];
         }
     }
 
