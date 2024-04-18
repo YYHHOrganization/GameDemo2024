@@ -27,6 +27,8 @@ namespace Core.AI
             
             //核心血条出现
             
+            //这时候如果呼出了水弹 就应该消失
+            enemyBT.ExplodeCore();
         }
 
         public override TaskStatus OnUpdate()
