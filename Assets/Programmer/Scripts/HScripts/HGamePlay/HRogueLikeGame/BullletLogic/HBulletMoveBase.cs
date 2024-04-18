@@ -66,10 +66,15 @@ public class HBulletMoveBase : MonoBehaviour
             }
 
             HRogueEnemyPatrolAI enemyPatrolAI = co.gameObject.GetComponentInParent<HRogueEnemyPatrolAI>();
+            if (enemyPatrolAI == null)
+            {
+                enemyPatrolAI = co.gameObject.GetComponent<HRogueEnemyPatrolAI>();
+            }
             if (enemyPatrolAI != null)
             {
                 enemyPatrolAI.ChangeHealth(-(int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterCurDamage"]);
             }
+           
         }
 
         if(hitPrefab != null)

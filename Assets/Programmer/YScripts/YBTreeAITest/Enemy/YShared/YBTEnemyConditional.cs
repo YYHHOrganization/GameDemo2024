@@ -12,11 +12,14 @@ namespace Core.AI
         protected Rigidbody rb;
         protected Animator animator;
         protected GameObject player;
+        protected YEnemyBT enemyBT;
         public override void OnAwake()
         {
             rb = GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
-            player = GameObject.FindGameObjectWithTag("Player");//不一定是player，也可能是其他的目标，先测试
+            //player = GameObject.FindGameObjectWithTag("Player");//不一定是player，也可能是其他的目标，先测试
+            player = YPlayModeController.Instance.curCharacter;
+            enemyBT = GetComponent<YEnemyBT>();
         }
     }
 

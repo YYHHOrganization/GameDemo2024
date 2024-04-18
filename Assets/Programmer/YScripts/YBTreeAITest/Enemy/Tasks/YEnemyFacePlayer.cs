@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace Core.AI
 {
-    
     public class YEnemyFacePlayer : YBTEnemyAction
     {
         protected override void OnUpdateEnemy()

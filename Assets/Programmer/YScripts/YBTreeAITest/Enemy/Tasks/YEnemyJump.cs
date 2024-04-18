@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace Core.AI
 {
-    
     public class YEnemyJump : YBTEnemyAction
     {
         public float horizontalForce = 5;
@@ -18,6 +17,7 @@ namespace Core.AI
         public float jumpTime;
 
         public string animationTriggerName;
+        
         public bool shakeCameraOnLanding;
 
         private bool isLanded;
@@ -28,16 +28,18 @@ namespace Core.AI
         {
             buildupTween = DOVirtual.DelayedCall(buildUpTime,StartJump,false);//意思是在buildUpTime秒后调用StartJump方法
             animator.SetBool(animationTriggerName,true);
+            animator.SetTrigger(animationTriggerName);
         }
         
         private void StartJump()
         {
             // var direction = (player.transform.position - transform.position).normalized;
-             
+             rb.velocity = Vector3.zero;
             //转向角色
             if(player == null)
             {
-                player = GameObject.FindGameObjectWithTag("Player");//不一定是player，也可能是其他的目标，先测试
+                // player = GameObject.FindGameObjectWithTag("Player");//不一定是player，也可能是其他的目标，先测试
+                player = YPlayModeController.Instance.curCharacter;
                 if (player==null)
                 {
                     
@@ -78,6 +80,8 @@ namespace Core.AI
         
         public override TaskStatus OnUpdate()
         {
+            //test
+            transform.rotation = Quaternion.Euler(0,transform.rotation.eulerAngles.y,0);
             return isLanded? TaskStatus.Success : TaskStatus.Running;
         }
         public override void OnEnd()
@@ -85,6 +89,8 @@ namespace Core.AI
             buildupTween?.Kill();
             jumpTween?.Kill();//结束时清除
             isLanded = false;
+            //保持面向方向不变，不绕着xz方向旋转
+            transform.rotation = Quaternion.Euler(0,transform.rotation.eulerAngles.y,0);
             animator.SetBool(animationTriggerName,false);
         }
     }
