@@ -28,7 +28,14 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         {
             if (hasShootTarget && shootTarget != null)
             {
-                transform.LookAt(new Vector3(shootTarget.position.x, 0.5f, shootTarget.position.z));
+                if (!isChasingYAxis)
+                {
+                    transform.LookAt(new Vector3(shootTarget.position.x,0.5f, shootTarget.position.z));
+                }
+                else
+                {
+                    transform.LookAt(new Vector3(shootTarget.position.x,shootTarget.position.y + shootTarget.localScale.y * 0.5f, shootTarget.position.z));
+                }
                 transform.position += transform.forward * (bulletSpeed * Time.deltaTime);
             }
             else
@@ -48,10 +55,12 @@ public class HEnemyBulletMoveBase : MonoBehaviour
 
     private Transform shootTarget;
     private bool hasShootTarget = false;
-    public void SetTarget(Transform target)
+    private bool isChasingYAxis = false;
+    public void SetTarget(Transform target, bool chasingY = false)
     {
         hasShootTarget = true;
         shootTarget = target;
+        isChasingYAxis = chasingY;
     }
 
     void OnCollisionEnter (Collision co)

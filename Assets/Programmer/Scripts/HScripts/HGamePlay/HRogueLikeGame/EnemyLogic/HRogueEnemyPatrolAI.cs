@@ -62,7 +62,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     public int enemyDamage = 2;
     public float bulletChaseShootInterval = 1f;
 
-    private int health;
+    // private int health;
+    protected int health;
 
     # endregion
 
@@ -71,7 +72,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private int isDeadHash;
     public int IsAttackingHash => isAttackingHash;
     private Transform shootOrigin;
-    private int maxHealth;
+    protected int maxHealth;
 
     public Image enemyHealthImage;
     public string enemyID;
@@ -84,7 +85,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     
     public string curStateName;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         animator = gameObject.GetComponentInChildren<Animator>();
         mNavMeshAgent = GetComponent<NavMeshAgent>();
@@ -293,7 +294,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             script.SetBulletAttribute(speed, enemy._EnemyChaseDamage(), range);
     }
 
-    private void UpdateEnemyHeathAndShieldUI()
+    protected void UpdateEnemyHeathAndShieldUI()
     {
         //enemyHealthImage.fillAmount
         if (enemyHealthImage)
@@ -302,7 +303,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         }
     }
 
-    public void ChangeHealth(int value)
+    public virtual void ChangeHealth(int value)
     {
         health += value;
         UpdateEnemyHeathAndShieldUI();
