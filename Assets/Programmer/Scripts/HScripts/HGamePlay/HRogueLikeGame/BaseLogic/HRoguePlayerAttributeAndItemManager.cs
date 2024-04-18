@@ -351,11 +351,16 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     //添加屏幕主动道具的类型
     public void SetScreenPositiveItem(string funcName, string funcParams, string itemId)
     {
-        if (thisPositiveScreenItemId != null)
+        Debug.Log("Now we are Here!!!! How many Times??");
+        string throwOutId = thisPositiveScreenItemId;
+        if (throwOutId != null)
         {
             //说明已经有主动道具了，把原来的扔掉
-            GiveOutAnFixedItem(thisPositiveScreenItemId);
-            
+            DOVirtual.DelayedCall(0.1f, () =>
+            {
+                GiveOutAnFixedItem(throwOutId);
+            });
+            HMessageShowMgr.Instance.ShowMessage("ROGUE_USE_POSITIVESCREEN_ITEM", "你失去了" + yPlanningTable.Instance.rogueItemBases[throwOutId].itemChineseName);
         }
         thisPositiveScreenItemId = itemId;
         curScreenPositiveFunc = funcName;
@@ -387,7 +392,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
             HRogueItemFuncUtility.Instance.RegisterEnterNewRoomPositiveFuncWithCounter(funcName, realFuncParams);
         }
         
-        HMessageShowMgr.Instance.ShowMessage("ROGUE_USE_POSITIVESCREEN_ITEM", "你获得了主动道具——" + thisItem.itemChineseName);
+        HMessageShowMgr.Instance.ShowMessage("ROGUE_USE_POSITIVESCREEN_ITEM", "你获得了" + thisItem.itemChineseName);
     }
     
     public GameObject GiveOutAnFixedItem(string itemId,Transform transform,Vector3 biasposition,bool isShop, string buyCurrency, int howMuch)

@@ -83,7 +83,7 @@ public class HRogueItemBase : MonoBehaviour
                 string funcParams = rogueItemBaseAttribute.rogueItemFuncParams;
                 //这种主动道具需要在屏幕上显示，等待玩家使用
                 HRoguePlayerAttributeAndItemManager.Instance.SetScreenPositiveItem(funcName, funcParams, itemId);
-                SetActiveFalseAndDestroy(0.5f);
+                SetActiveFalseAndDestroy();
             }
         }
     }
@@ -129,21 +129,6 @@ public class HRogueItemBase : MonoBehaviour
                     itemChineseName.text = "???";
                 }
                 
-            }
-            if (!isPickedUp && Input.GetKey(KeyCode.F))
-            {
-                if (isShop)
-                {
-                    //如果是商店，那么就要 点击了F直接购买，扣除钱
-                    //同时应该判断钱是否够
-                    OnShopItemPickUp(buyCurrency, howMuch);
-                }
-                else
-                {
-                    GetToBagAndShowEffects();
-                    isPickedUp = true;
-                }
-               
             }
         }
     }
