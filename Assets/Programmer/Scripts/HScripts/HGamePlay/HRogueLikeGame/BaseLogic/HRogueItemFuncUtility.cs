@@ -28,8 +28,15 @@ public class HRogueItemFuncUtility : MonoBehaviour
         instance = this;
     }
     
+    //每次进入新房间触发的效果
     private Dictionary<string, string> enterNewRoomEffects = new Dictionary<string, string>();
-    private Dictionary<string, int> enterNewRoomEffectsCounter = new Dictionary<string, int>();
+    
+    //每隔多少个房间触发一次的效果，这个是总的计数器
+    private Dictionary<string, int> enterNewRoomEffectsRoomCounter = new Dictionary<string, int>();  //每过多少个房间触发一次
+    private Dictionary<string, int> enterNewRoomEffectsRoomActualCount = new Dictionary<string, int>(); //实际的计数器
+    private List<string> enterNewRoomFuncIntervalNames = new List<string>();
+    
+    private Dictionary<string, string> enterNewRoomEffectsInterval = new Dictionary<string, string>();
     private Dictionary<string, int> enterNewRoomPositiveItemCounter = new Dictionary<string, int>();
     private Dictionary<string, string> positiveItemEffects = new Dictionary<string, string>();
     private bool couldUsePositiveScreenItem = false;
@@ -253,6 +260,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
     
     private bool firstRegistEnterNewRoomFunc = true;
     private bool firstRegistEnterNewRoomPositiveFunc = true;
+    private bool firstRegistEnterNewRoomWithCntFunc = true;
     
     //普通进入新房间的效果，不需要房间计数器，每进入房间直接回调的函数
     public void RegisterEnterNewRoomFunc(string funcParams)  
@@ -268,6 +276,24 @@ public class HRogueItemFuncUtility : MonoBehaviour
         if(enterNewRoomEffects.ContainsKey(registerFunc)) return;
         enterNewRoomEffects.Add(registerFunc, Funcparams);
     }
+
+    public void RegisterEnterNewRoomFuncWithRoomCount(string funcParams)
+    {
+        int roomCount = int.Parse(funcParams.Split('!')[0]);
+        string registerFunc = funcParams.Split('!')[1];
+        string Funcparams = funcParams.Split('!')[2];
+        if (firstRegistEnterNewRoomWithCntFunc)
+        {
+            YTriggerEvents.OnEnterRoomType += EnterNewRoomEffectWithCnt;
+            firstRegistEnterNewRoomWithCntFunc = false;
+        }
+        
+        if(enterNewRoomEffectsInterval.ContainsKey(registerFunc)) return;
+        enterNewRoomEffectsInterval.Add(registerFunc, Funcparams);
+        enterNewRoomEffectsRoomCounter.Add(registerFunc, roomCount);
+        enterNewRoomEffectsRoomActualCount.Add(registerFunc, 0);
+        enterNewRoomFuncIntervalNames.Add(registerFunc);
+    }
     
     private void EnterNewRoomEffect(object sender,YTriggerEnterRoomTypeEventArgs e)
     {
@@ -275,6 +301,20 @@ public class HRogueItemFuncUtility : MonoBehaviour
         {
             System.Reflection.MethodInfo method = this.GetType().GetMethod(effect.Key);
             method.Invoke(this, new object[] {effect.Value});
+        }
+    }
+    
+    private void EnterNewRoomEffectWithCnt(object sender,YTriggerEnterRoomTypeEventArgs e)
+    {
+        for (int i = 0; i < enterNewRoomFuncIntervalNames.Count; i++)
+        {
+            enterNewRoomEffectsRoomActualCount[enterNewRoomFuncIntervalNames[i]]++;
+            if(enterNewRoomEffectsRoomActualCount[enterNewRoomFuncIntervalNames[i]] >= enterNewRoomEffectsRoomCounter[enterNewRoomFuncIntervalNames[i]])
+            {
+                enterNewRoomEffectsRoomActualCount[enterNewRoomFuncIntervalNames[i]] = 0;
+                System.Reflection.MethodInfo method = this.GetType().GetMethod(enterNewRoomFuncIntervalNames[i]);
+                method.Invoke(this, new object[] {enterNewRoomEffectsInterval[enterNewRoomFuncIntervalNames[i]]});
+            }
         }
     }
     
@@ -297,39 +337,42 @@ public class HRogueItemFuncUtility : MonoBehaviour
         float lastTime = float.Parse(paramList[1]);
         HPostProcessingFilters.Instance.SetPostProcessingWithNameAndTime(funcName,lastTime);
     }
-
+    
     public void MayKillEnemy(string funcParams)
     {
         var roomBaseScript = YRogue_RoomAndItemManager.Instance.currentRoom.GetComponent<YRouge_RoomBase>();
         if (roomBaseScript.RoomType != RoomType.BattleRoom) return;
         
         int killCnt = int.Parse(funcParams);
-        List<GameObject> enemies = roomBaseScript.Enemies;
-        int randomNum = Random.Range(0, 100);
-        if (randomNum <= 30) return;
-        if (enemies!=null && enemies.Count > 0)  //当前是战斗房
+        DOVirtual.DelayedCall(0.5f, () =>
         {
-            for (int i = 0; i < killCnt; i++)
+            List<GameObject> enemies = roomBaseScript.Enemies;
+            int randomNum = Random.Range(0, 100);
+            if (randomNum <= 30) return;
+            if (enemies!=null && enemies.Count > 0)  //当前是战斗房
             {
-                int index = Random.Range(0, enemies.Count);
-                var enemy = enemies[index];
-                while (!enemy)
+                for (int i = 0; i < killCnt; i++)
                 {
-                    index = Random.Range(0, enemies.Count);
-                    enemy = enemies[index];
-                }
-                //SetEnemyFrozen
-                if (enemy.GetComponent<HRogueEnemyPatrolAI>())
-                {
-                    enemy.GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(-1000);
-                }
-                else if (enemy.GetComponent<YPatrolAI>())
-                {
-                    enemy.GetComponent<YPatrolAI>().die();
+                    int index = Random.Range(0, enemies.Count);
+                    var enemy = enemies[index];
+                    while (!enemy)
+                    {
+                        index = Random.Range(0, enemies.Count);
+                        enemy = enemies[index];
+                    }
+                    //SetEnemyFrozen
+                    if (enemy.GetComponent<HRogueEnemyPatrolAI>())
+                    {
+                        enemy.GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(-1000);
+                    }
+                    else if (enemy.GetComponent<YPatrolAI>())
+                    {
+                        enemy.GetComponent<YPatrolAI>().die();
+                    }
                 }
             }
-        }
-        HRogueCameraManager.Instance.ShakeCamera(10f, 0.1f);
+            HRogueCameraManager.Instance.ShakeCamera(10f, 0.1f);
+        });
     }
 
     #endregion
@@ -381,7 +424,21 @@ public class HRogueItemFuncUtility : MonoBehaviour
 
     public void HuangquanWuFunc(string funcParams)
     {
-        Debug.Log("还没做完！先去测试其他的！！");
+        int counter = HRoguePlayerAttributeAndItemManager.Instance.CurScreenPositiveItemRoomCounter;
+        int realCnt = enterNewRoomPositiveItemCounter["HuangquanWuFunc"];
+        if (realCnt < counter)
+        {
+            return;
+        }
+        enterNewRoomPositiveItemCounter["HuangquanWuFunc"] = 0;
+        float lastTime = float.Parse(funcParams);
+        HPostProcessingFilters.Instance.SetPostProcessingWithNameAndTime("HeibaiHong",lastTime);
+        SetAttributeWithCertainLogic("AddAll;1");
+        DOVirtual.DelayedCall(lastTime, () => 
+        {
+            SetAttributeWithCertainLogic("AddAll;-1");
+        });
+
     }
 
     public void FrozenRoomEnemy(string funcParams)
@@ -545,7 +602,10 @@ public class HRogueItemFuncUtility : MonoBehaviour
             if (type == "NotRogue")
             {
                 int cnt = HItemCounter.Instance.CheckCountWithItemId(itemId);
-                HItemCounter.Instance.AddItem(itemId, cnt * (value-1));
+                if (cnt != 0)
+                {
+                    HItemCounter.Instance.AddItem(itemId, cnt * (value-1));
+                }
             }
         }
     }

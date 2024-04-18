@@ -202,6 +202,7 @@ public class HPostProcessingFilters : HPostProcessingBase
         float originValue = 0f;
         LensDistortion lensDistortion;
         ColorAdjustments colorAdjustments;
+        ColorCurves colorCurves;
         
         switch (effect)
         {
@@ -234,6 +235,25 @@ public class HPostProcessingFilters : HPostProcessingBase
                 }
                 colorAdjustments.hueShift.value = originValue;
                 break;
+            case "HeibaiHong":
+                //开启我为逝者哀哭
+                if (postProcessVolume.profile.TryGet<ColorCurves>(out colorCurves))
+                {
+                    colorCurves.active = true;
+                    if (postProcessVolume.profile.TryGet<ColorAdjustments>(out colorAdjustments))
+                    {
+                        var sequence = DOTween.Sequence();
+                        //2s的时间把saturation从0到-100，过10s之后从-100重置回originValue
+                        sequence.Append(DOTween.To(() => colorAdjustments.saturation.value, x => colorAdjustments.saturation.value = x, -60f, 2f));
+                        yield return new WaitForSeconds(time);
+                        colorAdjustments.saturation.value = originValue;
+                        colorCurves.active = false;
+                    }
+                    
+                }
+
+                break;
+                
         }
     }
 
