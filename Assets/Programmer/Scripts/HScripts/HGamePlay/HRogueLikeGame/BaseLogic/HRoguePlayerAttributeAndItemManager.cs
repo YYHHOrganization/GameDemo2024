@@ -361,6 +361,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
                 GiveOutAnFixedItem(throwOutId);
             });
             HMessageShowMgr.Instance.ShowMessage("ROGUE_USE_POSITIVESCREEN_ITEM", "你失去了" + yPlanningTable.Instance.rogueItemBases[throwOutId].itemChineseName);
+            HItemCounter.Instance.RemoveItemInRogue(throwOutId, 1);
         }
         thisPositiveScreenItemId = itemId;
         curScreenPositiveFunc = funcName;
