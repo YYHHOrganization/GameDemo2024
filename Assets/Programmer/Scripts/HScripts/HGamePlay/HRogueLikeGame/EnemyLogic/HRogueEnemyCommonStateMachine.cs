@@ -7,6 +7,7 @@ using UnityEngine;
 public class HRogueEnemyCommonStateMachine : MonoBehaviour
 {
     private Dictionary<Type, HRogueEnemyBaseState> mDicAvailStates;
+    public Dictionary<Type, HRogueEnemyBaseState> DicAvailStates => mDicAvailStates;
 
     public HRogueEnemyBaseState CurrentState { get; private set; }
     //事件***
@@ -15,6 +16,11 @@ public class HRogueEnemyCommonStateMachine : MonoBehaviour
     public void SetStates(Dictionary<Type,HRogueEnemyBaseState> dicStates)
     {
         mDicAvailStates = dicStates;
+    }
+
+    public void SetCurrentState(HRogueEnemyBaseState state)
+    {
+        CurrentState = state;
     }
     
     void Update()
@@ -37,6 +43,11 @@ public class HRogueEnemyCommonStateMachine : MonoBehaviour
         {
             switchState(nextState);
         }
+    }
+    
+    public void JustSwitchState(Type nextState)
+    {
+        switchState(nextState);
     }
 
     private void switchState(Type nextState)

@@ -7,7 +7,6 @@ using Debug = UnityEngine.Debug;
 
 public class YRouge_BattleRoom : YRouge_RoomBase
 {
-    List<GameObject> enemies = new List<GameObject>();
     GameObject EnemyParent;
     Class_BattleRoomCSVFile battleRoomData;
     // Start is called before the first frame update

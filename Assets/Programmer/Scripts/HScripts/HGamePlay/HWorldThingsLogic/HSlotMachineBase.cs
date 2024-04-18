@@ -129,9 +129,9 @@ public class HSlotMachineBase : MonoBehaviour
         else if(resultsCnt[0]>=3 || resultsCnt[1]>=3 || resultsCnt[2]>=3 || resultsCnt[3]>=3)
         {
             string itemName = yPlanningTable.Instance.worldItems[chooseItemID].chineseName;
-            newContent = new string("某一种图案出现了三次及以上！你回本了！获得了" + chooseItemCount * 1 + "个" + itemName + "！");
+            newContent = new string("某一种图案出现了三次及以上！你获得了双倍奖励！获得了" + chooseItemCount * 2  + "个" + itemName + "！");
             HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg",newContent);
-            HItemCounter.Instance.AddItem(chooseItemID, chooseItemCount);
+            HItemCounter.Instance.AddItem(chooseItemID, chooseItemCount * 2);
         }
         //并没有四种图案都出现，扣除全部的钱
         else

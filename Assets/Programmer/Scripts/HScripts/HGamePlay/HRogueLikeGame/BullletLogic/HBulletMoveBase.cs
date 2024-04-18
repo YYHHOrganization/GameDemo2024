@@ -9,11 +9,17 @@ public class HBulletMoveBase : MonoBehaviour
     public GameObject hitPrefab;
     private float bulletRange = 10f;
     private Vector3 originPos;
+    private int bulletDamageBias = 0;
     void Start()
     {
         originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         bulletRange = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRange"];
         speed = HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueBulletSpeed"];
+    }
+
+    public void SetBulletDamageBias(int bias)
+    {
+        bulletDamageBias = bias;
     }
 
     void Update()
@@ -72,7 +78,7 @@ public class HBulletMoveBase : MonoBehaviour
             }
             if (enemyPatrolAI != null)
             {
-                enemyPatrolAI.ChangeHealth(-(int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterCurDamage"]);
+                enemyPatrolAI.ChangeHealth(-(int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterCurDamage"] + bulletDamageBias);
             }
            
         }

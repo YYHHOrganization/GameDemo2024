@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -200,6 +201,8 @@ public class HPostProcessingFilters : HPostProcessingBase
     {
         float originValue = 0f;
         LensDistortion lensDistortion;
+        ColorAdjustments colorAdjustments;
+        
         switch (effect)
         {
             case "xiaojingxi":
@@ -209,6 +212,27 @@ public class HPostProcessingFilters : HPostProcessingBase
                     yield return new WaitForSeconds(time);
                     lensDistortion.intensity.value = originValue;
                 }
+                break;
+            case "Sexiangpianyi":
+                if (postProcessVolume.profile.TryGet<ColorAdjustments>(out colorAdjustments))
+                {
+                    colorAdjustments.hueShift.value = 180f;
+                    yield return new WaitForSeconds(time);
+                    colorAdjustments.hueShift.value = originValue;
+                }
+                break;
+            case "SexiangpianyiMove":
+                if (postProcessVolume.profile.TryGet<ColorAdjustments>(out colorAdjustments))
+                {
+                    var sequence = DOTween.Sequence();
+                    //15s的时间，hueShift从0到180，再从180到-180，每0.1秒更新一次
+                    sequence.Append(DOTween.To(() => colorAdjustments.hueShift.value, x => colorAdjustments.hueShift.value = x, 180f, time/4)); 
+                    sequence.Append(DOTween.To(() => colorAdjustments.hueShift.value, x => colorAdjustments.hueShift.value = x, -180f, time/4));
+                    sequence.Append(DOTween.To(() => colorAdjustments.hueShift.value, x => colorAdjustments.hueShift.value = x, 180f, time/4)); 
+                    sequence.Append(DOTween.To(() => colorAdjustments.hueShift.value, x => colorAdjustments.hueShift.value = x, -180f, time/4));
+                    yield return new WaitForSeconds(time);
+                }
+                colorAdjustments.hueShift.value = originValue;
                 break;
         }
     }

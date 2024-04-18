@@ -74,6 +74,7 @@ public class HRogueItemBase : MonoBehaviour
         {
             if (!rogueItemBaseAttribute.rogueItemUSEInScreen)
             {
+                HMessageShowMgr.Instance.ShowMessage("ROGUE_USE_POSITIVE_ITEM", "你获得了背包中使用道具——"+rogueItemBaseAttribute.itemChineseName);
                 SetActiveFalseAndDestroy(0.5f);
             }
             else
@@ -81,8 +82,8 @@ public class HRogueItemBase : MonoBehaviour
                 string funcName = rogueItemBaseAttribute.rogueItemFunc;
                 string funcParams = rogueItemBaseAttribute.rogueItemFuncParams;
                 //这种主动道具需要在屏幕上显示，等待玩家使用
-                HRoguePlayerAttributeAndItemManager.Instance.SetScreenPositiveItem(funcName, funcParams);
-                SetActiveFalseAndDestroy(0.5f);
+                HRoguePlayerAttributeAndItemManager.Instance.SetScreenPositiveItem(funcName, funcParams, itemId);
+                SetActiveFalseAndDestroy();
             }
         }
     }
@@ -128,21 +129,6 @@ public class HRogueItemBase : MonoBehaviour
                     itemChineseName.text = "???";
                 }
                 
-            }
-            if (!isPickedUp && Input.GetKey(KeyCode.F))
-            {
-                if (isShop)
-                {
-                    //如果是商店，那么就要 点击了F直接购买，扣除钱
-                    //同时应该判断钱是否够
-                    OnShopItemPickUp(buyCurrency, howMuch);
-                }
-                else
-                {
-                    GetToBagAndShowEffects();
-                    isPickedUp = true;
-                }
-               
             }
         }
     }

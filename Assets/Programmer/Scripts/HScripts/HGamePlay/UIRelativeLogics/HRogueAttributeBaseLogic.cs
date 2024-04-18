@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 public class HRogueAttributeBaseLogic : MonoBehaviour
@@ -29,6 +30,11 @@ public class HRogueAttributeBaseLogic : MonoBehaviour
     private bool isDetailOpen = false;
     public Image characterIcon;
 
+    public GameObject positiveItemPanel;
+    public Image positiveItemIcon;
+    public GameObject roomCdBaseCountPanel;
+    public GameObject roomCdCountPanel;
+    
     private void Start()
     {
         if (HRoguePlayerAttributeAndItemManager.Instance.GetCharacterIcon())
@@ -38,9 +44,41 @@ public class HRogueAttributeBaseLogic : MonoBehaviour
         
     }
 
+    public void SetScreenPositiveItemRoomType(string itemIconLink, int cdUpperBound)
+    {
+        positiveItemPanel.gameObject.SetActive(true);
+        positiveItemIcon.sprite =
+            Addressables.LoadAssetAsync<Sprite>(itemIconLink).WaitForCompletion();
+        //先把所有的都设置成false
+        for (int i = 0; i < roomCdBaseCountPanel.transform.childCount; i++)
+        {
+            roomCdBaseCountPanel.transform.GetChild(i).gameObject.SetActive(false);
+            roomCdCountPanel.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        //根据充能上限决定每个格子的大小
+        for (int i = 0; i < cdUpperBound; i++)
+        {
+            roomCdBaseCountPanel.transform.GetChild(i).gameObject.SetActive(true);
+        }
+    }
+
     public void UpdateText()
     {
         
+    }
+
+    public void SetPositiveItemCDCount(int cnt, int upperCnt)
+    {
+        if (cnt > upperCnt) cnt = upperCnt;
+        //刷新一次充能数据
+        for (int i = 0; i < upperCnt; i++)
+        {
+            roomCdCountPanel.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        for (int i = 0; i < cnt; i++)
+        {
+            roomCdCountPanel.transform.GetChild(i).gameObject.SetActive(true);
+        }
     }
     
 
