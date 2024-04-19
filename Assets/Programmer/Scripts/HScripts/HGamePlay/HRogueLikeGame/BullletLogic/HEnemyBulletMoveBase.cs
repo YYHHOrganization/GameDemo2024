@@ -63,7 +63,7 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         isChasingYAxis = chasingY;
     }
 
-    void OnCollisionEnter (Collision co)
+    protected void OnCollisionEnter (Collision co)
     {
         bulletSpeed = 0;
 

@@ -15,22 +15,29 @@ namespace Core.AI
         public GameObject explodeEffect;
         
         private bool isDestroy = false;
+        
+        GameObject dieEffect;
         public override void OnStart()
         {
             Debug.Log("Destroy Boss");
             //出现也给timeline 给boss一个运镜
             //message显示
+            enemyBT.SetEnemyDie();
             if (DieEffect != null)
             {
-                GameObject dieEffect = Object.Instantiate(DieEffect, transform.position, Quaternion.identity);
-                Object.Destroy(dieEffect, 1.0f);
+                dieEffect = Object.Instantiate(DieEffect, transform.position, Quaternion.identity);
+                
             }
             DOVirtual.DelayedCall(bleedTime,(() =>
             {
                 if (explodeEffect != null)
                 {
                     GameObject explode = Object.Instantiate(explodeEffect, transform.position, Quaternion.identity);
-                    Object.Destroy(explode, 1.0f);
+                    Object.Destroy(explode, 3.0f);
+                    if (dieEffect != null)
+                    {
+                        Object.Destroy(dieEffect);
+                    }
                 }
                 HRogueCameraManager.Instance.ShakeCamera(0.5f, 0.5f);
                 isDestroy = true;

@@ -48,7 +48,11 @@ namespace Core.AI
                 else
                 {
                     Debug.Log("player"+player);
+                    //看向角色，只绕着y轴
                     transform.LookAt(player.transform);
+                    transform.rotation = Quaternion.Euler(0,transform.rotation.eulerAngles.y,0);
+                    //transform.LookAt(player.transform);
+                    
                     //给角色一个向上同时往player方向的力
                     var direction = (player.transform.position - transform.position).normalized;
                     rb.AddForce(direction * horizontalForce, ForceMode.Impulse);
@@ -57,6 +61,7 @@ namespace Core.AI
             else
             {
                 transform.LookAt(player.transform);
+                transform.rotation = Quaternion.Euler(0,transform.rotation.eulerAngles.y,0);
                 //给角色一个向上同时往player方向的力
                 var direction = (player.transform.position - transform.position).normalized;
                 rb.AddForce(direction * horizontalForce, ForceMode.Impulse);

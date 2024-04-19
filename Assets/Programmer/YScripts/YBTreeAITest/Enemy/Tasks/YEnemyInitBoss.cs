@@ -30,6 +30,10 @@ namespace Core.AI
             //出现也给timeline 给boss一个运镜
             //message显示
             
+            //boss初始位置是天上
+            enemyBT.transform.localPosition = enemyBT.transform.localPosition+new Vector3(0, 5, 0);
+            
+            enemyBT.bossPanel.SetActive(false);
         }
 
         public override TaskStatus OnUpdate()

@@ -13,6 +13,10 @@ public class YEnemyBT : HRogueEnemyPatrolAI
     public GameObject bloodFrozeEff;
     //skinmesjrender
     public SkinnedMeshRenderer skinnedMeshRenderer;
+    public WaterBallControll waterBallController;
+    public WaterBender waterBenderController;
+    public GameObject bossPanel;
+
     protected override void Awake()
     {
         health = 20;
@@ -49,5 +53,26 @@ public class YEnemyBT : HRogueEnemyPatrolAI
         {
             bloodFrozeEff.SetActive(true);
         }
+    }
+
+    public void ExplodeCore()
+    {
+        waterBallController.DestroyWaterBall();
+    }
+    
+    // public void WaterBendAttack()
+    // {
+    //     waterBenderController.Attack();
+    // }
+    public void SetEnemyDie()
+    {
+        Debug.Log("You should really die!!!!");
+        StopAllCoroutines();
+        
+        // DisintegrateDissolveVFX.SetActive(true);
+        // DieExplosionEff.SetActive(true);
+        
+        OnDie?.Invoke();
+        
     }
 }

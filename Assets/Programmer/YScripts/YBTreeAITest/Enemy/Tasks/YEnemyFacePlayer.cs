@@ -13,6 +13,7 @@ namespace Core.AI
         protected override void OnUpdateEnemy()
         {
             transform.LookAt(player.transform);
+            transform.rotation = Quaternion.Euler(0,transform.rotation.eulerAngles.y,0);
         }
     }
 

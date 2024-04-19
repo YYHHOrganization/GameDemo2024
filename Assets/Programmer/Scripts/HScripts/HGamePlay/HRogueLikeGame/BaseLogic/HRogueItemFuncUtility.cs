@@ -697,6 +697,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
             return;
         }
         enterNewRoomPositiveItemCounter["HuangquanWuFunc"] = 0;
+        HRoguePlayerAttributeAndItemManager.Instance.RefleshPositiveItemUI(0);
         float lastTime = float.Parse(funcParams);
         HPostProcessingFilters.Instance.SetPostProcessingWithNameAndTime("HeibaiHong",lastTime);
         SetAttributeWithCertainLogic("AddAll;1");
@@ -725,6 +726,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         {
             foreach (var enemy in enemies)
             {
+                if(enemy == null) continue;
                 //SetEnemyFrozen
                 if (enemy.GetComponent<HRogueEnemyPatrolAI>())
                 {
