@@ -517,7 +517,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         DecreaseMoney(moneyType, (int)(decreaseMoney * (1-multiplier)));
     }
     
-    private void SetCameraPostProcessingEffect(string funcParams)
+    public void SetCameraPostProcessingEffect(string funcParams)
     {
         int randomNumber = Random.Range(0, 100);
         if (randomNumber <= 80) return;
@@ -542,7 +542,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         MayKillEnemy(funcParams);
     }
     
-    private void MayKillEnemy(string funcParams)
+    public void MayKillEnemy(string funcParams)
     {
         var roomBaseScript = YRogue_RoomAndItemManager.Instance.currentRoom.GetComponent<YRouge_RoomBase>();
         if (roomBaseScript.RoomType != RoomType.BattleRoom) return;
@@ -636,7 +636,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         positiveItemEffects.Add(funcName, funcParams);
     }
     
-    private void EnterNewRoomForPositiveItem(object sender,YTriggerEnterRoomTypeEventArgs e)
+    public void EnterNewRoomForPositiveItem(object sender,YTriggerEnterRoomTypeEventArgs e)
     {
         //todo：暂时只支持一个主动道具，后续可以考虑多个主动道具，这里先简单实现一点
         string funcName = HRoguePlayerAttributeAndItemManager.Instance.CurScreenPositiveFunc;
@@ -744,6 +744,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         {
             foreach (var enemy in enemies)
             {
+                if(enemy == null) continue;
                 //SetEnemyFrozen
                 if (enemy.GetComponent<HRogueEnemyPatrolAI>())
                 {
@@ -818,7 +819,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
     
     #endregion
     
-    private void SetShopItemPriceMultiply(string funcParams)
+    public void SetShopItemPriceMultiply(string funcParams)
     {
         string priceId = funcParams.Split(';')[0];
         float multiplyValue = float.Parse(funcParams.Split(';')[1]);

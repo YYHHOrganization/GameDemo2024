@@ -98,8 +98,8 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000094,HurtHealthForFullRoomDamage,主动道具：扣除自身半格血，造成3点全房间伤害,1,每次扣除自身半格血，造成3点全房间伤害,Positive,HurtMySelfAndDoSomething,RoomCount;0;null,-1,RenWeaponIcon,false,ren,HurtHealthForFullRoomDamage,true,5,所属——刃,true,true
 80000095,UseXingqiongForFullRoomDamage,主动道具：扣除100点星琼，造成3点全房间伤害,1,每次扣除100点星琼，造成3点全房间伤害,Positive,HurtMySelfAndDoSomething2,RoomCount;0;null,-1,RenWeaponIcon,false,ren,UseXingqiongForFullRoomDamage,true,5,所属——刃,true,true
 80000096,UseXinyongdianForFullRoomDamage,主动道具：扣除10000信用点，造成3点全房间伤害,1,每次扣除10000信用点，造成3点全房间伤害,Positive,HurtMySelfAndDoSomething3,RoomCount;0;null,-1,RenWeaponIcon,false,ren,UseXinyongdianForFullRoomDamage,true,5,所属——刃,true,true
-80000097,ShajinRealMoney,砂金赠送的货币：可以用来兑换星琼,1,长期接代抽业务：5单648，可以兑换成80800星琼,Positive,AddMoney,RogueXingqiong;80800,-1,RenWeaponIcon,true,shajin,ShajinRealMoney,true,5,所属——砂金,true,false
+80000097,ShajinRealMoney,砂金赠送的货币：可以用来兑换星琼,1,长期接代抽业务：5单648，可以兑换成80800星琼,Positive,AddMoney,RogueXingqiong;80800,-1,ShajinTreasureIcon,true,shajin,ShajinRealMoney,true,5,所属——砂金,true,false
 80000098,PamuGift1,帕姆的奖励：赠送4800星琼,1,帕姆赠送的4800星琼,Negative,AddMoney,RogueXingqiong;4800,-1,PamuTreasureIcon,false,pamu,PamuGift1,true,5,所属——帕姆,true,false
-80000099,SilverWolfCheatOne,银狼作弊器：进入房间有较小概率秒杀全部敌人，boss房除外,1,进入房间有较小概率秒杀全部敌人，boss房除外,Negative,RegisterEnterNewRoomFunc,MayKillEnemy2!All;0.2,-1,SilverWolfIcon,false,silverwolf,SilverWolfCheatOne,true,5,所属——银狼,true,false
+80000099,SilverWolfCheatOne,银狼炸弹：进入房间有较小概率秒杀全部敌人，boss房除外,1,进入房间有较小概率秒杀全部敌人，boss房除外,Negative,RegisterEnterNewRoomFunc,MayKillEnemy2!All;0.2,-1,SilverWolfIcon,false,silverwolf,SilverWolfCheatOne,true,5,所属——银狼,true,false
 80000100,GanhaiPicture1,希儿的照片,1,似乎需要另外一部分...,Negative,GetGanhaiPicture,seele,-1,SeelePicture,true,bronya,GanhaiPicture1,true,5,所属——布洛妮娅,true,false
 80000101,GanhaiPicture2,布洛妮娅的照片,1,似乎需要另外一部分...,Negative,GetGanhaiPicture,bronya,-1,BronyaPicture,true,seele,GanhaiPicture2,true,5,所属——希儿,true,false
