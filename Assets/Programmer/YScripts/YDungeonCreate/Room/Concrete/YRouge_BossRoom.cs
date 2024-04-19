@@ -9,6 +9,8 @@ public class YRouge_BossRoom : YRouge_RoomBase
     
     GameObject EnemyParent;
     public Class_BossRoomCSVFile bossRoomData;
+
+    private List<GameObject> bossSpecialDoors;
     // Start is called before the first frame update
     void Start()
     {
@@ -60,6 +62,10 @@ public class YRouge_BossRoom : YRouge_RoomBase
         base.FirstEnterRoom();
         GenerateEmemies(bossRoomData);
         SetAllDoorsUp();
+        
+        //将红色的boss门set false  不然会干扰 很丑
+        SetBossSpecialDoorFalse();
+        
         //然后应该去监听这个房间的怪是不是全死了
         //如果全死了就把门打开
         AddListenerOfEnemy();
@@ -100,6 +106,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         //监听关闭?但是这个房间的怪都死了 怪都被销毁了
         
         SetAllDoorsDown();//门打开
+        
         //出现宝箱,或者掉落道具等等
         Vector3 treasurePos = transform.position + new Vector3(-2, 0, -2);
         HOpenWorldTreasureManager.Instance.InstantiateATreasureAndSetInfoWithTypeId("10000012", treasurePos, transform);
@@ -109,6 +116,18 @@ public class YRouge_BossRoom : YRouge_RoomBase
         GenerateOtherItems(bossRoomData);
         GenerateRoomItemDaojuNew();
     }
+
+    private void SetBossSpecialDoorFalse()
+    {
+        if (bossSpecialDoors != null)
+        {
+            foreach (var door in bossSpecialDoors)
+            {
+                door.SetActive(false);
+            }
+        }
+    }
+
     private void GenerateRoomItemDaojuNew()
     {
         string[] DropItemIDs = bossRoomData._DropItemIDField().Split(':'); 
@@ -246,6 +265,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
     }
     private void GenerateBossSpecialDoor()
     {
+        bossSpecialDoors = new List<GameObject>();
         string AddLink = "YHorizontalDoorBoss";
         //在所有门的位置生成特殊门 public List<GameObject> doors=new List<GameObject>();
         foreach (var door in horizontaldoors)
@@ -255,7 +275,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
             doorBoss.transform.position = new Vector3( door.transform.position.x, 0, door.transform.position.z);
             doorBoss.transform.rotation = door.transform.rotation;
             doorBoss.transform.parent = transform;
-            
+            bossSpecialDoors.Add(doorBoss);
         }
         
         AddLink = "YVertiacalDoorBoss";
@@ -265,7 +285,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
             doorBoss.transform.position = new Vector3( door.transform.position.x, 0, door.transform.position.z);
             doorBoss.transform.rotation = door.transform.rotation;
             doorBoss.transform.parent = transform;
-            
+            bossSpecialDoors.Add(doorBoss);
         }
         
         //GameObject door = Addressables.InstantiateAsync(AddLink, transform).WaitForCompletion();

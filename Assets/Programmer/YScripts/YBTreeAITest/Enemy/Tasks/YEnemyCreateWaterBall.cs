@@ -12,9 +12,10 @@ namespace Core.AI
 {
     public class YEnemyCreateWaterBall : YBTEnemyAction
     {
+        public int waterBallCount = 5;
         public override void OnStart()
         {
-            enemyBT.waterBallController.BossCreateWaterBall();
+            enemyBT.waterBallController.BossCreateWaterBall(waterBallCount);
         }
     }
 }

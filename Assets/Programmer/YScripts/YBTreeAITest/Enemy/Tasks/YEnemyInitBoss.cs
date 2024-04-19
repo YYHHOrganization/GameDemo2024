@@ -32,6 +32,8 @@ namespace Core.AI
             
             //boss初始位置是天上
             enemyBT.transform.localPosition = enemyBT.transform.localPosition+new Vector3(0, 5, 0);
+            
+            enemyBT.bossPanel.SetActive(false);
         }
 
         public override TaskStatus OnUpdate()

@@ -64,4 +64,15 @@ public class YEnemyBT : HRogueEnemyPatrolAI
     // {
     //     waterBenderController.Attack();
     // }
+    public void SetEnemyDie()
+    {
+        Debug.Log("You should really die!!!!");
+        StopAllCoroutines();
+        
+        // DisintegrateDissolveVFX.SetActive(true);
+        // DieExplosionEff.SetActive(true);
+        
+        OnDie?.Invoke();
+        
+    }
 }
