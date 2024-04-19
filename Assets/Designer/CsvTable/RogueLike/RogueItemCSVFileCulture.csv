@@ -77,8 +77,8 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000073,BladeAddDamageTwo,彼岸葬送其二,1,增加自身的两点伤害值,Negative,AddAttributeValue,RogueBulletDamage;2,-1,RenGuangzhuiIcon,false,ren,BladeAddDamageTwo,true,4,所属：刃,false,false
 80000074,RollingEveryItem,超级百宝箱,1,随机给出一个道具,Negative,GiveARandomItemWithIdRange,80000000!80000087,-1,BaibaoxiangIcon,false,huahuo,RollingEveryItem,true,5,所属：花火,true,false
 80000075,HuangquanWu,黑白无常的刀,1,每五个房间充能一次，使用时维持十秒黑白效果，此时角色全属性值+1,Positive,HuangquanWuFunc,RoomCount;5;10,-1,HuangquanWuIcon,false,huangquan,HuangquanWu,true,5,所属：黄泉,true,true
-80000076,PoisonMushroom,毒蘑菇其一,1,加一颗心上限，进入房间有20%概率触发毒蘑菇效果,Negative,AddHeartOrShield:RegisterEnterNewRoomFunc,HeartUpperBound;2:SetCameraPostProcessingEffect!Sexiangpianyi;8,-1,PoisionMushroomIcon,false,fengrao,PoisonMushroom,true,4,所属——丰饶：药师,false,false
-80000077,PoisonMushroom2,毒蘑菇其二,1,加两颗心上限，进入房间有20%概率触发更严重的毒蘑菇效果,Negative,AddHeartOrShield:RegisterEnterNewRoomFunc,HeartUpperBound;4:SetCameraPostProcessingEffect!SexiangpianyiMove;15,-1,PoisionMushroomIcon,false,fengrao,PoisonMushroom2,true,4,所属——丰饶：药师,false,false
+80000076,PoisonMushroom,毒蘑菇其一,1,加一颗心上限，进入房间有20%概率触发毒蘑菇效果,Negative,AddHeartOrShield:RegisterEnterNewRoomFunc,HeartUpperBound;2:SetCameraPostProcessingEffect2!Sexiangpianyi;8,-1,PoisionMushroomIcon,false,fengrao,PoisonMushroom,true,4,所属——丰饶：药师,false,false
+80000077,PoisonMushroom2,毒蘑菇其二,1,加两颗心上限，进入房间有20%概率触发更严重的毒蘑菇效果,Negative,AddHeartOrShield:RegisterEnterNewRoomFunc,HeartUpperBound;4:SetCameraPostProcessingEffect3!SexiangpianyiMove;15,-1,PoisionMushroomIcon,false,fengrao,PoisonMushroom2,true,4,所属——丰饶：药师,false,false
 80000078,ScaleUpMushroom,放大蘑菇,1,使自身大小膨胀为原来的1.25倍，最大为1.5倍,Negative,SetSelfSize,1.25,-1,PoisionMushroomIcon,false,hanuxiongdi,ScaleUpMushroom,true,3,所属——哈努兄弟,false,false
 80000079,ScaleDownMushroom,缩小蘑菇,1,使自身大小缩小为原来的0.75倍，最小为0.25倍,Negative,SetSelfSize,0.75,-1,PoisionMushroomIcon,false,hanuxiongdi,ScaleDownMushroom,true,4,所属——哈努兄弟,false,false
 80000080,QiangweiLvshizhengOne,蔷薇小姐的律师证其一,1,未名晶片数量变为原来的二倍,Negative,AddOrMultiplySth,NotRogue;Multiply;20000008;2,-1,QiangweiZhengIcon,true,qiangwei,QiangweiLvshizhengOne,true,4,所属——蔷薇,true,false
@@ -88,4 +88,4 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000084,Feichangjiandan,非常简单,1,将血量扣除到一格，每扣除半格血量，加1点伤害值,Negative,Feichangjiandan,1,-1,FeichangjiandanIcon,true,ajiweili,Feichangjiandan,true,4,所属——阿基维利,true,false
 80000085,Feichangkunnan,非常困难,1,将心上限扣除到一格，每扣除一个心上限，加3点伤害值,Negative,Feichangjiandan,2,-1,FeichangjiandanIcon,true,ajiweili,Feichangkunnan,true,4,所属——阿基维利,true,false
 80000086,Hewuchaoxiangsiwang,黑白无常的降临,1,每经过5个房间，对自身造成1点伤害,Negative,RegisterEnterNewRoomFuncWithRoomCount,5!AddHeartOrShield!Health;-1,-1,HewuchaoxiangsiwangIcon,true,jialahe,Hewuchaoxiangsiwang,true,3,所属——加拉赫,false,false
-80000087,LinniHatOne,魔术帽子：进入战斗房有较大可能随机杀死一个敌人,1,进入战斗房的时候，有70%的概率随机杀死一个敌人(Boss房除外),Negative,RegisterEnterNewRoomFunc,MayKillEnemy!1,-1,LinniHatIcon,false,linni,LinniHatOne,true,5,所属——林尼,true,false
+80000087,LinniHatOne,魔术帽子：进入战斗房有较大可能随机杀死一个敌人,1,进入战斗房的时候，有70%的概率随机杀死一个敌人(Boss房除外),Negative,RegisterEnterNewRoomFunc,MayKillEnemy!1;0.7,-1,LinniHatIcon,false,linni,LinniHatOne,true,5,所属——林尼,true,false
