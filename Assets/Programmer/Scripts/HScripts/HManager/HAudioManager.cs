@@ -45,6 +45,7 @@ public class HAudioManager : MonoBehaviour
     }
     private Dictionary<string, HSoundBase> soundDict = new Dictionary<string, HSoundBase>();
 
+    private List<GameObject> audioSourceList = new List<GameObject>();
     public void SetAudioSourcesFromDesignTable(string audioDesignTablePath)
     {
         StartCoroutine(ReadAudioDesignTable(audioDesignTablePath));
@@ -132,9 +133,21 @@ public class HAudioManager : MonoBehaviour
         }
         
         SetAudioSource(audioSource, s);
+        audioSourceList.Add(go);
         audioSource.Play();
     }
-    
+
+    public void StopAllAudio()
+    {
+        foreach (GameObject go in audioSourceList)
+        {
+            AudioSource audioSource = go.GetComponent<AudioSource>();
+            if (audioSource)
+            {
+                audioSource.Stop();
+            }
+        }
+    }
 
     public void Stop(GameObject go)
     {

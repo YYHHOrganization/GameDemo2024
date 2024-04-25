@@ -137,4 +137,11 @@ public class YTriggerEvents : MonoBehaviour
     {
         OnEnterRoomType?.Invoke(null, new YTriggerEnterRoomTypeEventArgs { activated = activated, roomType = roomType });
     }
+    
+    //肉鸽音游逻辑（别的希望也能复用），是否中断Combo
+    public static event EventHandler<YTriggerEventArgs> OnInterruptCombo;
+    public static void RaiseOnInterruptCombo(bool activated)
+    {
+        OnInterruptCombo?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
 }

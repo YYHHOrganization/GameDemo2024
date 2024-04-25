@@ -27,6 +27,8 @@ public class HMessageShowMgr : MonoBehaviour
     private string messageGiveoutBoxLink = "MessageGiveoutBox";
     private Transform messageKind5Panel;
     private Transform messageKind7Panel;
+
+    private Transform messageKind8Panel; //tips消息对应，在右上角显示，比如说倒计时
     
     //单例模式
     private static HMessageShowMgr instance;
@@ -56,6 +58,7 @@ public class HMessageShowMgr : MonoBehaviour
         messageKind2Panel = messagePanel.Find("messageKind2Prefab");
         messageKind5Panel = messagePanel.Find("messageKind5Prefab");
         messageKind7Panel = messagePanel.Find("messageKind7Prefab");
+        messageKind8Panel = messagePanel.Find("messageKind8Prefab");
         messageKind2Content = messageKind2Panel.GetComponentInChildren<TMP_Text>();
         messageKind7Content = messageKind7Panel.GetComponentInChildren<TMP_Text>();
     }
@@ -282,6 +285,35 @@ public class HMessageShowMgr : MonoBehaviour
                     
             }
         }
+    }
+
+    public void ShowTickMessage(string messageInfo, int seconds, Action callFunction)
+    {
+        StartCoroutine(TickMessageWithContentAndTime(messageInfo, seconds, callFunction));
+    }
+    
+    string FormatSeconds(int seconds)
+    {
+        int minutes = seconds / 60;
+        int remainingSeconds = seconds % 60;
+        return $"{minutes:D2}:{remainingSeconds:D2}";
+    }
+
+    IEnumerator TickMessageWithContentAndTime(string messageInfo, int seconds, Action callFunction)
+    {
+        int startSeconds = seconds;
+        string messageContent = messageInfo;
+        var op2 = Addressables.InstantiateAsync(aSimpleMessageUILink, messageKind8Panel);
+        GameObject go = op2.WaitForCompletion();
+        while (startSeconds > 0)
+        {
+            string timeString = FormatSeconds(startSeconds);
+            go.transform.GetComponentInChildren<TMP_Text>().text = messageContent + timeString;
+            yield return new WaitForSeconds(1f);
+            startSeconds--;
+        }
+        callFunction?.Invoke();
+        Destroy(go, 1f);
     }
     
 }

@@ -400,7 +400,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
                 break;
             
             case "Random":
-                int randomIndex = UnityEngine.Random.Range(0, attributes.Count);
+                int randomIndex = UnityEngine.Random.Range(0, attributes.Count - 1);
                 characterAttributes[attributes[randomIndex]] += value;
                 if(characterAttributes[attributes[randomIndex]] < 1.0f) 
                 {
