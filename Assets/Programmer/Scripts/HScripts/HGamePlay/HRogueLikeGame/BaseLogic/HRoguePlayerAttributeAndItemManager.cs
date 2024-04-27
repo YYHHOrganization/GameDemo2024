@@ -54,7 +54,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
             return _instance;
         }
     }
-
+    
     public GameObject GetPlayer()
     {
         return player;
@@ -113,6 +113,13 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         {
             attributePanel.uiTool.Get<HRogueAttributeBaseLogic>().ShowHeartAndShield(show);
         }
+    }
+
+    public void SetAttributePanel(bool active)
+    {
+        Transform canvas = GameObject.Find("Canvas").transform;
+        Transform attributePanel = canvas.Find("HRoguePlayerAttributePanel");
+        attributePanel.gameObject.SetActive(active);
     }
 
     //给出初始的物品

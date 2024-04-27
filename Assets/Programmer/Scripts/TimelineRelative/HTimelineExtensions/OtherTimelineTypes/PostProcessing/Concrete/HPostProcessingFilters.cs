@@ -196,6 +196,20 @@ public class HPostProcessingFilters : HPostProcessingBase
         StartCoroutine(SetPostProcessingEffect(effect, time));
 
     }
+    
+    public void SetPostProcessingWithNameAndValue(string effect, float value)
+    {
+        Vignette vignette;
+        switch (effect)
+        {
+            case "Vignette":
+                if (postProcessVolume.profile.TryGet<Vignette>(out vignette))
+                {
+                    vignette.intensity.value = value;
+                }
+                break;
+        }
+    }
 
     IEnumerator SetPostProcessingEffect(string effect, float time)
     {

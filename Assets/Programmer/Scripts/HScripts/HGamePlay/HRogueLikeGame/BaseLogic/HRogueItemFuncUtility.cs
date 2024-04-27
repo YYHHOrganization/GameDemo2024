@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
 
@@ -45,17 +46,97 @@ public class HRogueItemFuncUtility : MonoBehaviour
     public void UseNegativeItem(string funcName, string funcParams)
     {
         //利用反射调用函数funcName，传递参数funcParams
-        System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
-        method.Invoke(this, new object[] {funcParams});
+        // System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
+        // method.Invoke(this, new object[] {funcParams});
+        // 反射太慢了，考虑最暴力的打表，直接写出所有的函数
+        switch (funcName)
+        {
+            case "AddAttributeValue":
+                AddAttributeValue(funcParams);
+                break;
+            case "AddHeartOrShield":
+                AddHeartOrShield(funcParams);
+                break;
+            case "AddMoney":
+                AddMoney(funcParams);
+                break;
+            case "SetOrAddBulletType":
+                SetOrAddBulletType(funcParams);
+                break;
+            case "GiveARandomItemWithIdRange":
+                GiveARandomItemWithIdRange(funcParams);
+                break;
+            case "SetEveryItemName":
+                SetEveryItemName(funcParams);
+                break;
+            case "Bishangshuangyan":
+                Bishangshuangyan(funcParams);
+                break;
+            case "AddEnemyHealth":
+                AddEnemyHealth(funcParams);
+                break;
+            case "GetAllBlessWithKind":
+                GetAllBlessWithKind(funcParams);
+                break;
+            case "SetAttributeWithCertainLogic":
+                SetAttributeWithCertainLogic(funcParams);
+                break;
+            case "RegisterEnterNewRoomFunc":
+                RegisterEnterNewRoomFunc(funcParams);
+                break;
+            case "RegisterEnterNewRoomFuncWithRoomCount":
+                RegisterEnterNewRoomFuncWithRoomCount(funcParams);
+                break;
+            case "SetShopItemPriceMultiply":
+                SetShopItemPriceMultiply(funcParams);
+                break;
+            case "SetSelfSize":
+                SetSelfSize(funcParams);
+                break;
+            case "AddOrMultiplySth":
+                AddOrMultiplySth(funcParams);
+                break;
+            case "Quchixingxi":
+                Quchixingxi(funcParams);
+                break;
+            case "Feichangjiandan":
+                Feichangjiandan(funcParams);
+                break;
+            case "GameAttributeLogic":
+                GameAttributeLogic(funcParams);
+                break;
+            case "HideMySelf":
+                HideMySelf(funcParams);
+                break;
+            case "GetGanhaiPicture":
+                GetGanhaiPicture(funcParams);
+                break;
+            case "PortalToSomeRoom":
+                PortalToSomeRoom(funcParams);
+                break;
+            default:
+                System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
+                method.Invoke(this, new object[] {funcParams});
+                break;
+        }
     }
 
     public void UsePositiveItemInBag(string funcName, string funcParams)
     {
-        System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
-        method.Invoke(this, new object[] {funcParams});
+        switch (funcName)
+        {
+            case "AddMoney":
+                AddMoney(funcParams);
+                break;
+            default:
+                System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
+                method.Invoke(this, new object[] {funcParams});
+                break;
+        }
+        
     }
     
-    public void AddAttributeValue(string funcParams)
+    private void AddAttributeValue(string funcParams)
     {
         Debug.Log("AddAttributeValue");
         //根据funcParams的内容，将对应的属性值加上对应的数值
@@ -65,13 +146,92 @@ public class HRogueItemFuncUtility : MonoBehaviour
         HRoguePlayerAttributeAndItemManager.Instance.AddAttributeValue(attributeName, attributeValue);
     }
 
-    public void AddHeartOrShield(string funcParams)
+    private void GetGanhaiPicture(string funcParams)
+    {
+        //todo：全屏幕要放礼花效果，并且给出一条Message
+        //有绀海组的全部照片，全部属性*2
+        if (funcParams == "seele")
+        {
+            //检查是否有bronya
+            if(!HItemCounter.Instance.RogueItemCounts.ContainsKey("80000101")) return;
+            if (HItemCounter.Instance.RogueItemCounts["80000101"] > 0)
+            {
+                SetAttributeWithCertainLogic("MultiplyAll;2");
+                GiveOutSomeVFXAroundPlayer("Lihua1");
+                GiveOutSomeVFXAroundPlayer("Lihua2");
+                HMessageShowMgr.Instance.ShowMessage("ROGUE_GANHAI_MESSAGE_1");
+            }
+        }
+        else if(funcParams == "bronya")
+        {
+            if(!HItemCounter.Instance.RogueItemCounts.ContainsKey("80000100")) return;
+            //检查是否有seele
+            if (HItemCounter.Instance.RogueItemCounts["80000100"] > 0)
+            {
+                SetAttributeWithCertainLogic("MultiplyAll;2");
+                GiveOutSomeVFXAroundPlayer("Lihua1");
+                GiveOutSomeVFXAroundPlayer("Lihua2");
+                HMessageShowMgr.Instance.ShowMessage("ROGUE_GANHAI_MESSAGE_1");
+            }
+        }
+    }
+
+    private void GiveOutSomeVFXAroundPlayer(string vfxLink)
+    {
+        //在玩家周围生成一圈效果
+        GameObject vfx = Addressables.LoadAssetAsync<GameObject>(vfxLink).WaitForCompletion();
+        Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
+        Vector3 playerPos = player.position;
+        for (int i = 0; i < 360; i+=30)
+        {
+            Vector3 pos = playerPos + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad), 0, Mathf.Sin(i * Mathf.Deg2Rad));
+            GameObject tmpVFX = Instantiate(vfx, pos, Quaternion.identity);
+            Destroy(tmpVFX, 10f);
+        }
+    }
+
+    private void AddHeartOrShield(string funcParams)
     {
         //根据funcParams的内容，决定加血/加护盾，或者是加血量上限/加护盾上限
         string[] paramList = funcParams.Split(';');
         string attributeName = (string)paramList[0];
         int attributeValue = int.Parse(paramList[1]);
         HRoguePlayerAttributeAndItemManager.Instance.AddHeartOrShield(attributeName, attributeValue);
+    }
+
+    private void HideMySelf(string funcParams)
+    {
+        float time = float.Parse(funcParams);
+        HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().GetComponentInChildren<SkinnedMeshRenderer>().enabled =
+            false;
+        DOVirtual.DelayedCall(time, () =>
+        {
+            HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().GetComponentInChildren<SkinnedMeshRenderer>()
+                .enabled = true;
+        });
+    }
+    
+    private void GameAttributeLogic(string funcParams)
+    {
+        switch (funcParams)
+        {
+            case "1": //将信用点数量与星琼数量交换
+                int xingQiongCnt = HItemCounter.Instance.CheckCountWithItemId("20000012");
+                int xinYongdianCnt = HItemCounter.Instance.CheckCountWithItemId("20000013");
+                HItemCounter.Instance.RemoveItem("20000012", xingQiongCnt);
+                HItemCounter.Instance.RemoveItem("20000013", xinYongdianCnt);
+                HItemCounter.Instance.AddItem("20000012", xinYongdianCnt);
+                HItemCounter.Instance.AddItem("20000013", xingQiongCnt);
+                break;
+            case "2":  //将角色所有属性值+1或者-1
+                SetAttributeWithCertainLogic("RandomUpOrDownEveryone;1");
+                break;
+            case "3": //扣除角色的全部护盾值，并将其添加到血量上限上
+                int shield = (int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterShield"];
+                HRoguePlayerAttributeAndItemManager.Instance.AddHeartOrShield("HeartUpperBound", shield);
+                HRoguePlayerAttributeAndItemManager.Instance.AddHeartOrShield("Shield", -shield);
+                break;
+        }
     }
 
     private void DecreaseMoney(string attributeName, int value)
@@ -86,8 +246,8 @@ public class HRogueItemFuncUtility : MonoBehaviour
                 break;
         }
     }
-
-    public void PortalToSomeRoom(string funcParams)
+    
+    private void PortalToSomeRoom(string funcParams)
     {
         // GameObject player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer();
         GameObject player = YPlayModeController.Instance.curCharacter;
@@ -151,7 +311,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         }
     }
     
-    public void SetOrAddBulletType(string funcParams)
+    private void SetOrAddBulletType(string funcParams)
     {
         string[] paramList = funcParams.Split(';');
         string operation = (string)paramList[0];
@@ -169,7 +329,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
     
     # region 40~62
 
-    public void SetEveryItemName(string funcParams)
+    private void SetEveryItemName(string funcParams)
     {
         foreach (var item in yPlanningTable.Instance.rogueItemBases)
         {
@@ -177,7 +337,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         }
     }
 
-    public void AddEnemyHealth(string funcParams)
+    private void AddEnemyHealth(string funcParams)
     {
         string[] paramList = funcParams.Split(';');
         float value = float.Parse(paramList[1]);
@@ -206,12 +366,12 @@ public class HRogueItemFuncUtility : MonoBehaviour
         }
     }
 
-    public void GetAllBlessWithKind(string funcParams)
+    private void GetAllBlessWithKind(string funcParams)
     {
         HRoguePlayerAttributeAndItemManager.Instance.GiveOutRuanmeiItem(funcParams);
     }
     
-    public void SetAttributeWithCertainLogic(string funcParams)
+    private void SetAttributeWithCertainLogic(string funcParams)
     {
         string[] paramList = funcParams.Split(';');
         string logic = paramList[0];
@@ -286,12 +446,43 @@ public class HRogueItemFuncUtility : MonoBehaviour
                 break;
             
             case "Random":
-                int randomIndex = UnityEngine.Random.Range(0, attributes.Count);
+                int randomIndex = UnityEngine.Random.Range(0, attributes.Count - 1);
                 characterAttributes[attributes[randomIndex]] += value;
                 if(characterAttributes[attributes[randomIndex]] < 1.0f) 
                 {
                     characterAttributes[attributes[randomIndex]] = 1.0f;
                 }
+                break;
+            
+            case "RandomUpOrDownEveryone":
+                for (int i = 0; i < attributes.Count; i++)
+                {
+                    int randomValue = UnityEngine.Random.Range(0, 2);
+                    if (randomValue == 0)
+                    {
+                        characterAttributes[attributes[i]] += value;
+                    }
+                    else
+                    {
+                        characterAttributes[attributes[i]] -= value;
+                    }
+                    if(characterAttributes[attributes[i]] < 1.0f) 
+                    {
+                        characterAttributes[attributes[i]] = 1.0f;
+                    }
+                }
+                break;
+            
+            case "MultiplyAll":
+                for (int i = 0; i < attributes.Count; i++)
+                {
+                    characterAttributes[attributes[i]] *= value;
+                    if(characterAttributes[attributes[i]] < 1.0f)  //角色的各种普通属性的最小值是1
+                    {
+                        characterAttributes[attributes[i]] = 1.0f;
+                    }
+                }
+
                 break;
                 
         }
@@ -307,7 +498,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
     private bool firstRegistEnterNewRoomWithCntFunc = true;
     
     //普通进入新房间的效果，不需要房间计数器，每进入房间直接回调的函数
-    public void RegisterEnterNewRoomFunc(string funcParams)  
+    private void RegisterEnterNewRoomFunc(string funcParams)  
     {
         string registerFunc = funcParams.Split('!')[0];
         string Funcparams = funcParams.Split('!')[1];
@@ -321,7 +512,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         enterNewRoomEffects.Add(registerFunc, Funcparams);
     }
 
-    public void RegisterEnterNewRoomFuncWithRoomCount(string funcParams)
+    private void RegisterEnterNewRoomFuncWithRoomCount(string funcParams)
     {
         int roomCount = int.Parse(funcParams.Split('!')[0]);
         string registerFunc = funcParams.Split('!')[1];
@@ -381,42 +572,87 @@ public class HRogueItemFuncUtility : MonoBehaviour
         float lastTime = float.Parse(paramList[1]);
         HPostProcessingFilters.Instance.SetPostProcessingWithNameAndTime(funcName,lastTime);
     }
+
+    public void SetCameraPostProcessingEffect2(string funcParams)  //写出这种函数是因为在注册的时候会用不同的函数名字存放在字典里，因此每次需要多写一个函数，todo：不知道怎么优化，先这样吧。
+    {
+        SetCameraPostProcessingEffect(funcParams);
+    }
+    
+    public void SetCameraPostProcessingEffect3(string funcParams)
+    {
+        SetCameraPostProcessingEffect(funcParams);
+    }
+
+    public void MayKillEnemy2(string funcParams)
+    {
+        MayKillEnemy(funcParams);
+    }
     
     public void MayKillEnemy(string funcParams)
     {
         var roomBaseScript = YRogue_RoomAndItemManager.Instance.currentRoom.GetComponent<YRouge_RoomBase>();
         if (roomBaseScript.RoomType != RoomType.BattleRoom) return;
         
-        int killCnt = int.Parse(funcParams);
-        DOVirtual.DelayedCall(0.5f, () =>
+        int checkValue = 100 - (int)(100 * float.Parse(funcParams.Split(';')[1]));
+        int randomNum = Random.Range(0, 100);
+        if (randomNum <= checkValue) return;
+        
+        List<GameObject> enemies = roomBaseScript.Enemies;
+        
+        if (funcParams.Split(';')[0] == "All")
         {
-            List<GameObject> enemies = roomBaseScript.Enemies;
-            int randomNum = Random.Range(0, 100);
-            if (randomNum <= 30) return;
-            if (enemies!=null && enemies.Count > 0)  //当前是战斗房
+            DOVirtual.DelayedCall(0.5f, () =>
             {
-                for (int i = 0; i < killCnt; i++)
+                //杀死所有的敌人
+                if (enemies != null && enemies.Count > 0) //当前是战斗房
                 {
-                    int index = Random.Range(0, enemies.Count);
-                    var enemy = enemies[index];
-                    while (!enemy)
+                    foreach (var enemy in enemies)
                     {
-                        index = Random.Range(0, enemies.Count);
-                        enemy = enemies[index];
-                    }
-                    //SetEnemyFrozen
-                    if (enemy.GetComponent<HRogueEnemyPatrolAI>())
-                    {
-                        enemy.GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(-1000);
-                    }
-                    else if (enemy.GetComponent<YPatrolAI>())
-                    {
-                        enemy.GetComponent<YPatrolAI>().die();
+                        //SetEnemyFrozen
+                        if (enemy.GetComponent<HRogueEnemyPatrolAI>())
+                        {
+                            enemy.GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(-1000);
+                        }
+                        else if (enemy.GetComponent<YPatrolAI>())
+                        {
+                            enemy.GetComponent<YPatrolAI>().die();
+                        }
                     }
                 }
-            }
-            HRogueCameraManager.Instance.ShakeCamera(10f, 0.1f);
-        });
+                HRogueCameraManager.Instance.ShakeCamera(10f, 0.1f);
+            });
+        }
+        else
+        {
+            int killCnt = int.Parse(funcParams.Split(';')[0]);
+            
+            DOVirtual.DelayedCall(0.5f, () =>
+            {
+                if (enemies!=null && enemies.Count > 0)  //当前是战斗房
+                {
+                    for (int i = 0; i < killCnt; i++)
+                    {
+                        int index = Random.Range(0, enemies.Count);
+                        var enemy = enemies[index];
+                        while (!enemy)
+                        {
+                            index = Random.Range(0, enemies.Count);
+                            enemy = enemies[index];
+                        }
+                        //SetEnemyFrozen
+                        if (enemy.GetComponent<HRogueEnemyPatrolAI>())
+                        {
+                            enemy.GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(-1000);
+                        }
+                        else if (enemy.GetComponent<YPatrolAI>())
+                        {
+                            enemy.GetComponent<YPatrolAI>().die();
+                        }
+                    }
+                }
+                HRogueCameraManager.Instance.ShakeCamera(10f, 0.1f);
+            });
+        }
     }
 
     #endregion
@@ -446,7 +682,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         positiveItemEffects.Add(funcName, funcParams);
     }
     
-    private void EnterNewRoomForPositiveItem(object sender,YTriggerEnterRoomTypeEventArgs e)
+    public void EnterNewRoomForPositiveItem(object sender,YTriggerEnterRoomTypeEventArgs e)
     {
         //todo：暂时只支持一个主动道具，后续可以考虑多个主动道具，这里先简单实现一点
         string funcName = HRoguePlayerAttributeAndItemManager.Instance.CurScreenPositiveFunc;
@@ -463,6 +699,38 @@ public class HRogueItemFuncUtility : MonoBehaviour
         {
             System.Reflection.MethodInfo method = this.GetType().GetMethod(effect.Key);
             method.Invoke(this, new object[] {effect.Value});
+        }
+    }
+
+    public void HurtMySelfAndDoSomething(string funcParams)
+    {
+        //每次扣除自身半格血，造成3点全房间伤害
+        if(HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterHealth"] > 1)
+        {
+            AddHeartOrShield("Health;-1");
+            HurtEveryEnemyInRoomWithValue(-3);
+        }
+    }
+
+    public void HurtMySelfAndDoSomething2(string funcParams)
+    {
+        //主动道具：扣除100点星琼，造成3点全房间伤害
+        int xingQiongCnt = HItemCounter.Instance.CheckCountWithItemId("20000012");
+        if (xingQiongCnt > 100)
+        {
+            HItemCounter.Instance.RemoveItem("20000012", 100);
+            HurtEveryEnemyInRoomWithValue(-3);
+        }
+    }
+    
+    public void HurtMySelfAndDoSomething3(string funcParams)
+    {
+        //主动道具：扣除10000点信用点，造成3点全房间伤害
+        int xinYongdianCnt = HItemCounter.Instance.CheckCountWithItemId("20000013");
+        if (xinYongdianCnt > 10000)
+        {
+            HItemCounter.Instance.RemoveItem("20000013", 10000);
+            HurtEveryEnemyInRoomWithValue(-3);
         }
     }
 
@@ -513,6 +781,30 @@ public class HRogueItemFuncUtility : MonoBehaviour
             }
         }
     }
+
+    private void HurtEveryEnemyInRoomWithValue(int value)
+    {
+        List<GameObject> enemies =
+            YRogue_RoomAndItemManager.Instance.currentRoom.GetComponent<YRouge_RoomBase>().Enemies;
+        if (enemies!=null && enemies.Count > 0)  //当前是战斗房
+        {
+            foreach (var enemy in enemies)
+            {
+                if(enemy == null) continue;
+                //SetEnemyFrozen
+                if (enemy.GetComponent<HRogueEnemyPatrolAI>())
+                {
+                    enemy.GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(value);
+                }
+                else if (enemy.GetComponent<YPatrolAI>())
+                {
+                    enemy.GetComponent<YPatrolAI>().die();
+                }
+            }
+        }
+        HRogueCameraManager.Instance.ShakeCamera(10f, 0.1f, 0.2f);
+    }
+    
 
     public void HurtEveryEnemyInRoom(string funcParams)
     {
@@ -588,7 +880,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         }
     }
 
-    public void Feichangjiandan(string funcParams)
+    private void Feichangjiandan(string funcParams)
     {
         string type = funcParams;
         if (type == "1")
@@ -610,7 +902,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         }
     }
 
-    public void Quchixingxi(string funcParams)
+    private void Quchixingxi(string funcParams)
     {
         switch (funcParams)
         {
@@ -632,10 +924,28 @@ public class HRogueItemFuncUtility : MonoBehaviour
                     SetAttributeWithCertainLogic("Random;1");
                 }
                 break;
+            case "3": //失去全部的信用点，每失去100000信用点，获得一颗心上限
+                int xinYongdianCnt3 = HItemCounter.Instance.CheckCountWithItemId("20000013");
+                int addCnt = xinYongdianCnt3 / 100000;
+                HItemCounter.Instance.RemoveItem("20000013", xinYongdianCnt3);
+                for (int i = 0; i < addCnt; i++)
+                {
+                    AddHeartOrShield("HeartUpperBound;1");
+                }
+                break;
+            case "4": //失去全部的星琼，每失去500星琼，获得100000信用点
+                int xingQiongCnt4 = HItemCounter.Instance.CheckCountWithItemId("20000012");
+                int addCnt2 = xingQiongCnt4 / 500;
+                HItemCounter.Instance.RemoveItem("20000012", xingQiongCnt4);
+                for (int i = 0; i < addCnt2; i++)
+                {
+                    AddMoney("RogueXinyongdian;100000");
+                }
+                break;
         }
     }
 
-    public void AddOrMultiplySth(string funcParams)
+    private void AddOrMultiplySth(string funcParams)
     {
         string[] args = funcParams.Split(';');
         //NotRouge;Multiply;20000008;2
@@ -656,7 +966,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         }
     }
 
-    public void SetSelfSize(string funcParams)
+    private void SetSelfSize(string funcParams)
     {
         float value = float.Parse(funcParams);
         float size = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform.localScale.x;
@@ -666,7 +976,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform.localScale = new Vector3(result, result, result);
     }
     
-    public void Bishangshuangyan(string funcParams)
+    private void Bishangshuangyan(string funcParams)
     {
         switch (funcParams)
         {
@@ -709,7 +1019,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         
     }
 
-    public void GiveARandomItemWithIdRange(string funcParams)
+    private void GiveARandomItemWithIdRange(string funcParams)
     {
         string startId = funcParams.Split('!')[0];
         string endId = funcParams.Split('!')[1];
@@ -747,13 +1057,6 @@ public class HRogueItemFuncUtility : MonoBehaviour
         StopCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
         StartCoroutine((IEnumerator)method.Invoke(this, new object[] {effectTime}));
     }
-
-    public void Heiyuanbaihua(string funcParams)
-    {
-        //todo:还未完成
-        Debug.Log("Heiyuanbaihua!!!!");
-    }
-    
     
     public IEnumerator RotatePlayer(float lastTime)
     {

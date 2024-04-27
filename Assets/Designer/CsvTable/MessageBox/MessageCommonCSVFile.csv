@@ -1,6 +1,6 @@
 ﻿消息标识符,消息类型,消息内容,消息显示的持续时间,视觉效果（比如淡入淡出，左滑进入等）,消息的Addressable链接
 MessageId,MessageKind,MessageContent,MessageLastTime,MessageTransitionEffect,MessagePrefabLink
-参考下面的写，不要重复,"（1：屏幕上方出现的消息， 2：大型弹窗（例如教程,需要用户点掉） 3：屏幕下方弹出的消息（比如获得成就），4:屏幕中间弹出的消息（比如重要提示等））,5:二次确认窗口, 6:从背包提交物品窗口,7:问答选项窗口，会把选择的答案记录到文本中",后面加入一些转义符的配置,消息持续时间,淡入淡出等,没有资源类型的填NULL
+参考下面的写，不要重复,"（1：屏幕上方出现的消息， 2：大型弹窗（例如教程,需要用户点掉） 3：屏幕下方弹出的消息（比如获得成就），4:屏幕中间弹出的消息（比如重要提示等））,5:二次确认窗口, 6:从背包提交物品窗口,7:问答选项窗口，会把选择的答案记录到文本中;8:Tips,出现的位置为屏幕右上角",后面加入一些转义符的配置,消息持续时间,淡入淡出等,没有资源类型的填NULL
 LEVEL_IN_MSG_0,1,关卡1：小城镇,5,FadeInAndFadeOut,NULL
 LEVEL_IN_MSG_1,1,关卡2：无主荒星,5,FadeInAndFadeOut,NULL
 LEVEL_LOCATE_MSG_0,1,<size=80%>宁静祥和的小城市，是休闲的好去处</size>,5,FadeInAndFadeOut,NULL
@@ -24,3 +24,4 @@ ROGUE_USE_NEGATIVE_ITEM,1,你使用了被动道具：,5,FadeInAndFadeOut,NULL
 ROGUE_SHOP_NO_MONEY,1,对不起我们不做慈善，你的钱不够啦！,5,FadeInAndFadeOut,NULL
 ROGUE_USE_POSITIVE_ITEM,1,你获得了背包中使用道具：,5,FadeInAndFadeOut,NULL
 ROGUE_USE_POSITIVESCREEN_ITEM,1,你获得了主动道具——,5,FadeInAndFadeOut,NULL
+ROGUE_GANHAI_MESSAGE_1,1,你获得了绀海组的照片！所有属性值乘2！,10,FadeInAndFadeOut,NULL
