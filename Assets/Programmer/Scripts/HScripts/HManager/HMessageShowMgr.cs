@@ -29,6 +29,8 @@ public class HMessageShowMgr : MonoBehaviour
     private Transform messageKind7Panel;
 
     private Transform messageKind8Panel; //tips消息对应，在右上角显示，比如说倒计时
+    private Transform messageKind9Panel; 
+    private TMP_Text messageKind9Content;
     
     //单例模式
     private static HMessageShowMgr instance;
@@ -59,8 +61,11 @@ public class HMessageShowMgr : MonoBehaviour
         messageKind5Panel = messagePanel.Find("messageKind5Prefab");
         messageKind7Panel = messagePanel.Find("messageKind7Prefab");
         messageKind8Panel = messagePanel.Find("messageKind8Prefab");
+        messageKind9Panel = messagePanel.Find("messageKind9Prefab");
+        messageKind9Panel.gameObject.SetActive(false);
         messageKind2Content = messageKind2Panel.GetComponentInChildren<TMP_Text>();
         messageKind7Content = messageKind7Panel.GetComponentInChildren<TMP_Text>();
+        messageKind9Content = messageKind9Panel.GetComponentInChildren<TMP_Text>();
     }
 
     private void ShowMessageKind1(MessageBoxBaseStruct message)
@@ -75,6 +80,23 @@ public class HMessageShowMgr : MonoBehaviour
         go.transform.GetComponentInChildren<TMP_Text>().text = messageContent;
         DoMessageTransitionEffect(go.transform, messageTransitionEffect, messageShowTime);
         Destroy(go, messageShowTime);
+    }
+
+    private void ShowMessageKind9(MessageBoxBaseStruct message)
+    {
+        messageKind9Panel.gameObject.SetActive(true);
+        transform.SetAsLastSibling();
+        //呈现在屏幕上方的UI
+        string messageContent = message.MessageContent;
+        float messageShowTime = message.MessageShowTime;
+        string messageTransitionEffect = message.MessageTransitionEffect;
+        messageKind9Content.text = messageContent;
+        DoMessageTransitionEffect(messageKind9Panel.transform, messageTransitionEffect, messageShowTime);
+        DOVirtual.DelayedCall(messageShowTime + 1f, () =>
+        {
+            messageKind9Panel.gameObject.SetActive(false);
+            transform.SetAsFirstSibling();
+        });
     }
     
     
@@ -281,6 +303,9 @@ public class HMessageShowMgr : MonoBehaviour
                     break;
                 case 7:
                     ShowMessageKind7(message);
+                    break;
+                case 9:
+                    ShowMessageKind9(message);
                     break;
                     
             }

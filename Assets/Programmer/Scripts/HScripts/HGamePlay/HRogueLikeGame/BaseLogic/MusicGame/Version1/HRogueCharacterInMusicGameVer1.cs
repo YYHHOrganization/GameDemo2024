@@ -5,6 +5,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
 {
@@ -19,20 +20,32 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
     private GameObject badPickupEffect;
 
     private GameObject gameScorePanel;
+    private Button startGameButton;
     private TMP_Text scoreText;
     private TMP_Text addOrMinusText;
     private TMP_Text comboText;
 
-    public void InstantiateGameScorePanel()
+    private HRogueMusicGame1Logic gameLogicScript;
+
+    public void InstantiateGameScorePanel(HRogueMusicGame1Logic logic)
     {
         gameScorePanel = Instantiate(gameScorePanel,GameObject.Find("Canvas").transform);
         scoreText = gameScorePanel.transform.Find("ScoreText").GetComponent<TMP_Text>();
         addOrMinusText = gameScorePanel.transform.Find("AddOrMinusText").GetComponent<TMP_Text>();
         comboText = gameScorePanel.transform.Find("ComboText").GetComponent<TMP_Text>();
+        startGameButton = gameScorePanel.transform.Find("StartGameButton").GetComponent<Button>();
+        startGameButton.onClick.AddListener(StartMusicGame);
+        gameLogicScript = logic;
+    }
+
+    public int DestroyGameScorePanel()
+    {
+        Destroy(gameScorePanel);
+        return totalScore;
     }
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         animator = GetComponentInChildren<Animator>();
         jumpHash = Animator.StringToHash("isJumping");
@@ -44,13 +57,14 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         badPickupEffect = Addressables.LoadAssetAsync<GameObject>("BaozhaSmall").WaitForCompletion();
         
         gameScorePanel = Addressables.LoadAssetAsync<GameObject>("GameScorePanel").WaitForCompletion();
-        StartMusicGame();
     }
 
     private void StartMusicGame()
     {
         animator.SetBool(runHash, true);
         YTriggerEvents.OnInterruptCombo += CancelCombo;
+        startGameButton.gameObject.SetActive(false);
+        gameLogicScript.StartGameLogic();
     }
 
     private void CheckPlayerUpOrDown()
@@ -66,12 +80,12 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
     {
         if (isUp)
         {
-            transform.DOLocalJump(new Vector3(0, 1.65f, 0), 1f, 1, 0.2f);
+            transform.DOLocalJump(new Vector3(0, 1.65f, 0), 1f, 1, 0.1f);
             animator.SetTrigger(jumpHash);
         }
         else
         {
-            transform.DOLocalJump(new Vector3(0, 0f, 0), 1f, 1, 0.2f);
+            transform.DOLocalJump(new Vector3(0, 0f, 0), 1f, 1, 0.1f);
             animator.SetTrigger(fallHash);
         }
     }

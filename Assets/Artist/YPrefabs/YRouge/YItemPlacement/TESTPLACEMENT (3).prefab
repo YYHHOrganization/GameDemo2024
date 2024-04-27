@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1696234645900302153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4319968759978059572}
+  - component: {fileID: 3848832121227880151}
+  - component: {fileID: 4528298326338863356}
+  m_Layer: 0
+  m_Name: TESTPLACEMENT (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4319968759978059572
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696234645900302153}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -390.5504, y: -19.877342, z: -396.05014}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3848832121227880151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696234645900302153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911b3b19c5017a94cb845556cc381425, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propPrefab: {fileID: 2228356581072786359, guid: 45b8aa1ce6abbf040b3e37cba68d955b,
+    type: 3}
+  itemDataInfos:
+  - itemData: {fileID: 11400000, guid: f3ba9c2d9105109488e5f64907568826, type: 2}
+    minQuantity: 0
+    maxQuantity: 4
+  - itemData: {fileID: 11400000, guid: e160bac530b53c84985736bd539a3586, type: 2}
+    minQuantity: 0
+    maxQuantity: 4
+  - itemData: {fileID: 11400000, guid: a30c5f9f036b578449f1a3ff3e74079c, type: 2}
+    minQuantity: 0
+    maxQuantity: 1
+  - itemData: {fileID: 11400000, guid: 8db64bafc8ea9f8469cdcbd70e586c51, type: 2}
+    minQuantity: 0
+    maxQuantity: 3
+  - itemData: {fileID: 11400000, guid: 4ee40906566afe44a8574349be23d083, type: 2}
+    minQuantity: 0
+    maxQuantity: 4
+--- !u!114 &4528298326338863356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696234645900302153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54acb2bfc55412d4a8965ed4bf9772c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
