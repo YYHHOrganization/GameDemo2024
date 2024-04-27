@@ -350,9 +350,17 @@ public class YPlayModeController : MonoBehaviour
         // YRogueDungeonManager.Instance.SetflagGameBegin(true);
         curCharacter.transform.position = GeneratePlace.position;
     }
+    
+    public void SetRogueCharacterPlace(Transform transform)
+    {
+        curCharacter.transform.position = transform.position;
+    }
 
+
+    public GameObject testCubs;
     public void SetRogueCharacterPlaceFarAway()
     {
+        //测试传送一个cube啥的
         Vector3 pos = new Vector3(-400, 500, -400);
         curCharacter.transform.position = pos;
     }

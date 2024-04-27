@@ -9,10 +9,13 @@ public class YRogueDungeonManager : MonoBehaviour
     //单例
     public static YRogueDungeonManager Instance;
     public YDungeonCreator dungeonCreator;
-    private int RogueLevel = 0;
+    private int RogueLevel = -1;
 
     public bool flagGameBegin;//游戏是否开始,防止蜘蛛直接开始追角色了
     public Vector3 RogueDungeonOriginPos = new Vector3(-400, 0, -400);
+    public Vector2Int RogueDungeonOriginPos2 = new Vector2Int(-400, -400);
+    
+    Transform RogueBornPlace;
     private void Awake()
     {
         Instance = this;
@@ -42,17 +45,26 @@ public class YRogueDungeonManager : MonoBehaviour
 
         //生成新的关卡
         // dungeonCreator.CreateDungeon(RogueLevel);
+
+        // if (RogueLevel == 0)
+        //     dungeonCreator.CreateDungeon(1);
+        // else
+        //     dungeonCreator.CreateDungeon();
+        
         dungeonCreator.CreateDungeon();
+        
         StartCoroutine(EnterNewLevelCoroutine());//等待加载完 ，后面用别的方法吧
     }
-    public float loadFakeTime = 1f;
+    public float loadFakeTime = 5f;
     IEnumerator EnterNewLevelCoroutine()
     {
         yield return new WaitForSeconds(loadFakeTime);
         flagGameBegin = true;
         //生成新的关卡
         //将角色设置在新的关卡的起始位置，出生房
-        YPlayModeController.Instance.SetRogueCharacterPlace();
+        // YPlayModeController.Instance.SetRogueCharacterPlace();
+        YPlayModeController.Instance.SetRogueCharacterPlace(RogueBornPlace);
+        
         dungeonCreator.BakeNavMesh();
         //将加载界面关闭
         YGameRoot.Instance.Pop();
@@ -71,4 +83,11 @@ public class YRogueDungeonManager : MonoBehaviour
     {
         return dungeonCreator.GetRoomBaseList();
     }
+
+    public void SetRogueBornPlace(Transform transformPosition)
+    {
+        RogueBornPlace = transformPosition;
+    }
+    
+    
 }

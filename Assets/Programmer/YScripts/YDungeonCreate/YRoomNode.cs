@@ -6,6 +6,12 @@ using UnityEngine.Rendering.Universal;
 public class YRoomNode : YRouge_Node
 {
     RoomType roomType;
+    //get roomType set
+    public RoomType mRoomType
+    {
+        get => roomType;
+    }
+    
     //脚本
     public YRouge_RoomBase roomScript;
     

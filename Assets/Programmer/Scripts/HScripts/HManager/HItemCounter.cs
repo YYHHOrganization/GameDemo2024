@@ -90,6 +90,36 @@ public class HItemCounter : MonoBehaviour
             }
         }
     }
+    public bool RemoveItemInRogueAndWorld(string itemId, int count)
+    {
+        if(count<=0) return true;
+        if (rogueItemCounts.ContainsKey(itemId))
+        {
+            //如果数量不够
+            if(rogueItemCounts[itemId] - count < 0)
+            {
+                return false;
+            }
+            rogueItemCounts[itemId] -= count;
+            if (rogueItemCounts[itemId] <= 0)
+            {
+                rogueItemCounts.Remove(itemId);
+                return true;
+            }
+        }
+        else if(worldItemCounts.ContainsKey(itemId))
+        {
+            if(worldItemCounts[itemId] - count < 0)
+            {
+                return false;
+            }
+            RemoveItem(itemId, count);
+            return true;
+        }
+        
+        return false;
+
+    }
     public bool CheckAndRemoveItemInRogue(string itemId, int count)
     {
         if(count<=0) return true;
@@ -119,7 +149,7 @@ public class HItemCounter : MonoBehaviour
         
         return false;
     }
-
+    
     public void AddItem(string itemId, int count)
     {
         if (worldItemCounts.ContainsKey(itemId))

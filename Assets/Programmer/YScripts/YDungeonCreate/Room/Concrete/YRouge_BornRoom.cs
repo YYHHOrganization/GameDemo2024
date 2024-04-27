@@ -16,6 +16,8 @@ public class YRouge_BornRoom : YRouge_RoomBase
         goBornPlace.name = "RogueBornPlace";
         goBornPlace.transform.parent = transform;
         goBornPlace.transform.localPosition = new Vector3(0, 0, 0);
+        
+        YRogueDungeonManager.Instance.SetRogueBornPlace(goBornPlace.transform);
         //yPlanningTable.Instance.UpdateCharacterGeneratePlace(3,"RogueBornPlace");
     }
 

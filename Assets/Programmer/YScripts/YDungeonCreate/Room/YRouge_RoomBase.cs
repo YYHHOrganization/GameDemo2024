@@ -70,6 +70,15 @@ public class YRouge_RoomBase : MonoBehaviour
     }
     
     bool isFirstTimeInRoom = true;
+    
+    protected Vector2Int TopRightAreaCorner
+    {
+        get => roomNode.TopRightAreaCorner + YRogueDungeonManager.Instance.RogueDungeonOriginPos2;
+    }
+    protected Vector2Int BottomLeftAreaCorner
+    {
+        get => roomNode.BottomLeftAreaCorner + YRogueDungeonManager.Instance.RogueDungeonOriginPos2;
+    }
     public void Start()
     {
         SetAllDoorsPosition();
@@ -316,4 +325,37 @@ public class YRouge_RoomBase : MonoBehaviour
         }
 
     }
+    protected void GenerateItemPlacement()
+    {
+        //输入本房间的左上角和右下角
+        // YRogue_ItemPlacementManager.Instance.SetItemPlacement(BottomLeftAreaCorner, TopRightAreaCorner);
+        SetItemPlacement(BottomLeftAreaCorner, TopRightAreaCorner);
+    }
+    
+    private void SetItemPlacement(Vector2Int leftBottom, Vector2Int rightTop)
+    {
+        GameObject itemDataParent = new GameObject("ItemDataParent");
+        itemDataParent.transform.parent = transform;
+        itemDataParent.transform.position = transform.position;
+        
+        //都往里缩0.5f
+        leftBottom += new Vector2Int(1, 1);
+        rightTop -= new Vector2Int(1, 1);
+        
+        
+        HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> roomPositions = new HashSet<Vector2Int>();
+        for (int i = leftBottom.x; i <= rightTop.x; i++)
+        {
+            for (int j = leftBottom.y; j <= rightTop.y; j++)
+            {
+                floorPositions.Add(new Vector2Int(i, j));
+                roomPositions.Add(new Vector2Int(i, j));
+            }
+        }
+        YRogue_ItemPlacementHelper itemPlacementHelper = new YRogue_ItemPlacementHelper(floorPositions, roomPositions);
+        YRogue_PropPlacementManager propPlacementManager = FindObjectOfType<YRogue_PropPlacementManager>();
+        propPlacementManager.SetData(itemPlacementHelper, itemDataParent.transform);
+    }
+
 }

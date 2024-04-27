@@ -11,6 +11,10 @@ public class YDungeonCreator : MonoBehaviour
     public int maxIterations;//迭代次数
     public int coridorWidth;//走廊宽度
     public Material floorMaterial;
+    public Material RedFloorMaterial;
+    public Material HuazhuanFloorMaterial_BlanckWhite;
+    public Material HuazhuanFloorMaterial_Hua;
+    public Material HuazhuanFloorMaterial_;
     [Range(0.0f,0.3f)]
     public float roomBottomCornerModifier;
     [Range(0.7f,1.0f)]
@@ -19,13 +23,17 @@ public class YDungeonCreator : MonoBehaviour
     public int offset;
     public GameObject wallVertical, wallHorizontal;
     public GameObject doorVertical, doorHorizontal;
+    
+    public GameObject RedWallVertical, RedWallHorizontal;
+    public GameObject RedOldWallVertical, RedOldWallHorizontal;
+    
     private List<Vector3Int> possibleDoorVerticalPositions;//可能的门的位置
     private List<Vector3Int> possibleDoorHorizontalPositions;
     //wall
     private List<Vector3Int> possibleWallVerticalPositions;
     private List<Vector3Int> possibleWallHorizontalPositions;
     
-    //更新为第一列是房间的编号
+    //更新为第一列是房间的编号,
     private List<List<Vector3Int>> roomWallHorizontalPositions;
     private List<List<Vector3Int>> roomWallVerticalPositions;
     private List<List<Vector3Int>> roomDoorHorizontalPositions;
@@ -38,7 +46,7 @@ public class YDungeonCreator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CreateDungeon();
+        // CreateDungeon();
         //监听是否开始新的一关
         YTriggerEvents.OnEnterNewLevel += EnterNewLevel;
     }
@@ -52,7 +60,7 @@ public class YDungeonCreator : MonoBehaviour
     List<YRouge_Node> corridorList ;
     
     List<YRouge_RoomBase> roomBaseList;
-    public void CreateDungeon()
+    public void CreateDungeon(int style=0 )
     {
         DestroyAllChildren();
         
@@ -110,6 +118,8 @@ public class YDungeonCreator : MonoBehaviour
         
         //不应该在这里创建墙壁和门，应该在房间的脚本中创建？或者应该把这个每个房间自己的door和wall的list传给这个类，然后这个类再创建
         // CreateWalls(wallParent);
+        if(style==1)return;
+        
         CreateRoomWalls();
         GameObject doorParent = new GameObject("DoorParent");
         doorParent.transform.parent = transform;
@@ -158,7 +168,10 @@ public class YDungeonCreator : MonoBehaviour
             for(int j = 0; j < roomWallHorizontalPositions[i].Count; j++)
             {
                 GameObject wallParent = roomList[i].roomScript.gameObject;
-                CreateWall(roomWallHorizontalPositions[i][j], wallParent, wallHorizontal,i);
+                //根据不同的房间，创建不同的墙壁
+                GameObject mWallPrefab = GetPrefabFromRoomType(roomList[i].mRoomType, true);
+               
+                CreateWall(roomWallHorizontalPositions[i][j], wallParent, mWallPrefab,i);
             }
         }
         for (int i = 0; i < roomWallVerticalPositions.Count; i++)
@@ -166,9 +179,56 @@ public class YDungeonCreator : MonoBehaviour
             for(int j = 0; j < roomWallVerticalPositions[i].Count; j++)
             {
                 GameObject wallParent = roomList[i].roomScript.gameObject;
-                CreateWall(roomWallVerticalPositions[i][j], wallParent, wallVertical,i);
+                //根据不同的房间，创建不同的墙壁
+                GameObject mWallPrefab = GetPrefabFromRoomType(roomList[i].mRoomType, false);
+
+                CreateWall(roomWallVerticalPositions[i][j], wallParent, mWallPrefab, i);
             }
         }
+    }
+
+    private GameObject GetPrefabFromRoomType(RoomType mRoomType, bool isHorizontal)
+    {
+        GameObject wallPrefab = null;
+        if(mRoomType == RoomType.BattleRoom)
+        {
+            if (isHorizontal) return RedOldWallHorizontal;
+            else return RedOldWallVertical;
+            
+        }
+        if(mRoomType == RoomType.BossRoom)
+        {
+            if (isHorizontal) return RedWallHorizontal;
+            else return RedWallVertical;
+        }
+        else 
+        {
+            if (isHorizontal) return wallHorizontal;
+            else return wallVertical;
+        }
+        return wallPrefab;
+    }
+    
+    private Material GetFloorMatFromRoomType(RoomType roomMRoomType)
+    {
+        if(roomMRoomType == RoomType.BattleRoom)
+        {
+            return RedFloorMaterial;
+        }
+        else if(roomMRoomType == RoomType.BossRoom)
+        {
+            return HuazhuanFloorMaterial_Hua;
+        }
+        else if(roomMRoomType == RoomType.ItemRoom)
+        {
+            return HuazhuanFloorMaterial_BlanckWhite;
+        }
+        else if(roomMRoomType == RoomType.ShopRoom)
+        {
+            return HuazhuanFloorMaterial_;
+        }
+        
+        return floorMaterial;
     }
     void CreateRoomDoor()
     {
@@ -278,10 +338,12 @@ public class YDungeonCreator : MonoBehaviour
         Vector3 meshCenterPos = new Vector3((bottomLeftCorner.x + topRightCorner.x) / 2, 0, (bottomLeftCorner.y + topRightCorner.y) / 2) + originPosition;
         floor.transform.RotateAround( meshCenterPos, Vector3.right, 180);
         
+        //根据不同房间类型，替换不同房间地板材质
+        Material floorMat = GetFloorMatFromRoomType(room.mRoomType);
         
         //绕着自身中心点旋转180度
         floor.GetComponent<MeshFilter>().mesh = mesh;
-        floor.GetComponent<MeshRenderer>().material = floorMaterial;
+        floor.GetComponent<MeshRenderer>().material = floorMat;
         floor.transform.parent = transform;
 
         YRouge_RoomBase roomBase = room.roomScript;
@@ -319,7 +381,9 @@ public class YDungeonCreator : MonoBehaviour
             AddRoomWallPositionToList(point, roomWallVerticalPositions[id]);
         }
     }
-    
+
+   
+
     //每个房间单独存储自己的wallList（和doorList
     private void AddRoomWallPositionToList(Vector3 point, List<Vector3Int> wallList)
     {

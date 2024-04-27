@@ -42,7 +42,8 @@ public class HTestCharacterShoot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.lockState = CursorLockMode.Locked;
+        
         // if (GameObject.FindWithTag("PlayerCamera").GetComponent<Camera>())
         // {
         //     SetMainPlayerCamera(GameObject.FindWithTag("PlayerCamera").GetComponent<Camera>());

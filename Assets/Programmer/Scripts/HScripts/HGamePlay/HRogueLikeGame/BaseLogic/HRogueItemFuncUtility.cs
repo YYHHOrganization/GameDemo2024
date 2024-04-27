@@ -111,7 +111,9 @@ public class HRogueItemFuncUtility : MonoBehaviour
             case "GetGanhaiPicture":
                 GetGanhaiPicture(funcParams);
                 break;
-                
+            case "PortalToSomeRoom":
+                PortalToSomeRoom(funcParams);
+                break;
             default:
                 System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
                 method.Invoke(this, new object[] {funcParams});
@@ -244,8 +246,52 @@ public class HRogueItemFuncUtility : MonoBehaviour
                 break;
         }
     }
+    
+    private void PortalToSomeRoom(string funcParams)
+    {
+        // GameObject player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer();
+        GameObject player = YPlayModeController.Instance.curCharacter;
+        List<YRouge_RoomBase> room = YRogueDungeonManager.Instance.GetRoomBaseList();
+        switch (funcParams)
+        {
+            case "BossRoom":
+                foreach (var roomBase in room)
+                {
+                    if (roomBase.RoomType == RoomType.BossRoom)
+                    {
+                        //坑！！！！！！！！
+                        player.GetComponent<CharacterController>().enabled = false;
+                        Debug.Log("Teleport to BossRoom");
+                        
+                        player.transform.position= new Vector3(
+                            roomBase.transform.position.x,
+                            roomBase.transform.position.y+10f,
+                            roomBase.transform.position.z);
+                        player.GetComponent<CharacterController>().enabled = true;
+                        break;
+                    }
+                }
+                break;
+            case "ItemRoom":
+                foreach (var roomBase in room)
+                {
+                    if (roomBase.RoomType == RoomType.ItemRoom)
+                    {
+                        player.GetComponent<CharacterController>().enabled = false;
+                        Debug.Log("Teleport to BossRoom");
+                        player.transform.position= new Vector3(
+                            roomBase.transform.position.x,
+                            roomBase.transform.position.y+10f,
+                            roomBase.transform.position.z);
+                        player.GetComponent<CharacterController>().enabled = true;
+                        break;
+                    }
+                }
+                break;
+        }
+    }
 
-    private void AddMoney(string funcParams)
+    public void AddMoney(string funcParams)
     {
         string[] paramList = funcParams.Split(';');
         string attributeName = (string)paramList[0];

@@ -50,6 +50,8 @@ public class YChooseCharacterPanel : BasePanel
             else
             {
                 HRoguePlayerAttributeAndItemManager.Instance.PushAttributePanel();
+                //出现正在前往第几层的提示
+                Push(new YRogueWinAndNextLevelPanel());
                 HAudioManager.Instance.Play("StartRogueAudio", HAudioManager.instance.gameObject);
             }
                 

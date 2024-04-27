@@ -1,7 +1,7 @@
 ﻿角色ID,角色英文名称,角色中文名称,角色基本介绍,移动速度,射速,射程,子弹伤害,子弹速度,基础血量,基础护盾值,基础武器类型,初始星琼数,初始信用点数,角色头像Link,角色基础血量上限
 RogueCharacterID,RogueCharacterName,RogueCharacterChineseName,RogueCharacterDiscription,RogueMoveSpeed,RogueShootRate,RogueShootRange,RogueBulletDamage,RogueBulletSpeed,RogueCharacterHealth,RogueCharacterShield,RogueCharacterBaseWeapon,RogueStartXingqiong,RogueStartXinyongdian,RogueCharacterIconLink,RogueCharacterHealthUpbound
 顺序和CharacterAttributeBase表保持一致,,,,指的是跑起来的速度,射速为2表示一秒2颗子弹，依此类推,,,子弹飞行的速度,每半颗心是1血量值,每半个盾为1点,枚举值类型,int型即可,int型即可,已经使用Addressable,基础血量上限值
-0,qiyu,???,???,15,15,20,40,40,24,24,ShootFromMuzzle,200000,200000,qiyuUIIcon,24
+0,qiyu,???,???,13,15,20,40,40,24,24,ShootFromMuzzle,0,1600,qiyuUIIcon,6
 1,xina,████IX███,虚无,15,15,20,40,40,24,24,ShootFromMuzzle,200000,200000,xinaUIIcon,24
 2,aventurine,砂金,星际和平公司高级干部，很有钱，初始自带10000信用点和四点护盾值。,6,2,10,1,10,6,4,ShootFromMuzzle,0,10000,shajinUIIcon,6
 3,pamu,帕姆,星穹列车的吉祥物，初始提供1600星琼，相当于一个十连抽。,6,2,10,1,10,6,0,ShootFromMuzzle,1600,0,pamuUIIcon,6

@@ -25,6 +25,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         //生成Boss房的特殊门
         GenerateBossSpecialDoor();
         
+        GenerateItemPlacement();
     }
 
     

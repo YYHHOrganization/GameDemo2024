@@ -20,6 +20,8 @@ public class YRogueLoadPanel : BasePanel
     
     public override void OnEnter()
     {
+        YTriggerEvents.RaiseOnMouseLockStateChanged(false);
+        
         RogueLevel = YRogueDungeonManager.Instance.GetRogueLevel();
         // YTriggerEvents.OnLoadResourceStateChanged += Loadend;
         
@@ -34,11 +36,21 @@ public class YRogueLoadPanel : BasePanel
         loadFakeTime = YRogueDungeonManager.Instance.loadFakeTime;
         sliderChange.SetSliderOn(0,1f,loadFakeTime,slider,this);  
         uiTool.GetOrAddComponentInChilden<TMP_Text>("LevelStr").text = (RogueLevel+1).ToString();
+        
+        Transform ySortScenicSpotPlace = uiTool.GetOrAddComponentInChilden<Transform>("scenicSpotPlace");
+        YSortScenicSpotPlace sortScenicSpotPlace = ySortScenicSpotPlace.GetComponent<YSortScenicSpotPlace>();
+        Transform ImageCharacter = uiTool.GetOrAddComponentInChilden<Transform>("ImageCharacter");
+        sortScenicSpotPlace.ShowScenicSpotPlace(RogueLevel, ImageCharacter,loadFakeTime);
+        
+        string curScenicSpotPlaceName = sortScenicSpotPlace.GetScenicSpotPlaceName(RogueLevel);
+        uiTool.GetOrAddComponentInChilden<TMP_Text>("ScenicSpotPlaceName").text = curScenicSpotPlaceName;
+        
     }
     public override void OnExit()
     {
         base.OnExit();
-        // YTriggerEvents.OnLoadResourceStateChanged -= Loadend;
+        YTriggerEvents.RaiseOnMouseLockStateChanged(true);
+        YTriggerEvents.RaiseOnMouseLeftShoot(true);
     }
     
     

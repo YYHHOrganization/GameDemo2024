@@ -18,13 +18,16 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         EnemyParent = new GameObject();
         EnemyParent.transform.parent = transform;
         EnemyParent.name = "EnemyParent";
+        
+        //测试生成一些物品
+        GenerateItemPlacement();
     }
     bool isFirstTimeInRoom = true;
     public override void EnterRoom()
     {
         base.EnterRoom();
     }
-
+    
     protected override void FirstEnterRoom()
     {
         base.FirstEnterRoom();
