@@ -141,13 +141,17 @@ public class HAudioManager : MonoBehaviour
     {
         foreach (GameObject go in audioSourceList)
         {
-            AudioSource audioSource = go.GetComponent<AudioSource>();
-            if (audioSource)
+            if (go)
             {
-                audioSource.Stop();
+                AudioSource audioSource = go.GetComponent<AudioSource>();
+                if (audioSource)
+                {
+                    audioSource.Stop();
+                }
             }
         }
     }
+    
 
     public void Stop(GameObject go)
     {
