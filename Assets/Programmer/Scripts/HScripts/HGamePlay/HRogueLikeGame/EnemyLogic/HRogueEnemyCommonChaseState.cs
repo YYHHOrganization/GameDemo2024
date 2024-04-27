@@ -43,10 +43,13 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
     {
         if (mPatrolAI.mTarget)
         {
-            mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
-            //trick:感觉这里给敌人设置不同的速度等参数会更好，不然召唤出来之后他们的逻辑都是完全一样的
-            mPatrolAI.mNavMeshAgent.speed = Random.Range(1, mPatrolAI.enemy._RogueEnemyChaseMaxSpeed());
-            mPatrolAI.mNavMeshAgent.acceleration = Random.Range(2, mPatrolAI.chaseMaxAcceleration);
+            if (mPatrolAI)
+            {
+                mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
+                //trick:感觉这里给敌人设置不同的速度等参数会更好，不然召唤出来之后他们的逻辑都是完全一样的
+                mPatrolAI.mNavMeshAgent.speed = Random.Range(1, mPatrolAI.enemy._RogueEnemyChaseMaxSpeed());
+                mPatrolAI.mNavMeshAgent.acceleration = Random.Range(2, mPatrolAI.chaseMaxAcceleration);
+            }
         }
     }
     

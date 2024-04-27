@@ -29,7 +29,6 @@ public class YFractureExplosionObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //
         // vfxPlace.position = new Vector3(originalObject.transform.position.x, originalObject.transform.position.y,
         //     originalObject.transform.position.z);
         vfxV3 = new Vector3(originalObject.transform.position.x, originalObject.transform.position.y,
@@ -76,6 +75,9 @@ public class YFractureExplosionObject : MonoBehaviour
         if (isBroken == false)
         {
             Explode(hitVector3);
+            
+            //有概率生成道具 比如心啥的
+            
             isBroken = true; //test
             Destroy(collider);
         }
