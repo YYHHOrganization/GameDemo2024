@@ -6,6 +6,7 @@ using SonicBloom.Koreo.Players;
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -24,13 +25,24 @@ public class HRogueMusicGame1Logic : MonoBehaviour
 
     public GameObject badEnemyInsGo; //障碍物/扣分物体
     private double totalSongSeconds = 0;
+    private List<string> songList = new List<string>();
+    private Koreography thisSong;
+    void ChooseASong()
+    {
+        songList.Add("ZhongmuSong");
+        songList.Add("MojingSong");
+        songList.Add("TestMusic");
+        int randomIndex = 1;
+        thisSong = Addressables.LoadAssetAsync<Koreography>(songList[randomIndex]).WaitForCompletion();
+        Koreographer.Instance.LoadKoreography(thisSong);
+    }
+    
     void Start()
     {
         //RegisterForEvents(string eventID, KoreographyEventCallback callback)
         //第一个参数是我们上面命名的Track Event ID 例如我的是 TestEventID
+        ChooseASong();
         Koreographer.Instance.RegisterForEvents("TestEventID", FireEventDebugLog);
-        //totalSongSeconds = Koreographer.Instance.GetMusicSecondsLength();
-        totalSongSeconds = 20f;
         LoadGame();
     }
 
@@ -39,26 +51,36 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         SetExitPanelFalse();
         YPlayModeController.Instance.LockPlayerInput(true);
         YTriggerEvents.RaiseOnMouseLockStateChanged(false);
+        Invoke("SetGamePanelActive", 2.5f);
+        YTriggerEvents.RaiseOnMouseLeftShoot(false);
+    }
+
+    private void SetGamePanelActive()
+    {
         characterScript = GetComponentInChildren<HRogueCharacterInMusicGameVer1>();
         characterScript.InstantiateGameScorePanel(this);
-        YTriggerEvents.RaiseOnMouseLeftShoot(false);
     }
 
     public bool testGameStart = false;
     private bool startMovingPlatform = false;
-    
+
+    //private int fireIndex = 0;
+    private int goodTotalCount = 0;
+    private int goodPickupCount = 0;
     void FireEventDebugLog(KoreographyEvent koreoEvent)
     {
         // if(koreoEvent.HasIntPayload())
         // {
         //     Debug.Log("IntPayload: " + koreoEvent.GetIntValue());
         // }
+        //Debug.Log("FireIndex!!!!!" + fireIndex);
         int randomKind = Random.Range(0, 100);
         bool isBad = false;
         GameObject summonObj;
         if (randomKind < 50)  //是好的道具
         {
             summonObj = insGO;
+            goodTotalCount++;
             isBad = false;
         }
         else
@@ -77,7 +99,8 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         {
             obj = Instantiate(summonObj, floorDownOrigin.position, Quaternion.identity, floorDown);
         }
-        
+        //obj.gameObject.name = "Item" + fireIndex;
+        //fireIndex++;
         obj.gameObject.tag = isBad? "Enemy":"Player";
         Destroy(obj, 10f);
     }
@@ -98,7 +121,9 @@ public class HRogueMusicGame1Logic : MonoBehaviour
 
     public void StartGameLogic()
     {
+        GetComponent<SimpleMusicPlayer>().LoadSong(thisSong);
         GetComponent<SimpleMusicPlayer>().Play();
+        totalSongSeconds = Koreographer.Instance.GetMusicSecondsLength();
         HAudioManager.Instance.StopAllAudio();
         startMovingPlatform = true;
         testGameStart = false;
@@ -129,7 +154,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         YPlayModeController.Instance.LockPlayerInput(false);
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
-        HAudioManager.Instance.Play("ResumeAllAudio", HAudioManager.Instance.gameObject);
+        HAudioManager.Instance.Play("StartRogueAudio", HAudioManager.Instance.gameObject);
         Destroy(gameObject, 1f);
     }
     
@@ -139,15 +164,15 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         Vector3 treasurePos = player.position;
         string chestID;
         //根据awaardGrade生成奖励
-        if (score<=-1)
+        if (score<=10)
         {
             return;
         }
-        else if (score<=3)
+        else if (score<=30)
         {
             chestID = "10000013";
         }
-        else if (score<=5)
+        else if (score<=50)
         {
             chestID = "10000011";
         }
