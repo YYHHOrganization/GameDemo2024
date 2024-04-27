@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -24,6 +25,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
     private TMP_Text scoreText;
     private TMP_Text addOrMinusText;
     private TMP_Text comboText;
+    private Transform countDownArea;
+    private List<Transform> countDownNumbers = new List<Transform>();
 
     private HRogueMusicGame1Logic gameLogicScript;
 
@@ -34,6 +37,11 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         addOrMinusText = gameScorePanel.transform.Find("AddOrMinusText").GetComponent<TMP_Text>();
         comboText = gameScorePanel.transform.Find("ComboText").GetComponent<TMP_Text>();
         startGameButton = gameScorePanel.transform.Find("StartGameButton").GetComponent<Button>();
+        countDownArea = gameScorePanel.transform.Find("CountDownArea");
+        for (int i = 0; i < countDownArea.childCount; i++)
+        {
+            countDownNumbers.Add(countDownArea.GetChild(i));
+        }
         startGameButton.onClick.AddListener(StartMusicGame);
         gameLogicScript = logic;
     }
@@ -61,11 +69,33 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
 
     private void StartMusicGame()
     {
-        animator.SetBool(runHash, true);
-        YTriggerEvents.OnInterruptCombo += CancelCombo;
-        startGameButton.gameObject.SetActive(false);
-        gameLogicScript.StartGameLogic();
+        StartCoroutine(TickCountDown(3));
+        //开启三秒钟的倒计时，然后开始游戏
+        DOVirtual.DelayedCall(4f, () =>
+        {
+            animator.SetBool(runHash, true);
+            YTriggerEvents.OnInterruptCombo += CancelCombo;
+            startGameButton.gameObject.SetActive(false);
+            gameLogicScript.StartGameLogic();
+        });
     }
+
+    IEnumerator TickCountDown(int number)
+    {
+        for (int i = 0; i < number; i++)
+        {
+            countDownNumbers[i%3].gameObject.SetActive(true);
+            countDownNumbers[i%3].DOScale(1.5f, 0.5f).SetEase(Ease.OutBounce);
+            countDownNumbers[i%3].GetComponentInChildren<TMP_Text>().text = (number - i).ToString();
+            yield return new WaitForSeconds(1f);
+            countDownNumbers[i%3].gameObject.SetActive(false);
+        }
+        countDownNumbers[3].gameObject.SetActive(true);
+        countDownNumbers[3].DOScale(1.5f, 0.5f).SetEase(Ease.OutBounce);
+        yield return new WaitForSeconds(1f);
+        countDownNumbers[3].gameObject.SetActive(false);
+    }
+    
 
     private void CheckPlayerUpOrDown()
     {
@@ -120,6 +150,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
             tmpVFX.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             comboNum++;
             int score = ComboNumToScore();
+            //Debug.Log("thisItem!!!!" + other.gameObject.name);
             UpdateScoreAndShowInUI(score);
             Destroy(other.gameObject);
             Destroy(tmpVFX, 10f);

@@ -288,6 +288,22 @@ public class HRogueItemFuncUtility : MonoBehaviour
                     }
                 }
                 break;
+            case "ChallengeRoom":
+                foreach (var roomBase in room)
+                {
+                    if (roomBase.RoomType == RoomType.ChallengeRoom)
+                    {
+                        player.GetComponent<CharacterController>().enabled = false;
+                        Debug.Log("Teleport to BossRoom");
+                        player.transform.position= new Vector3(
+                            roomBase.transform.position.x,
+                            roomBase.transform.position.y+10f,
+                            roomBase.transform.position.z);
+                        player.GetComponent<CharacterController>().enabled = true;
+                        break;
+                    }
+                }
+                break;
         }
     }
 
