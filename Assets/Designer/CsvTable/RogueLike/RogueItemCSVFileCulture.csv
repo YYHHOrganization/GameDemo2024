@@ -89,3 +89,5 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000085,Feichangkunnan,非常困难,1,将心上限扣除到一格，每扣除一个心上限，加3点伤害值,Negative,Feichangjiandan,2,-1,FeichangjiandanIcon,true,ajiweili,Feichangkunnan,true,4,所属——阿基维利,true,false
 80000086,Hewuchaoxiangsiwang,黑白无常的降临,1,每经过5个房间，对自身造成1点伤害,Negative,RegisterEnterNewRoomFuncWithRoomCount,5!AddHeartOrShield!Health;-1,-1,HewuchaoxiangsiwangIcon,true,jialahe,Hewuchaoxiangsiwang,true,3,所属——加拉赫,false,false
 80000087,LinniHatOne,魔术帽子：进入战斗房有较大可能随机杀死一个敌人,1,进入战斗房的时候，有70%的概率随机杀死一个敌人(Boss房除外),Negative,RegisterEnterNewRoomFunc,MayKillEnemy!1,-1,LinniHatIcon,false,linni,LinniHatOne,true,5,所属——林尼,true,false
+80000102,PortalToSomeRoom,传送门：立即传送到boss房,1,立即传送到boss房,Negative,PortalToSomeRoom,BossRoom,-1,portalIcon,false,shajin,PortalToBossRoom,true,4,所属——砂金,true,true,
+80000103,PortalToSomeRoom,传送门：立即传送到道具房,1,立即传送到item房,Negative,PortalToSomeRoom,ItemRoom,-1,portalIcon,false,shajin,PortalToItemRoom,true,4,所属——砂金,true,true,

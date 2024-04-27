@@ -5,35 +5,47 @@ using UnityEngine.AddressableAssets;
 
 public class YRouge_GameRoom : YRouge_RoomBase
 {
+    public Class_GameRoomCSVFile gameRoomData;
     
     // Start is called before the first frame update
     void Start()
     {
         roomType = RoomType.GameRoom;
         base.Start();
-        
-        
-        //Debug.Log(roomNode.RoomType);
-        string name = "SlotMachineRouge";
-        
-        var op = Addressables.InstantiateAsync(name);
-        GameObject go = op.WaitForCompletion() as GameObject ;
-        go.transform.parent = transform;
-        go.transform.position = 
-            new Vector3((roomNode.BottomLeftAreaCorner.x + roomNode.TopRightAreaCorner.x) / 2, 0,
-                (roomNode.BottomLeftAreaCorner.y + roomNode.TopRightAreaCorner.y) / 2)+new Vector3(-400,0,-400);
-        
-        
-        // go.transform.parent = transform;
-        // go.transform.localPosition = 
-        //     new Vector3((roomNode.BottomLeftAreaCorner.x + roomNode.TopRightAreaCorner.x) / 2, 0,
-        //         (roomNode.BottomLeftAreaCorner.y + roomNode.TopRightAreaCorner.y) / 2);
+     
+        ReadBattleRoomData();
+        GenerateOtherItems(gameRoomData);
     }
 
     public override void EnterRoom()
     {
         base.EnterRoom();
+    }
+    public override void ExitRoom()
+    {
+        base.ExitRoom();
+    }
+
+    void ReadBattleRoomData()
+    {
+        //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
         
+        // int randomIndex = Random.Range(0, SD_BattleRoomCSVFile.Class_Dic.Count);
+        int randomIndex = Random.Range(0,SD_GameRoomCSVFile.Class_Dic.Count);
+        
+        //test:全是蜘蛛
+        // randomIndex = 3;//test!!!后面记得关掉
+        gameRoomData = SD_GameRoomCSVFile.Class_Dic["6663000"+randomIndex];//66680000
+    }
+
+    
+    private void GenerateOtherItems(Class_GameRoomCSVFile gameRoomCsvFile)
+    {
+        string itemIDs = gameRoomCsvFile.OtherItemIDField;
+        string[] itemIDArray = itemIDs.Split(';');
+        string[] itemCounts = gameRoomCsvFile.OtherItemCountField.Split(';');
+        
+        GenerateFromItemIDArray(itemIDArray, itemCounts);
         
     }
 

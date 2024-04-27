@@ -10,7 +10,10 @@ public class YRouge_ChallengeRoom : YRouge_RoomBase
         roomType = RoomType.ChallengeRoom;
         base.Start();
         
+        //测试生成一些物品
+        GenerateItemPlacement();
     }
+    
 
     // Update is called once per frame
     void Update()
