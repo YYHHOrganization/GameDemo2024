@@ -29,6 +29,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
     private List<Transform> countDownNumbers = new List<Transform>();
 
     private HRogueMusicGame1Logic gameLogicScript;
+    private int goodPickupCount = 0;  //玩家收集到的好道具的数量
+    public int GoodPickupCount => goodPickupCount;
 
     public void InstantiateGameScorePanel(HRogueMusicGame1Logic logic)
     {
@@ -149,6 +151,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
             GameObject tmpVFX = Instantiate(goodPickupEffect, transform.position, Quaternion.identity);
             tmpVFX.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             comboNum++;
+            goodPickupCount++;
             int score = ComboNumToScore();
             //Debug.Log("thisItem!!!!" + other.gameObject.name);
             UpdateScoreAndShowInUI(score);
@@ -173,6 +176,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         if(comboNum >= 5)
         {
             float intensity =  0.2f * (comboNum / 5);
+            if (intensity >= 0.4) intensity = 0.4f;
             HPostProcessingFilters.Instance.SetPostProcessingWithNameAndValue("Vignette", intensity);
         } 
     }
@@ -191,8 +195,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         if (score > 0)
         {
             addOrMinusText.text = "+" + score;
-            addOrMinusText.transform.DOShakeScale(0.3f, 3f);
-            DOVirtual.DelayedCall(0.5f, () =>
+            addOrMinusText.transform.DOShakeScale(0.2f, 3f);
+            DOVirtual.DelayedCall(0.4f, () =>
             {
                 addOrMinusText.text = "";
                 scoreText.text = totalScore.ToString();
@@ -201,7 +205,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
             {
                 comboText.text = "Combo x" + comboNum;
                 comboText.transform.DOShakeScale(0.1f, 2f);
-                DOVirtual.DelayedCall(0.5f, () =>
+                DOVirtual.DelayedCall(0.4f, () =>
                 {
                     comboText.text = "";
                 });
