@@ -39,6 +39,7 @@ public class HPostProcessingFilters : HPostProcessingBase
     private void Awake()
     {
         postProcessVolume = GetComponent<Volume>();
+        PreloadRenderFeature();
     }
     
     
@@ -289,7 +290,7 @@ public class HPostProcessingFilters : HPostProcessingBase
             as List<ScriptableRendererFeature>;
 
     }
-    ScriptableRendererFeature GetRenderFeature(string featureName)
+    public ScriptableRendererFeature GetRenderFeature(string featureName)
     {
         // 创建一个字典用于存储特效名称和对应的特效对象
         // Dictionary<string, ScriptableRendererFeature> effsDict = new Dictionary<string, ScriptableRendererFeature>();
@@ -303,11 +304,18 @@ public class HPostProcessingFilters : HPostProcessingBase
         }
         return null;
         /*
-         *使用的时候
-         *  //test后处理unitRendererFeature
+        使用的时候
+        //test后处理unitRendererFeature
         unitRendererFeature = GetRenderFeature("FullScreenDoubleBonus");
         //开启这个特效
-         */
+        if (unitRendererFeature != null)
+        {
+            unitRendererFeature.SetActive(true);
+        }
+        或者
+        ScriptableRendererFeature renderFeature = HPostProcessingFilters.Instance.GetRenderFeature("FullScreenInvincible");
+        renderFeature.SetActive(true);
         
+         */
     }
 }
