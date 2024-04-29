@@ -4,9 +4,8 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-public class YStatueXuyuan :MonoBehaviour
+public class YStatueXuyuan :YRogue_TriggerGame
 {
-    GameObject getUI;
     private bool isPickedUp;
     private TMPro.TMP_Text itemChineseName;
     
@@ -21,8 +20,8 @@ public class YStatueXuyuan :MonoBehaviour
     public Transform WishingSuccessItemAppearPlace;
     private void Start()
     {
-        getUI = transform.Find("ShowCanvas/Panel").gameObject;
-        getUI.gameObject.SetActive(false);
+        base.Start();
+        
         SetPriceUI();
         isPickedUp = false;
         itemChineseName = getUI.transform.GetChild(1).GetComponent<TMPro.TMP_Text>();
@@ -55,11 +54,7 @@ public class YStatueXuyuan :MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            //getUI.GetComponentInParent<HRotateToPlayerCamera>().enabled = true;
-            getUI.gameObject.SetActive(true);
-        }
+        base.OnTriggerEnter(other);
     }
     bool isWishing = false;
     private void OnTriggerStay(Collider other)
@@ -91,10 +86,11 @@ public class YStatueXuyuan :MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            getUI.gameObject.SetActive(false);
-        }
+        // if (other.gameObject.CompareTag("Player"))
+        // {
+        //     getUI.gameObject.SetActive(false);
+        // }
+        base.OnTriggerExit(other);
     }
     
     void OnCheckShopItemEnough(string itemId, int count)

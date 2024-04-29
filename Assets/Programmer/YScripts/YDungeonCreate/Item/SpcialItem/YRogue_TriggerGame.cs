@@ -6,18 +6,18 @@ using UnityEngine.AddressableAssets;
 
 public class YRogue_TriggerGame : MonoBehaviour
 {
-    GameObject getUI;
+    protected GameObject getUI;
     // public string gameName;
     public string GameLinkPrefab;
     public string MessageLink;//转场的时候显示的message
     public bool shouldAliveAfterGame = true;
-    private void Start()
+    protected void Start()
     {
         getUI = transform.Find("ShowCanvas/Panel").gameObject;
         getUI.gameObject.SetActive(false);
         
     }
-    private void OnTriggerEnter(Collider other)
+    protected void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
@@ -66,7 +66,7 @@ public class YRogue_TriggerGame : MonoBehaviour
         gamePre.gameObject.SetActive(true);
     }
 
-    private void OnTriggerExit(Collider other)
+    protected void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
