@@ -26,5 +26,20 @@ public class Class_RogueCommonItemCSVFile {
 		string value = GeneratePlace;
 		return value;
 	}
+	public string CouldBrokenAndGenerateItem { get; set; }    //是否可破碎，如果可以，填写其后面的破碎爆出物品和破碎爆出物品的概率
+	public int _CouldBrokenAndGenerateItem (){
+		int value = int.Parse(CouldBrokenAndGenerateItem);
+		return value;
+	}
+	public string BrokenAndGenerateItemList { get; set; }    //破碎爆出物品
+	  public string _BrokenAndGenerateItemList (){
+		string value = BrokenAndGenerateItemList;
+		return value;
+	}
+	public string GenerateItemProbabilityList { get; set; }    //爆出物品的概率
+	  public string _GenerateItemProbabilityList (){
+		string value = GenerateItemProbabilityList;
+		return value;
+	}
 	}
 	

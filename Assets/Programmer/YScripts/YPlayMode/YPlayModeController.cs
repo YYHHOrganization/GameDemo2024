@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Cinemachine;
 using Unity.VisualScripting;
 //using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.LowLevel;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// 用来控制 游玩模式的控制器
@@ -51,6 +54,7 @@ public class YPlayModeController : MonoBehaviour
 
     int curLevelID;
     public bool isRogue = false;
+    
     public void SetCharacter(int characterIndex)
     {
         PlayerDieFlag = false;

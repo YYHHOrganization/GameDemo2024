@@ -26,10 +26,11 @@ public class YFractureExplosionObject : MonoBehaviour
     bool isBroken = false;
 
     GameObject collider;
+    [SerializeField] private bool brokenAndGenerateItem = false;
+    [SerializeField] private string itemId ;
     // Start is called before the first frame update
     void Start()
     {
-        //
         // vfxPlace.position = new Vector3(originalObject.transform.position.x, originalObject.transform.position.y,
         //     originalObject.transform.position.z);
         vfxV3 = new Vector3(originalObject.transform.position.x, originalObject.transform.position.y,
@@ -76,10 +77,68 @@ public class YFractureExplosionObject : MonoBehaviour
         if (isBroken == false)
         {
             Explode(hitVector3);
+            
+            //有概率生成道具 比如心啥的
+            if (brokenAndGenerateItem)
+            {
+                Broken2GenerateItem();
+            }
+            
             isBroken = true; //test
             Destroy(collider);
         }
     }
+
+    [SerializeField] private int ProbabilityOfBroken2GenerateItem = 50;
+    private void Broken2GenerateItem()
+    {
+        Class_RogueCommonItemCSVFile commonItemCsvFile  = SD_RogueCommonItemCSVFile.Class_Dic[itemId];
+        GenerateRoomItemDaojuNew(commonItemCsvFile);
+        // int randomKind = Random.Range(0, 100);
+        // if (randomKind < ProbabilityOfBroken2GenerateItem)  
+        // {
+        //     //生成道具
+        //     print("生成道具");
+        //     string itemId = "80000011";
+        //     HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(itemId, transform,
+        //         new Vector3(0, 0, 0));
+        // }
+    }
+    
+    private void GenerateRoomItemDaojuNew(Class_RogueCommonItemCSVFile commonItemCsvFile)
+    {
+        int couldBroken = commonItemCsvFile._CouldBrokenAndGenerateItem();
+        if (couldBroken == 0)
+        {
+            return;
+        }
+        
+        string[] DropItemIDs = commonItemCsvFile.BrokenAndGenerateItemList.Split(':'); 
+        string[] DropItemProbabilitys = commonItemCsvFile.GenerateItemProbabilityList.Split(':');
+        for (int i = 0; i < DropItemIDs.Length; i++)
+        {
+            float probability = float.Parse(DropItemProbabilitys[i]);
+            if (Random.Range(0, 1f) < probability)
+            {
+                string DropItemID = DropItemIDs[i];
+                Vector3 position = new Vector3(0, 0.1f, 0);
+                if (DropItemID == "all")
+                {
+                    GameObject lumine = HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform, position);
+                    lumine.GetComponent<HRogueItemBase>().SetBillboardEffect();
+                }
+                else
+                {
+                    GameObject lumine = HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(DropItemID, transform,position);
+                    lumine.GetComponent<HRogueItemBase>().SetBillboardEffect();
+                }
+                //只让其生成一个最多
+                return;
+            }
+        }
+        
+    }
+
     public void InstantiateBroken()
     {
         if (originalObject != null)
