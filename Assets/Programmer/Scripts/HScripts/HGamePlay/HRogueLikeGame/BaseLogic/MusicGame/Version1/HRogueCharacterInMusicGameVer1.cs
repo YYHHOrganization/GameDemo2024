@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using BehaviorDesigner.Runtime.Tasks.Unity.Timeline;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -60,10 +61,9 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         gameLogicScript = logic;
     }
 
-    public int DestroyGameScorePanel()
+    public void DestroyGameScorePanel()
     {
         Destroy(gameScorePanel);
-        return totalScore;
     }
     
     // Start is called before the first frame update
@@ -156,7 +156,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
     }
 
     private int comboNum = 0;
-
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))  //没有miss，加分
@@ -165,6 +165,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
             tmpVFX.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             comboNum++;
             goodPickupCount++;
+            HRogueCameraManager.Instance.ShakeCamera(2f, 0.1f);
+            HAudioManager.Instance.Play("RogueMusicGamePickUpAudio", gameObject);
             int score = ComboNumToScore();
             //Debug.Log("thisItem!!!!" + other.gameObject.name);
             UpdateScoreAndShowInUI(score);
@@ -183,6 +185,30 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
             comboNum=0;
             UpdateScoreAndShowInUI(-1);
         }
+        else if (other.gameObject.CompareTag("CouldHit")) //这种对应长条，不播放音效，不震动屏幕
+        {
+            GameObject tmpVFX = Instantiate(goodPickupEffect, transform.position, Quaternion.identity);
+            tmpVFX.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+            comboNum++;
+            goodPickupCount++;
+            int score = ComboNumToScore();
+            //Debug.Log("thisItem!!!!" + other.gameObject.name);
+            UpdateScoreAndShowInUI(score);
+            Destroy(other.gameObject);
+            Destroy(tmpVFX, 10f);
+        }
+    }
+
+    public void ShowGameOverEffect()
+    {
+        //在transform.position周围一圈生成特效
+        for (int i = 0; i < 10; i++)
+        {
+            Vector3 randomPos = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
+            GameObject tmpVFX = Instantiate(goodPickupEffect, transform.position + randomPos, Quaternion.identity);
+            Destroy(tmpVFX, 10f);
+        }
+        
     }
     
     private void CheckComboNumAndGiveoutEffects()
@@ -193,7 +219,12 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
             float intensity =  0.2f * (comboNum / 5);
             if (intensity >= 0.4) intensity = 0.4f;
             HPostProcessingFilters.Instance.SetPostProcessingWithNameAndValue("Vignette", intensity);
-        } 
+        }
+
+        if (comboNum>=30 && comboNum % 30 == 0)
+        {
+            gameLogicScript.GiveOutTwoCharactersForCheer();
+        }
     }
 
     int totalScore = 0;
@@ -210,7 +241,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         if (score > 0)
         {
             addOrMinusText.text = "+" + score;
-            addOrMinusText.transform.DOShakeScale(0.05f, 3f);
+            addOrMinusText.transform.DOShakeScale(0.05f, 2f);
             DOVirtual.DelayedCall(0.2f, () =>
             {
                 addOrMinusText.text = "";
@@ -229,7 +260,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         else  //现在是减分
         {
             addOrMinusText.text = score.ToString();
-            addOrMinusText.transform.DOShakeScale(0.05f, 3f);
+            addOrMinusText.transform.DOShakeScale(0.05f, 2f);
             DOVirtual.DelayedCall(0.2f, () =>
             {
                 addOrMinusText.text = "";
