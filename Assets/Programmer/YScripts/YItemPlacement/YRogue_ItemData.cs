@@ -37,4 +37,7 @@ public class ItemDataInfo {
     public ItemData itemData;
     public int minQuantity;//最小数量
     public int maxQuantity;//最大数量
+
+    public bool useProbility;
+    public int ProbilityIn100;//概率 有多少概率出现这个东西
 }

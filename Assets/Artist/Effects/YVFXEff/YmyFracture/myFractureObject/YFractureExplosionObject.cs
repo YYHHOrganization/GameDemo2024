@@ -122,7 +122,19 @@ public class YFractureExplosionObject : MonoBehaviour
             {
                 string DropItemID = DropItemIDs[i];
                 Vector3 position = new Vector3(0, 0.1f, 0);
-                if (DropItemID == "all")
+                //80000000-80000073 如果是这种 表示从这个范围内随机一个
+                if (DropItemID.Contains("-"))
+                {
+                    string[] range = DropItemID.Split('-');
+                    int min = int.Parse(range[0]);
+                    int max = int.Parse(range[1]);
+                    int randomID = Random.Range(min, max);
+                    DropItemID = randomID.ToString();
+                    
+                    GameObject lumine = HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(DropItemID, transform,position);
+                    lumine.GetComponent<HRogueItemBase>().SetBillboardEffect();
+                }
+                else if (DropItemID == "all")
                 {
                     GameObject lumine = HRoguePlayerAttributeAndItemManager.Instance.RollingARandomItem(transform, position);
                     lumine.GetComponent<HRogueItemBase>().SetBillboardEffect();
