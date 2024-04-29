@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using SonicBloom.Koreo;
 using SonicBloom.Koreo.Players;
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -27,6 +29,9 @@ public class HRogueMusicGame1Logic : MonoBehaviour
     private double totalSongSeconds = 0;
     private List<string> songList = new List<string>();
     private Koreography thisSong;
+
+    public Transform creatureRoot; //角色或者其他生成生物的根节点
+    
     void ChooseASong()
     {
         songList.Add("ZhongmuSong");
@@ -49,7 +54,75 @@ public class HRogueMusicGame1Logic : MonoBehaviour
     
     private void FireEventEffects(KoreographyEvent koreoEvent)
     {
+        if(koreoEvent.HasIntPayload())
+        {
+            int value = koreoEvent.GetIntValue();
+            SetGameEffectWithValue(value);
+        }
+    }
+
+    private void ResetEveryEffects()
+    {
+        ScriptableRendererFeature feature1 =
+            HPostProcessingFilters.Instance.GetRenderFeature("FullScreenDoubleBonus");
+        feature1.SetActive(false);
+        ScriptableRendererFeature feature2 =
+            HPostProcessingFilters.Instance.GetRenderFeature("FullScreenInvincible");
+        feature2.SetActive(false);
+        characterScript.SetScoreMultiplier(1);
+        characterScript.SetVincible(false);
+    }
+
+    private void GiveOutTwoCharactersForCheer()
+    {
+        //生成两个荧妹，加油助威
+        //dotween, creatureRoot先往左移动5个单位，然后creatureRoot下的节点左右摆动旋转四次，然后再向右移动5个单位
+        creatureRoot.transform.DOLocalMoveZ(1.5f, 1f).OnComplete(
+            () =>
+            {
+                for(int i = 0; i < creatureRoot.childCount; i++)
+                {
+                    Transform child = creatureRoot.GetChild(i);
+                    child.DOLocalRotate(new Vector3(0, 0, 20), 1f).SetLoops(4, LoopType.Yoyo);
+                }
+                DOVirtual.DelayedCall(4.5f, () =>
+                {
+                    creatureRoot.transform.DOLocalMoveZ(2.5f, 1f);
+                });
+            }
+            );
         
+    }
+
+    private void SetGameEffectWithValue(int value)
+    {
+        string name = "FullScreenDoubleBonus";
+        if (value == 0)
+        {
+            ResetEveryEffects();
+            return;
+        } 
+        else if (value == 3)
+        {
+            GiveOutTwoCharactersForCheer();
+            return;
+        }
+
+        if (value == 1)
+        {
+            name = "FullScreenDoubleBonus";
+            characterScript.SetScoreMultiplier(2);
+            HMessageShowMgr.Instance.ShowMessage("ROGUE_MUSICGAME_SCORE_TWO");
+        }
+        else if (value == 2)
+        {
+            name = "FullScreenInvincible";
+            characterScript.SetVincible(true);
+            HMessageShowMgr.Instance.ShowMessage("ROGUE_MUSICGAME_INVINCIBLE");
+        }
+        ScriptableRendererFeature feature =
+            HPostProcessingFilters.Instance.GetRenderFeature(name);
+        feature.SetActive(true);
     }
 
     private void LoadGame()
@@ -108,6 +181,11 @@ public class HRogueMusicGame1Logic : MonoBehaviour
 
     private void SummonItemsWithPayloadValue(int value)
     {
+        if (value == 0)
+        {
+            SummonRandomItem();
+            return;
+        }
         bool isBad = false;
         GameObject summonObj;
         GameObject obj;

@@ -31,6 +31,18 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
     private HRogueMusicGame1Logic gameLogicScript;
     private int goodPickupCount = 0;  //玩家收集到的好道具的数量
     public int GoodPickupCount => goodPickupCount;
+    private int scoreMultiplier = 1;  //分数的倍数
+    private bool isInvincible = false;  //是否无敌
+    
+    public void SetScoreMultiplier(int value)
+    {
+        scoreMultiplier = value;
+    }
+    
+    public void SetVincible(bool value)
+    {
+        isInvincible = value;
+    }
 
     public void InstantiateGameScorePanel(HRogueMusicGame1Logic logic)
     {
@@ -138,8 +150,9 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
 
     private int ComboNumToScore()
     {
-        if (comboNum <= 5) return 1;
-        return 2 + (comboNum - 5) / 5;
+        int score = 1;
+        if(comboNum>15) score = 2 + (comboNum - 15) / 15;
+        return score * scoreMultiplier;
     }
 
     private int comboNum = 0;
@@ -160,13 +173,15 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Enemy"))  //碰到类似障碍物的东西，减分；如果错过了加分项，就不加不减
         {
-            HPostProcessingFilters.Instance.SetPostProcessingWithNameAndValue("Vignette", 0);
             GameObject tmpVFX = Instantiate(badPickupEffect, transform.position, Quaternion.identity);
             HRogueCameraManager.Instance.ShakeCamera(3f, 0.2f);
-            comboNum=0;
-            UpdateScoreAndShowInUI(-1);
             Destroy(other.gameObject);
             Destroy(tmpVFX, 10f);
+            
+            if (isInvincible) return;
+            HPostProcessingFilters.Instance.SetPostProcessingWithNameAndValue("Vignette", 0);
+            comboNum=0;
+            UpdateScoreAndShowInUI(-1);
         }
     }
     
@@ -185,7 +200,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
     private void UpdateScoreAndShowInUI(int score)
     {
         totalScore += score;
-        if(totalScore<=0) //分数不能为负数
+        if(totalScore <= 0) //分数不能为负数
         {
             totalScore = 0;
         }
@@ -195,17 +210,17 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         if (score > 0)
         {
             addOrMinusText.text = "+" + score;
-            addOrMinusText.transform.DOShakeScale(0.2f, 3f);
-            DOVirtual.DelayedCall(0.4f, () =>
+            addOrMinusText.transform.DOShakeScale(0.05f, 3f);
+            DOVirtual.DelayedCall(0.2f, () =>
             {
                 addOrMinusText.text = "";
                 scoreText.text = totalScore.ToString();
             });
-            if (comboNum >= 2)  //如果连击数大于等于2，就显示连击数
+            if (comboNum >= 5)  //如果连击数大于等于2，就显示连击数
             {
                 comboText.text = "Combo x" + comboNum;
-                comboText.transform.DOShakeScale(0.1f, 2f);
-                DOVirtual.DelayedCall(0.4f, () =>
+                comboText.transform.DOShakeScale(0.05f, 2f);
+                DOVirtual.DelayedCall(0.2f, () =>
                 {
                     comboText.text = "";
                 });
@@ -214,8 +229,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         else  //现在是减分
         {
             addOrMinusText.text = score.ToString();
-            addOrMinusText.transform.DOShakeScale(0.3f, 3f);
-            DOVirtual.DelayedCall(0.5f, () =>
+            addOrMinusText.transform.DOShakeScale(0.05f, 3f);
+            DOVirtual.DelayedCall(0.2f, () =>
             {
                 addOrMinusText.text = "";
                 scoreText.text = totalScore.ToString();
