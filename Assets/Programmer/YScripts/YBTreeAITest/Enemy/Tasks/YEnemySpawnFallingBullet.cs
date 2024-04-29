@@ -37,6 +37,7 @@ namespace Core.AI
         //初始化武器并攻击玩家
         protected void SpawnBulletFalling(bool trackPlayer = false, bool isChasing=false)
         {
+            //Instantiate(bulletMuzzle).""
             var sequence = DOTween.Sequence();//创建一个序列
             for (int i = 0; i < spawnCount; i++)
             {

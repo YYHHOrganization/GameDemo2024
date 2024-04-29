@@ -44,11 +44,9 @@ namespace Core.AI
                     Vector3 shootDirection = new Vector3(Mathf.Sin(j * 15 * Mathf.Deg2Rad), 0.4f, Mathf.Cos(j* 15 * Mathf.Deg2Rad));
                     GameObject bullet = Object.Instantiate(bulletPrefab, transform.position + shootDirection * 2 , Quaternion.Euler(0, j*15, 0));
                     // SetBulletBaseAttribute(bullet.GetComponent<HEnemyBulletMoveBase>());
-                    
                 });
                 sequence.AppendInterval(0.1f);
             }
-            
         }
         // public IEnumerator ShootCircleInterval()  //也是环状射击子弹，不过一圈的每一颗子弹是间隔发射的
         // {
