@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -270,5 +271,43 @@ public class HPostProcessingFilters : HPostProcessingBase
                 
         }
     }
+    //测试
+    public ScriptableRendererFeature unitRendererFeature;
+    List<ScriptableRendererFeature> srfList;
+    void PreloadRenderFeature()
+    {
+        ScriptableRendererFeature unitRendererFeature=null;
+        UniversalRenderPipelineAsset _pipelineAssetCurrent = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;  // 通过GraphicsSettings获取当前的配置
+        _pipelineAssetCurrent = QualitySettings.renderPipeline as UniversalRenderPipelineAsset;  // 通过QualitySettings获取当前的配置
+        //_pipelineAssetCurrent = QualitySettings.GetRenderPipelineAssetAt(QualitySettings.GetQualityLevel()) as UniversalRenderPipelineAsset;  // 通过QualitySettings获取不同等级的配置
 
+        // 也可以通过QualitySettings.names遍历所有配置
+
+        srfList = _pipelineAssetCurrent.scriptableRenderer.GetType().
+                GetProperty("rendererFeatures",
+                    BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(_pipelineAssetCurrent.scriptableRenderer, null)
+            as List<ScriptableRendererFeature>;
+
+    }
+    ScriptableRendererFeature GetRenderFeature(string featureName)
+    {
+        // 创建一个字典用于存储特效名称和对应的特效对象
+        // Dictionary<string, ScriptableRendererFeature> effsDict = new Dictionary<string, ScriptableRendererFeature>();
+
+        foreach (ScriptableRendererFeature srf in srfList)
+        {
+            if (!string.IsNullOrEmpty(srf.name) && srf.name==featureName)
+            {
+                return srf;
+            }
+        }
+        return null;
+        /*
+         *使用的时候
+         *  //test后处理unitRendererFeature
+        unitRendererFeature = GetRenderFeature("FullScreenDoubleBonus");
+        //开启这个特效
+         */
+        
+    }
 }
