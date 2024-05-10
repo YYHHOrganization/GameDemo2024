@@ -392,6 +392,23 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
         }
     }
+
+    public IEnumerator ShootSpecialBulletWithMuzzle()
+    {
+        // 只负责生成Muzzle，至于Muzzle的逻辑写在Muzzle挂的脚本上
+        while (true)
+        {
+            GameObject muzzleObj = new GameObject("muzzle");
+            muzzleObj.transform.position = shootOrigin.position;
+            muzzleObj.transform.rotation = shootOrigin.rotation;
+            muzzleObj.transform.parent = transform;
+            HBulletMuzzleUtility muzzleUtility = muzzleObj.AddComponent<HBulletMuzzleUtility>();
+            muzzleUtility.SetInitializeAttribute(chaseBulletPrefab, enemy.RogueEnemyChaseShootFunc, true, curStateName, enemy, mTarget);
+            muzzleUtility.Shoot();
+            Destroy(muzzleObj, 20f);
+            yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
+        }
+    }
 }
 
 public enum RogueEnemyTeam
@@ -418,6 +435,7 @@ public enum RogueEnemyChaseType
     JustGoToAttackState, //直接进入攻击状态，一般来说可能是远程攻击的怪物这种
     ChaseAndShootSpecial, //追击并且射击子弹，但是子弹有特殊的效果，由函数来决定
     DontMove,
+    ChaseAndShootWithSpecialMuzzle,
 }
 
 public enum RogueEnemyAttackType

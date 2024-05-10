@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Random = UnityEngine.Random;
 
 public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
@@ -78,6 +79,14 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
             string funcName = mPatrolAI.enemy.RogueEnemyChaseShootFunc;
             //startCorotine
             mPatrolAI.StartCoroutine(funcName);
+        }
+        else if (mPatrolAI.chaseType == RogueEnemyChaseType.ChaseAndShootWithSpecialMuzzle)
+        {
+            Debug.Log("ChaseAndShootWithSpecialMuzzle");
+            //进到这里的逻辑都是直接Instantiate对应的muzzle，然后间隔一段时间shoot一次
+            //string funcName = mPatrolAI.enemy.RogueEnemyChaseShootFunc; //e.g.ShootBulletMuzzleSpiral
+            //GameObject muzzle = Addressables.LoadAssetAsync<GameObject>(funcName).WaitForCompletion();
+            mPatrolAI.StartCoroutine(mPatrolAI.ShootSpecialBulletWithMuzzle());
         }
         else if (mPatrolAI.chaseType == RogueEnemyChaseType.AddSthToPlayer)
         {

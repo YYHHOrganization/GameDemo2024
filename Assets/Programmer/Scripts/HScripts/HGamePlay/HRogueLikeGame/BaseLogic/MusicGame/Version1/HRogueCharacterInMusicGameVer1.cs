@@ -241,8 +241,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         if (score > 0)
         {
             addOrMinusText.text = "+" + score;
-            addOrMinusText.transform.DOShakeScale(0.05f, 2f);
-            DOVirtual.DelayedCall(0.2f, () =>
+            addOrMinusText.transform.DOShakePosition(0.3f, 2f);
+            DOVirtual.DelayedCall(0.4f, () =>
             {
                 addOrMinusText.text = "";
                 scoreText.text = totalScore.ToString();
@@ -250,8 +250,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
             if (comboNum >= 5)  //如果连击数大于等于2，就显示连击数
             {
                 comboText.text = "Combo x" + comboNum;
-                comboText.transform.DOShakeScale(0.05f, 2f);
-                DOVirtual.DelayedCall(0.2f, () =>
+                comboText.transform.DOShakePosition(0.3f, 2f);
+                DOVirtual.DelayedCall(0.4f, () =>
                 {
                     comboText.text = "";
                 });
@@ -260,13 +260,12 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         else  //现在是减分
         {
             addOrMinusText.text = score.ToString();
-            addOrMinusText.transform.DOShakeScale(0.05f, 2f);
-            DOVirtual.DelayedCall(0.2f, () =>
+            addOrMinusText.transform.DOShakeScale(0.3f, 2f);
+            DOVirtual.DelayedCall(0.4f, () =>
             {
                 addOrMinusText.text = "";
                 scoreText.text = totalScore.ToString();
             });
         }
-        
     }
 }

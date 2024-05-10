@@ -4,11 +4,21 @@ using UnityEngine;
 
 public class HEnemyBulletMoveBase : MonoBehaviour
 {
-    private float bulletSpeed = 5f;
+    protected float bulletSpeed = 5f;
     public int bulletDamage = 1;
     public float bulletRange = 10f;
-    private Vector3 originPos;
+    protected Vector3 originPos;
     public GameObject hitPrefab;
+
+    private bool bulletMoving = true;
+    public bool BulletMoving
+    {
+        get { return bulletMoving; }
+    }
+    public virtual void SetBulletMoving(bool moving)
+    {
+        bulletMoving = moving;
+    }
     void Start()
     {
         originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -22,8 +32,9 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         bulletRange = range;
     }
 
-    void Update()
+    protected virtual void BulletMoveLogic()
     {
+        if (!bulletMoving) return;
         if (bulletSpeed != 0)
         {
             if (hasShootTarget && shootTarget != null)
@@ -53,9 +64,14 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         }
     }
 
-    private Transform shootTarget;
-    private bool hasShootTarget = false;
-    private bool isChasingYAxis = false;
+    void Update()
+    {
+        BulletMoveLogic();
+    }
+
+    protected Transform shootTarget;
+    protected bool hasShootTarget = false;
+    protected bool isChasingYAxis = false;
     public void SetTarget(Transform target, bool chasingY = false)
     {
         hasShootTarget = true;
