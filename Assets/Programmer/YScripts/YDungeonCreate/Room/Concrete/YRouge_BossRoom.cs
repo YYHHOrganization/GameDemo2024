@@ -167,10 +167,16 @@ public class YRouge_BossRoom : YRouge_RoomBase
         //根据当前关卡来决定房间的难度
         int rollTimes = 20;
         Class_BossRoomCSVFile battleRoomData = null;//最后返回的房间数据,如果没有找到就返回最后一次的
+        
+        //测试 公子boss
+        battleRoomData = SD_BossRoomCSVFile.Class_Dic["66621010"];return battleRoomData;
+        
         for (int i = 0; i < rollTimes; i++)
         {
             int randomIndex = Random.Range(0, RoomCount);
-            string roomID = "6662100"+randomIndex;
+            int roomIDint = 66621000 + randomIndex;//66621010
+            string roomID = roomIDint.ToString();
+            // string roomID = "6662100"+randomIndex;
             battleRoomData = SD_BossRoomCSVFile.Class_Dic[roomID];
             int difficulty = battleRoomData._RoomDifficultyLevel();
             

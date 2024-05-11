@@ -18,21 +18,40 @@ namespace Core.AI
 
         public string animationTriggerName;
         
+        public bool needBuildUp;
+        public string animationBuildUpTriggerName;
+        
         public bool shakeCameraOnLanding;
 
         private bool isLanded;
         
         private Tween buildupTween;
         private Tween jumpTween;
+        
+        // public GameObject jumpEffect;
+        // public Vector3 jumpEffectOffset;
         public override void OnStart()
         {
             buildupTween = DOVirtual.DelayedCall(buildUpTime,StartJump,false);//意思是在buildUpTime秒后调用StartJump方法
-            animator.SetBool(animationTriggerName,true);
-            animator.SetTrigger(animationTriggerName);
+            
+            if(needBuildUp)
+            {
+                animator.SetBool(animationBuildUpTriggerName,true);
+            }
+            else
+            {
+                animator.SetTrigger(animationTriggerName);
+                animator.SetBool(animationTriggerName,true);
+            }
         }
         
         private void StartJump()
         {
+            if(needBuildUp&&!string.IsNullOrEmpty(animationTriggerName))
+            {
+                animator.SetTrigger(animationTriggerName);
+                animator.SetBool(animationTriggerName,true);
+            }
             // var direction = (player.transform.position - transform.position).normalized;
              rb.velocity = Vector3.zero;
             //转向角色
@@ -75,6 +94,7 @@ namespace Core.AI
             jumpTween = DOVirtual.DelayedCall(jumpTime,() =>
             {
                 isLanded = true;
+                rb.velocity = Vector3.zero;
                 if (shakeCameraOnLanding)
                 {
                     HRogueCameraManager.Instance.ShakeCamera(0.5f, 0.2f);

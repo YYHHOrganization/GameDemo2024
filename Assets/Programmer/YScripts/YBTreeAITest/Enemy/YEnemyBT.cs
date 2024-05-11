@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class YEnemyBT : HRogueEnemyPatrolAI
@@ -9,6 +11,7 @@ public class YEnemyBT : HRogueEnemyPatrolAI
         get { return health; }
         set { health = value; }
     }
+    
 
     public GameObject bloodFrozeEff;
     //skinmesjrender
@@ -17,6 +20,7 @@ public class YEnemyBT : HRogueEnemyPatrolAI
     public WaterBender waterBenderController;
     public GameObject bossPanel;
 
+    public Action OnGettingHit;
     protected override void Awake()
     {
         health = 20;
@@ -27,6 +31,10 @@ public class YEnemyBT : HRogueEnemyPatrolAI
         // isDeadHash = Animator.StringToHash("isDead");
         // shootOrigin = transform.Find("ShootOrigin");
         maxHealth = health;
+        if (skinnedMeshRenderer == null)
+        {
+            skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        }
     }
 
     // Start is called before the first frame update
@@ -37,6 +45,10 @@ public class YEnemyBT : HRogueEnemyPatrolAI
         Debug.Log(gameObject.name + health);
         UpdateUI();
 
+        if (value < 0)
+        {
+            OnGettingHit?.Invoke();
+        }
     }
 
     public void UpdateUI()
@@ -75,4 +87,17 @@ public class YEnemyBT : HRogueEnemyPatrolAI
         OnDie?.Invoke();
         
     }
+    
+    private void OnTriggerEnter(Collider other)
+    // private void OnCollisionEnter(Collision other)
+    {
+       if (other.gameObject.CompareTag("Player"))
+        {
+            // 玩家碰到要扣血
+            HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(hitPlayerDamage);
+        }
+    }
+
+    
+
 }
