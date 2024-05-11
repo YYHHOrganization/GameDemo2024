@@ -1,6 +1,6 @@
 ﻿消息标识符,消息类型,消息内容,消息显示的持续时间,视觉效果（比如淡入淡出，左滑进入等）,消息的Addressable链接
 MessageId,MessageKind,MessageContent,MessageLastTime,MessageTransitionEffect,MessagePrefabLink
-参考下面的写，不要重复,"（1：屏幕上方出现的消息， 2：大型弹窗（例如教程,需要用户点掉） 3：屏幕下方弹出的消息（比如获得成就），4:屏幕中间弹出的消息（比如重要提示等））,5:二次确认窗口, 6:从背包提交物品窗口,7:问答选项窗口，会把选择的答案记录到文本中;8:Tips,出现的位置为屏幕右上角(目前只支持倒计时);9:黑屏转场",后面加入一些转义符的配置,消息持续时间,淡入淡出等,没有资源类型的填NULL
+参考下面的写，不要重复,"（1：屏幕上方出现的消息， 2：大型弹窗（例如教程,需要用户点掉） 3：屏幕下方弹出的消息（比如获得成就），4:屏幕中间弹出的消息（比如重要提示等））,5:二次确认窗口, 6:从背包提交物品窗口,7:问答选项窗口，会把选择的答案记录到文本中;8:Tips,出现的位置为屏幕右上角(目前只支持倒计时);9:黑屏转场;10:屏幕上方重要提示，比如Boss的某个阶段",后面加入一些转义符的配置,消息持续时间,淡入淡出等,没有资源类型的填NULL
 LEVEL_IN_MSG_0,1,关卡1：小城镇,5,FadeInAndFadeOut,NULL
 LEVEL_IN_MSG_1,1,关卡2：无主荒星,5,FadeInAndFadeOut,NULL
 LEVEL_LOCATE_MSG_0,1,<size=80%>宁静祥和的小城市，是休闲的好去处</size>,5,FadeInAndFadeOut,NULL
@@ -29,3 +29,11 @@ ROGUE_MUSICGAME_LOAD,9,碰触了钢琴后，你仿佛置身于音乐之中......
 ROGUE_MUSICGAME_Grade,5,你的最终成绩为0分！,-1,FadeInAndFadeOut,NULL
 ROGUE_MUSICGAME_SCORE_TWO,1,<color=#0033FF>获得了祝福！分数翻倍！</color>,5,FadeInAndFadeOut,NULL
 ROGUE_MUSICGAME_INVINCIBLE,1,<color=#0033FF>获得了祝福！进入无敌时间！</color>,5,FadeInAndFadeOut,NULL
+SUNDAY_BOSS_DAY1,10,第一日，赐以「真实」...,5,FadeInAndFadeOut,NULL
+SUNDAY_BOSS_DAY2,10,第二日，赐以「历法」...,5,FadeInAndFadeOut,NULL
+SUNDAY_BOSS_DAY3,10,第三日，赐以「言语」...,5,FadeInAndFadeOut,NULL
+SUNDAY_BOSS_DAY4,10,第四日，赐以「价值」...,5,FadeInAndFadeOut,NULL
+SUNDAY_BOSS_DAY5,10,第五日，赐以「规则」...,5,FadeInAndFadeOut,NULL
+SUNDAY_BOSS_DAY6,10,第六日，赐以「意义」...,5,FadeInAndFadeOut,NULL
+SUNDAY_BOSS_DAY7,10,第七日，赐以「尊严」...,5,FadeInAndFadeOut,NULL
+SUNDAY_BOSS_DAYFINAL,10,即将见证【太虚有为】...,5,FadeInAndFadeOut,NULL

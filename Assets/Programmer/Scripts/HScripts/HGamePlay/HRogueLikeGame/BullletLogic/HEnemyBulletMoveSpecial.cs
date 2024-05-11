@@ -27,7 +27,29 @@ public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
             case "BezierMove":
                 StartCoroutine(BulletBezierMove());
                 break;
+            case "ZigzagMove":
+
+                break;
+            case "CircleMove":
+                StartCoroutine(BulletCircleMove());
+                break;
         }
+    }
+
+    IEnumerator BulletCircleMove()
+    {
+        //子弹沿着四分之一圆弧进行移动, 相对于自身发射方向的右侧
+        float radius = 0.2f;
+        float angle = 0;
+        while (angle >= -180)
+        {
+            angle -= 1;
+            float x = radius * Mathf.Cos(angle * Mathf.Deg2Rad);
+            float y = radius * Mathf.Sin(angle * Mathf.Deg2Rad);
+            transform.position += (transform.right * x + transform.forward * y);
+            yield return new WaitForSeconds(0.02f);
+        }
+        Destroy(this.gameObject);
     }
 
     IEnumerator BulletBezierMove()

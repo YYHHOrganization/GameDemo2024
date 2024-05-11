@@ -18,7 +18,8 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
     {
         if (mPatrolAI.isDead)
             return null;
-        
+        if(mPatrolAI.mNavMeshAgent.enabled == false)
+            return null;
         mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
         
         // /transform.LookAt(patrolAI.mTarget);
@@ -59,6 +60,11 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
     {
         if (mPatrolAI.chaseType == RogueEnemyChaseType.DontMove)
         {
+            return;
+        }
+        if (mPatrolAI.chaseType == RogueEnemyChaseType.ShootSpecialMuzzleDontMove)
+        {
+            mPatrolAI.StartCoroutine(mPatrolAI.ShootSpecialBulletWithMuzzle());
             return;
         }
         mPatrolAI.mNavMeshAgent.enabled = true;
