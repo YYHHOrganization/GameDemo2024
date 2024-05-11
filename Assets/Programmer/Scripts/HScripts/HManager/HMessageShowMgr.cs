@@ -257,11 +257,15 @@ public class HMessageShowMgr : MonoBehaviour
         });
     }
 
-    public void ShowMessageWithActions(string messageId, Action confirmAction, Action cancelAction, Action closeAction, GameObject gameobject=null)
+    public void ShowMessageWithActions(string messageId, Action confirmAction, Action cancelAction, Action closeAction, GameObject gameobject=null, string overrideMessageContent=null)
     {
         MessageBoxBaseStruct message = yPlanningTable.Instance.Messages[messageId];
         if (message!=null)
         {
+            if (overrideMessageContent!=null)
+            {
+                message.SetMessage(overrideMessageContent);
+            }
             int messageKind = message.MessageType;
             switch (messageKind)
             {

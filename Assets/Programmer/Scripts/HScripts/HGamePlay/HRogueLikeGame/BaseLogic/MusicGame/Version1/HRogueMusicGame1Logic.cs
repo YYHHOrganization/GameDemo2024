@@ -19,7 +19,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
     public Transform floorDownOrigin;
     public Transform floorUp;
     public Transform floorDown;
-    private int gameMode = 1; //1模式是最简单的收集物品的模式，后面再引入其他的比如躲避障碍物的模式
+    private int gameMode = 1; //1模式是最简单的音游模式，后面再来一个纯跑酷的模式吧，有三条命，被炸弹炸掉就减一条命
 
     private HRogueCharacterInMusicGameVer1 characterScript;
     public Transform bgImage1;
@@ -73,25 +73,46 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         characterScript.SetVincible(false);
     }
 
-    private void GiveOutTwoCharactersForCheer()
+    IEnumerator RotateTwoCharacters()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            Transform child1 = creatureRoot.GetChild(0);
+            child1.DOLocalRotate(new Vector3(0, 90, -20), 0.8f).OnComplete(() =>
+            {
+                child1.DOLocalRotate(new Vector3(0, 90, 20), 0.8f);
+            });
+            Transform child2 = creatureRoot.GetChild(1);
+            child2.DOLocalRotate(new Vector3(0, 90, -20), 0.8f).OnComplete(() =>
+            {
+                child2.DOLocalRotate(new Vector3(0, 90, 20), 0.8f);
+            });
+            yield return new WaitForSeconds(1.7f);
+        }
+    }
+
+    public void GiveOutTwoCharactersForCheer()
     {
         //生成两个荧妹，加油助威
         //dotween, creatureRoot先往左移动5个单位，然后creatureRoot下的节点左右摆动旋转四次，然后再向右移动5个单位
         creatureRoot.transform.DOLocalMoveZ(1.5f, 1f).OnComplete(
             () =>
             {
-                for(int i = 0; i < creatureRoot.childCount; i++)
+                StartCoroutine(RotateTwoCharacters());
+                DOVirtual.DelayedCall(7f, () =>
                 {
-                    Transform child = creatureRoot.GetChild(i);
-                    child.DOLocalRotate(new Vector3(0, 0, 20), 1f).SetLoops(4, LoopType.Yoyo);
-                }
-                DOVirtual.DelayedCall(4.5f, () =>
-                {
-                    creatureRoot.transform.DOLocalMoveZ(2.5f, 1f);
+                    creatureRoot.transform.DOLocalMoveZ(2.5f, 1f).OnComplete(() =>
+                    {
+                        for(int i = 0; i < creatureRoot.childCount; i++)
+                        {
+                            int j = i;
+                            Transform child = creatureRoot.GetChild(j);
+                            child.DOLocalRotate(new Vector3(0, 90, 0), 0.1f);
+                        }
+                    });
                 });
             }
             );
-        
     }
 
     private void SetGameEffectWithValue(int value)
@@ -217,13 +238,13 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         else if (value == 5) //上轨道长条
         {
             obj = Instantiate(summonObj, floorUpOrigin.position, Quaternion.identity, floorUp);
-            obj.gameObject.tag = "Player";
+            obj.gameObject.tag = "CouldHit";
             Destroy(obj, 10f);
         }
         else if (value == 6) //下轨道长条
         {
             obj = Instantiate(summonObj, floorDownOrigin.position, Quaternion.identity, floorDown);
-            obj.gameObject.tag = "Player";
+            obj.gameObject.tag = "CouldHit";
             Destroy(obj, 10f);
         }
         
@@ -250,14 +271,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         floorUp.position += Vector3.left * 0.15f;
         floorDown.position += Vector3.left * 0.15f;
     }
-
-    private void Update()
-    {
-        // if (testGameStart)
-        // {
-        //     StartGameLogic();
-        // }
-    }
+    
 
     public void StartGameLogic()
     {
@@ -278,13 +292,15 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         HCameraLayoutManager.Instance.SetLittleMapCamera(false);
     }
 
+    private float gameAccruacy = 0;
     private void SetThisGameOver()
     {
         //计算一下玩家的准度，然后显示出来
         int pickUpCount = characterScript.GoodPickupCount;
-        
-        //todo:显示最终的分数和成绩，二次确认窗口
-        HMessageShowMgr.Instance.ShowMessageWithActions("ROGUE_MUSICGAME_Grade", EndGame, EndGame,EndGame);
+        gameAccruacy = (float)pickUpCount / goodTotalCount;
+        string overrideContent = "您的准确率为： " + gameAccruacy.ToString("P");
+        characterScript.ShowGameOverEffect();
+        HMessageShowMgr.Instance.ShowMessageWithActions("ROGUE_MUSICGAME_Grade", EndGame, EndGame,EndGame, null, overrideContent);
     }
 
     private void EndGame()
@@ -292,8 +308,8 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         //todo:退出游戏界面，依据分数给出宝箱
         HRoguePlayerAttributeAndItemManager.Instance.SetAttributePanel(true);
         HCameraLayoutManager.Instance.SetLittleMapCamera(true);
-        int score = characterScript.DestroyGameScorePanel();
-        GiveOutTreasure(score);
+        characterScript.DestroyGameScorePanel();
+        GiveOutTreasure(gameAccruacy);
         YPlayModeController.Instance.LockPlayerInput(false);
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
@@ -301,21 +317,21 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         Destroy(gameObject, 1f);
     }
     
-    private void GiveOutTreasure(int score)
+    private void GiveOutTreasure(float accuracy)
     {
         Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
         Vector3 treasurePos = player.position;
         string chestID;
         //根据awaardGrade生成奖励
-        if (score<=10)
+        if (accuracy<=0.5f)
         {
             return;
         }
-        else if (score<=30)
+        else if (accuracy<=0.7f)
         {
             chestID = "10000013";
         }
-        else if (score<=50)
+        else if (accuracy<=0.9f)
         {
             chestID = "10000011";
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -23,6 +24,7 @@ public class YLaserController : YLaserBase
         }
     }
 
+    private bool isInHitCD = false;
     void Update()
     {
         if (enterLaserDetect) 
@@ -51,7 +53,17 @@ public class YLaserController : YLaserBase
                     // 如果射线打中了角色
                     //hitObject.GetComponent<PlayerScript>().Die(); // 触发角色死亡
                     Debug.Log("hit player!!");
-                    YPlayModeController.Instance.PlayerDie();
+                    if (YPlayModeController.Instance.isRogue)
+                    {
+                        if (isInHitCD) return;
+                        HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(-1);
+                        isInHitCD = true;
+                        DOVirtual.DelayedCall(1f, () => { isInHitCD = false; });
+                    }
+                    else
+                    {
+                        YPlayModeController.Instance.PlayerDie();
+                    }
                 }
                 else if (hitObject.CompareTag("Puppet"))
                 {
