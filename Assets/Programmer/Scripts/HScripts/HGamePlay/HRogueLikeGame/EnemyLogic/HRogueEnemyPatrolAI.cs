@@ -81,7 +81,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     public Action OnDie;
 
-    private int hitPlayerDamage = -1; // 碰到玩家的伤害
+    protected int hitPlayerDamage = -1; // 碰到玩家的伤害
     
     public string curStateName;
 

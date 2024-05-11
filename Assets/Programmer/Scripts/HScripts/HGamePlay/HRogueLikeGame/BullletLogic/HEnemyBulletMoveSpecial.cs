@@ -76,8 +76,9 @@ public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
     IEnumerator BulletBumpMove()
     {
         if (bulletSpeed <= 0) yield break;
-        float jumpInterval = 1.2f;
-        float jumpDuration = 1f;
+        //interval必须要比duration大
+        float jumpInterval = 0.82f;
+        float jumpDuration = 0.8f;
 
         for (int i = 0; i <= 20; i++)
         {
@@ -85,22 +86,22 @@ public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
             if (hasShootTarget && shootTarget != null)
             {
                 Debug.Log("hasShootTarget!!!");
-                shootTargetPos = shootTarget.position;
+                shootTargetPos = transform.position + (shootTarget.position - transform.position) * Random.Range(0.2f, 1.2f);
                 if (!isChasingYAxis)
                 {
                     shootTargetPos = new Vector3(shootTargetPos.x, 0.5f, shootTargetPos.z);
                 }
                 else
                 {
-                    shootTargetPos = new Vector3(shootTarget.position.x,shootTarget.position.y + shootTarget.localScale.y * 0.5f, shootTarget.position.z);
+                    shootTargetPos = new Vector3(shootTargetPos.x,shootTargetPos.y + shootTarget.localScale.y * 0.5f, shootTargetPos.z);
                 }
-                transform.LookAt(shootTargetPos);
-                jumpInterval = Random.Range(1.2f, 1.5f);
+                //transform.LookAt(shootTargetPos);
                 jumpDuration = Random.Range(0.5f, 1.1f);
+                jumpInterval = jumpDuration + Random.Range(0.02f, 0.1f);
                 //transform.position += transform.forward * (bulletSpeed * Time.deltaTime);
             }
             // 用Dotween实现子弹的弹跳移动
-            transform.DOJump(shootTargetPos, 2f, 1, jumpDuration);
+            transform.DOJump(shootTargetPos, 3f, 1, jumpDuration);
             yield return new WaitForSeconds(jumpInterval);
         }
         Destroy(this.gameObject);

@@ -55,6 +55,11 @@ namespace Core.AI
             time += Time.deltaTime;
             for (int i = 0; i < blendShapeIndex.Count; i++)
             {
+                //如果这个blendshape他没有
+                if (blendShapeIndex[i] >= skinnedMeshRenderer.sharedMesh.blendShapeCount)
+                {
+                    continue;
+                }
                 skinnedMeshRenderer.SetBlendShapeWeight(blendShapeIndex[i], blendShapeValueOrigin[i] + blendShapeValueDelta[i] * time / duration);
             }
             if (time >= duration)
@@ -70,6 +75,10 @@ namespace Core.AI
             base.OnEnd();
             for (int i = 0; i < blendShapeIndex.Count; i++)
             {
+                if (blendShapeIndex[i] >= skinnedMeshRenderer.sharedMesh.blendShapeCount)
+                {
+                    continue;
+                }
                 skinnedMeshRenderer.SetBlendShapeWeight(blendShapeIndex[i], blendShapeValueTarget[i]);
                 // skinnedMeshRenderer.SetBlendShapeWeight(blendShapeIndex[i], blendShapeValueOrigin[i]);
             }

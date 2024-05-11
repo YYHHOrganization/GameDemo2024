@@ -23,6 +23,16 @@ public class YRogue_PropPlacementManager : MonoBehaviour
 
         foreach (var itemDataInfo in itemDataInfos)
         {
+            bool useProbility = itemDataInfo.useProbility;
+            if (useProbility)
+            {
+                //例如如果ProbilityIn100是20，那么就是有20%的概率出现这个物品，
+                int probility = UnityEngine.Random.Range(0, 100);
+                if (probility > itemDataInfo.ProbilityIn100)//意味着如果随机数大于20，那么就不生成这个物品 直接跳过
+                {
+                    continue;
+                }
+            }
             int count = UnityEngine.Random.Range(itemDataInfo.minQuantity, itemDataInfo.maxQuantity + 1);
             for (int i = 0; i < count; i++)
             {

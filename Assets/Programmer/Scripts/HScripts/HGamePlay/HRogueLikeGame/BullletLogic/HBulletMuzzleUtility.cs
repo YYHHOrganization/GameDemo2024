@@ -33,6 +33,18 @@ public class HBulletMuzzleUtility : MonoBehaviour
             // 玩家的子弹属性 , 这个后面参考一下玩家的Shoot脚本里写的函数
         }
     }
+
+    public void SetSelfDefInitializeAttribute(GameObject bulletPrefab, string muzzleKind, bool isEnemy,
+        float bulletDamage, float bulletRange, float bulletSpeed, Transform mTarget = null)
+    {
+        this.isEnemy = isEnemy;
+        this.muzzleKind = muzzleKind;
+        this.bulletPrefab = bulletPrefab;
+        this.mTarget = mTarget;
+        this.bulletDamage = (int)bulletDamage;
+        this.bulletRange = bulletRange;
+        this.bulletSpeed = bulletSpeed;
+    }
     
     private void SetEnemyBulletBaseAttribute(Class_RogueEnemyCSVFile enemy, string curStateName)
     {
@@ -111,10 +123,10 @@ public class HBulletMuzzleUtility : MonoBehaviour
         List<GameObject> lasers = new List<GameObject>();
         transform.parent = null;  //不然会跟着父节点一起旋转
         // 先生成laserCnt个激光作为transform的子节点，然后过2s后muzzle开始缓慢旋转
-        for(int i = 0; i<laserCnt; i++)
+        for(int i = 0; i < laserCnt; i++)
         {
             int angle = 360 / laserCnt * i;
-            GameObject laser = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, angle, 0), transform);
+            GameObject laser = Instantiate(bulletPrefab, transform.position + new Vector3(0,0.2f,0), Quaternion.Euler(0, angle, 0), transform);
             lasers.Add(laser);
         }
         yield return new WaitForSeconds(2f);
