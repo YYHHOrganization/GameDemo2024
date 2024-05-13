@@ -8,6 +8,7 @@ public class HRogueCameraManager : MonoBehaviour
 {
     //单例模式
     private GameObject currentActiveCamera;
+    public GameObject CurrentActiveCamera => currentActiveCamera; 
     private static HRogueCameraManager instance;
     public static HRogueCameraManager Instance
     {

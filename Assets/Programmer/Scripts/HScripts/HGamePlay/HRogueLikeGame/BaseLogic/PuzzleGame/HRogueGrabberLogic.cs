@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using DG.Tweening;
 using UnityEngine;
 
@@ -12,9 +13,19 @@ public class HRogueGrabberLogic : MonoBehaviour
     private int rotationCnt;
     private int currentRotationCnt = 0;
     HRoguePuzzleGameLogic puzzleGameLogic;
+    public CinemachineVirtualCamera virtualCamera;
     private void Start()
     {
-        currentCamera = Camera.main;
+        //get current camera
+        if (HRogueCameraManager.Instance != null)
+        {
+            currentCamera = HRogueCameraManager.Instance.CurrentActiveCamera.GetComponent<Camera>();
+        }
+        else
+        {
+            currentCamera = Camera.main;
+        }
+        
         transformY = transform.position.y;
         puzzleGameLogic = GetComponent<HRoguePuzzleGameLogic>();
     }
@@ -50,7 +61,7 @@ public class HRogueGrabberLogic : MonoBehaviour
             {
                 Vector3 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currentCamera.WorldToScreenPoint(selectedObject.transform.position).z);
                 Vector3 worldPosition = currentCamera.ScreenToWorldPoint(position);
-                selectedObject.transform.position = new Vector3(worldPosition.x, transformY + 0.01f, worldPosition.z);
+                selectedObject.transform.position = new Vector3(worldPosition.x, transformY + 0.1f, worldPosition.z);
 
                 selectedObject = null;
                 Cursor.visible = true;
@@ -61,7 +72,7 @@ public class HRogueGrabberLogic : MonoBehaviour
         {
             Vector3 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currentCamera.WorldToScreenPoint(selectedObject.transform.position).z);
             Vector3 worldPosition = currentCamera.ScreenToWorldPoint(position);
-            selectedObject.transform.position = new Vector3(worldPosition.x, transformY + 0.01f, worldPosition.z);
+            selectedObject.transform.position = new Vector3(worldPosition.x, transformY + 0.1f, worldPosition.z);
 
             if (Input.GetMouseButtonDown(1)) 
             {

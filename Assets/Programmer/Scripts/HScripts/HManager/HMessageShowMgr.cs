@@ -33,6 +33,8 @@ public class HMessageShowMgr : MonoBehaviour
     private Transform messageKind8Panel; //tips消息对应，在右上角显示，比如说倒计时
     private Transform messageKind9Panel; 
     private TMP_Text messageKind9Content;
+
+    private Dictionary<string, GameObject> timeTickShowObjects = new Dictionary<string, GameObject>();
     
     //单例模式
     private static HMessageShowMgr instance;
@@ -339,9 +341,10 @@ public class HMessageShowMgr : MonoBehaviour
         }
     }
 
+    private Coroutine tickCoroutine;
     public void ShowTickMessage(string messageInfo, int seconds, Action callFunction)
     {
-        StartCoroutine(TickMessageWithContentAndTime(messageInfo, seconds, callFunction));
+        tickCoroutine = StartCoroutine(TickMessageWithContentAndTime(messageInfo, seconds, callFunction));
     }
     
     string FormatSeconds(int seconds)
@@ -357,6 +360,9 @@ public class HMessageShowMgr : MonoBehaviour
         string messageContent = messageInfo;
         var op2 = Addressables.InstantiateAsync(aSimpleMessageUILink, messageKind8Panel);
         GameObject go = op2.WaitForCompletion();
+        go.name = messageContent;
+        timeTickShowObjects.Add(messageContent, go);
+        
         while (startSeconds > 0)
         {
             string timeString = FormatSeconds(startSeconds);
@@ -366,6 +372,17 @@ public class HMessageShowMgr : MonoBehaviour
         }
         callFunction?.Invoke();
         Destroy(go, 1f);
+    }
+    
+    public void RemoveTickMessage(string messageInfo)
+    {
+        if(tickCoroutine!=null)
+            StopCoroutine(tickCoroutine);
+        if (timeTickShowObjects.ContainsKey(messageInfo))
+        {
+            Destroy(timeTickShowObjects[messageInfo]);
+            timeTickShowObjects.Remove(messageInfo);
+        }
     }
     
 }
