@@ -26,7 +26,7 @@ public class YRogue_TriggerGame : MonoBehaviour
         }
     }
     bool isInteract = false;
-    private void OnTriggerStay(Collider other)
+    protected void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {

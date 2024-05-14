@@ -31,6 +31,44 @@ MonoBehaviour:
   bufferRadius:
     m_OverrideState: 1
     m_Value: 0.71
+--- !u!114 &-8308403980467388805
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6989a65c021df6e48908d6808ec8f0c7, type: 3}
+  m_Name: FogVolme
+  m_EditorClassIdentifier: 
+  active: 0
+  intensity:
+    m_OverrideState: 1
+    m_Value: 2.31
+  fogColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 1}
+  distance:
+    m_OverrideState: 1
+    m_Value: 0.22
+  fogMode:
+    m_OverrideState: 1
+    m_Value: 2
+  noiseTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: 50c6fa3e1e9dcbc43a44b699ba4db82f, type: 3}
+    dimension: 1
+  fogXSpeed:
+    m_OverrideState: 1
+    m_Value: 0.11
+  fogYSpeed:
+    m_OverrideState: 1
+    m_Value: -0.19
+  noiseAmount:
+    m_OverrideState: 1
+    m_Value: 0.85
 --- !u!114 &-7588325355759437128
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -47,6 +85,44 @@ MonoBehaviour:
   strength:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-7309323849724053529
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38568f21cd68aab4a855846d424717c7, type: 3}
+  m_Name: YFogVolmeDistance
+  m_EditorClassIdentifier: 
+  active: 0
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.05
+  fogColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  distance:
+    m_OverrideState: 1
+    m_Value: 0.05
+  fogMode:
+    m_OverrideState: 1
+    m_Value: 1
+  noiseTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: eb7ce291ccb74804ba1fa670aad3bae6, type: 3}
+    dimension: 1
+  fogXSpeed:
+    m_OverrideState: 1
+    m_Value: 0.09
+  fogYSpeed:
+    m_OverrideState: 1
+    m_Value: 0.11
+  noiseAmount:
+    m_OverrideState: 1
+    m_Value: 1.04
 --- !u!114 &-5981022634208343827
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -186,6 +262,8 @@ MonoBehaviour:
   - {fileID: 1045201583629606230}
   - {fileID: -1469992978232669715}
   - {fileID: 7051524429268290578}
+  - {fileID: -8308403980467388805}
+  - {fileID: -7309323849724053529}
 --- !u!114 &1045201583629606230
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -534,7 +612,7 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 1}
   center:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1

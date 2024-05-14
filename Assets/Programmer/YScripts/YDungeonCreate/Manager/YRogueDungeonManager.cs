@@ -89,5 +89,47 @@ public class YRogueDungeonManager : MonoBehaviour
         RogueBornPlace = transformPosition;
     }
     
+    //存储当前所有房间的script
+    public List<YSpecialMap> specialMapListsS;
     
+    // public Dictionary<string, YSpecialMap> specialMapLists;
+    public YSpecialMap GetSpecialMap(string mapName)
+    {
+        // return specialMapLists[mapName];
+        foreach (var map in specialMapListsS)
+        {
+            if (map.mapName == mapName)
+            {
+                return map;
+            }
+        }
+
+        return null;
+    }
+    
+    //存一个需要暂存的位置信息，如果需要传送的话 从这里获取位置信息并传送
+    //设置传送点
+    // Transform transferPlace;
+    Vector3 storedPosition;
+    // Quaternion storedRotation;
+    
+    public void SetTransferPlace(Transform transformPosition)
+    {
+        // 这句话并不能真的存储原来这个时间的位置，而是存一个引用
+        // transferPlace = transformPosition;
+        // 存储位置和旋转
+        storedPosition = transformPosition.position;
+        // storedRotation = transformPosition.rotation;
+        
+    }
+    public Vector3 GetTransferPlace()
+    {
+        // if (transferPlace == null)
+        // {
+        //     Debug.LogError("没有找到传送地点");
+        //     return null;
+        // }
+        // return transferPlace;
+        return storedPosition;
+    }
 }

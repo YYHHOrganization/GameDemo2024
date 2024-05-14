@@ -126,8 +126,15 @@ public class YChooseCharacterPanel : BasePanel
                 curCharacter.GetComponent<HCharacterInteracionInShow>().SetInteractMode(isInteractMode);
             }
         });
+        
+        //开启雾效
+        SetFogOnOrFalse(true);
     }
-    
+    void SetFogOnOrFalse(bool isOn)
+    {
+        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",isOn);
+        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",isOn);
+    }
     public void SetCharacter(int index)
     {
         if(index==curChooseCharacterIndex)
@@ -153,5 +160,14 @@ public class YChooseCharacterPanel : BasePanel
         
         //设置角色
         //yPlanningTable.Instance.SetCharacter(i);
+        
+        
+    }
+    //退出面板
+    public override void OnExit()
+    {
+        base.OnExit();
+        //关闭雾效
+        SetFogOnOrFalse(false);
     }
 }

@@ -198,6 +198,28 @@ public class HPostProcessingFilters : HPostProcessingBase
         StartCoroutine(SetPostProcessingEffect(effect, time));
 
     }
+
+    public void SetPostProcessingWithName(string effect, bool isOn)
+    {
+        FogVolme fogVolme;
+        YFogVolmeDistance yFogVolmeDistance;
+        switch (effect)
+        {
+            case "FogHeight":
+                if (postProcessVolume.profile.TryGet<FogVolme>(out fogVolme))
+                {
+                    fogVolme.active = isOn;
+                }
+                break;
+            
+            case "FogDistance":
+                if (postProcessVolume.profile.TryGet<YFogVolmeDistance>(out yFogVolmeDistance))
+                {
+                    yFogVolmeDistance.active = isOn;
+                }
+                break;
+        }
+    }
     
     public void SetPostProcessingWithNameAndValue(string effect, float value)
     {
@@ -209,6 +231,13 @@ public class HPostProcessingFilters : HPostProcessingBase
                 {
                     vignette.intensity.value = value;
                 }
+                break;
+            case "FogHeight":
+
+                break;
+            
+            case "FogDistance":
+
                 break;
         }
     }
