@@ -1,140 +1,105 @@
-Shader "Custom/Outline/Stencil Outline Shading"
+Shader "ToonLit/Outline1"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _Outline ("Outline", Range(0,1)) = 0.1
-        _OutlineColor ("Outline Color", Color) = (0,0,0,1)
-        [Toggle] _ENABLE_CLIPSPACE_OUTLINE("Enable ClipSpace Outline", Float) = 0
+        _BaseMap ("BaseMap", 2D) = "white" {}
+        [Toggle]_ENABLE_ALPHA_TEST("Enable AlphaTest",float)=0
+        _Cutoff("Cutoff", Range(0,1.1)) = 0.5
+        [Toggle]_OLWVWD("OutlineWidth Varies With Distance?", float) = 0
+        _OutlineWidth("OutlineWidth", Range(0, 10)) = 0.4
+        _OutlineColor("Outline Color", Color) = (0, 0, 0, 1)
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline"}
+        HLSLINCLUDE
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+        #pragma shader_feature _ENABLE_ALPHA_TEST_ON
+        #pragma shader_feature _OLWVWD_ON
+        TEXTURE2D(_BaseMap);        SAMPLER(sampler_BaseMap);
+        
+        CBUFFER_START(UnityPerMaterial)
+            float4 _BaseMap_ST;
+            float _Cutoff;
+            float4 _OutlineColor;
+            float _OutlineWidth;
+        CBUFFER_END
+        
+        struct Attributes{
+            float4 positionOS : POSITION;
+            float4 texcoord : TEXCOORD;
+            float3 normalOS: NORMAL;
+        };
+        struct Varyings{
+            float4 positionCS : SV_POSITION;
+            float2 uv : TEXCOORD1;
+        };
+        ENDHLSL
+
         Pass
         {
-            Name "ForwardLit"
-            Tags { "LightMode"="SRPDefaultUnlit" }
-            Stencil
-            {
-                Ref 1
-                Comp Always
-                Pass Replace
-            }
-            HLSLPROGRAM
-            #pragma vertex vert
+            Tags{"LightMode" = "UniversalForward"}    
+            //Cull back
+            Cull Off  //note:使用Cull Off的话有些面能够更好的显示出来,比如《原神》中公子的披风
+			HLSLPROGRAM
+			#pragma target 3.0
+            #pragma vertex vertex
             #pragma fragment frag
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-
-            struct Attributes
+            Varyings vertex(Attributes input)
             {
-                float4 texcoord: TEXCOORD0;
-                float4 vertex: POSITION;
-            };
-
-            struct Varyings
-            {
-                float4 pos: SV_POSITION;
-                float2 uv : TEXCOORD1;
-            };
-
-            // 此宏将 _BaseMap 声明为 Texture2D 对象。
-            TEXTURE2D(_MainTex);
-            // This macro declares the sampler for the _BaseMap texture.
-            SAMPLER(sampler_MainTex);
-            
-            CBUFFER_START(UnityPerMaterial)
-                float4 _MainTex_ST;
-                float _Outline;
-                float4 _OutlineColor;
-            CBUFFER_END
-
-            Varyings vert (Attributes v)
-            {
-                Varyings o;
-                o.pos = TransformObjectToHClip(v.vertex);
-                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-                return o;
+                Varyings output;
+                VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
+                output.positionCS = vertexInput.positionCS;
+                output.uv = input.texcoord.xy;
+                return output;
             }
-
-            half4 frag (Varyings i) : SV_Target
+            float4 frag(Varyings input):SV_Target
             {
-                half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
-                return col;
+                float4 tex = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv);
+                #if _ENABLE_ALPHA_TEST_ON
+                    clip(tex.a-_Cutoff);
+                #endif
+                return tex;
             }
             ENDHLSL
         }
-
         Pass
         {
-            //在这个Pass当中延法线外扩，并设置Stencil Ref为1，Comp NotEqual
-            Name "Outline"
-            Tags {"LightMode"="UniversalForward"}
-
-            Stencil
-            {
-                Ref 1
-                Comp NotEqual
-                Pass Keep
-            }
-            
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #pragma shader_feature _ENABLE_CLIPSPACE_OUTLINE_ON  // 注意在pragma这里要把宏定义写成_ON，否则在材质面板上勾选的逻辑会有问题
-
-            CBUFFER_START(UnityPerMaterial)
-                float _Outline;
-                float4 _OutlineColor;
-            CBUFFER_END
-
-            struct Attributes
-            {
-                float4 vertex: POSITION;
-                float3 normal: NORMAL;
-            };
-
-            struct Varyings
-            {
-                float4 pos: SV_POSITION;
-            };
-
-            Varyings vert (Attributes v)
-            {
-                //将顶点法线外扩，不过是在视图空间下进行的
-                Varyings o;
-
-                //方案1：模型空间外扩，效果并不好
-                float3 vertexWithOffset = v.vertex.xyz + v.normal * _Outline * 0.0005f;
-                o.pos = TransformObjectToHClip(vertexWithOffset);
-
-                //方案2：裁剪空间外扩，效果会好一些
-                #if _ENABLE_CLIPSPACE_OUTLINE_ON
-                
-                VertexNormalInputs vertexNormalInputs = GetVertexNormalInputs(v.normal.xyz);
-                float2 normalCS = TransformWorldToHClipDir(vertexNormalInputs.normalWS).xy;
-                o.pos = TransformObjectToHClip(v.vertex);
-                o.pos.xy += normalize(normalCS.xy) * _Outline * 0.05f;  //乘0.05是为了让扩张的线条更细一些,否则太粗了
+            Name "OutLine"
+			Tags{ "LightMode" = "SRPDefaultUnlit" }
+			Cull front
+			HLSLPROGRAM
+			#pragma vertex vert  
+			#pragma fragment frag
+			
+			Varyings vert(Attributes input)
+			{
+                float4 scaledScreenParams = GetScaledScreenParams();
+                float ScaleX = abs(scaledScreenParams.x / scaledScreenParams.y);//求得X因屏幕比例缩放的倍数
+				Varyings output;
+				VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
+                VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS);
+                float3 normalCS = TransformWorldToHClipDir(normalInput.normalWS);//法线转换到裁剪空间
+                float2 extendDis = normalize(normalCS.xy) *(_OutlineWidth*0.01);//根据法线和线宽计算偏移量
+                extendDis.x /=ScaleX ;//由于屏幕比例可能不是1:1，所以偏移量会被拉伸显示，根据屏幕比例把x进行修正
+                output.positionCS = vertexInput.positionCS;
+                #if _OLWVWD_ON
+                    //屏幕下描边宽度会变
+                    output.positionCS.xy += extendDis;
+               #else
+                    //下面这句是为了控制当相机离角色过远时，由于描边粗细控制不变导致画面很脏（角色会变得黑乎乎一片，因为包括了描边）的问题
+                    float ctrl = clamp(1/output.positionCS.w,0,1);  //当相机距离过远时，ctrl会接近于0，导致描边很细，不会出现”脏“的现象
+                    //屏幕下描边宽度不变，则需要顶点偏移的距离在NDC坐标下为固定值
+                    //因为后续会转换成NDC坐标，会除w进行缩放，所以先乘一个w，那么该偏移的距离就不会在NDC下有变换
+                    output.positionCS.xy += extendDis * output.positionCS.w * ctrl;
                 #endif
-                return o;
-
-                //下面这段代码原本是在视图空间去做顶点外扩的，但是效果并不理想，所以就不用了
-                // float4 pos = mul(UNITY_MATRIX_MV, v.vertex); //将顶点从模型空间转换到视图空间，这样做扩散描边效果更好
-                // float3 normal = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal); //将法线从模型空间转换到视图空间,注意这里要用逆转置矩阵，见入门精要数学原理部分
-                // //normal.z = -0.5; //尽可能避免背面扩张后的顶点挡住正面的面片
-                // pos = pos + float4(normalize(normal),0) * _Outline; //将法线方向乘以扩张距离，然后加到顶点坐标上
-                // o.pos = mul(UNITY_MATRIX_P, pos); //将顶点从视图空间转换到裁剪空间
-                // return o;
-            }
-
-            half4 frag (Varyings i) : SV_Target
-            {
-                return float4(_OutlineColor.rgb, 1);
-            }
+				return output;
+			}
+			float4 frag(Varyings input) : SV_Target {
+				return float4(_OutlineColor.rgb, 1);
+			}
             
             ENDHLSL
         }
     }
+    Fallback "Universal Render Pipeline/Lit"
 }
