@@ -13,12 +13,14 @@ public class HMessageShowMgr : MonoBehaviour
     private Transform messagePanel;
     private Transform messageKind1Panel;
     private Transform messageKind2Panel;
+    private Transform messageKind10Panel;
     private string messageKind2UIPath = "messageKind2Prefab";
     private string messageKind3UIPath = "messageKind3Prefab";
     private string messageKind4UIPath = "messageKind4Prefab";
     
     private string aSimpleMessageUILink = "aSimpleMessageUILink"; //一条消息，会放在对应消息类型的Panel当中 
     private string aSimpleMessageUIKind4Link = "aSimpleMessageUIKind4Link"; 
+    private string aSimpleMessageUIKind10Link = "aSimpleMessageUIKind10Link";
     private GameObject canvas;
     private TMP_Text messageKind2Content;
     private TMP_Text messageKind7Content;
@@ -31,6 +33,8 @@ public class HMessageShowMgr : MonoBehaviour
     private Transform messageKind8Panel; //tips消息对应，在右上角显示，比如说倒计时
     private Transform messageKind9Panel; 
     private TMP_Text messageKind9Content;
+
+    private Dictionary<string, GameObject> timeTickShowObjects = new Dictionary<string, GameObject>();
     
     //单例模式
     private static HMessageShowMgr instance;
@@ -63,6 +67,7 @@ public class HMessageShowMgr : MonoBehaviour
         messageKind8Panel = messagePanel.Find("messageKind8Prefab");
         messageKind9Panel = messagePanel.Find("messageKind9Prefab");
         messageKind9Panel.gameObject.SetActive(false);
+        messageKind10Panel = messagePanel.Find("messageKind10Prefab");
         messageKind2Content = messageKind2Panel.GetComponentInChildren<TMP_Text>();
         messageKind7Content = messageKind7Panel.GetComponentInChildren<TMP_Text>();
         messageKind9Content = messageKind9Panel.GetComponentInChildren<TMP_Text>();
@@ -76,6 +81,23 @@ public class HMessageShowMgr : MonoBehaviour
         string messageTransitionEffect = message.MessageTransitionEffect;
 
         var op2 = Addressables.InstantiateAsync(aSimpleMessageUILink, messageKind1Panel);
+        GameObject go = op2.WaitForCompletion();
+        go.transform.GetComponentInChildren<TMP_Text>().text = messageContent;
+        DoMessageTransitionEffect(go.transform, messageTransitionEffect, messageShowTime);
+        Destroy(go, messageShowTime);
+    }
+
+    private void ShowMessageKind10(MessageBoxBaseStruct message)
+    {
+        //清空之前的消息,只显示最新的消息
+        if(messageKind10Panel.childCount>0)
+            Destroy(messageKind10Panel.GetChild(0).gameObject);
+        //呈现在屏幕上方的UI
+        string messageContent = message.MessageContent;
+        float messageShowTime = message.MessageShowTime;
+        string messageTransitionEffect = message.MessageTransitionEffect;
+
+        var op2 = Addressables.InstantiateAsync(aSimpleMessageUIKind10Link, messageKind10Panel);
         GameObject go = op2.WaitForCompletion();
         go.transform.GetComponentInChildren<TMP_Text>().text = messageContent;
         DoMessageTransitionEffect(go.transform, messageTransitionEffect, messageShowTime);
@@ -311,14 +333,18 @@ public class HMessageShowMgr : MonoBehaviour
                 case 9:
                     ShowMessageKind9(message);
                     break;
+                case 10:
+                    ShowMessageKind10(message);
+                    break;
                     
             }
         }
     }
 
+    private Coroutine tickCoroutine;
     public void ShowTickMessage(string messageInfo, int seconds, Action callFunction)
     {
-        StartCoroutine(TickMessageWithContentAndTime(messageInfo, seconds, callFunction));
+        tickCoroutine = StartCoroutine(TickMessageWithContentAndTime(messageInfo, seconds, callFunction));
     }
     
     string FormatSeconds(int seconds)
@@ -334,6 +360,9 @@ public class HMessageShowMgr : MonoBehaviour
         string messageContent = messageInfo;
         var op2 = Addressables.InstantiateAsync(aSimpleMessageUILink, messageKind8Panel);
         GameObject go = op2.WaitForCompletion();
+        go.name = messageContent;
+        timeTickShowObjects.Add(messageContent, go);
+        
         while (startSeconds > 0)
         {
             string timeString = FormatSeconds(startSeconds);
@@ -343,6 +372,17 @@ public class HMessageShowMgr : MonoBehaviour
         }
         callFunction?.Invoke();
         Destroy(go, 1f);
+    }
+    
+    public void RemoveTickMessage(string messageInfo)
+    {
+        if(tickCoroutine!=null)
+            StopCoroutine(tickCoroutine);
+        if (timeTickShowObjects.ContainsKey(messageInfo))
+        {
+            Destroy(timeTickShowObjects[messageInfo]);
+            timeTickShowObjects.Remove(messageInfo);
+        }
     }
     
 }

@@ -92,7 +92,29 @@ public class HBulletMuzzleUtility : MonoBehaviour
             case "LaserRotateAround":
                 StartCoroutine(LaserRotateAround(bulletCnt));
                 break;
+            case "ShootBulletSpecialModal1":
+                StartCoroutine(ShootBulletSpecialModal1(bulletCnt));
+                break;
                 
+        }
+    }
+    
+    IEnumerator ShootBulletSpecialModal1(int bulletCnt)
+    {
+        transform.parent = null; //不然会跟着父节点一起旋转
+        int offset = 0;
+        for (int i = 0; i < bulletCnt; i++)  //一共发射bulletCnt颗子弹
+        {
+            //以当前transform为原点发射四分之一圆的五颗子弹
+            for (int j = 0; j < 8; j++)
+            {
+                Vector3 shootDirection = new Vector3(Mathf.Sin(j * 45 * Mathf.Deg2Rad), 0.2f, Mathf.Cos(j * 45 * Mathf.Deg2Rad));
+                GameObject bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 2, Quaternion.Euler(0, j * 90, 0), transform);
+                bullet.transform.forward = new Vector3(shootDirection.x, 0, shootDirection.z);
+                bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletAttribute(bulletSpeed, bulletDamage, bulletRange);
+                bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletMoving(true);
+            }
+            yield return new WaitForSeconds(0.2f);
         }
     }
     
@@ -126,8 +148,8 @@ public class HBulletMuzzleUtility : MonoBehaviour
         {
             Vector3 shootDirection = new Vector3(0.2f,Mathf.Sin(i * 22.5f * Mathf.Deg2Rad), Mathf.Cos(i * 22.5f * Mathf.Deg2Rad));
             GameObject bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 2 + new Vector3(0, 2f,0) , Quaternion.Euler(0, i * 22.5f, 0), transform);
-            bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletMoving(false);
             bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletAttribute(bulletSpeed, bulletDamage, bulletRange);
+            bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletMoving(false);
             if (chasePlayer)
             {
                 bullet.GetComponent<HEnemyBulletMoveBase>().SetTarget(mTarget);

@@ -436,6 +436,7 @@ public enum RogueEnemyChaseType
     ChaseAndShootSpecial, //追击并且射击子弹，但是子弹有特殊的效果，由函数来决定
     DontMove,
     ChaseAndShootWithSpecialMuzzle,
+    ShootSpecialMuzzleDontMove,
 }
 
 public enum RogueEnemyAttackType

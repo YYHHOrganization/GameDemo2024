@@ -11,6 +11,8 @@ public class YRogue_TriggerGame : MonoBehaviour
     public string GameLinkPrefab;
     public string MessageLink;//转场的时候显示的message
     public bool shouldAliveAfterGame = true;
+    public bool hasAnimationToShow = false;
+    private Animator animator;
     protected void Start()
     {
         getUI = transform.Find("ShowCanvas/Panel").gameObject;
@@ -23,6 +25,10 @@ public class YRogue_TriggerGame : MonoBehaviour
         {
             getUI.gameObject.SetActive(true);
             getUI.GetComponentInParent<HRotateToPlayerCamera>().enabled = true;
+            if (hasAnimationToShow)
+            {
+                ShowAnimationOnOrOff(true);
+            }
         }
     }
     bool isInteract = false;
@@ -42,6 +48,24 @@ public class YRogue_TriggerGame : MonoBehaviour
                 
                 StartInteract();
             }
+        }
+    }
+
+    private void ShowAnimationOnOrOff(bool isOn)
+    {
+        if (!animator)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+        if (isOn)
+        {
+            animator.SetBool("isPlaying", true);
+            animator.SetBool("isPlayingBack", false);
+        }
+        else
+        {
+            animator.SetBool("isPlayingBack", true);
+            animator.SetBool("isPlaying", false);
         }
     }
 
@@ -71,6 +95,10 @@ public class YRogue_TriggerGame : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             getUI.gameObject.SetActive(false);
+            if (hasAnimationToShow)
+            {
+                ShowAnimationOnOrOff(false);
+            }
         }
     }
 

@@ -25,6 +25,7 @@ public class YRouge_ChallengeRoom : YRouge_RoomBase
         int randomIndex = Random.Range(0,SD_ChallengeRoomCSVFile.Class_Dic.Count);
 
         // randomIndex = 3;//test!!!后面记得关掉
+        randomIndex = 3;
         challengeRoomData = SD_ChallengeRoomCSVFile.Class_Dic["6661000"+randomIndex];//66680000
     }
 

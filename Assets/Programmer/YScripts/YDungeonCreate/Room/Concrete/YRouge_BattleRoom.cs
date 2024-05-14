@@ -122,7 +122,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
             int randomIndex = Random.Range(0, RoomCount);
             int id = 66620000 + randomIndex;
             
-            id = 66620012;  //test!!!!!
+            //id = 66620012;  //test!!!!!
             string roomID = id.ToString();
             battleRoomData = SD_BattleRoomCSVFile.Class_Dic[roomID];
             int difficulty = battleRoomData._RoomDifficultyLevel();
