@@ -114,6 +114,9 @@ public class HRogueItemFuncUtility : MonoBehaviour
             case "PortalToSomeRoom":
                 PortalToSomeRoom(funcParams);
                 break;
+            case "PortalToSpecialMap":
+                PortalToSpecialMap(funcParams);
+                break;
             default:
                 System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
                 method.Invoke(this, new object[] {funcParams});
@@ -305,6 +308,31 @@ public class HRogueItemFuncUtility : MonoBehaviour
                 }
                 break;
         }
+    }
+    
+    private void PortalToSpecialMap(string funcParams)
+    {
+        //todo：传送到特定的地图
+        Debug.Log("PortalToSpecialMap"+funcParams);
+        GameObject player = YPlayModeController.Instance.curCharacter;
+        YSpecialMap specialMap = YRogueDungeonManager.Instance.GetSpecialMap(funcParams);
+        //通知这个地图 角色进入了
+        specialMap.OnPlayerEnter();
+        
+        //存储原来的位置  方便后续传送
+        YRogueDungeonManager.Instance.SetTransferPlace(player.transform);
+        
+        //传送角色到特定地图的出生点
+        player.GetComponent<CharacterController>().enabled = false;
+        player.transform.position = specialMap.BornPlace.position;
+        
+        //在duration时间内，从bornPlace移动到landingPlace
+        float duration = 3f;
+        player.transform.DOMove(specialMap.LandingPlace.position, duration).OnComplete(() =>
+        {
+            player.GetComponent<CharacterController>().enabled = true;
+        });
+        // player.GetComponent<CharacterController>().enabled = true;
     }
 
     public void AddMoney(string funcParams)

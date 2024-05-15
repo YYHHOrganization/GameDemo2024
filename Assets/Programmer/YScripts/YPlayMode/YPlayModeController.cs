@@ -368,4 +368,13 @@ public class YPlayModeController : MonoBehaviour
         Vector3 pos = new Vector3(-400, 500, -400);
         curCharacter.transform.position = pos;
     }
+    
+    //传送角色到指定位置
+    public void SetRogueCharacterPlace(Vector3 pos)
+    {
+        //可以考虑来个黑屏：传送中
+        curCharacter.GetComponent<CharacterController>().enabled = false;
+        curCharacter.transform.position = pos;
+        curCharacter.GetComponent<CharacterController>().enabled = true;
+    }
 }
