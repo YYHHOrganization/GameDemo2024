@@ -106,9 +106,9 @@ public class HBulletMuzzleUtility : MonoBehaviour
         for (int i = 0; i < bulletCnt; i++)  //一共发射bulletCnt颗子弹
         {
             //以当前transform为原点发射四分之一圆的五颗子弹
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < 12; j++)
             {
-                Vector3 shootDirection = new Vector3(Mathf.Sin(j * 45 * Mathf.Deg2Rad), 0.2f, Mathf.Cos(j * 45 * Mathf.Deg2Rad));
+                Vector3 shootDirection = new Vector3(Mathf.Sin(j * 30 * Mathf.Deg2Rad), 0.2f, Mathf.Cos(j * 30 * Mathf.Deg2Rad));
                 GameObject bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 2, Quaternion.Euler(0, j * 90, 0), transform);
                 bullet.transform.forward = new Vector3(shootDirection.x, 0, shootDirection.z);
                 bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletAttribute(bulletSpeed, bulletDamage, bulletRange);

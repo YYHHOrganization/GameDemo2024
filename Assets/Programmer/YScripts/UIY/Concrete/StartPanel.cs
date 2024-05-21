@@ -26,6 +26,7 @@ public class StartPanel : BasePanel
         {
             Debug.Log("点击了Play按钮");
             Pop();
+            //todo:加载一个场景，放入一个荧妹当主角，比如一个房间什么的，现在还没到选关卡这个步骤。
             Push(new YLevelPanel(0));//游玩模式
             // Push(new YChooseCharacterPanel());
         });
