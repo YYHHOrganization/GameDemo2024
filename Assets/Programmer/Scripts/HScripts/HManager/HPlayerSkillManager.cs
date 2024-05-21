@@ -24,6 +24,12 @@ public class HPlayerSkillManager : MonoBehaviour
         bagBeenPushed = value;
     }
 
+    private bool gachaPanelBeenPushed = false;
+    public void SetGachaPanelBeenPushed(bool value)
+    {
+        gachaPanelBeenPushed = value;
+    }
+
     private void SetOriginalIntensity()
     {
         postProcessVolume.profile.TryGet(out ColorAdjustments settings);
@@ -77,6 +83,12 @@ public class HPlayerSkillManager : MonoBehaviour
                 YGameRoot.Instance.Push(new HBagPanel());
                 bagBeenPushed = true;   
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            YGameRoot.Instance.Push(new HGachaBasePanel());
+            gachaPanelBeenPushed = true;
         }
         
     }
