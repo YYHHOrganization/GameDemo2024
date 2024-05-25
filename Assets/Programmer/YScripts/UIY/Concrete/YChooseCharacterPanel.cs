@@ -162,6 +162,8 @@ public class YChooseCharacterPanel : BasePanel
         //yPlanningTable.Instance.SetCharacter(i);
         
         
+        //如果这个角色没解锁，就上锁shader，现在都默认上锁吧
+        YEffManager._Instance.SetLockedShaderOnOrOff(true, go.transform);
     }
     //退出面板
     public override void OnExit()
