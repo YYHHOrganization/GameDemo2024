@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Random = UnityEngine.Random;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 using UnityEngine.Video;
 using Button = UnityEngine.UI.Button;
 
@@ -28,22 +29,67 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
     public Button getTenCardButton;
     public GameObject showGachaAnimationPanel;
     public Button skipGachaAnimationButton;
+    public GameObject showGachaResultPanel;
+    public GameObject aSingleCatcakeShowPrefab;  //单抽展示的预制体
+    
+    public TMP_Text xingqiongNumText;
+    public TMP_Text xinyongdianNumText;
+
+    public GameObject gachaFiveStarUpPanel;
+    public Transform Gacha4ItemLocation;
     # endregion
+
+
+    private bool CouldGachaOrNot(int number)
+    {
+        //判断一下星穹的数量
+        int xingqingCnt = HItemCounter.Instance.CheckCountWithItemId("20000012");
+        if (xingqingCnt < number * 160)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void UseXingqiongForGacha(int gachaCnt)
+    {
+        HItemCounter.Instance.RemoveItem("20000012",160 * gachaCnt);
+        //显示星琼数和信用点数
+        xingqiongNumText.text = HItemCounter.Instance.CheckCountWithItemId("20000012").ToString();
+        xinyongdianNumText.text = HItemCounter.Instance.CheckCountWithItemId("20000013").ToString();
+    }
     
     private void AddUIListeners()
     {
         getOneCardButton.onClick.AddListener(() =>
         {
+            if (!CouldGachaOrNot(1))
+            {
+                HMessageShowMgr.Instance.ShowMessage("ROGUE_GACHA_NOENOUGH_XINGQIONG");
+                return;
+            }
+
+            UseXingqiongForGacha(1);
             DrawCard(1);
         });
         getTenCardButton.onClick.AddListener(() =>
         {
+            if (!CouldGachaOrNot(10))
+            {
+                HMessageShowMgr.Instance.ShowMessage("ROGUE_GACHA_NOENOUGH_XINGQIONG");
+                return;
+            }
+            UseXingqiongForGacha(10);
             DrawCard(10);
         });
     }
     
     private void ReadGachaBaseInfo()
     {
+        //显示星琼数和信用点数
+        xingqiongNumText.text = HItemCounter.Instance.CheckCountWithItemId("20000012").ToString();
+        xinyongdianNumText.text = HItemCounter.Instance.CheckCountWithItemId("20000013").ToString();
         //读取抽卡基本信息，包括UP角色，五星角色，四星角色等，以及抽卡记录
         var dictionary = SD_RogueGachaThingCSVFile.Class_Dic;
         foreach (var item in dictionary)
@@ -86,9 +132,25 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
         }
     }
     
+    private void UpdateUIInGachaPanel()
+    {
+        //更新抽卡界面的UI
+        Sprite fiveStarUpSprite = Addressables.LoadAssetAsync<Sprite>(SD_RogueGachaThingCSVFile.Class_Dic[UpStar5Character].ItemLink).WaitForCompletion();
+        gachaFiveStarUpPanel.GetComponent<Image>().sprite = fiveStarUpSprite;
+        //更新四星Up角色
+        for (int i = 0; i < Gacha4ItemLocation.childCount; i++)
+        {
+            string id = UpStar4Character[i];
+            string link = SD_RogueGachaThingCSVFile.Class_Dic[id].ItemLink;
+            Sprite sprite = Addressables.LoadAssetAsync<Sprite>(link).WaitForCompletion();
+            Gacha4ItemLocation.GetChild(i).GetComponentInChildren<Image>().sprite = sprite;
+        }
+    }
+    
     private void Start()
     {
         ReadGachaBaseInfo();
+        UpdateUIInGachaPanel();
         AddUIListeners();
     }
 
@@ -127,7 +189,7 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
             else if(drawChance <= 0.13f|| drawCounter4Star == 9)
             {
                 drawCounter4Star = 0;
-                if (drawChance <= 0.065f || !isLast4StarUp) //抽到UP角色
+                if (drawChance <= 0.065f || !isLast4StarUp || Changzhu4StarThings.Count == 0) //抽到UP角色,或者常驻池没有东西，也从up池抽吧
                 {
                     int randomIndex = Random.Range(0, UpStar4Character.Count);
                     //Debug.Log("randomIndex: " + randomIndex + "  UpStar4Character.Count: " + UpStar4Character.Count);
@@ -142,6 +204,7 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
                 }
 
                 has4StarItem = true;
+                drawCounter5Star++;
                 drawCounter4Star = 0;
             }
             //其它皆为三星武器
@@ -202,10 +265,49 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
         ShowGachaResultInPanel(result);
     }
 
+    private bool playerLeftMouseDown = false;
+    private bool couldDetectOtherInput = false;
+    private List<string> currentResult = new List<string>();
+    private int currentShowResultIndex = 0;
+    private void Update()
+    {
+        if(couldDetectOtherInput && Input.GetMouseButtonDown(0))
+        {
+            couldDetectOtherInput = false;
+            playerLeftMouseDown = true;
+            Destroy(currentShowedGachaThing);
+            currentShowedGachaThing = null;
+            if(currentShowResultIndex >= currentResult.Count)
+            {
+                ShowAGachaResultWithId(-1);
+                couldDetectOtherInput = false;
+                return;
+            }
+            ShowAGachaResultWithId(currentShowResultIndex);
+            currentShowResultIndex++;
+        }
+    }
+
     private void ShowGachaResultInPanel(List<string> result)
     {
+        currentShowResultIndex = 0;
         skipGachaAnimationButton.onClick.RemoveAllListeners();
         StopAllCoroutines();
+        showGachaResultPanel.SetActive(true);
+        DOVirtual.DelayedCall(3f, () =>
+        {
+            couldDetectOtherInput = true;
+        });
+        
+        currentResult = result;
+        DebugGachaResultAndSave(result);
+        
+        ShowAGachaResultWithId(currentShowResultIndex);
+        currentShowResultIndex++;
+    }
+
+    private void DebugGachaResultAndSave(List<string> result)
+    {
         //输出抽卡结果
         Debug.Log("====================================");
         foreach (var res in result)
@@ -217,10 +319,50 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
                 Debug.Log("yes!!");
             }
             Debug.Log(name + "  星级: " + star);
-            Debug.Log("===============");
+            Debug.Log("===============" + drawCounter5Star);
         }
-
         Debug.Log("====================================");
+        //保存抽卡记录，写入一个文件当中，后面点击历史记录的时候会读取这个文件
     }
+    
+    private GameObject currentShowedGachaThing = null;
 
+    private void ShowAGachaResultWithId(int index)
+    {
+        if (index == -1)
+        {
+            //退出界面,todo:其实应该显示一下所有的结果，这个后面再做
+            showGachaResultPanel.SetActive(false);
+            return;
+        }
+        //展示某张卡在屏幕上
+        string id = currentResult[index];
+        string name = SD_RogueGachaThingCSVFile.Class_Dic[id].Describe;
+        int star = SD_RogueGachaThingCSVFile.Class_Dic[id]._RogueGachaItemStar();
+        string uiIconLink = SD_RogueGachaThingCSVFile.Class_Dic[id].ItemLink;
+        currentShowedGachaThing = Instantiate(aSingleCatcakeShowPrefab, showGachaResultPanel.transform);
+        Transform gachaThingUIShow = currentShowedGachaThing.transform.Find("CatcakeUISpace");
+        GameObject catcakeIcon = gachaThingUIShow.Find("CatcakeIcon").gameObject;
+        Transform gachaThingDescription = currentShowedGachaThing.transform.Find("UIDescriptionPart/DescriptionPanel");
+        gachaThingUIShow.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.Flash);
+        GameObject gachaThingImage = gachaThingDescription.Find("UIImage").gameObject;
+        Transform gachaThingName = gachaThingDescription.Find("Name");
+        Transform gachaThingStar = gachaThingDescription.Find("Stars");
+        gachaThingName.GetComponent<TMP_Text>().text = name;
+        for(int i = 0;i < star;i++)
+        {
+            gachaThingStar.GetChild(i).gameObject.SetActive(true);
+        }
+        
+        DOVirtual.DelayedCall(0.3f, () =>
+        {
+            gachaThingDescription.GetComponent<CanvasGroup>().DOFade(1, 0.2f);
+            gachaThingDescription.DOLocalMoveX(-420f, 0.2f).SetEase(Ease.InCirc);
+            couldDetectOtherInput = true;
+        });
+        
+        gachaThingImage.GetComponent<Image>().sprite = Addressables.LoadAssetAsync<Sprite>(uiIconLink).WaitForCompletion();
+        catcakeIcon.GetComponent<RawImage>().texture = gachaThingImage.GetComponent<Image>().sprite.texture;
+    }
+    
 }

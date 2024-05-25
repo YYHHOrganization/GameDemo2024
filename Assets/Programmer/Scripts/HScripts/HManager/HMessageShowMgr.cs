@@ -164,7 +164,17 @@ public class HMessageShowMgr : MonoBehaviour
                 go.parent.transform.DOScale(new Vector3(0.5f, 0.5f, 0.5f), 0.4f).From();
                 go.transform.GetComponent<CanvasGroup>().DOFade(1.0f, 1f);
                 break;
+            case "FadeInAndFadeOutWithSubling":
+                transform.SetAsLastSibling();
+                go.parent.transform.DOScale(new Vector3(0.5f, 0.5f, 0.5f), 0.4f).From();
+                go.transform.GetComponent<CanvasGroup>().DOFade(1.0f, 1f);
+                DOVirtual.DelayedCall(showTime, () =>
+                {
+                    transform.SetAsFirstSibling();
+                });
+                break;
         }
+        
     }
     
     
