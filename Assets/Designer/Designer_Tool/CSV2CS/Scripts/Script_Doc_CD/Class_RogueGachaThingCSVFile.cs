@@ -46,5 +46,10 @@ public class Class_RogueGachaThingCSVFile {
 		int value = int.Parse(IsChangzhuThing);
 		return value;
 	}
+	public string ItemLink { get; set; }    //是否为常驻池的物品（是：1）
+	  public string _ItemLink (){
+		string value = ItemLink;
+		return value;
+	}
 	}
 	
