@@ -61,6 +61,10 @@ public class YChooseCharacterPanel : BasePanel
             YPlayModeController.Instance.SetCharacter(curChooseCharacterIndex);
             
         });
+        
+        
+        
+        
         Debug.Log("角色数量"+yPlanningTable.Instance.GetCharacterNum());
         //循环遍历角色列表
         for (int i = 0; i < yPlanningTable.Instance.GetCharacterNum(); i++)
@@ -161,9 +165,11 @@ public class YChooseCharacterPanel : BasePanel
         //设置角色
         //yPlanningTable.Instance.SetCharacter(i);
         
-        
         //如果这个角色没解锁，就上锁shader，现在都默认上锁吧
-        YEffManager._Instance.SetLockedShaderOnOrOff(true, go.transform);
+        bool isUnLock = YCharacterInfoManager.GetCharacterUnLockStatusByID(index.ToString());
+        YEffManager._Instance.SetLockedShaderOnOrOff(!isUnLock, go.transform);
+        //如果此时选择的角色是锁定的，这个"BeginButton"就应该是不可点击的是灰色的
+        uiTool.GetOrAddComponentInChilden<Button>("BeginButton").interactable = isUnLock;
     }
     //退出面板
     public override void OnExit()
