@@ -314,15 +314,35 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
         {
             string name = SD_RogueGachaThingCSVFile.Class_Dic[res].Describe;
             int star = SD_RogueGachaThingCSVFile.Class_Dic[res]._RogueGachaItemStar();
+            string type = SD_RogueGachaThingCSVFile.Class_Dic[res].RogueGachaItemType;
+            string refId = SD_RogueGachaThingCSVFile.Class_Dic[res].RogueGachaItemFindID;
             if (star == 5)
             {
                 Debug.Log("yes!!");
             }
             Debug.Log(name + "  星级: " + star);
             Debug.Log("===============" + drawCounter5Star);
+            //todo:1.保存抽卡记录，写入一个文件当中，后面点击历史记录的时候会读取这个文件
+        
+            //todo:2,实时更新抽到的东西
+            UpdateInfoToSave(type, refId);
         }
         Debug.Log("====================================");
-        //保存抽卡记录，写入一个文件当中，后面点击历史记录的时候会读取这个文件
+        
+
+    }
+
+    private void UpdateInfoToSave(string type, string id)
+    {
+        switch (type)
+        {
+            case "ItemRogueCharacter":
+                YCharacterInfoManager.SetStatusByID(id, true);
+                break;
+            case "ItemRogueMaomaogao":
+
+                break;
+        }
     }
     
     private GameObject currentShowedGachaThing = null;

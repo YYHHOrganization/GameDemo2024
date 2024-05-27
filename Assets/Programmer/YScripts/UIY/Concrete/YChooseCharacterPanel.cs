@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using BehaviorDesigner.Runtime.Tasks.Unity.UnityGameObject;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
@@ -12,7 +14,9 @@ public class YChooseCharacterPanel : BasePanel
     public YChooseCharacterPanel() : base(new UIType(path)){}
     public GameObject YChooseCharacterShowPlace;
     public GameObject curCharacter;
+    private GameObject curCatcake;
     public int curChooseCharacterIndex=-1;
+    private int curChooseCatcakeIndex = -1;
 
     private bool isInteractMode = true;
 
@@ -62,7 +66,12 @@ public class YChooseCharacterPanel : BasePanel
             
         });
         
-        
+        //todo:后面有需求写一下换猫猫糕和加载拥有的猫猫糕的逻辑
+        // uiTool.GetOrAddComponentInChilden<Button>("ChooseCatcakeButton").onClick.AddListener(()=>
+        // {
+        //     //Push(new SelectCatcakeForRogueGamePanel());
+        //     
+        // });
         
         
         Debug.Log("角色数量"+yPlanningTable.Instance.GetCharacterNum());
@@ -78,6 +87,7 @@ public class YChooseCharacterPanel : BasePanel
             });
         }
         SetCharacter(2);
+        SetCatcake(0);
         
         inputField = uiTool.GetOrAddComponentInChilden<TMP_InputField>("InputField");
         inputField.onEndEdit.AddListener((string value) =>
@@ -139,6 +149,30 @@ public class YChooseCharacterPanel : BasePanel
         HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",isOn);
         HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",isOn);
     }
+
+    private void SetCatcake(int index)
+    {
+        if (index == curChooseCatcakeIndex)
+        {
+            return;
+        }
+
+        if (curCatcake != null)
+        {
+            GameObject.Destroy(curCatcake);
+        }
+        curChooseCatcakeIndex = index;
+        string catcakePrefabLink = "RogueGameCatcakeModel" + index;
+        //用Addressable来加载
+        GameObject go = Addressables.InstantiateAsync(catcakePrefabLink).WaitForCompletion();
+        go.transform.parent = YChooseCharacterShowPlace.transform;
+        go.transform.localPosition = Vector3.zero + new Vector3(-0.95f, 0, 0);
+        //旋转180度
+        go.transform.localEulerAngles = new Vector3(0, 50, 0);
+        curCatcake = go;
+        go.gameObject.GetComponentInChildren<Animator>().SetBool("isCatStrike", true);
+    }
+    
     public void SetCharacter(int index)
     {
         if(index==curChooseCharacterIndex)

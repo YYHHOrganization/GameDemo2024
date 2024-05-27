@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.PlayerLoop;
 
 //这个脚本用于处理角色在展示场景中的交互
@@ -101,15 +102,37 @@ public class HCharacterInteracionInShow : MonoBehaviour
 
     private void CheckPickCharacterUp()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            // foreach (RaycastResult result in results)
+            // {
+            //     Debug.Log("UI element hit: " + result.gameObject.name);
+            // }
+            if(results.Count > 0)
+            {
+                isPickedUp = false;
+                return;
+            }
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                isPickedUp = false;
+                return;
+            }
             isPickedUp = true;
         }
         else if (Input.GetMouseButtonUp(0))
         {
             isPickedUp = false;
         }
-
+        //Debug.Log("isPickedUp" + isPickedUp);
+        
         if (isPickedUp)
         {
             float x = Input.GetAxis("Mouse X");
