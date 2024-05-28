@@ -84,8 +84,8 @@ public class YEnemyBT : HRogueEnemyPatrolAI
         // DisintegrateDissolveVFX.SetActive(true);
         // DieExplosionEff.SetActive(true);
         
-        OnDie?.Invoke();
-        
+        // OnDie?.Invoke();
+        OnDie?.Invoke(gameObject);
     }
     
     private void OnTriggerEnter(Collider other)

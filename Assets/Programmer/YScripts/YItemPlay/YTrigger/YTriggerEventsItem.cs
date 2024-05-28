@@ -144,4 +144,5 @@ public class YTriggerEvents : MonoBehaviour
     {
         OnInterruptCombo?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
+    
 }

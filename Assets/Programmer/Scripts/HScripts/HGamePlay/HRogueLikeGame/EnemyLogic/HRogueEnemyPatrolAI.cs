@@ -79,8 +79,9 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     public Class_RogueEnemyCSVFile enemy;
 
-    public Action OnDie;
-
+    // public Action OnDie;
+    public Action<GameObject> OnDie;
+    
     protected int hitPlayerDamage = -1; // 碰到玩家的伤害
     
     public string curStateName;
@@ -336,8 +337,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             Destroy(this.gameObject, 1f);
         };
         
-        OnDie?.Invoke();
-        
+        // OnDie?.Invoke();
+        OnDie?.Invoke(gameObject);
     }
     
     //这里往后来写一些射击子弹的逻辑

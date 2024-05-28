@@ -8,13 +8,13 @@ public class HBulletMuzzleUtility : MonoBehaviour
 {
     // 这个脚本用来写各种各样的子弹类型，支持玩家和敌人的
     // 存储一下子弹的基本属性
-    private float bulletSpeed = 5f;
-    private int bulletDamage = 1;
-    private float bulletRange = 10f;
-    private bool isEnemy = true;
-    private string muzzleKind;
-    private GameObject bulletPrefab;
-    private Transform mTarget;
+    protected float bulletSpeed = 5f;
+    protected int bulletDamage = 1;
+    protected float bulletRange = 10f;
+    protected bool isEnemy = true;
+    protected string muzzleKind;
+    protected GameObject bulletPrefab;
+    protected Transform mTarget;
     private Class_RogueEnemyCSVFile enemy;
     
     public void SetInitializeAttribute(GameObject bulletPrefab, string muzzleKind, bool isEnemy, string curStateName, Class_RogueEnemyCSVFile enemy = null, Transform mTarget = null)
@@ -31,8 +31,10 @@ public class HBulletMuzzleUtility : MonoBehaviour
         else
         {
             // 玩家的子弹属性 , 这个后面参考一下玩家的Shoot脚本里写的函数
+            
         }
     }
+    
 
     public void SetSelfDefInitializeAttribute(GameObject bulletPrefab, string muzzleKind, bool isEnemy,
         float bulletDamage, float bulletRange, float bulletSpeed, Transform mTarget = null)
@@ -58,10 +60,10 @@ public class HBulletMuzzleUtility : MonoBehaviour
             bulletDamage = enemy._EnemyChaseDamage();
     }
 
-    private void EnemyShoot()
+    protected void EnemyShoot()
     {
         // 这里写敌人的射击逻辑，不同的Muzzle类型会有不同的逻辑
-        string[] muzzleKindParams = muzzleKind.Split(';');
+        string[] muzzleKindParams = muzzleKind.Split(';');  //shootCircle;10;true
         int bulletCnt = 1;
         bool chasePlayer = false;
         if (muzzleKindParams.Length >= 2)
@@ -95,7 +97,6 @@ public class HBulletMuzzleUtility : MonoBehaviour
             case "ShootBulletSpecialModal1":
                 StartCoroutine(ShootBulletSpecialModal1(bulletCnt));
                 break;
-                
         }
     }
     
@@ -185,7 +186,7 @@ public class HBulletMuzzleUtility : MonoBehaviour
         }
     }
     
-    private void ShootBulletMuzzleCircleBumping()
+    protected void ShootBulletMuzzleCircleBumping()
     {
         for (int i = 0; i < 360; i += 20)
         {
@@ -196,7 +197,7 @@ public class HBulletMuzzleUtility : MonoBehaviour
         }
     }
 
-    IEnumerator ShootBulletMuzzleCircleInterval()
+    protected IEnumerator ShootBulletMuzzleCircleInterval()
     {
         // 环形发射子弹，每过0.1f发射一颗
         for (int i = 0; i < 360; i += 15)
