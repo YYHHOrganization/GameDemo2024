@@ -93,10 +93,19 @@ public class YRouge_BossRoom : YRouge_RoomBase
         }
     }
     
-    private void OnEnemyDie()
+    // private void OnEnemyDie()
+    // {
+    //     dieEnemyCount++;
+    //     if (dieEnemyCount == enemies.Count)
+    //     {
+    //         RoomWin();
+    //     }
+    // }
+    private void OnEnemyDie(GameObject enemy)
     {
-        dieEnemyCount++;
-        if (dieEnemyCount == enemies.Count)
+        //将这个怪物从怪物列表中移除
+        enemies.Remove(enemy);
+        if (enemies.Count == 0)
         {
             RoomWin();
         }

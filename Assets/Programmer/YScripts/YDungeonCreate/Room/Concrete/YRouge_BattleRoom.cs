@@ -60,10 +60,19 @@ public class YRouge_BattleRoom : YRouge_RoomBase
         }
     }
     
-    private void OnEnemyDie()
+    // private void OnEnemyDie()
+    // {
+    //     dieEnemyCount++;
+    //     if (dieEnemyCount == enemies.Count)
+    //     {
+    //         RoomWin();
+    //     }
+    // }
+    private void OnEnemyDie(GameObject enemy)
     {
-        dieEnemyCount++;
-        if (dieEnemyCount == enemies.Count)
+        //将这个怪物从怪物列表中移除
+        enemies.Remove(enemy);
+        if (enemies.Count == 0)
         {
             RoomWin();
         }
@@ -71,6 +80,7 @@ public class YRouge_BattleRoom : YRouge_RoomBase
 
     private void RoomWin()
     {
+        //肉鸽 有怪物的房间中打败所有怪物之后
         //监听关闭?但是这个房间的怪都死了 怪都被销毁了
         
         SetAllDoorsDown();//门打开

@@ -34,7 +34,9 @@ public class YPatrolAI : MonoBehaviour
     
     public GameObject DieExplosionEff;
     
-    public Action OnDie;
+    // public Action OnDie;
+    public Action<GameObject> OnDie;
+    
     private void Awake()
     {
         InitStateMachine();
@@ -80,7 +82,8 @@ public class YPatrolAI : MonoBehaviour
     {
         if(isDead)return;
         isDead = true;
-        OnDie?.Invoke();
+        // OnDie?.Invoke();
+        OnDie?.Invoke(gameObject);
         Destroy(gameObject, 5f);
     }
 }

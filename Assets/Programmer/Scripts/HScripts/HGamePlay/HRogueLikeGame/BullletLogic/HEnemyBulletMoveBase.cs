@@ -10,7 +10,7 @@ public class HEnemyBulletMoveBase : MonoBehaviour
     public float bulletRange = 10f;
     protected Vector3 originPos;
     public GameObject hitPrefab;
-
+    [SerializeField]private bool isFriendSide = false;
     private bool bulletMoving = true;
     public bool BulletMoving
     {
@@ -100,9 +100,28 @@ public class HEnemyBulletMoveBase : MonoBehaviour
             {
                 fractureExplosionObject.TriggerExplosion(contact.point);
             }
-            
         }
-        else if(Tag == "Player")  //子弹打到了Player，给Player传递伤害
+        else if (isFriendSide && Tag == "Enemy") //子弹打到了敌人，给敌人传递伤害
+        {
+            //hitObject.GetComponent<YHandleHitPuppet>().HandleHitPuppet();
+            YPatrolAI patrolAI = co.gameObject.GetComponentInParent<YPatrolAI>();
+            if (patrolAI != null)
+            {
+                patrolAI.die();
+                return;//这里不需要传递伤害，因为敌人已经死了，特指蜘蛛怪
+                //todo:写一个伤害的函数
+            }
+            HRogueEnemyPatrolAI enemyPatrolAI = co.gameObject.GetComponentInParent<HRogueEnemyPatrolAI>();
+            if (enemyPatrolAI == null)
+            {
+                enemyPatrolAI = co.gameObject.GetComponent<HRogueEnemyPatrolAI>();
+            }
+            if (enemyPatrolAI != null)
+            {
+                enemyPatrolAI.ChangeHealth(-bulletDamage);
+            }
+        }
+        else if(!isFriendSide && Tag == "Player")  //子弹打到了Player，给Player传递伤害
         {
             //bulletDamage 是伤害，要把伤害传递给角色
             HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(-bulletDamage);
