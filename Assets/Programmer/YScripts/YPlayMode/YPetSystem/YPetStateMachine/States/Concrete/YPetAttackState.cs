@@ -17,7 +17,7 @@ public class YPetAttackState : YPetBaseState
 
     public override Type Tick()
     {
-        return null;//test
+        //return null;//test
         //如果距离角色远 或者 没有敌人，都会就切换到攻击状态
         if (!mPatrolAI.IsCloseEnoughToCharacter() || !mPatrolAI.CheckEnemyCount())
         {

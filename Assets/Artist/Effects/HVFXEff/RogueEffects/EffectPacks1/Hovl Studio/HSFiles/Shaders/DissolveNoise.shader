@@ -33,9 +33,7 @@ Shader "Hovl/Particles/DissolveNoise"
 			Pass {
 			
 				CGPROGRAM
-				#ifndef UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX
-				#define UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input)
-				#endif
+				
 				#pragma vertex vert
 				#pragma fragment frag
 				#pragma target 2.0
@@ -118,9 +116,6 @@ Shader "Hovl/Particles/DissolveNoise"
 
 				fixed4 frag ( v2f i  ) : SV_Target
 				{
-					UNITY_SETUP_INSTANCE_ID( i );
-					UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( i );
-				
 					float lp = 1;
 					#ifdef SOFTPARTICLES_ON
 						float sceneZ = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos)));

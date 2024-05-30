@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -10,6 +11,15 @@ public class YXingPet :YPetBase
     protected override void Start()
     {
         base.Start();
+    }
+    protected override void InitStateMachine()
+    {
+        var states = new Dictionary<Type, YPetBaseState>
+        {
+            { typeof(YPetFollowState), new YPetFollowState(this) },
+            { typeof(YPetChaseEnemyState), new YPetChaseEnemyState(this) },
+        };
+        GetComponent<YPetStateMachine>().SetStates(states);
     }
     
     // public override void MuzzleShoot()
