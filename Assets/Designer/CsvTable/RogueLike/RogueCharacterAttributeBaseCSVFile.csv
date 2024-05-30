@@ -1,7 +1,7 @@
 ﻿角色ID,角色英文名称,角色中文名称,角色基本介绍,移动速度,射速,射程,子弹伤害,子弹速度,基础血量,基础护盾值,基础武器类型,初始星琼数,初始信用点数,角色头像Link,角色基础血量上限
 RogueCharacterID,RogueCharacterName,RogueCharacterChineseName,RogueCharacterDiscription,RogueMoveSpeed,RogueShootRate,RogueShootRange,RogueBulletDamage,RogueBulletSpeed,RogueCharacterHealth,RogueCharacterShield,RogueCharacterBaseWeapon,RogueStartXingqiong,RogueStartXinyongdian,RogueCharacterIconLink,RogueCharacterHealthUpbound
 顺序和CharacterAttributeBase表保持一致,,,,指的是跑起来的速度,射速为2表示一秒2颗子弹，依此类推,,,子弹飞行的速度,每半颗心是1血量值,每半个盾为1点,枚举值类型,int型即可,int型即可,已经使用Addressable,基础血量上限值
-0,qiyu,???,???,13,15,20,40,40,24,24,ShootFromMuzzle,0,1600,qiyuUIIcon,6
+0,qiyu,???,???,13,15,20,40,40,24,24,ShootFromMuzzle,0,1600,qiyuUIIcon,24
 1,xina,████IX███,虚无,15,15,20,40,40,24,24,ShootFromMuzzle,200000,200000,xinaUIIcon,24
 2,aventurine,砂金,星际和平公司高级干部，很有钱，初始自带10000信用点和四点护盾值。,6,2,10,1,10,6,4,ShootFromMuzzle,0,10000,shajinUIIcon,6
 3,pamu,帕姆,星穹列车的吉祥物，初始提供1600星琼，相当于一个十连抽。,6,2,10,1,10,6,0,ShootFromMuzzle,1600,0,pamuUIIcon,6
@@ -12,5 +12,5 @@ RogueCharacterID,RogueCharacterName,RogueCharacterChineseName,RogueCharacterDisc
 8,jingyuan,景元,来自神策府的景元将军，子弹伤害值很高，但射程较短。,5,2,5,3,10,6,0,ShootFromMuzzle,0,0,jingyuanUIIcon,6
 9,yinyue,饮月,"星穹列车的一员，初始自带""水龙之龙脉""武器。(还没做完)",5,2,2,1,10,6,0,ShootLaserFromMuzzle,0,0,yinyueUIIcon,6
 10,Sunday,星期日,"匹诺康尼橡木家系的家主，所有属性都很均衡，凸显""同谐""的力量。",5,5,5,5,5,5,5,ShootFromMuzzle,5,5,xingqiriUIIcon,6
-11,Childe,达达利亚,愚人众执行官公子达达利亚,8,5,10,5,5,4,6,ShootFromMuzzle,5,5,ChildeUIIcon,6
+11,Childe,达达利亚,愚人众执行官公子达达利亚,13,15,10,5,20,24,24,ShootFromMuzzle,200000,200000,ChildeUIIcon,24
 12,Lumine,荧,主角,6,5,12,5,5,8,4,ShootFromMuzzle,5,5,LumineUIIcon,8

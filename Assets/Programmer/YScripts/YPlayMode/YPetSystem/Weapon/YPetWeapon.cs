@@ -7,7 +7,7 @@ using UnityEngine;
 public class YPetWeapon : MonoBehaviour
 {
     public BoxCollider boxCollider;
-    [SerializeField]int bulletDamage = 10;
+    [SerializeField]int bulletDamage = 1;
     private void Start()
     {
         boxCollider = GetComponent<BoxCollider>();

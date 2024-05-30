@@ -176,7 +176,7 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
         {
             petWeapon.SetDetectShootOn();
         });
-        DOVirtual.DelayedCall(DelayDuration+HuiWuDuration+0.2f,()=>
+        DOVirtual.DelayedCall(DelayDuration+HuiWuDuration,()=>
         {
             petWeapon.SetDetectShootOff();
         });
