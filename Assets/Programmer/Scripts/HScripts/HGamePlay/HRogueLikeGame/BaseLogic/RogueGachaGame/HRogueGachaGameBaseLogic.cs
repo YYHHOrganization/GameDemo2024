@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.InputSystem.HID;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -37,8 +39,20 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
 
     public GameObject gachaFiveStarUpPanel;
     public Transform Gacha4ItemLocation;
+
+    public Button showHistoryButton;
+    public Transform gachaContentTrans;
+    public GameObject gachaHistoryPanel;
+    public Button closeGachaHistoryButton;
+    public Button gachaHistoryNextPageButton;
+    public Button gachaHistoryPrePageButton;
+    public TMP_Text gachaHistoryPageText;
     # endregion
 
+    private int maxGachaHistoryPage = 0;
+    string gachaSaveXmlPath = Application.dataPath + "/Designer/XMLTable/gachaHistory.xml";
+    //加载抽卡的xml文件
+    XmlDocument xmlDoc = new XmlDocument();
 
     private bool CouldGachaOrNot(int number)
     {
@@ -83,6 +97,97 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
             UseXingqiongForGacha(10);
             DrawCard(10);
         });
+        
+        showHistoryButton.onClick.AddListener(() =>
+        {
+            currentPage = 0;
+            ShowGachaHistory();
+        });
+        
+        closeGachaHistoryButton.onClick.AddListener(() =>
+        {
+            gachaHistoryPanel.gameObject.SetActive(false);
+        });
+        
+        gachaHistoryNextPageButton.onClick.AddListener(() =>
+        {
+            if(currentPage >= maxGachaHistoryPage)
+            {
+                return;
+            }
+            currentPage++;
+            ShowGachaHistory();
+        });
+        
+        gachaHistoryPrePageButton.onClick.AddListener(() =>
+        {
+            if(currentPage <= 0)
+            {
+                return;
+            }
+            currentPage--;
+            ShowGachaHistory();
+        });
+    }
+
+    private int currentPage = 0;
+    private void ShowGachaHistory()
+    {
+        gachaHistoryPanel.gameObject.SetActive(true);
+        gachaHistoryPageText.text = (currentPage + 1).ToString();
+        //加载抽卡记录
+        xmlDoc.Load(gachaSaveXmlPath);
+        List<string> names = new List<string>();
+        List<string> stars = new List<string>();
+        List<string> timeStrs = new List<string>();
+        
+        // 获取根节点
+        XmlElement root = xmlDoc.DocumentElement;
+        XmlNode historyNode = root.SelectSingleNode("GachaHistoryInfo");
+        if (historyNode != null)
+        {
+            XmlNodeList levelsNode = historyNode.SelectNodes("GachaResultNode");
+            //Sort by time
+            if (levelsNode.Count != 0)
+            {
+                maxGachaHistoryPage = levelsNode.Count / 10;
+                //取currentPage页的数据，一页显示10个
+                for (int i = currentPage * 10; i < levelsNode.Count && i < (currentPage + 1) * 10; i++)
+                {
+                    names.Add(levelsNode[i].Attributes["name"].Value);
+                    stars.Add(levelsNode[i].Attributes["star"].Value);
+                    timeStrs.Add(levelsNode[i].Attributes["timeStr"].Value);
+                }
+            }
+        }
+        //ShowGachaHistoryInUI
+        ShowGachaHistoryInUI(names, stars, timeStrs);
+    }
+
+    private void ShowGachaHistoryInUI(List<string> names, List<string> stars, List<string> timeStrs)
+    {
+        for(int i=1;i<gachaContentTrans.childCount;i++)
+        {
+            if(i > names.Count)  //没有数据了
+            {
+                break;
+            }
+            gachaContentTrans.GetChild(i).Find("ItemType").gameObject.GetComponent<TMP_Text>().text = stars[i - 1];
+            if (stars[i - 1] == "4星")
+            {
+                gachaContentTrans.GetChild(i).Find("ItemName").gameObject.GetComponent<TMP_Text>().color = new Color(1, 0.251f, 0.847f, 0.4196f);
+            }
+            else if (stars[i - 1] == "5星")
+            {
+                gachaContentTrans.GetChild(i).Find("ItemName").gameObject.GetComponent<TMP_Text>().color = new Color(1,0.741f,0.251f,0.1196f);
+            }
+            else
+            {
+                gachaContentTrans.GetChild(i).Find("ItemName").gameObject.GetComponent<TMP_Text>().color = Color.black;
+            }
+            gachaContentTrans.GetChild(i).Find("ItemName").gameObject.GetComponent<TMP_Text>().text = names[i - 1];
+            gachaContentTrans.GetChild(i).Find("GachaTime").gameObject.GetComponent<TMP_Text>().text = timeStrs[i - 1];
+        }
     }
     
     private void ReadGachaBaseInfo()
@@ -131,6 +236,26 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
             }
         }
     }
+
+    private void LoadGachaXmlFileBaseInfo()
+    {
+        xmlDoc.Load(gachaSaveXmlPath);
+        // 获取根节点
+        XmlElement root = xmlDoc.DocumentElement;
+        // 解析所有的保底情况
+        XmlNode baseInfoNode = root.SelectSingleNode("GachaBaseInfo");
+        if (baseInfoNode != null)
+        {
+            XmlNodeList levelsNode = baseInfoNode.SelectNodes("GachaBaseInfoNode");
+            if (levelsNode.Count != 0 && levelsNode[0]!=null) //还没有抽卡记录，就创建一个新的节点
+            {
+                drawCounter5Star = int.Parse(levelsNode[0].Attributes["drawCounter5Star"].Value);
+                drawCounter4Star = int.Parse(levelsNode[0].Attributes["drawCounter4Star"].Value);
+                isLast5StarCharacterUp = bool.Parse(levelsNode[0].Attributes["isLast5StarCharacterUp"].Value);
+                isLast4StarUp = bool.Parse(levelsNode[0].Attributes["isLast4StarUp"].Value);
+            }
+        }
+    }
     
     private void UpdateUIInGachaPanel()
     {
@@ -150,6 +275,7 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
     private void Start()
     {
         ReadGachaBaseInfo();
+        LoadGachaXmlFileBaseInfo();
         UpdateUIInGachaPanel();
         AddUIListeners();
     }
@@ -306,30 +432,90 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
         currentShowResultIndex++;
     }
 
+    private void SaveBaseDataToXmlFile()
+    {
+        //把已经抽了的抽数保存到Xml文件当中
+        XmlElement root = xmlDoc.DocumentElement;
+        // 创建新的character节点
+        XmlNode historyNode = root.SelectSingleNode("GachaBaseInfo");
+        if (historyNode != null)
+        {
+            XmlNodeList levelsNode = historyNode.SelectNodes("GachaBaseInfoNode");
+            if (levelsNode.Count == 0) //还没有抽卡记录，就创建一个新的节点
+            {
+                XmlElement newGachaBaseNode = xmlDoc.CreateElement("GachaBaseInfoNode");
+                newGachaBaseNode.SetAttribute("drawCounter5Star", drawCounter5Star.ToString());
+                newGachaBaseNode.SetAttribute("drawCounter4Star", drawCounter4Star.ToString());
+                newGachaBaseNode.SetAttribute("isLast5StarCharacterUp", isLast5StarCharacterUp.ToString());
+                newGachaBaseNode.SetAttribute("isLast4StarUp", isLast4StarUp.ToString());
+        
+                // 将新创建的节点添加到levelsNode节点中
+                if (historyNode!=null)
+                {
+                    historyNode.AppendChild(newGachaBaseNode);
+                }
+            }
+            else
+            {
+                //对这些数值进行更新
+                foreach (XmlElement xe in levelsNode) 
+                {
+                    xe.SetAttribute("drawCounter5Star", drawCounter5Star.ToString());
+                    xe.SetAttribute("drawCounter4Star", drawCounter4Star.ToString());
+                    xe.SetAttribute("isLast5StarCharacterUp", isLast5StarCharacterUp.ToString());
+                    xe.SetAttribute("isLast4StarUp", isLast4StarUp.ToString());
+                }
+            }
+        }
+        xmlDoc.Save(gachaSaveXmlPath);
+    }
+
     private void DebugGachaResultAndSave(List<string> result)
     {
+        SaveBaseDataToXmlFile();
         //输出抽卡结果
         Debug.Log("====================================");
+        XmlElement root = xmlDoc.DocumentElement;
         foreach (var res in result)
         {
             string name = SD_RogueGachaThingCSVFile.Class_Dic[res].Describe;
             int star = SD_RogueGachaThingCSVFile.Class_Dic[res]._RogueGachaItemStar();
             string type = SD_RogueGachaThingCSVFile.Class_Dic[res].RogueGachaItemType;
             string refId = SD_RogueGachaThingCSVFile.Class_Dic[res].RogueGachaItemFindID;
-            if (star == 5)
-            {
-                Debug.Log("yes!!");
-            }
-            Debug.Log(name + "  星级: " + star);
-            Debug.Log("===============" + drawCounter5Star);
-            //todo:1.保存抽卡记录，写入一个文件当中，后面点击历史记录的时候会读取这个文件
-        
-            //todo:2,实时更新抽到的东西
+            // if (star == 5)
+            // {
+            //     Debug.Log("yes!!");
+            // }
+            // Debug.Log(name + "  星级: " + star);
+            // Debug.Log("===============" + drawCounter5Star);
+            //1.保存抽卡记录，写入一个文件当中，后面点击历史记录的时候会读取这个文件
+            DateTime now = DateTime.Now; // 获取当前时间
+            string timeStr = now.ToString("yyyy-MM-dd HH:mm:ss"); // 转为"年-月-日 时:分:秒"的格式
+            WriteGachaResultToXMLFile(root, res, name, star, timeStr);
+            //2,实时更新抽到的东西
             UpdateInfoToSave(type, refId);
         }
         Debug.Log("====================================");
-        
+        xmlDoc.Save(gachaSaveXmlPath);
+    }
 
+    private void WriteGachaResultToXMLFile(XmlElement root, string id, string name, int star,string timeStr)
+    {
+        // 创建新的character节点
+        XmlNode historyNode = root.SelectSingleNode("GachaHistoryInfo");
+        XmlElement newGachaResNode = xmlDoc.CreateElement("GachaResultNode");
+        // 设置新的character节点的属性
+        newGachaResNode.SetAttribute("id", id);
+        newGachaResNode.SetAttribute("name", name);
+        newGachaResNode.SetAttribute("star", star.ToString() + "星");
+        newGachaResNode.SetAttribute("timeStr", timeStr);
+        // 将新创建的节点添加到levelsNode节点中
+        if (historyNode!=null)
+        {
+            //historyNode.AppendChild(newGachaResNode);
+            //写入到最上面
+            historyNode.InsertBefore(newGachaResNode, historyNode.FirstChild);
+        }
     }
 
     private void UpdateInfoToSave(string type, string id)

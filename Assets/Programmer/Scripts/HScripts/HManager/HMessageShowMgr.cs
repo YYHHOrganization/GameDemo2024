@@ -166,8 +166,8 @@ public class HMessageShowMgr : MonoBehaviour
                 break;
             case "FadeInAndFadeOutWithSubling":
                 transform.SetAsLastSibling();
-                go.parent.transform.DOScale(new Vector3(0.5f, 0.5f, 0.5f), 0.4f).From();
-                go.transform.GetComponent<CanvasGroup>().DOFade(1.0f, 1f);
+                go.transform.GetComponent<CanvasGroup>().DOFade(1.0f, showTime/4.0f);
+                go.transform.GetComponent<CanvasGroup>().DOFade(0.0f, showTime/4.0f).SetDelay(showTime/2.0f);
                 DOVirtual.DelayedCall(showTime, () =>
                 {
                     transform.SetAsFirstSibling();
