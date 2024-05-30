@@ -1,12 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using Sequence = DG.Tweening.Sequence;
 
 public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
 {
     private Class_RoguePetCSVFile pet;
     private string petID;
+
+    private GameObject AttackEff;
+
+    private Transform AttackEffTrans;
     //构造函数：
     public YFriendBulletMuzzleUtility(string petID)
     {
@@ -17,13 +24,21 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
     {
         
     }
-    public void SetInitializeAttribute(GameObject bulletPrefab, string muzzleKind, string curStateName, Class_RoguePetCSVFile roguePetCsvFile, Transform mTarget = null)
+    public void SetInitializeAttribute(GameObject bulletPrefab, 
+        string muzzleKind, 
+        string curStateName, 
+        Class_RoguePetCSVFile roguePetCsvFile, 
+        Transform mTarget = null,
+        GameObject AttackEff=null,
+        Transform AttackEffTrans=null)
     {
         this.isEnemy = isEnemy;
         this.muzzleKind = muzzleKind;
         this.bulletPrefab = bulletPrefab;
         this.mTarget = mTarget;
         this.pet = roguePetCsvFile;
+        this.AttackEff = this.AttackEff;
+        this.AttackEffTrans = AttackEffTrans;
         SetBulletBaseAttribute(pet, curStateName);
     }
     private void SetBulletBaseAttribute(Class_RoguePetCSVFile enemy, string curStateName)
@@ -40,6 +55,8 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
     }
 
     private GameObject weapon;
+    private YPetWeapon petWeapon;
+    
     private bool isMelee;
     void InitMeleeWeapon()
     {
@@ -54,20 +71,29 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
     Coroutine shootCoroutine;
     public void ShootSpecialBullet()
     {
-        if(isMelee) weapon.SetActive(true);
+        if (isMelee)
+        {
+            weapon.SetActive(true);
+            if(petWeapon==null)petWeapon = weapon.GetComponent<YPetWeapon>();
+        }
         duringShoot = true;
         shootCoroutine=StartCoroutine(ShootSpecialBulletWithMuzzle());
     }
 
     public void ShootOff()
     {
-        if(isMelee) weapon.SetActive(false);
+        if (isMelee)
+        {
+            weapon.SetActive(false);
+        }
         
         duringShoot = false;
         if (shootCoroutine != null)
         {
             StopCoroutine(shootCoroutine);
         }
+        
+        if(AttackEff!=null)AttackEff.SetActive(false);
     }
     public IEnumerator ShootSpecialBulletWithMuzzle()
     {
@@ -119,17 +145,69 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
         // 创建一条路径，使其从斜上方挥到斜下方并带有弧线效果
         // 通过定义沿着弧线旋转的路径来实现球棒挥舞的效果
 
-        Vector3 startAngle = new Vector3(-23, 0, -6);  // 球棒起始的旋转角度, 可以根据需要调整
-        Vector3 middleAngle = new Vector3(67 ,45, 85); // 球棒中间的旋转角度, 像挥棒的中段
-        Vector3 endAngle = new Vector3(-23, 0, -6);   // 球棒结束的旋转角度, 可以根据需要调整
+        //-60,0,0 -85,0,0
+        // Vector3 startAngle = new Vector3(-23, 0, -6);  // 球棒起始的旋转角度, 可以根据需要调整
+        // Vector3 middleAngle = new Vector3(67 ,45, 85); // 球棒中间的旋转角度, 像挥棒的中段
+        // Vector3 endAngle = new Vector3(-23, 0, -6);   // 球棒结束的旋转角度, 可以根据需要调整
+        Vector3 startAngle = new Vector3(-60,0,0);  // 球棒起始的旋转角度, 可以根据需要调整
+        Vector3 middle1Angle = new Vector3(-85,0,0); // 球棒中间的旋转角度, 像挥棒的中段
+        Vector3 middleAngle = new Vector3(85,0,0); // 球棒中间的旋转角度, 像挥棒的中段
+        Vector3 endAngle = new Vector3(-60,0,0);   // 球棒结束的旋转角度, 可以根据需要调整
         
         Sequence swingSequence = DOTween.Sequence();
-
-       
+        
+        //Delay时间
+        float DelayDuration =  1f;
+        //挥舞时间
+        float HuiWuDuration = 0.2f;
+        //恢复时间
+        float RecoverDuration = 2f;
         swingSequence.Append(weapon.transform.DOLocalRotate(startAngle, 0f));
-        swingSequence.Append(weapon.transform.DOLocalRotate(middleAngle, 0.2f).SetEase(Ease.OutQuad)); 
-        swingSequence.Append(weapon.transform.DOLocalRotate(endAngle, 0.4f).SetEase(Ease.InQuad)); 
+        swingSequence.Append(weapon.transform.DOLocalRotate(middle1Angle, DelayDuration));
+        swingSequence.Append(weapon.transform.DOLocalRotate(middleAngle, HuiWuDuration).SetEase(Ease.OutQuad)); 
+        swingSequence.Append(weapon.transform.DOLocalRotate(endAngle, RecoverDuration).SetEase(Ease.InQuad)); 
         // 你可以根据需要调整时间 (0.5秒) 和缓动类型 (Ease.OutQuad 和 Ease.InQuad)
+        
+        //开启检测应该是在DelayDuration+HuiWuDuration-0.5f左右
+        //停止检测应该是在DelayDuration+HuiWuDuration左右
+        
+        //petWeapon.SetDetectShootOn();
+        DOVirtual.DelayedCall(DelayDuration,()=>//DelayDuration+HuiWuDuration-0.5f,()=>
+        {
+            petWeapon.SetDetectShootOn();
+        });
+        DOVirtual.DelayedCall(DelayDuration+HuiWuDuration,()=>
+        {
+            petWeapon.SetDetectShootOff();
+        });
+        
+        //生成特效
+        // if (AttackEff != null)
+        // {
+        //     AttackEff.SetActive(true);
+        //     DOVirtual.DelayedCall(DelayDuration+HuiWuDuration+RecoverDuration,()=>
+        //     {
+        //         AttackEff.SetActive(false);
+        //     });
+        // }
+        //
+
+        if (pet.AttackEff != "null")
+        {
+            GameObject effPrefab = Addressables.LoadAssetAsync<GameObject>(pet.AttackEff).WaitForCompletion();
+            
+            GameObject effIns = Instantiate(effPrefab,AttackEffTrans.position, AttackEffTrans.rotation);    
+            effIns.transform.parent = AttackEffTrans;
+            //GameObject effIns = Instantiate(effPrefab, AttackEff.transform.position, AttackEff.transform.rotation);
+            // effPrefab.transform.position = AttackEff.transform.position;
+            // effPrefab.transform.rotation = AttackEff.transform.rotation; 
+            // effPrefab.SetActive(true);
+            DOVirtual.DelayedCall(DelayDuration+HuiWuDuration+RecoverDuration+3,()=>
+            {
+                Destroy(effIns);
+                swingSequence.Kill();
+            });
+        }
     }
 
     protected void ShootBulletMuzzleCircleBumping(int bulletCnt)

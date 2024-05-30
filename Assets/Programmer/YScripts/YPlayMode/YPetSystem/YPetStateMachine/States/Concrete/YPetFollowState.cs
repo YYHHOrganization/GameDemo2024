@@ -23,7 +23,7 @@ public class YPetFollowState : YPetBaseState
     {
         //test
         //等待1s后切换到攻击状态
-        return typeof(YPetAttackState);
+        //return typeof(YPetAttackState);
         
         // if (mPatrolAI.isDead)
         //     return null;
@@ -32,10 +32,27 @@ public class YPetFollowState : YPetBaseState
         mPatrolAI.mNavMeshAgent.destination = mPatrolAI.curCharacterTrans.position;
         
         //如果距离角色足够近且有敌人，那么就切换到攻击状态
-        if(mPatrolAI.IsCloseEnoughToCharacter() &&mPatrolAI.CheckEnemyCount())
+        if(mPatrolAI.attackType == PetAttackType.MeleeAttack)
         {
-            return typeof(YPetAttackState);
+            //近战的话得追到怪物身边再打，或者边追边打？ //如果距离角色足够近且有敌人，那么就切换到攻击状态
+            GameObject enemy = mPatrolAI.CheckAndGetEnemy();
+            if(enemy!=null)
+            {
+                mPatrolAI.ChaseTarget = enemy.transform;
+                // //mPatrolAI.mNavMeshAgent.destination = enemy.transform.position;
+                // mPatrolAI.mNavMeshAgent.SetDestination(enemy.transform.position);
+                return typeof(YPetChaseEnemyState);
+            }
         }
+        //远战 直接攻击（射击子弹就好）
+        else
+        {
+            if(mPatrolAI.IsCloseEnoughToCharacter() &&mPatrolAI.CheckEnemyCount())
+            {
+                return typeof(YPetAttackState);
+            }
+        }
+       
         
         return null;
     }

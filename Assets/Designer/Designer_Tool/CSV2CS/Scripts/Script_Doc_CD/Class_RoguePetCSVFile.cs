@@ -36,6 +36,11 @@ public class Class_RoguePetCSVFile {
 		string value = WanderBulletLink;
 		return value;
 	}
+	public string AttackEff { get; set; }    //宠物攻击effLink
+	  public string _AttackEff (){
+		string value = AttackEff;
+		return value;
+	}
 	public string WanderPlayerSensitivePlayerDis { get; set; }    //敌人巡逻玩家敏感距离
 	  public float _WanderPlayerSensitivePlayerDis (){
 		float value = float.Parse(WanderPlayerSensitivePlayerDis);
@@ -52,8 +57,8 @@ public class Class_RoguePetCSVFile {
 		return value;
 	}
 	public string ChaseType { get; set; }    //敌人追击类型
-	  public string _ChaseType (){
-		string value = ChaseType;
+	  public float _ChaseType (){
+		float value = float.Parse(ChaseType);
 		return value;
 	}
 	public string ChaseShootFunc { get; set; }    //敌人射击子弹的函数(没有填Normal)
@@ -62,18 +67,18 @@ public class Class_RoguePetCSVFile {
 		return value;
 	}
 	public string ChaseShootInterval { get; set; }    //敌人追击时的射击间隔
-	  public float _ChaseShootInterval (){
-		float value = float.Parse(ChaseShootInterval);
+	  public string _ChaseShootInterval (){
+		string value = ChaseShootInterval;
 		return value;
 	}
 	public string ChaseBulletPrefab { get; set; }    //敌人追击时射击子弹PrefabLink
-	  public string _ChaseBulletPrefab (){
-		string value = ChaseBulletPrefab;
+	  public float _ChaseBulletPrefab (){
+		float value = float.Parse(ChaseBulletPrefab);
 		return value;
 	}
 	public string StartHealth { get; set; }    //敌人初始生命值
-	public int _StartHealth (){
-		int value = int.Parse(StartHealth);
+	  public string _StartHealth (){
+		string value = StartHealth;
 		return value;
 	}
 	public string WanderDamage { get; set; }    //敌人巡逻时伤害
@@ -92,20 +97,24 @@ public class Class_RoguePetCSVFile {
 		return value;
 	}
 	public string ReturnWanderTime { get; set; }    //追不到返回Wander的时间
-	  public float _ReturnWanderTime (){
-		float value = float.Parse(ReturnWanderTime);
+	public int _ReturnWanderTime (){
+		int value = int.Parse(ReturnWanderTime);
 		return value;
 	}
 	public string BeHurtThenToChase { get; set; }    //是否受击进入Chase状态
-	public int _BeHurtThenToChase (){
-		int value = int.Parse(BeHurtThenToChase);
+	  public float _BeHurtThenToChase (){
+		float value = float.Parse(BeHurtThenToChase);
 		return value;
 	}
 	public string BulletAttribute { get; set; }    //子弹速度;射程
-	  public string _BulletAttribute (){
-		string value = BulletAttribute;
+	public int _BulletAttribute (){
+		int value = int.Parse(BulletAttribute);
 		return value;
 	}
 	public string Level { get; set; }    //敌人难度等级（10表示最高）
+	  public string _Level (){
+		string value = Level;
+		return value;
+	}
 	}
 	

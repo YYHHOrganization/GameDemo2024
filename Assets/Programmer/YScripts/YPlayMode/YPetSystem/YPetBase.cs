@@ -11,6 +11,7 @@ public abstract class YPetBase : MonoBehaviour
     public float followSpeed;
     public NavMeshAgent mNavMeshAgent;
     public Transform curCharacterTrans;
+    public Transform ChaseTarget;//追逐的 ，目前应该是只用作enemy
     public Animator animator;
     
     public YPetStateMachine mPetStateMachine => GetComponent<YPetStateMachine>();
@@ -19,6 +20,9 @@ public abstract class YPetBase : MonoBehaviour
     public bool shouldCheckEnemyCount;//如果进入了战斗或者boss房，需要check敌人数量，敌人都死了就不需要了
     public PetAttackType attackType;
     private string attackType1;
+
+    [SerializeField]GameObject AttackEff;
+    [SerializeField]Transform AttackEffTrans;
     protected virtual void Start()
     {
         animator = gameObject.GetComponentInChildren<Animator>();
@@ -54,15 +58,16 @@ public abstract class YPetBase : MonoBehaviour
         muzzleObj.transform.parent = transform;
         Debug.Log("muzzleObj.transform.parent = transform;"+transform);
         
-        
-        
         muzzleUtility = muzzleObj.AddComponent<YFriendBulletMuzzleUtility>();
         muzzleUtility.SetInitializeAttribute(
             bulletPrefab,
             pet.ChaseShootFunc,
             attackType1, 
             pet, 
-            null);
+            null,
+            AttackEff,
+            AttackEffTrans
+            );
             //chaseBulletPrefab, enemy.RogueEnemyChaseShootFunc, true, curStateName, enemy, mTarget);
     }
     public virtual void MuzzleShoot()
@@ -86,7 +91,7 @@ public abstract class YPetBase : MonoBehaviour
         
     }
 
-    private void InitStateMachine()
+    protected virtual void InitStateMachine()
     {
         var states = new Dictionary<Type, YPetBaseState>
         {
@@ -112,6 +117,27 @@ public abstract class YPetBase : MonoBehaviour
             return false;
         }
         return true;
+    }
+    
+    //如果有敌人，那么就返回随机一个敌人
+    public GameObject CheckAndGetEnemy()
+    {
+        if (shouldCheckEnemyCount == false)
+        {
+            return null;
+        }
+        List<GameObject> enemies =
+            YRogue_RoomAndItemManager.Instance.currentRoom.GetComponent<YRouge_RoomBase>().Enemies;
+        if (enemies == null || enemies.Count == 0)
+        {
+            shouldCheckEnemyCount = false;
+            return null;
+        }
+        else
+        {
+            return enemies[UnityEngine.Random.Range(0, enemies.Count)];
+        }
+        return null;
     }
     
     //返回是否距离角色足够近

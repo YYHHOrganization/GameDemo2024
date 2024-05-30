@@ -1,6 +1,6 @@
-﻿宠物id,宠物编号,敌人中文名,addressable链接,宠物攻击类型,敌人巡逻速度,敌人巡逻子弹Prefab的Link,敌人巡逻玩家敏感距离,敌人巡逻射击子弹间隔（不射击的填-1）,追击玩家的最大速度,敌人追击类型,敌人射击子弹的函数(没有填Normal),敌人追击时的射击间隔,敌人追击时射击子弹PrefabLink,敌人初始生命值,敌人巡逻时伤害,敌人追击时伤害,是否追不到敌人就返回Wander,追不到返回Wander的时间,是否受击进入Chase状态,子弹速度;射程,敌人难度等级（10表示最高）
-petID,PetNum,ChineseName,addressableLink,AttackType,WanderSpeed,WanderBulletLink,WanderPlayerSensitivePlayerDis,WanderShootInterval,ChaseMaxSpeed,ChaseType,ChaseShootFunc,ChaseShootInterval,ChaseBulletPrefab,StartHealth,WanderDamage,ChaseDamage,IsReturnWander,ReturnWanderTime,BeHurtThenToChase,BulletAttribute,Level
-string,string,string,string,string,float,string,float,float,float,string,string,float,string,int,int,int,int,float,int,string,1
-RenCatcake,77000001,刃猫猫糕,Null,RangedAttack,2,BulletRen_Friend,10,10,3,JustChase,ShootBulletMuzzleCircleBumping;8;false,3,null,5,1,1,1,3,0,2;20,0
-DanhengCatcake,77000000,丹恒猫猫糕,Null,RangedAttack,2,BulletTaichi_Friend,10,5,3,JustChase,ShootBulletMuzzleCircleAtOnce;8;false,3,null,5,1,1,1,3,0,5;20,0
-XingCatcake,77000002,星猫猫糕,Null,MeleeAttack,2,WeaponXingBat,10,0.5,3,JustChase,UseMeleeWeapons;8;false,3,null,5,1,1,1,3,0,5;20,0
+﻿宠物id,宠物编号,敌人中文名,addressable链接,宠物攻击类型,敌人巡逻速度,敌人巡逻子弹Prefab的Link,宠物攻击effLink,敌人巡逻玩家敏感距离,敌人巡逻射击子弹间隔（不射击的填-1）,追击玩家的最大速度,敌人追击类型,敌人射击子弹的函数(没有填Normal),敌人追击时的射击间隔,敌人追击时射击子弹PrefabLink,敌人初始生命值,敌人巡逻时伤害,敌人追击时伤害,是否追不到敌人就返回Wander,追不到返回Wander的时间,是否受击进入Chase状态,子弹速度;射程,敌人难度等级（10表示最高）
+petID,PetNum,ChineseName,addressableLink,AttackType,WanderSpeed,WanderBulletLink,AttackEff,WanderPlayerSensitivePlayerDis,WanderShootInterval,ChaseMaxSpeed,ChaseType,ChaseShootFunc,ChaseShootInterval,ChaseBulletPrefab,StartHealth,WanderDamage,ChaseDamage,IsReturnWander,ReturnWanderTime,BeHurtThenToChase,BulletAttribute,Level
+string,string,string,string,string,float,string,string,float,float,float,float,string,string,float,string,int,int,int,int,float,int,string
+RenCatcake,77000001,刃猫猫糕,Null,RangedAttack,2,BulletRen_Friend,null,10,10,3,JustChase,ShootBulletMuzzleCircleBumping;8;false,3,null,5,1,1,1,3,0,2;20,0
+DanhengCatcake,77000000,丹恒猫猫糕,Null,RangedAttack,2,BulletTaichi_Friend,null,10,5,3,JustChase,ShootBulletMuzzleCircleAtOnce;8;false,3,null,5,1,1,1,3,0,5;20,0
+XingCatcake,77000002,星猫猫糕,Null,MeleeAttack,2,WeaponXingBat,SwordSlash12BatEff,10,5,3,JustChase,UseMeleeWeapons;8;false,3,null,5,1,1,1,3,0,5;20,0
