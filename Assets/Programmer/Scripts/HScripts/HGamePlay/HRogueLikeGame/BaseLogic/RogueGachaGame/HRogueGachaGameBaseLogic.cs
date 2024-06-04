@@ -47,6 +47,8 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
     public Button gachaHistoryNextPageButton;
     public Button gachaHistoryPrePageButton;
     public TMP_Text gachaHistoryPageText;
+    
+    public Button addXingqiongButton;
     # endregion
 
     private int maxGachaHistoryPage = 0;
@@ -127,6 +129,12 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
             }
             currentPage--;
             ShowGachaHistory();
+        });
+        
+        addXingqiongButton.onClick.AddListener(() =>
+        {
+            HItemCounter.Instance.AddItem("20000012", 160);
+            xingqiongNumText.text = HItemCounter.Instance.CheckCountWithItemId("20000012").ToString();
         });
     }
 
