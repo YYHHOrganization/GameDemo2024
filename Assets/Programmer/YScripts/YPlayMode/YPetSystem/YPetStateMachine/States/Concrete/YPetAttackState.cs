@@ -18,13 +18,37 @@ public class YPetAttackState : YPetBaseState
     public override Type Tick()
     {
         //return null;//test
-        //如果距离角色远 或者 没有敌人，都会就切换到攻击状态
-        if (!mPatrolAI.IsCloseEnoughToCharacter() || !mPatrolAI.CheckEnemyCount())
+        //如果距离角色远 或者 没有敌人，都会就切换到FOLLOW状态
+        if (mPatrolAI.followTypeInBattle == FollowTypeInBattle.Close)
         {
-            ExitState();
-            return typeof(YPetFollowState);
+            if (!mPatrolAI.IsCloseEnoughToCharacter() || !mPatrolAI.CheckEnemyCount())
+            {
+                ExitState();
+                return typeof(YPetFollowState);
+            }
         }
-        
+        else if (mPatrolAI.followTypeInBattle == FollowTypeInBattle.notConcern)
+        {
+            //可能正在打怪中，看一下怪物有没有跑掉，如果跑掉了，就追上去
+            
+            //如果怪物全死了
+            if (!mPatrolAI.CheckEnemyCount())
+            {
+                ExitState();
+                return typeof(YPetFollowState);
+            }
+            if(mPatrolAI.ChaseTarget == null)
+            {
+                ExitState();
+                return typeof(YPetChaseState);
+            }
+            if (Vector3.Distance(mPatrolAI.ChaseTarget.position, mPatrolAI.transform.position) > mPatrolAI.AttackDistance)
+            {
+                ExitState();
+                return typeof(YPetChaseState);
+            }
+        }
+
         return null;
     }
 

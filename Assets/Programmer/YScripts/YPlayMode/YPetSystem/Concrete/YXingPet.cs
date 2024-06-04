@@ -17,7 +17,7 @@ public class YXingPet :YPetBase
         var states = new Dictionary<Type, YPetBaseState>
         {
             { typeof(YPetFollowState), new YPetFollowState(this) },
-            { typeof(YPetChaseEnemyState), new YPetChaseEnemyState(this) },
+            { typeof(YPetChaseAndAttackEnemyState), new YPetChaseAndAttackEnemyState(this) },
         };
         GetComponent<YPetStateMachine>().SetStates(states);
     }

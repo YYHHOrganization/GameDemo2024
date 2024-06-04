@@ -31,6 +31,11 @@ public class Class_RoguePetCSVFile {
 		float value = float.Parse(WanderSpeed);
 		return value;
 	}
+	public string WeaponCarryingType { get; set; }    //武器携带类型
+	  public string _WeaponCarryingType (){
+		string value = WeaponCarryingType;
+		return value;
+	}
 	public string WanderBulletLink { get; set; }    //敌人巡逻子弹Prefab的Link
 	  public string _WanderBulletLink (){
 		string value = WanderBulletLink;
@@ -41,12 +46,12 @@ public class Class_RoguePetCSVFile {
 		string value = AttackEff;
 		return value;
 	}
-	public string WanderPlayerSensitivePlayerDis { get; set; }    //敌人巡逻玩家敏感距离
-	  public float _WanderPlayerSensitivePlayerDis (){
-		float value = float.Parse(WanderPlayerSensitivePlayerDis);
+	public string PetAttackSensitiveDis { get; set; }    //宠物追逐敏感距离（距离这个长度内会攻击
+	  public float _PetAttackSensitiveDis (){
+		float value = float.Parse(PetAttackSensitiveDis);
 		return value;
 	}
-	public string WanderShootInterval { get; set; }    //敌人巡逻射击子弹间隔（不射击的填-1）
+	public string WanderShootInterval { get; set; }    //巡逻射击子弹间隔（不射击的填-1）
 	  public float _WanderShootInterval (){
 		float value = float.Parse(WanderShootInterval);
 		return value;
@@ -56,9 +61,9 @@ public class Class_RoguePetCSVFile {
 		float value = float.Parse(ChaseMaxSpeed);
 		return value;
 	}
-	public string ChaseType { get; set; }    //敌人追击类型
-	  public float _ChaseType (){
-		float value = float.Parse(ChaseType);
+	public string FollowTypeInBattle { get; set; }    //宠物战场跟随类型（如果是Close，那么战场中不会距离主人很远，否则会自己打不关注人在哪）
+	  public float _FollowTypeInBattle (){
+		float value = float.Parse(FollowTypeInBattle);
 		return value;
 	}
 	public string ChaseShootFunc { get; set; }    //敌人射击子弹的函数(没有填Normal)
