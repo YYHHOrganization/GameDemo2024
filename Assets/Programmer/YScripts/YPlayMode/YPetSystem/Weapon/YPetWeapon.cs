@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using DG.Tweening;
 using UnityEngine;
 
 public class YPetWeapon : MonoBehaviour
 {
     public BoxCollider boxCollider;
     [SerializeField]int bulletDamage = 1;
+    [SerializeField] private GameObject hitEff;
     private void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
@@ -21,6 +23,14 @@ public class YPetWeapon : MonoBehaviour
     public void SetDetectShootOff()
     {
         boxCollider.enabled = false;
+        if(hitEff != null)
+        {
+            hitEff.SetActive(true);
+            DOVirtual.DelayedCall(0.2f, () =>
+            {
+                hitEff.SetActive(false);
+            });  
+        }
     }
     protected void OnCollisionEnter (Collision co)
     {

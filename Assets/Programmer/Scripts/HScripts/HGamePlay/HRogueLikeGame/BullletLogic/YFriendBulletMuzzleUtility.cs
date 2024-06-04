@@ -30,7 +30,8 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
         Class_RoguePetCSVFile roguePetCsvFile, 
         Transform mTarget = null,
         GameObject AttackEff=null,
-        Transform AttackEffTrans=null)
+        Transform AttackEffTrans=null,
+        GameObject weapon=null)
     {
         this.isEnemy = isEnemy;
         this.muzzleKind = muzzleKind;
@@ -39,7 +40,10 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
         this.pet = roguePetCsvFile;
         this.AttackEff = this.AttackEff;
         this.AttackEffTrans = AttackEffTrans;
+        this.weapon = weapon;
+        
         SetBulletBaseAttribute(pet, curStateName);
+        
     }
     private void SetBulletBaseAttribute(Class_RoguePetCSVFile enemy, string curStateName)
     {
@@ -50,8 +54,11 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
         bulletDamage = enemy._WanderDamage();
         // if(curStateName == "RangedAttack")
         //     bulletDamage = enemy._WanderDamage();
-        if (curStateName == "MeleeAttack") //如果是近战
+        
+        if(enemy.WeaponCarryingType=="Init")
             InitMeleeWeapon();
+        else if(enemy.WeaponCarryingType=="SelfCarrying")
+            GetWeapon();
     }
 
     private GameObject weapon;
@@ -66,6 +73,12 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
             transform.position,
             Quaternion.Euler(-23, 0, -6), transform);
         weapon.SetActive(false);
+    }
+
+    void GetWeapon()
+    {
+        if(weapon!=null)
+            petWeapon = weapon.GetComponent<YPetWeapon>();
     }
     bool duringShoot = false;
     Coroutine shootCoroutine;
@@ -136,9 +149,35 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
             case "UseMeleeWeapons"://使用近战武器
                 UseMeleeWeapons();
                 break;
+            case "UseCommonWeapons"://使用近战武器
+                UseCommonWeapons();
+                break;
         }
     }
-
+    private void UseCommonWeapons()
+    {
+        // if (petWeapon != null)
+        // {
+        //     petWeapon.BeginDetect();
+        // }
+        
+        //生成特效
+        // if (pet.AttackEff != "null")
+        // {
+        //     GameObject effPrefab = Addressables.LoadAssetAsync<GameObject>(pet.AttackEff).WaitForCompletion();
+        //     
+        //     GameObject effIns = Instantiate(effPrefab,AttackEffTrans.position, AttackEffTrans.rotation);    
+        //     effIns.transform.parent = AttackEffTrans;
+        //     //GameObject effIns = Instantiate(effPrefab, AttackEff.transform.position, AttackEff.transform.rotation);
+        //     // effPrefab.transform.position = AttackEff.transform.position;
+        //     // effPrefab.transform.rotation = AttackEff.transform.rotation; 
+        //     // effPrefab.SetActive(true);
+        //     DOVirtual.DelayedCall(3,()=>
+        //     {
+        //         Destroy(effIns);
+        //     });
+        // }
+    }
     private void UseMeleeWeapons()
     {
         ////想在这里使用dotween等实现一个挥舞球棒的动作，例如斜上方挥到斜下方那种

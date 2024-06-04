@@ -13,6 +13,9 @@ public abstract class YPetBase : MonoBehaviour
     public Transform curCharacterTrans;
     public Transform ChaseTarget;//追逐的 ，目前应该是只用作enemy
     public Animator animator;
+    float attackDistance;
+    public float AttackDistance => attackDistance;
+    
     
     public YPetStateMachine mPetStateMachine => GetComponent<YPetStateMachine>();
     [SerializeField]Transform shootOrigin;
@@ -20,9 +23,11 @@ public abstract class YPetBase : MonoBehaviour
     public bool shouldCheckEnemyCount;//如果进入了战斗或者boss房，需要check敌人数量，敌人都死了就不需要了
     public PetAttackType attackType;
     private string attackType1;
+    public FollowTypeInBattle followTypeInBattle;
 
     [SerializeField]GameObject AttackEff;
     [SerializeField]Transform AttackEffTrans;
+    [SerializeField] private GameObject weapon;
     protected virtual void Start()
     {
         animator = gameObject.GetComponentInChildren<Animator>();
@@ -44,6 +49,10 @@ public abstract class YPetBase : MonoBehaviour
         string bulletPrefabLink = pet.WanderBulletLink;
         attackType1 = pet.AttackType;
         attackType = (PetAttackType)Enum.Parse(typeof(PetAttackType), attackType1);
+
+        attackDistance = pet._PetAttackSensitiveDis();
+        
+        followTypeInBattle = (FollowTypeInBattle)Enum.Parse(typeof(FollowTypeInBattle), pet.FollowTypeInBattle);
         
         if(bulletPrefabLink!=null && bulletPrefabLink!="null")
             bulletPrefab = Addressables.LoadAssetAsync<GameObject>(bulletPrefabLink).WaitForCompletion();
@@ -66,7 +75,8 @@ public abstract class YPetBase : MonoBehaviour
             pet, 
             null,
             AttackEff,
-            AttackEffTrans
+            AttackEffTrans,
+            weapon
             );
             //chaseBulletPrefab, enemy.RogueEnemyChaseShootFunc, true, curStateName, enemy, mTarget);
     }
@@ -147,10 +157,27 @@ public abstract class YPetBase : MonoBehaviour
     {
         return Vector3.Distance(transform.position, curCharacterTrans.position) < closeEnoughDistance;
     }
+
+    public virtual void EnterChaseState()
+    {
+        
+    }
+    public virtual void EnterFollowState()
+    {
+        
+    }
 }
 
 public enum PetAttackType
 {
     MeleeAttack,
-    RangedAttack
+    RangedAttack,
+    ChaseBeforeMeleeAttack
+}
+
+//宠物战场跟随类型（如果是Close，那么战场中不会距离主人很远，否则会自己打不关注人在哪）
+public enum FollowTypeInBattle
+{
+    Close,
+    notConcern
 }
