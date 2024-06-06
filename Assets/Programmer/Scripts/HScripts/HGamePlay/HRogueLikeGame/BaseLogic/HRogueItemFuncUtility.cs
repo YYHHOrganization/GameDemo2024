@@ -832,17 +832,17 @@ public class HRogueItemFuncUtility : MonoBehaviour
             YRogue_RoomAndItemManager.Instance.currentRoom.GetComponent<YRouge_RoomBase>().Enemies;
         if (enemies!=null && enemies.Count > 0)  //当前是战斗房
         {
-            foreach (var enemy in enemies)
+            for(int i = 0; i < enemies.Count;i++)
             {
-                if(enemy == null) continue;
+                if(enemies[i] == null) continue;
                 //SetEnemyFrozen
-                if (enemy.GetComponent<HRogueEnemyPatrolAI>())
+                if (enemies[i].GetComponent<HRogueEnemyPatrolAI>())
                 {
-                    enemy.GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(value);
+                    enemies[i].GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(value);
                 }
-                else if (enemy.GetComponent<YPatrolAI>())
+                else if (enemies[i].GetComponent<YPatrolAI>())
                 {
-                    enemy.GetComponent<YPatrolAI>().die();
+                    enemies[i].GetComponent<YPatrolAI>().die();
                 }
             }
         }

@@ -199,7 +199,7 @@ public class HPostProcessingFilters : HPostProcessingBase
 
     }
 
-    public void SetPostProcessingWithName(string effect, bool isOn)
+    public void SetPostProcessingWithName(string effect, bool isOn, float intensity=-1f)
     {
         FogVolme fogVolme;
         YFogVolmeDistance yFogVolmeDistance;
@@ -209,6 +209,10 @@ public class HPostProcessingFilters : HPostProcessingBase
                 if (postProcessVolume.profile.TryGet<FogVolme>(out fogVolme))
                 {
                     fogVolme.active = isOn;
+                    if (intensity > 0)
+                    {
+                        fogVolme.intensity.value = intensity;
+                    }
                 }
                 break;
             
@@ -216,6 +220,10 @@ public class HPostProcessingFilters : HPostProcessingBase
                 if (postProcessVolume.profile.TryGet<YFogVolmeDistance>(out yFogVolmeDistance))
                 {
                     yFogVolmeDistance.active = isOn;
+                    if (intensity > 0)
+                    {
+                        yFogVolmeDistance.intensity.value = intensity;
+                    }
                 }
                 break;
         }
