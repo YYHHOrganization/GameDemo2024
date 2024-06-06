@@ -534,7 +534,7 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
                 YCharacterInfoManager.SetStatusByID(id, true);
                 break;
             case "ItemRogueMaomaogao":
-
+                YCharacterInfoManager.SetCatcakeStatusByID(id, true);
                 break;
         }
     }

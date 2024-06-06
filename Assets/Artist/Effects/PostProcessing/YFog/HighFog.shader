@@ -12,6 +12,7 @@ Shader "Unlit/HighFog"
         _FogXSpeed("FogXSpeed",float) = 0.1
         _FogYSpeed("FogYSpeed",float) = 0.1
         _NoiseAmount("NoiseAmount",float) = 1
+        _NoiseScale("NoiseScale",float) = 1 // 新增噪声缩放
     }
     SubShader
     {
@@ -61,9 +62,31 @@ Shader "Unlit/HighFog"
                 float _FogXSpeed;
                 float _FogYSpeed;
                 float _NoiseAmount;
-            
+                float _NoiseScale;
             CBUFFER_END
 
+            // 定义hash函数
+            float hash(float3 p)
+            {
+                p = frac(p * 0.3183099 + 0.1);
+                p *= 17.0;
+                return frac(p.x * p.y * p.z * (p.x + p.y + p.z));
+            }
+
+            // 高质量Perlin噪声函数
+            float PerlinNoise(float2 coord)
+            {
+                float3 p = float3(coord.xy, 0.0);
+                float3 i = floor(p);
+                float3 f = frac(p);
+                float3 u = f * f * (3.0 - 2.0 * f);
+
+                return lerp(lerp(lerp(hash(i + float3(0.0, 0.0, 0.0)), hash(i + float3(1.0, 0.0, 0.0)), u.x),
+                                 lerp(hash(i + float3(0.0, 1.0, 0.0)), hash(i + float3(1.0, 1.0, 0.0)), u.x), u.y),
+                            lerp(lerp(hash(i + float3(0.0, 0.0, 1.0)), hash(i + float3(1.0, 0.0, 1.0)), u.x),
+                                 lerp(hash(i + float3(0.0, 1.0, 1.0)), hash(i + float3(1.0, 1.0, 1.0)), u.x), u.y), u.z);
+            }
+            
             v2f vert (appdata v)
             {
                 v2f o;
@@ -85,12 +108,14 @@ Shader "Unlit/HighFog"
                 float fogDensity = saturate((_FogHigh-postionWS.y));//雾密度
 
                 //噪声
-                float2 speed = _Time.y*float2(_FogXSpeed,_FogYSpeed);
-                float noise = SAMPLE_TEXTURE2D(_NoiseTexture,sampler_NoiseTexture,i.uv+speed).r-0.5;//噪声
+                float2 noiseUV = i.uv * _NoiseScale + _Time.y*float2(_FogXSpeed,_FogYSpeed);
+                float noise = SAMPLE_TEXTURE2D(_NoiseTexture,sampler_NoiseTexture,noiseUV).r-0.5;//噪声
+                noise += PerlinNoise(noiseUV);
                 noise = noise*_NoiseAmount;//噪声
                 //(tex2D(_NoiseTexture,i.uv+speed).r-0.5)*_NoiseAmount;//噪声
 
-                fogDensity = saturate(fogDensity*_FogIntensity*(1+noise));//雾密度
+                 // 使用smoothstep平滑噪声的影响
+                fogDensity = saturate(fogDensity * _FogIntensity * (1.0 + smoothstep(-0.5, 0.5, noise))); //雾密度
 
                 float4 finalColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex,i.uv);//纹理采样
                 //finalColor.rgb = lerp(finalColor.rgb,_FogColor,fogDensity);//颜色插值

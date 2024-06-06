@@ -88,6 +88,33 @@ public static class YCharacterInfoManager
         //保存文件
         xmlDoc.Save (filePath);
     }
+
+    public static void SetCatcakeStatusByID(string id, bool unlock)
+    {
+        //创建Xml对象
+        XmlDocument xmlDoc = new XmlDocument();
+        string filePath = Application.dataPath + "/Designer/XMLTable/PlayerContentInfos.xml";
+        xmlDoc.Load(filePath);
+        XmlElement root = xmlDoc.DocumentElement;
+        XmlNodeList levelsNode = root.SelectNodes("/PlayerSaveFile/CatcakeInfo/catcake");
+        foreach (XmlElement xe in levelsNode) 
+        {
+            Debug.Log(xe.GetAttribute("id"));
+            //根据名称找到对应的
+            if(xe.GetAttribute("id")==id)
+            {
+                //根据unlock重新为关卡赋值
+                if(unlock){
+                    xe.SetAttribute("unlock","1");
+                }else{
+                    xe.SetAttribute("unlock","0");
+                }
+            }
+        }
+
+        //保存文件
+        xmlDoc.Save (filePath);
+    }
     
     public static void SetStatusByID(string id,bool unlock)
     {

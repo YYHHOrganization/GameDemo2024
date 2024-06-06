@@ -61,8 +61,8 @@ public class HRogueWeatherController : MonoBehaviour
         AudioSource audioSource = playerCamera.GetComponent<AudioSource>();
         audioSource.volume = 0f;
         
-        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",true, 2f);
-        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",true, 2f);
+        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",true, 1.2f);
+        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",true, 0.03f);
         
         // progressively intensify the rain
         float i = 0f;
