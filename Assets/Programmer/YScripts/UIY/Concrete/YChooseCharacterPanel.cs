@@ -5,7 +5,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using Image = UnityEngine.UI.Image;
 
 public class YChooseCharacterPanel : BasePanel
 {
@@ -17,6 +19,7 @@ public class YChooseCharacterPanel : BasePanel
     private GameObject curCatcake;
     public int curChooseCharacterIndex=-1;
     private int curChooseCatcakeIndex = -1;
+    private string curChooseCatcakeIndexStr = "";
 
     private bool isInteractMode = true;
 
@@ -35,12 +38,29 @@ public class YChooseCharacterPanel : BasePanel
         }
         set => chatAnswerText = value;
     }
+    GameObject CharacterScrollView;
+    GameObject CatcakeScrollView;
+    
     
     public override void OnEnter()
     {
         HAudioManager.instance.Play("SelectCharacterMusic", HAudioManager.instance.gameObject);
         //YChooseCharacterShowPlace = GameObject.Find("YChooseCharacterShowPlace");
         YChooseCharacterShowPlace = GameObject.Instantiate(Resources.Load<GameObject>(pathPlace));
+        
+        CharacterScrollView = uiTool.GetOrAddComponentInChilden<Transform>("CharacterScrollView").gameObject;
+        CatcakeScrollView = uiTool.GetOrAddComponentInChilden<Transform>("CatcakeScrollView").gameObject;
+        
+        uiTool.GetOrAddComponentInChilden<Button>("SelectCharacterButton").onClick.AddListener(() =>
+        {
+            CharacterScrollView.SetActive(true);
+            CatcakeScrollView.SetActive(false);
+        });
+        uiTool.GetOrAddComponentInChilden<Button>("SelectCatcakeButton").onClick.AddListener(() =>
+        {
+            CharacterScrollView.SetActive(false);
+            CatcakeScrollView.SetActive(true);
+        });
         
         uiTool.GetOrAddComponentInChilden<Button>("BeginButton").onClick.AddListener(()=>
         {
@@ -86,6 +106,25 @@ public class YChooseCharacterPanel : BasePanel
                 SetCharacter(index);
             });
         }
+        //遍历SD_RoguePetCSVFile.Class_Dic，将其id取出
+        foreach (var item in SD_RoguePetCSVFile.Class_Dic)
+        {
+            string id = item.Key;
+            uiTool.GetOrAddComponentInChilden<Button>("CatcakeButton_"+id).onClick.AddListener(()=>
+            {
+                SetCatcake(id);
+            });
+            
+        }
+        // for (int i = 0; i < SD_RoguePetCSVFile.Class_Dic.Count; i++)
+        // {
+        //     int index = i;
+        //     uiTool.GetOrAddComponentInChilden<Button>("CatcakeButton"+index).onClick.AddListener(()=>
+        //     {
+        //         SetCatcake(index);
+        //     });
+        // }
+        
         SetCharacter(2);
         SetCatcake(0);
         
@@ -141,6 +180,9 @@ public class YChooseCharacterPanel : BasePanel
             }
         });
         
+        CatcakeScrollView.SetActive(false);
+        CharacterScrollView.SetActive(true);
+        
         //开启雾效
         SetFogOnOrFalse(true);
     }
@@ -150,6 +192,29 @@ public class YChooseCharacterPanel : BasePanel
         HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",isOn, 0.05f);
     }
 
+    private void SetCatcake(string index)
+    {
+        if (index == curChooseCatcakeIndexStr)
+        {
+            return;
+        }
+
+        if (curCatcake != null)
+        {
+            GameObject.Destroy(curCatcake);
+        }
+        curChooseCatcakeIndexStr = index;
+        string catcakePrefabLink = "Show_"+SD_RoguePetCSVFile.Class_Dic[index].addressableLink;
+        
+        //用Addressable来加载
+        GameObject go = Addressables.InstantiateAsync(catcakePrefabLink).WaitForCompletion();
+        go.transform.parent = YChooseCharacterShowPlace.transform;
+        go.transform.localPosition = Vector3.zero + new Vector3(-0.95f, 0, 0);
+        //旋转180度
+        go.transform.localEulerAngles = new Vector3(0, 50, 0);
+        curCatcake = go;
+        go.gameObject.GetComponentInChildren<Animator>().SetBool("isCatStrike", true);
+    }
     private void SetCatcake(int index)
     {
         if (index == curChooseCatcakeIndex)
