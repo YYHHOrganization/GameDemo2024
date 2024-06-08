@@ -146,8 +146,8 @@ public class YChooseCharacterPanel : BasePanel
     }
     void SetFogOnOrFalse(bool isOn)
     {
-        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",isOn);
-        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",isOn);
+        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",isOn, 2.31f);
+        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",isOn, 0.05f);
     }
 
     private void SetCatcake(int index)
