@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CartoonFX;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -24,10 +25,17 @@ public class HRogueWeatherController : MonoBehaviour
     private Material spppMat;// material of singlePixelPostProcess
     public AnimationCurve lightningCurve;
     
+    //落雷
+    private string thunderAlertVFXAddress = "ThunderAlertVFX";
+    private GameObject thunderAlertVFX;
+    private string thunderLightingStrikeVFXAddress = "ThunderLightingStrikeVFX";
+    private GameObject thunderLightingStrikeVFX;
     void Start()
     {
         dirLight = GameObject.Find("Directional Light").GetComponent<Light>();
         originalDirLightIntensity = dirLight.intensity;
+        thunderAlertVFX = Addressables.LoadAssetAsync<GameObject>(thunderAlertVFXAddress).WaitForCompletion();
+        thunderLightingStrikeVFX = Addressables.LoadAssetAsync<GameObject>(thunderLightingStrikeVFXAddress).WaitForCompletion();
     }
 
     public bool testRain = false;
@@ -81,6 +89,31 @@ public class HRogueWeatherController : MonoBehaviour
             HAudioManager.Instance.Play("ThunderSoundAudio", playerCamera.gameObject);
             audioSource.volume = 5;
             yield return new WaitForSeconds(32.88f);
+        }
+    }
+
+    IEnumerator LightingFall()
+    {
+        //降下落雷
+        while (true)
+        {
+            Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
+            //在玩家周围0~5米范围内随机选择一个Position，生成ThunderAlertVFX
+            Vector3 randomPos = player.position + new Vector3(Random.Range(-5f, 5f), 0.05f, Random.Range(-5f, 5f));
+            GameObject thunderAlert = Instantiate(thunderAlertVFX, randomPos, Quaternion.Euler(-90f, 0f, 0f));
+            yield return new WaitForSeconds(5f);
+            //降下落雷
+            Destroy(thunderAlert);
+            Vector3 strikePos = randomPos;
+            strikePos.y = 0f;
+            GameObject thunderLightingStrike = Instantiate(thunderLightingStrikeVFX, strikePos, Quaternion.identity);
+            HRogueCameraManager.Instance.ShakeCamera(10f, 0.5f);
+            HAudioManager.Instance.Play("LightningAttackSound", thunderLightingStrike.gameObject);
+            yield return new WaitForSeconds(1f);
+            Destroy(thunderLightingStrike,2f);
+            //随机6~12秒
+            float intervalTime = Random.Range(3f, 6f);
+            yield return new WaitForSeconds(intervalTime);
         }
     }
     
@@ -170,5 +203,6 @@ public class HRogueWeatherController : MonoBehaviour
         spppMat.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
         // start to repeatedly play lightning
         StartCoroutine(LightningControl());
+        StartCoroutine(LightingFall());
     }
 }
