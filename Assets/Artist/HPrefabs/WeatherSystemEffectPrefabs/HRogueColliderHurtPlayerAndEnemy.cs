@@ -17,6 +17,13 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Enemy"))
         {
+            YPatrolAI patrolAI = other.gameObject.GetComponentInParent<YPatrolAI>();
+            if (patrolAI != null)
+            {
+                patrolAI.die();
+                return;//这里不需要传递伤害，因为敌人已经死了，特指蜘蛛怪
+                //todo:写一个伤害的函数
+            }
             HRogueEnemyPatrolAI enemyPatrolAI = other.gameObject.GetComponentInParent<HRogueEnemyPatrolAI>();
             if (enemyPatrolAI == null)
             {

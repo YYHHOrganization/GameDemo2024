@@ -30,6 +30,15 @@ public class HRogueWeatherController : MonoBehaviour
     private GameObject thunderAlertVFX;
     private string thunderLightingStrikeVFXAddress = "ThunderLightingStrikeVFX";
     private GameObject thunderLightingStrikeVFX;
+    
+    private Coroutine lightningFallCoroutine;
+    
+    //一些与天气有关的bool值
+    private bool isRaining = false;
+    public bool IsRaining
+    {
+        get => isRaining;
+    }
     void Start()
     {
         dirLight = GameObject.Find("Directional Light").GetComponent<Light>();
@@ -89,6 +98,25 @@ public class HRogueWeatherController : MonoBehaviour
             HAudioManager.Instance.Play("ThunderSoundAudio", playerCamera.gameObject);
             audioSource.volume = 5;
             yield return new WaitForSeconds(32.88f);
+        }
+    }
+
+    public void ControlThundering(bool isActive)
+    {
+        if (isActive)
+        {
+            if (lightningFallCoroutine != null)
+            {
+                StopCoroutine(lightningFallCoroutine);
+            }
+            lightningFallCoroutine = StartCoroutine(LightingFall());
+        }
+        else
+        {
+            if (lightningFallCoroutine != null)
+            {
+                StopCoroutine(lightningFallCoroutine);
+            }
         }
     }
 
@@ -203,6 +231,6 @@ public class HRogueWeatherController : MonoBehaviour
         spppMat.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
         // start to repeatedly play lightning
         StartCoroutine(LightningControl());
-        StartCoroutine(LightingFall());
+        lightningFallCoroutine = StartCoroutine(LightingFall());
     }
 }
