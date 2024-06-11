@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 //using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.AI;
 using UnityEngine.LowLevel;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -54,7 +55,22 @@ public class YPlayModeController : MonoBehaviour
 
     int curLevelID;
     public bool isRogue = false;
-    
+    //catcake list
+    public List<GameObject> catCakeList = new List<GameObject>();
+    public void StartGameAndSet(int characterIndex,string curChooseCatcakeIndexStr)
+    {
+        SetCharacter(characterIndex);
+        if(curChooseCatcakeIndexStr != "")
+        {
+            // 使用Addressables加载，然后位置设置在角色周围
+            // curChooseCatcakeIndexStr ="Show_"+curChooseCatcakeIndexStr ;//测试
+            GameObject go = Addressables.LoadAssetAsync<GameObject>(curChooseCatcakeIndexStr).WaitForCompletion();
+            GameObject catCake = Instantiate(go);
+            catCake.transform.position = curCharacter.transform.position + new Vector3(0, 1, 0);
+            catCakeList.Add(catCake);
+        }
+    }
+   
     public void SetCharacter(int characterIndex)
     {
         PlayerDieFlag = false;
@@ -358,6 +374,21 @@ public class YPlayModeController : MonoBehaviour
     public void SetRogueCharacterPlace(Transform transform)
     {
         curCharacter.transform.position = transform.position;
+        
+        //同时也要传送当前拥有的宠物
+        SetRogueCatCakePlace(transform.position);
+    }
+
+    private void SetRogueCatCakePlace(Vector3 transformPosition)
+    {
+        foreach (var catCake in catCakeList)
+        {
+            //禁用navmeshagent 
+            bool navMeshAgentEnabled = catCake.GetComponent<NavMeshAgent>().enabled;
+            catCake.GetComponent<NavMeshAgent>().enabled = false;
+            catCake.transform.position = transformPosition + new Vector3(2, 0, 2);
+            catCake.GetComponent<NavMeshAgent>().enabled = navMeshAgentEnabled;
+        }
     }
 
 
@@ -376,5 +407,10 @@ public class YPlayModeController : MonoBehaviour
         curCharacter.GetComponent<CharacterController>().enabled = false;
         curCharacter.transform.position = pos;
         curCharacter.GetComponent<CharacterController>().enabled = true;
+        
+        //同时也要传送当前拥有的宠物
+        SetRogueCatCakePlace(pos);
     }
+
+    
 }

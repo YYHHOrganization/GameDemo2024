@@ -166,6 +166,45 @@ public abstract class YPetBase : MonoBehaviour
     {
         
     }
+
+    public bool EnemyInAttackRange()
+    {
+        // if (ChaseTarget == null)
+        // {
+        //     return false;
+        // }
+        // return Vector3.Distance(ChaseTarget.position, transform.position) < attackDistance;
+        // https://blog.csdn.net/qq2512667/article/details/83281203
+        
+        return CheckPosition(ChaseTarget.position, 60, attackDistance);
+    }
+    bool CheckPosition(Vector3 targetPos,float angle,float radius)
+    {
+ 
+        bool isCheck = false;
+ 
+        //Mathf.Deg2Rad 角度转弧度
+        var cosAngle = Mathf.Cos(Mathf.Deg2Rad * angle * 0.5f); //以一位单位，取得Cos角度
+        Vector3 circleCenter = transform.position;
+        Vector3 disV = targetPos - circleCenter;//从圆心到目标的方向
+        float dis2 = disV.sqrMagnitude; // 得到 长度平方和
+        if (dis2<radius*radius) // 视距内 
+        {
+            disV.y = 0.0f;
+            disV = disV.normalized; //向量除以它的长度   向量归一化   对向量  
+            //开平方 得到向量长度    
+            //归一化后，即是 单位向量了。
+            //用当前物体 向前方向，和从圆心到目标的单位方向 做 点积；
+            float cos = Vector3.Dot(transform.forward, disV);//求点积
+            //这样的结果就得到了cos角度*1
+            if (cos-cosAngle>=0)
+            {
+                return true; //在视野内
+            }
+        }
+        return false;
+ 
+    }
 }
 
 public enum PetAttackType

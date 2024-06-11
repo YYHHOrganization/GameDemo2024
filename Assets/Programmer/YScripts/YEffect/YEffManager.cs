@@ -22,7 +22,8 @@ public class YEffManager : YSingleTemplate<YEffManager>
     
     
     GameObject LockedShader;
-    public string LockedShaderAddress="YLockEff";
+    string LockedShaderAddress="YLockEff";
+    
     public void SetLockedShaderOnOrOff(bool isOn,Transform showPlayerTransform)
     {
         if (isOn)
@@ -31,7 +32,6 @@ public class YEffManager : YSingleTemplate<YEffManager>
             {
                 // GameObject RogueLittleMapCamera = Addressables.LoadAssetAsync<GameObject>("YLittleMapCamera").WaitForCompletion();
                 // GameObject LittleMapCamera = Instantiate(RogueLittleMapCamera);
-                
                 GameObject go =Addressables.LoadAssetAsync<GameObject>(LockedShaderAddress).WaitForCompletion();
                 LockedShader = Instantiate(go);
                 //将这个shader放到角色的位置，但是并不用作为子物体
@@ -51,7 +51,34 @@ public class YEffManager : YSingleTemplate<YEffManager>
                 LockedShader.SetActive(false);
             }
         }
-        
-        
+    }
+    //pet走这个
+    GameObject PetLockedShader;
+    string LockedShaderPetAddress2="YLockEffPet";
+    public void SetPetLockedShaderOnOrOff(bool isOn,Transform showPlayerTransform)
+    {
+        if (isOn)
+        {
+            if (PetLockedShader == null)
+            {
+                GameObject go =Addressables.LoadAssetAsync<GameObject>(LockedShaderPetAddress2).WaitForCompletion();
+                PetLockedShader = Instantiate(go);
+                //将这个shader放到角色的位置，但是并不用作为子物体
+                PetLockedShader.transform.position = showPlayerTransform.position;
+                PetLockedShader.transform.rotation = showPlayerTransform.rotation;
+                PetLockedShader.SetActive(true);
+            }
+            else
+            {
+                PetLockedShader.SetActive(true);
+            }
+        }
+        else
+        {
+            if (PetLockedShader != null)
+            {
+                PetLockedShader.SetActive(false);
+            }
+        }
     }
 }

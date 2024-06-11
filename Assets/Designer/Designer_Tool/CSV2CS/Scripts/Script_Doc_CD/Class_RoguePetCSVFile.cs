@@ -101,14 +101,14 @@ public class Class_RoguePetCSVFile {
 		int value = int.Parse(IsReturnWander);
 		return value;
 	}
-	public string ReturnWanderTime { get; set; }    //追不到返回Wander的时间
-	public int _ReturnWanderTime (){
-		int value = int.Parse(ReturnWanderTime);
+	public string DetectAttackDis { get; set; }    //检测攻击的扇形范围半径
+	public int _DetectAttackDis (){
+		int value = int.Parse(DetectAttackDis);
 		return value;
 	}
-	public string BeHurtThenToChase { get; set; }    //是否受击进入Chase状态
-	  public float _BeHurtThenToChase (){
-		float value = float.Parse(BeHurtThenToChase);
+	public string DetectAttackAngle { get; set; }    //检测攻击的扇形范围角度
+	public int _DetectAttackAngle (){
+		int value = int.Parse(DetectAttackAngle);
 		return value;
 	}
 	public string BulletAttribute { get; set; }    //子弹速度;射程

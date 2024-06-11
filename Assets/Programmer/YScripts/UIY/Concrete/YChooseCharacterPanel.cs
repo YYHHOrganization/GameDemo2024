@@ -82,7 +82,8 @@ public class YChooseCharacterPanel : BasePanel
             //销毁YChooseCharacterShowPlace
             GameObject.Destroy(YChooseCharacterShowPlace);
             //然后应该把那些加载出来 
-            YPlayModeController.Instance.SetCharacter(curChooseCharacterIndex);
+            YPlayModeController.Instance.StartGameAndSet(curChooseCharacterIndex,curChooseCatcakeIndexStr);
+            // YPlayModeController.Instance.SetCharacter(curChooseCharacterIndex);
             
         });
         
@@ -126,7 +127,8 @@ public class YChooseCharacterPanel : BasePanel
         // }
         
         SetCharacter(2);
-        SetCatcake(0);
+        // SetCatcake(0);
+        SetCatcake("XingCatcake");
         
         inputField = uiTool.GetOrAddComponentInChilden<TMP_InputField>("InputField");
         inputField.onEndEdit.AddListener((string value) =>
@@ -214,7 +216,49 @@ public class YChooseCharacterPanel : BasePanel
         go.transform.localEulerAngles = new Vector3(0, 50, 0);
         curCatcake = go;
         go.gameObject.GetComponentInChildren<Animator>().SetBool("isCatStrike", true);
+        
+        //如果这个角色没解锁，就上锁shader，现在都默认上锁吧
+        bool isUnLock = YCharacterInfoManager.GetPlayerContentUnLockStatusByID(index);
+        YEffManager._Instance.SetPetLockedShaderOnOrOff(!isUnLock, go.transform);
+        //如果此时选择的角色和猫猫糕都是锁定的，这个"BeginButton"就应该是不可点击的是灰色的
+        UpdateLockState(false,!isUnLock);
+        
     }
+    
+    //beginButton的交互状态
+    // 用一个二级制数字表示 是否角色和宠物都是锁定的
+    //如果角色是锁定的，宠物不锁，就是10，否则是01.都不锁就是00，都锁就是11
+    //后面可以扩展成更多的东西，这样就只需要存一个变量：
+    
+    // 定义锁定状态
+    const int CHARACTER_LOCKED = 0b10; // 2
+    const int PET_LOCKED = 0b01;       // 1
+    int currentState = 0b00;
+    private void SetBeginButtonInteractableState(int state)
+    {
+        bool isCharacterLocked = (state &  CHARACTER_LOCKED) != 0;
+        bool isPetLocked = (state & PET_LOCKED) != 0;
+
+        //有一个锁定就不能,也就是说 要都解锁才能
+        uiTool.GetOrAddComponentInChilden<Button>("BeginButton").interactable  = (!isCharacterLocked && !isPetLocked);
+    }
+    private void UpdateLockState(bool isCharacter, bool isLocked)
+    {
+        
+        if (isCharacter)
+        {
+            //如果 isLocked 为 true，使用按位或操作符 | 将 currentState 与 CHARACTER_LOCKED 进行按位或操作，将角色锁定状态置为 1。
+            currentState = isLocked ? (currentState | CHARACTER_LOCKED) : (currentState & ~CHARACTER_LOCKED);
+        }
+        else
+        {
+            currentState = isLocked ? (currentState | PET_LOCKED) : (currentState & ~PET_LOCKED);
+        }
+
+        SetBeginButtonInteractableState(currentState);
+    }
+    //end beginButton的交互状态
+    
     private void SetCatcake(int index)
     {
         if (index == curChooseCatcakeIndex)

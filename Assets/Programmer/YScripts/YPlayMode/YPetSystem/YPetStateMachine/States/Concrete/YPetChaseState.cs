@@ -48,11 +48,17 @@ public class YPetChaseState  : YPetBaseState
         //这里应该有一个是说 如果追到了敌人，即敌人在视野内，那么就切换到攻击状态
         //敌人在视野内,与敌人的距离小于攻击距离
         
-        if (Vector3.Distance(mPatrolAI.ChaseTarget.position, mPatrolAI.transform.position) < mPatrolAI.AttackDistance)
+        //在攻击范围内
+        if(mPatrolAI.EnemyInAttackRange())
         {
             ExitState();
             return typeof(YPetAttackState);
-        }
+        } 
+        // if (Vector3.Distance(mPatrolAI.ChaseTarget.position, mPatrolAI.transform.position) < mPatrolAI.AttackDistance)
+        // {
+        //     ExitState();
+        //     return typeof(YPetAttackState);
+        // }
         
         return null;
     }
