@@ -75,7 +75,7 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         fallHash = Animator.StringToHash("isFalling");
         isUp = false;
         
-        goodPickupEffect = Addressables.LoadAssetAsync<GameObject>("Lihua1").WaitForCompletion();
+        goodPickupEffect = Addressables.LoadAssetAsync<GameObject>("Lihua1New").WaitForCompletion();
         badPickupEffect = Addressables.LoadAssetAsync<GameObject>("BaozhaSmall").WaitForCompletion();
         
         gameScorePanel = Addressables.LoadAssetAsync<GameObject>("GameScorePanel").WaitForCompletion();

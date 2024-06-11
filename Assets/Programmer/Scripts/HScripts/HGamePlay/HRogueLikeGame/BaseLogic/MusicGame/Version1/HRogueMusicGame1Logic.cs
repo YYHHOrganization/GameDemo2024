@@ -5,6 +5,7 @@ using DG.Tweening;
 using SonicBloom.Koreo;
 using SonicBloom.Koreo.Players;
 using TMPro;
+using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -153,6 +154,9 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         YTriggerEvents.RaiseOnMouseLockStateChanged(false);
         Invoke("SetGamePanelActive", 2.5f);
         YTriggerEvents.RaiseOnMouseLeftShoot(false);
+        
+        //如果下雨的话，把打雷效果给关了
+        yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>().ControlThundering(false);
     }
 
     private void SetGamePanelActive()
@@ -255,7 +259,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         if(koreoEvent.HasIntPayload())
         {
             int value = koreoEvent.GetIntValue();
-            Debug.Log("Fired Event with value: " + value);
+            //Debug.Log("Fired Event with value: " + value);
             //根据Value值来给出内容
             SummonItemsWithPayloadValue(value);
         }
@@ -315,6 +319,14 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
         HAudioManager.Instance.Play("StartRogueAudio", HAudioManager.Instance.gameObject);
         Destroy(gameObject, 1f);
+        
+        //如果下雨的话，把打雷效果给开了
+        HRogueWeatherController weatherController = yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        if (weatherController.IsRaining)
+        {
+            weatherController.ControlThundering(true);
+        }
+        
     }
     
     private void GiveOutTreasure(float accuracy)
