@@ -35,7 +35,7 @@ public class HRogueWeatherController : MonoBehaviour
     private Coroutine lightningCoroutine;
     
     private float minWeatherDuration = 45.0f; // 每种天气最少持续时间
-    private float minClearDuration = 60.0f; // 天晴到下雨/下雪之间最少间隔时间
+    private float minClearDuration = 10.0f; // 天晴到下雨/下雪之间最少间隔时间
     
     //一些与天气有关的bool值
     private bool isRaining = false;
@@ -66,7 +66,7 @@ public class HRogueWeatherController : MonoBehaviour
             yield return new WaitForSeconds(minClearDuration); // 天晴最少持续5分钟
 
             // 随机选择下雨或下雪
-            int weatherChoice = Random.Range(0, 2); // 0: 雨, 1: 雪
+            int weatherChoice = Random.Range(0, 1); // 0: 雨, 1: 雪
             if (weatherChoice == 0)
             {
                 Debug.Log("下雨了");
@@ -119,6 +119,7 @@ public class HRogueWeatherController : MonoBehaviour
         Destroy(rainManagerObj);
         HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",false);
         HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",false);
+        HRogueDamageCalculator.Instance.SetElementTypeInEnvironment(ElementType.None); //雨停了
     }
     private void ResetEverything()
     {
@@ -214,6 +215,8 @@ public class HRogueWeatherController : MonoBehaviour
     IEnumerator StartRainingBase()
     {
         isRaining = true;
+        HRogueDamageCalculator.Instance.SetElementTypeInEnvironment(ElementType.Hydro); //下雨了，环境中附着水元素
+        
         rainManagerObj = Addressables.LoadAssetAsync<GameObject>(rainManagerAddress).WaitForCompletion();
         GameObject player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer();
         playerCamera = player.GetComponent<HPlayerStateMachine>().playerCamera;

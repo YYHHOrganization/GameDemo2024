@@ -85,6 +85,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     protected int hitPlayerDamage = -1; // 碰到玩家的伤害
     
     public string curStateName;
+    private ElementType enemyElementType = ElementType.None;
+    public ElementType EnemyElementType => enemyElementType;
 
     protected virtual void Awake()
     {
@@ -94,6 +96,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         isAttackingHash = Animator.StringToHash("isAttacking");
         isDeadHash = Animator.StringToHash("isDead");
         shootOrigin = transform.Find("ShootOrigin");
+        vaporizePrefab = Addressables.LoadAssetAsync<GameObject>("VaporizePrefab").WaitForCompletion();
         ReadTableAndSetAttribute();
     }
 
@@ -113,6 +116,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         chaseBulletPrefabLink = enemy.RogueEnemyChaseBulletPrefab;
         if(chaseBulletPrefabLink!=null && chaseBulletPrefabLink!="null")
             chaseBulletPrefab = Addressables.LoadAssetAsync<GameObject>(chaseBulletPrefabLink).WaitForCompletion();
+        string elementType = enemy.EnemyElementType;
+        enemyElementType = (ElementType)Enum.Parse(typeof(ElementType), elementType);
         InitStateMachine();
     }
     
@@ -409,6 +414,39 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
             Destroy(muzzleObj, 20f);
             yield return new WaitForSeconds(enemy._RogueEnemyChaseShootInterval());
         }
+    }
+
+    private ElementReaction currentElementReaction = ElementReaction.None;
+    private bool canSummonNewReactionPrefab = true; //是否可以生成新的反应特效,理论上这个不消失的话，就不会生成新的特效
+    private GameObject currentReactionPrefab;
+    private float reactionPrefabShowTime = 2f;
+    private GameObject vaporizePrefab;
+    public void AddElementReactionEffects(ElementReaction reaction)
+    {
+        //两种状态下，会直接返回
+        //1.元素反应并没有发生变化
+        if (canSummonNewReactionPrefab)
+        {
+            canSummonNewReactionPrefab = false;
+            switch (reaction)
+            {
+                case ElementReaction.Vaporize: //蒸发反应，怪物冒烟，以及蒸发两个字
+                    currentReactionPrefab = Instantiate(vaporizePrefab, transform);
+                    reactionPrefabShowTime = currentReactionPrefab.GetComponent<ParticleSystem>().main.duration;
+                    Debug.Log("触发蒸发反应！！");
+                    //todo:可以加一个蒸发的字样
+                    
+                    Destroy(currentReactionPrefab, reactionPrefabShowTime);
+                    break;
+            }
+            
+            DOVirtual.DelayedCall(reactionPrefabShowTime, () =>
+            {
+                canSummonNewReactionPrefab = true;
+            });
+        }
+            
+        
     }
 }
 

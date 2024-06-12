@@ -107,5 +107,10 @@ public class Class_RogueEnemyCSVFile {
 		return value;
 	}
 	public string EnemyLevel { get; set; }    //敌人难度等级（10表示最高）
+	public string EnemyElementType { get; set; }    //敌人的元素类型
+	  public string _EnemyElementType (){
+		string value = EnemyElementType;
+		return value;
+	}
 	}
 	

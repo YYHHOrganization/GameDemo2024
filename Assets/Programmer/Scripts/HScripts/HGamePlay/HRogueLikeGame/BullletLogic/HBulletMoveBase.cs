@@ -10,6 +10,7 @@ public class HBulletMoveBase : MonoBehaviour
     private float bulletRange = 10f;
     private Vector3 originPos;
     private int bulletDamageBias = 0;
+    public ElementType bulletElement = ElementType.None;
     void Start()
     {
         originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -64,9 +65,15 @@ public class HBulletMoveBase : MonoBehaviour
         {
             Debug.Log("Shhhhhhhhhhh");
             //hitObject.GetComponent<YHandleHitPuppet>().HandleHitPuppet();
+            int baseDamage =
+                (int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterCurDamage"] +
+                bulletDamageBias;
             YPatrolAI patrolAI = co.gameObject.GetComponentInParent<YPatrolAI>();
             if (patrolAI != null)
             {
+                int damage =
+                    HRogueDamageCalculator.Instance.CalculateBaseDamage(baseDamage, bulletElement, ElementType.None,
+                        out ElementReaction reaction);
                 patrolAI.die();
                 //todo:写一个伤害的函数
             }
@@ -78,7 +85,12 @@ public class HBulletMoveBase : MonoBehaviour
             }
             if (enemyPatrolAI != null)
             {
-                enemyPatrolAI.ChangeHealth(-(int)HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueCharacterCurDamage"] + bulletDamageBias);
+                int damage =
+                    HRogueDamageCalculator.Instance.CalculateBaseDamage(baseDamage, bulletElement, enemyPatrolAI.EnemyElementType,
+                        out ElementReaction reaction);
+                enemyPatrolAI.ChangeHealth(-damage);
+                enemyPatrolAI.AddElementReactionEffects(reaction);
+                Debug.Log(reaction);
             }
            
         }
