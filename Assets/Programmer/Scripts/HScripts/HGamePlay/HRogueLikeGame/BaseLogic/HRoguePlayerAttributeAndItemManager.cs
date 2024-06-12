@@ -34,6 +34,8 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     public ScreenPositiveItemCheckType ScreenPositiveCheckType => screenPositiveCheckType;
     private int curScreenPositiveItemRoomCounter;
     private float curScreenPositiveItemTimeCounter;
+    private bool rogueGameStart = false;
+    public bool RogueGameStart => rogueGameStart;
     
     public string CurScreenPositiveFunc => curScreenPositiveFunc;
     public string CurScreenPositiveFuncParams => curScreenPositiveFuncParams;
@@ -41,6 +43,8 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     
     private string thisPositiveScreenItemId;
     public string ThisPositiveScreenItemId => thisPositiveScreenItemId;
+    
+    private HRogueWeatherController weatherController;
     
     public static HRoguePlayerAttributeAndItemManager Instance
     {
@@ -105,6 +109,10 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 
         curBulletPrefab = Addressables.LoadAssetAsync<GameObject>("BasicBullet").WaitForCompletion();
         GiveOutOriginThing(characterBaseAttribute);
+        rogueGameStart = true;
+        weatherController = yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        weatherController.StartWeatherControl();
+
     }
 
     public void ShowHeartAndShield(bool show)

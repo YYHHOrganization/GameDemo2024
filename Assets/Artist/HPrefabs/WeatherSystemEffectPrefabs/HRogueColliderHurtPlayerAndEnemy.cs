@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Transactions;
+using DG.Tweening;
 using UnityEngine;
 
 public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
 {
     public bool isTrigger = true;
     public int damage = 2;
+
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log("OnTriggerEnter!!!");
@@ -34,8 +37,15 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
                 enemyPatrolAI.ChangeHealth(-damage);
             }
         }
+        //处理猫猫糕的问题
+        else if (other.gameObject.GetComponent<YPetStateMachine>())
+        {
+            Debug.Log("猫猫糕炸了Trigger！");
+            //todo:后面有需要的话做一个猫猫糕被炸飞的效果，暂时先不管了
+            
+        }
     }
-
+    
     // Start is called before the first frame update
     void Start()
     {
