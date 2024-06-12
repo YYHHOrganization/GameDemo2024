@@ -728,8 +728,10 @@ MonoBehaviour:
   shootOrigin: {fileID: 2545751183044964781}
   shouldCheckEnemyCount: 0
   attackType: 0
+  followTypeInBattle: 0
   AttackEff: {fileID: 0}
   AttackEffTrans: {fileID: 5791030200808233866}
+  weapon: {fileID: 0}
   closeEnoughDistance: 10
   bat: {fileID: 0}
 --- !u!195 &8547223864732984467
@@ -743,7 +745,7 @@ NavMeshAgent:
   m_AgentTypeID: -334000983
   m_Radius: 0.3
   m_Speed: 6
-  m_Acceleration: 10
+  m_Acceleration: 12
   avoidancePriority: 50
   m_AngularSpeed: 150
   m_StoppingDistance: 2
