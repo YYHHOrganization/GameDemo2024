@@ -23,6 +23,32 @@ public enum TreasureType
     WangxiayitongRunChest,
 }
 
+public enum ElementType
+{
+    Anemo, //风
+    Geo,   //岩
+    Electro, //雷
+    Dendro, // 草
+    Hydro,  //水
+    Pyro, //火
+    Cryo,  //冰
+    None, //无属性，很多怪应该都无属性
+}
+
+public enum ElementReaction
+{
+    None,
+    Overload, //超载
+    Superconduct, //超导
+    ElectroCharged, //感电
+    Swirl, //扩散
+    Burning, //燃烧
+    Frozen, //冰冻
+    Melt, //融化
+    Vaporize, //蒸发
+    Crystallize, //结晶
+}
+
 public class RogueCharacterBaseAttribute
 {
     public string characterId;

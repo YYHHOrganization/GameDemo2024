@@ -32,6 +32,10 @@ public class HRogueWeatherController : MonoBehaviour
     private GameObject thunderLightingStrikeVFX;
     
     private Coroutine lightningFallCoroutine;
+    private Coroutine lightningCoroutine;
+    
+    private float minWeatherDuration = 45.0f; // 每种天气最少持续时间
+    private float minClearDuration = 10.0f; // 天晴到下雨/下雪之间最少间隔时间
     
     //一些与天气有关的bool值
     private bool isRaining = false;
@@ -46,28 +50,57 @@ public class HRogueWeatherController : MonoBehaviour
         thunderAlertVFX = Addressables.LoadAssetAsync<GameObject>(thunderAlertVFXAddress).WaitForCompletion();
         thunderLightingStrikeVFX = Addressables.LoadAssetAsync<GameObject>(thunderLightingStrikeVFXAddress).WaitForCompletion();
     }
+    
+    private bool testSnow = false;
 
-    public bool testRain = false;
-    public bool resetEverything = false;
-    // Update is called once per frame
-    void Update()
+    public void StartWeatherControl()
     {
-        if (testRain)
+        StartCoroutine(WeatherRoutine());
+    }
+    private IEnumerator WeatherRoutine()
+    {
+        while (true)
         {
-            testRain = false;
-            StartCoroutine(StartRainingBase());
-        }
+            // 天晴
+            Debug.Log("天晴了");
+            yield return new WaitForSeconds(minClearDuration); // 天晴最少持续5分钟
 
-        if (resetEverything)
-        {
-            resetEverything = false;
+            // 随机选择下雨或下雪
+            int weatherChoice = Random.Range(0, 1); // 0: 雨, 1: 雪
+            if (weatherChoice == 0)
+            {
+                Debug.Log("下雨了");
+                StartCoroutine(StartRainingBase());
+                yield return new WaitForSeconds(Random.Range(minWeatherDuration, minWeatherDuration * 2));
+            }
+            else
+            {
+                Debug.Log("下雪了");
+                yield return new WaitForSeconds(Random.Range(minWeatherDuration, minWeatherDuration * 2));
+            }
             ResetEverything();
         }
     }
     
-    //todo: 天气要逐渐放晴，而不是突然直接停止
-    private void ResetEverything()
+    IEnumerator ChangeToSunnyDay()
     {
+        //3.雨逐渐停下
+        float i = 1f;
+        float rate = 1f / startRainTime;
+        while (i > 0)
+        {
+            i -= Time.deltaTime * rate;
+            rainBox.rainSparsity = Mathf.Lerp(5f, 1f, i) ;
+            dirLight.intensity = Mathf.Lerp(originalDirLightIntensity, darkestDirLightIntensity, i);
+            fogThin = Mathf.Lerp(2f, 1f, i);
+            RenderSettings.fogStartDistance = linearFogStart * fogThin * (2.0f - i);
+            RenderSettings.fogEndDistance = linearFogEnd * fogThin * (2.0f - i);
+            spppMat.SetColor("_Color", new Color(0f, 0f, 0f, (0.5f + 0.5f * (1.0f - i))));
+            audioSource.volume = i * 5;
+            HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",true, 1.2f * i);
+            HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",true, 0.03f * i);
+            yield return null;
+        }
         // 1.关闭雾效
         RenderSettings.fog = false;
         // 2.关闭单个像素后处理效果
@@ -81,13 +114,27 @@ public class HRogueWeatherController : MonoBehaviour
         dirLight.intensity = originalDirLightIntensity;
         //4.关闭音效
         audioSource.Stop();
-        //5.关闭闪电
-        StopAllCoroutines();
         spppMat.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
         //6.关闭rainManager
         Destroy(rainManagerObj);
         HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",false);
         HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",false);
+        HRogueDamageCalculator.Instance.SetElementTypeInEnvironment(ElementType.None); //雨停了
+    }
+    private void ResetEverything()
+    {
+        isRaining = false;
+        // 1.先把落雷劈下的效果停掉
+        isLightingFall = false;
+        
+        //2.关闭闪电的单个屏幕后处理效果
+        if (lightningCoroutine != null)
+        {
+            StopCoroutine(lightningCoroutine);
+        }
+        spppMat.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
+
+        StartCoroutine(ChangeToSunnyDay());
     }
     
     IEnumerator LightningControl()
@@ -105,25 +152,24 @@ public class HRogueWeatherController : MonoBehaviour
     {
         if (isActive)
         {
-            if (lightningFallCoroutine != null)
-            {
-                StopCoroutine(lightningFallCoroutine);
-            }
+            isLightingFall = true;
             lightningFallCoroutine = StartCoroutine(LightingFall());
         }
         else
         {
             if (lightningFallCoroutine != null)
             {
-                StopCoroutine(lightningFallCoroutine);
+                isLightingFall = false;
+                //StopCoroutine(lightningFallCoroutine);
             }
         }
     }
 
+    private bool isLightingFall = true;
     IEnumerator LightingFall()
     {
         //降下落雷
-        while (true)
+        while (isLightingFall)
         {
             Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
             //在玩家周围0~5米范围内随机选择一个Position，生成ThunderAlertVFX
@@ -168,6 +214,9 @@ public class HRogueWeatherController : MonoBehaviour
 
     IEnumerator StartRainingBase()
     {
+        isRaining = true;
+        HRogueDamageCalculator.Instance.SetElementTypeInEnvironment(ElementType.Hydro); //下雨了，环境中附着水元素
+        
         rainManagerObj = Addressables.LoadAssetAsync<GameObject>(rainManagerAddress).WaitForCompletion();
         GameObject player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer();
         playerCamera = player.GetComponent<HPlayerStateMachine>().playerCamera;
@@ -230,7 +279,8 @@ public class HRogueWeatherController : MonoBehaviour
         RenderSettings.fogEndDistance = linearFogEnd * fogThin;
         spppMat.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
         // start to repeatedly play lightning
-        StartCoroutine(LightningControl());
+        lightningCoroutine = StartCoroutine(LightningControl());
+        isLightingFall = true;
         lightningFallCoroutine = StartCoroutine(LightingFall());
     }
 }

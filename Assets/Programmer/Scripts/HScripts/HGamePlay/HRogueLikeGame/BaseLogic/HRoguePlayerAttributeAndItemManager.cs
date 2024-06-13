@@ -34,6 +34,8 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     public ScreenPositiveItemCheckType ScreenPositiveCheckType => screenPositiveCheckType;
     private int curScreenPositiveItemRoomCounter;
     private float curScreenPositiveItemTimeCounter;
+    private bool rogueGameStart = false;
+    public bool RogueGameStart => rogueGameStart;
     
     public string CurScreenPositiveFunc => curScreenPositiveFunc;
     public string CurScreenPositiveFuncParams => curScreenPositiveFuncParams;
@@ -41,6 +43,10 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     
     private string thisPositiveScreenItemId;
     public string ThisPositiveScreenItemId => thisPositiveScreenItemId;
+    
+    private HRogueWeatherController weatherController;
+
+    public bool cannotBeHurt = false;
     
     public static HRoguePlayerAttributeAndItemManager Instance
     {
@@ -105,6 +111,10 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 
         curBulletPrefab = Addressables.LoadAssetAsync<GameObject>("BasicBullet").WaitForCompletion();
         GiveOutOriginThing(characterBaseAttribute);
+        rogueGameStart = true;
+        weatherController = yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        weatherController.StartWeatherControl();
+
     }
 
     public void ShowHeartAndShield(bool show)
@@ -221,6 +231,7 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 
     public void ChangeHealth(int value)
     {
+        if (cannotBeHurt) return;
         if (value < 0)
         {
             HRogueCameraManager.Instance.ShakeCamera(10,0.1f);
@@ -475,6 +486,10 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
 
     public GameObject GetRandomCurBulletPrefab(ref int damageBias)
     {
+        //test!!!
+        //damageBias = 0;
+        //return bulletPrefabs[0];
+        
         //利用random的特性，有90%的基础概率直接是curcurBulletPrefab，10%的概率是bulletPrefabs中的随机一个
         if (bulletPrefabLength==0 || UnityEngine.Random.Range(0, 100) < 80)
         {

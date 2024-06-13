@@ -166,6 +166,12 @@ public class YPlayModeController : MonoBehaviour
             //YmapCharacterIcon
             GameObject mapCharacterIcon = Addressables.LoadAssetAsync<GameObject>("YmapCharacterIcon").WaitForCompletion();
             GameObject mapCharacterIconGo = Instantiate(mapCharacterIcon, player.transform);
+            
+            //添加一个伤害解算的脚本在Root上
+            GameObject gameRoot = yPlanningTable.Instance.gameObject;
+            gameRoot.AddComponent<HRogueDamageCalculator>();
+            //添加一个WorldUIManager在Root上
+            gameRoot.AddComponent<HWorldUIShowManager>();
         }
         else
         {
