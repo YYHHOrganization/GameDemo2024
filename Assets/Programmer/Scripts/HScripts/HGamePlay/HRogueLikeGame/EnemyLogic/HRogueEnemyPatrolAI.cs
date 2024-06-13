@@ -88,6 +88,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private ElementType enemyElementType = ElementType.None;
     public ElementType EnemyElementType => enemyElementType;
 
+    private HWorldUIShowManager worldUIManager;
+
     protected virtual void Awake()
     {
         animator = gameObject.GetComponentInChildren<Animator>();
@@ -98,6 +100,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         shootOrigin = transform.Find("ShootOrigin");
         vaporizePrefab = Addressables.LoadAssetAsync<GameObject>("VaporizePrefab").WaitForCompletion();
         ReadTableAndSetAttribute();
+        worldUIManager = yPlanningTable.Instance.gameObject.GetComponent<HWorldUIShowManager>();
     }
 
     private void ReadTableAndSetAttribute()
@@ -421,6 +424,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private GameObject currentReactionPrefab;
     private float reactionPrefabShowTime = 2f;
     private GameObject vaporizePrefab;
+    private GameObject vaporizeUIPrefab;
     public void AddElementReactionEffects(ElementReaction reaction)
     {
         //两种状态下，会直接返回
@@ -434,11 +438,10 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
                     currentReactionPrefab = Instantiate(vaporizePrefab, transform);
                     reactionPrefabShowTime = currentReactionPrefab.GetComponent<ParticleSystem>().main.duration;
                     Debug.Log("触发蒸发反应！！");
-                    //todo:可以加一个蒸发的字样
-                    
                     Destroy(currentReactionPrefab, reactionPrefabShowTime);
                     break;
             }
+            worldUIManager.ShowElementReactionWorldUIToParent(reaction, transform);
             
             DOVirtual.DelayedCall(reactionPrefabShowTime, () =>
             {

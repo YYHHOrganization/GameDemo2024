@@ -170,6 +170,8 @@ public class YPlayModeController : MonoBehaviour
             //添加一个伤害解算的脚本在Root上
             GameObject gameRoot = yPlanningTable.Instance.gameObject;
             gameRoot.AddComponent<HRogueDamageCalculator>();
+            //添加一个WorldUIManager在Root上
+            gameRoot.AddComponent<HWorldUIShowManager>();
         }
         else
         {
