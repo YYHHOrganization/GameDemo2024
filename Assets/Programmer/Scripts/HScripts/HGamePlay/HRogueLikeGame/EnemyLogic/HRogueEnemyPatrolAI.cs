@@ -313,6 +313,24 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         }
     }
 
+    public void UpdateEnemyCurrentElement(ElementType addElementType) //更新携带的元素
+    {
+        //以环境中的元素为优先，如果环境中有元素，那么怪物就会携带这个元素；
+        //如果环境中没有元素，那么如果怪物此时不携带元素（None），那么给他附着addElementType对应的元素
+        //如果怪物携带元素，则不需要进行更新
+        if (HRogueDamageCalculator.Instance.CurrentEnvironmentElement != ElementType.None)
+        {
+            enemyElementType = HRogueDamageCalculator.Instance.CurrentEnvironmentElement;
+        }
+        else
+        {
+            if (enemyElementType == ElementType.None)
+            {
+                enemyElementType = addElementType;
+            }
+        }
+    }
+
     public virtual void ChangeHealth(int value)
     {
         health += value;
@@ -348,8 +366,16 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
                     sequence.AppendInterval(1f);
                 }
                 break;
+            default:
+                ChangeHealth(value);
+                break;
         }
-        
+
+        if (reaction != ElementReaction.None)
+        {
+            //简单起见，暂时元素反应就是一次就中和完成，不含元素量相关的逻辑
+            enemyElementType = ElementType.None;
+        }
     }
 
     private void SetEnemyDie()

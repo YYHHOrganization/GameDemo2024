@@ -35,6 +35,7 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
             }
             if (enemyPatrolAI != null)
             {
+                enemyPatrolAI.UpdateEnemyCurrentElement(hurtElement);
                 int finalDamage =
                     HRogueDamageCalculator.Instance.CalculateBaseDamage(damage, hurtElement, enemyPatrolAI.EnemyElementType,
                         out ElementReaction reaction);
