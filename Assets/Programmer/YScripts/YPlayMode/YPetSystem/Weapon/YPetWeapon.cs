@@ -9,18 +9,18 @@ public class YPetWeapon : MonoBehaviour
 {
     public BoxCollider boxCollider;
     [SerializeField]int bulletDamage = 1;
-    [SerializeField] private GameObject hitEff;
+    [SerializeField] protected GameObject hitEff;
     private void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
     }
 
     //每攻击一次 检测一次碰撞
-    public void SetDetectShootOn()
+    public virtual void SetDetectShootOn()
     {
         boxCollider.enabled = true;
     }
-    public void SetDetectShootOff()
+    public virtual void SetDetectShootOff()
     {
         boxCollider.enabled = false;
         if(hitEff != null)

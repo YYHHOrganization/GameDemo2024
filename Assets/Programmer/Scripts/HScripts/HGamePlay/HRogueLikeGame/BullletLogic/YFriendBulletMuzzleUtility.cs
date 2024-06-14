@@ -80,6 +80,7 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
         if(weapon!=null)
             petWeapon = weapon.GetComponent<YPetWeapon>();
     }
+    
     bool duringShoot = false;
     Coroutine shootCoroutine;
     public void ShootSpecialBullet()
@@ -152,8 +153,17 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
             case "UseCommonWeapons"://使用近战武器
                 UseCommonWeapons();
                 break;
+            case "UseCommonWeapons2"://37
+                UseCommonWeapons2();
+                break;
         }
     }
+
+    private void UseCommonWeapons2()
+    {
+        petWeapon.SetDetectShootOn();
+    }
+
     private void UseCommonWeapons()
     {
         // if (petWeapon != null)
