@@ -484,11 +484,23 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         bulletPrefabLength++;
     }
 
+    [Header("测试元素反应，均发射特殊子弹，需要给予特殊子弹的物品")]
+    public bool testSomething = false;
     public GameObject GetRandomCurBulletPrefab(ref int damageBias)
     {
-        //test!!!
-        //damageBias = 0;
-        //return bulletPrefabs[0];
+        if (testSomething)
+        {
+            //test!!!
+            if (bulletPrefabLength == 0)
+            {
+                return curBulletPrefab;
+            }
+            else
+            {
+                damageBias = 0;
+                return bulletPrefabs[0];
+            }
+        }
         
         //利用random的特性，有90%的基础概率直接是curcurBulletPrefab，10%的概率是bulletPrefabs中的随机一个
         if (bulletPrefabLength==0 || UnityEngine.Random.Range(0, 100) < 80)

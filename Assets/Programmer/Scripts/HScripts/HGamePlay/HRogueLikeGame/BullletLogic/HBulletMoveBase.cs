@@ -88,7 +88,7 @@ public class HBulletMoveBase : MonoBehaviour
                 int damage =
                     HRogueDamageCalculator.Instance.CalculateBaseDamage(baseDamage, bulletElement, enemyPatrolAI.EnemyElementType,
                         out ElementReaction reaction);
-                enemyPatrolAI.ChangeHealth(-damage);
+                enemyPatrolAI.ChangeHealthWithReaction(-damage, reaction);
                 enemyPatrolAI.AddElementReactionEffects(reaction);
                 Debug.Log(reaction);
             }

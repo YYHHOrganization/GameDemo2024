@@ -40,11 +40,39 @@ public class HRogueDamageCalculator : MonoBehaviour
     {
         int finalDamage = sourceDamage;
         reaction = ElementReaction.None;
-        destElement = UpdateDestElementTypeWithEnvironment(sourceElement); //比如下雨的话，敌方会被挂上水元素
+        destElement = UpdateDestElementTypeWithEnvironment(destElement); //比如下雨的话，敌方会被挂上水元素
         
         if (sourceElement == ElementType.Pyro)  //发射的是火元素
         {
             finalDamage = PyroRelatedDamage(true, sourceDamage, destElement, out reaction);
+        }
+        else if (sourceElement == ElementType.Electro) //发射的是雷元素
+        {
+            finalDamage = ElectroRelatedDamage(true, sourceDamage, destElement, out reaction);
+        }
+
+        return finalDamage;
+    }
+
+    //与雷元素相关的反应
+    private int ElectroRelatedDamage(bool isSource, int sourceDamage, ElementType destElement,
+        out ElementReaction reaction)
+    {
+        int finalDamage = sourceDamage;
+        reaction = ElementReaction.None;
+        if (isSource)
+        {
+            switch (destElement)
+            {
+                case ElementType.None: //敌方目标是无属性的
+                    finalDamage = sourceDamage;
+                    break;
+                case ElementType.Hydro:
+                    //感电反应打出1.5倍伤害
+                    finalDamage = sourceDamage;
+                    reaction = ElementReaction.ElectroCharged; //打出感电反应
+                    break;
+            }
         }
 
         return finalDamage;
