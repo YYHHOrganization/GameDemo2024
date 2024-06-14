@@ -9,6 +9,7 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
 {
     public bool isTrigger = true;
     public int damage = 2;
+    public ElementType hurtElement = ElementType.None;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -34,7 +35,12 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
             }
             if (enemyPatrolAI != null)
             {
-                enemyPatrolAI.ChangeHealth(-damage);
+                enemyPatrolAI.UpdateEnemyCurrentElement(hurtElement);
+                int finalDamage =
+                    HRogueDamageCalculator.Instance.CalculateBaseDamage(damage, hurtElement, enemyPatrolAI.EnemyElementType,
+                        out ElementReaction reaction);
+                enemyPatrolAI.ChangeHealthWithReaction(-finalDamage, reaction);
+                enemyPatrolAI.AddElementReactionEffects(reaction);
             }
         }
         //处理猫猫糕的问题

@@ -99,6 +99,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         isDeadHash = Animator.StringToHash("isDead");
         shootOrigin = transform.Find("ShootOrigin");
         vaporizePrefab = Addressables.LoadAssetAsync<GameObject>("VaporizePrefab").WaitForCompletion();
+        electroChargedPrefab = Addressables.LoadAssetAsync<GameObject>("ElectroChargedPrefab").WaitForCompletion();
         ReadTableAndSetAttribute();
         worldUIManager = yPlanningTable.Instance.gameObject.GetComponent<HWorldUIShowManager>();
     }
@@ -312,6 +313,24 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         }
     }
 
+    public void UpdateEnemyCurrentElement(ElementType addElementType) //更新携带的元素
+    {
+        //以环境中的元素为优先，如果环境中有元素，那么怪物就会携带这个元素；
+        //如果环境中没有元素，那么如果怪物此时不携带元素（None），那么给他附着addElementType对应的元素
+        //如果怪物携带元素，则不需要进行更新
+        if (HRogueDamageCalculator.Instance.CurrentEnvironmentElement != ElementType.None)
+        {
+            enemyElementType = HRogueDamageCalculator.Instance.CurrentEnvironmentElement;
+        }
+        else
+        {
+            if (enemyElementType == ElementType.None)
+            {
+                enemyElementType = addElementType;
+            }
+        }
+    }
+
     public virtual void ChangeHealth(int value)
     {
         health += value;
@@ -325,6 +344,37 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         else if (health > maxHealth)
         {
             health = maxHealth;
+        }
+    }
+
+    public virtual void ChangeHealthWithReaction(int value, ElementReaction reaction)
+    {
+        switch (reaction)
+        {
+            case ElementReaction.Vaporize:  //蒸发反应正常扣血就行
+                ChangeHealth(value);
+                break;
+            case ElementReaction.ElectroCharged: //感电反应，持续扣血
+                var sequence = DOTween.Sequence();//创建一个序列
+                int hurtValue = (int)Mathf.Min(1, value * 0.5f);
+                for (int i = 0; i < 5; i++)
+                {
+                    sequence.AppendCallback(() =>
+                    {
+                        ChangeHealth(hurtValue);
+                    });
+                    sequence.AppendInterval(1f);
+                }
+                break;
+            default:
+                ChangeHealth(value);
+                break;
+        }
+
+        if (reaction != ElementReaction.None)
+        {
+            //简单起见，暂时元素反应就是一次就中和完成，不含元素量相关的逻辑
+            enemyElementType = ElementType.None;
         }
     }
 
@@ -424,7 +474,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private GameObject currentReactionPrefab;
     private float reactionPrefabShowTime = 2f;
     private GameObject vaporizePrefab;
-    private GameObject vaporizeUIPrefab;
+    
+    private GameObject electroChargedPrefab;
     public void AddElementReactionEffects(ElementReaction reaction)
     {
         //两种状态下，会直接返回
@@ -440,16 +491,20 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
                     Debug.Log("触发蒸发反应！！");
                     Destroy(currentReactionPrefab, reactionPrefabShowTime);
                     break;
+                case ElementReaction.ElectroCharged: //感电反应，怪物冒电光，以及感电这两个字
+                    currentReactionPrefab = Instantiate(electroChargedPrefab, transform);
+                    reactionPrefabShowTime = 5f;
+                    Debug.Log("触发感电反应！！");
+                    Destroy(currentReactionPrefab, reactionPrefabShowTime);
+                    break;
             }
-            worldUIManager.ShowElementReactionWorldUIToParent(reaction, transform);
-            
             DOVirtual.DelayedCall(reactionPrefabShowTime, () =>
             {
                 canSummonNewReactionPrefab = true;
             });
         }
-            
         
+        worldUIManager.ShowElementReactionWorldUIToParent(reaction, transform);
     }
 }
 

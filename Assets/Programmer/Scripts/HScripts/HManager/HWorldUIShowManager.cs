@@ -9,10 +9,13 @@ public class HWorldUIShowManager : MonoBehaviour
 {
     private string vaporizePrefabUILink = "VaporizeReactionUI";
     private GameObject vaporizeUI;
+    private string electroChargedPrefabUILink = "ElectroChargedReactionUI";
+    private GameObject electroChargedUI;
 
     private void Start()
     {
         vaporizeUI = Addressables.LoadAssetAsync<GameObject>(vaporizePrefabUILink).WaitForCompletion();
+        electroChargedUI = Addressables.LoadAssetAsync<GameObject>(electroChargedPrefabUILink).WaitForCompletion();
     }
 
     public void ShowElementReactionWorldUIToParent(ElementReaction reaction, Transform parent)
@@ -26,6 +29,25 @@ public class HWorldUIShowManager : MonoBehaviour
                 {
                     Destroy(showUI);
                 };
+                break;
+            case ElementReaction.ElectroCharged: //感电反应，一共持续5s，每秒出一个感电的UI
+                var sequence = DOTween.Sequence();
+                for (int i = 0; i < 5; i++)
+                {
+                    sequence.AppendCallback(() =>
+                    {
+                        if (parent != null)
+                        {
+                            GameObject aElectroChargedUI = Instantiate(this.electroChargedUI, parent);
+                            aElectroChargedUI.transform.DOLocalMove(new Vector3(-1.5f, 2f, 0), 0.5f).onComplete = () =>
+                            {
+                                Destroy(aElectroChargedUI);
+                            };
+                        }
+                    });
+                    sequence.AppendInterval(1f);
+                }
+
                 break;
         }
     }
