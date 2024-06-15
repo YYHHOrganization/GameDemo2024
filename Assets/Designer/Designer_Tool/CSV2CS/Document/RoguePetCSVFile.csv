@@ -1,8 +1,8 @@
-﻿宠物id,宠物编号,敌人中文名,addressable链接,宠物攻击类型,敌人巡逻速度,武器携带类型,敌人巡逻子弹Prefab的Link,宠物攻击effLink,宠物追逐敏感距离（距离这个长度内会攻击,巡逻射击子弹间隔（不射击的填-1）,追击玩家的最大速度,宠物战场跟随类型（如果是Close，那么战场中不会距离主人很远，否则会自己打不关注人在哪）,敌人射击子弹的函数(没有填Normal),敌人追击时的射击间隔,敌人追击时射击子弹PrefabLink,敌人初始生命值,敌人巡逻时伤害,敌人追击时伤害,是否追不到敌人就返回Wander,检测攻击的扇形范围半径,检测攻击的扇形范围角度,子弹速度;射程,敌人难度等级（10表示最高）
-petID,PetNum,ChineseName,addressableLink,AttackType,WanderSpeed,WeaponCarryingType,WanderBulletLink,AttackEff,PetAttackSensitiveDis,WanderShootInterval,ChaseMaxSpeed,FollowTypeInBattle,ChaseShootFunc,ChaseShootInterval,ChaseBulletPrefab,StartHealth,WanderDamage,ChaseDamage,IsReturnWander,DetectAttackDis,DetectAttackAngle,BulletAttribute,Level
-string,string,string,string,string,float,string,string,string,float,float,float,float,string,string,float,string,int,int,int,int,int,int,string
-RenCatcake,77000001,刃猫猫糕,RenCatcake,RangedAttack,2,Bullet,BulletRen_Friend,null,10,10,3,Close,ShootBulletMuzzleCircleBumping;8;false,3,null,5,1,1,1,0,0,2;20,0
-DanhengCatcake,77000000,丹恒猫猫糕,DanhengCatcake,RangedAttack,2,Bullet,BulletTaichi_Friend,null,10,5,3,Close,ShootBulletMuzzleCircleAtOnce;8;false,3,null,5,1,1,1,0,0,5;20,0
-XingCatcake,77000002,星猫猫糕,XingCatcake,MeleeAttack,2,Init,WeaponXingBat,SwordSlash12BatEff,10,5,3,notConcern,UseMeleeWeapons;8;false,3,null,5,1,1,1,0,0,5;20,0
-KafkaCatcake,77000003,卡芙卡猫猫糕,KafkaCatcake,ChaseBeforeMeleeAttack,2,SelfCarrying,WeaponXingBat,SwordSlash12BatEff,5,5,3,notConcern,UseCommonWeapons;8;false,3,null,5,1,1,1,3,60,5;20,0
-March7thCatcake,77000004,三月七猫猫糕,March7thCatcake,ChaseBeforeMeleeAttack,2,SelfCarrying,WeaponXingBat,SwordSlash12BatEff,5,5,3,notConcern,UseCommonWeapons2;8;false,3,null,5,1,1,1,5,30,5;20,0
+﻿宠物id,宠物编号,敌人中文名,addressable链接,宠物攻击类型,敌人巡逻速度,武器携带类型,敌人巡逻子弹Prefab的Link,宠物攻击effLink,宠物追逐敏感距离（距离这个长度内会攻击,巡逻射击子弹间隔（不射击的填-1）,攻击时是否追逐（不追逐则会原地停止）,宠物战场跟随类型（如果是Close，那么战场中不会距离主人很远，否则会自己打不关注人在哪）,敌人射击子弹的函数(没有填Normal),敌人追击时的射击间隔,敌人追击时射击子弹PrefabLink,敌人初始生命值,敌人巡逻时伤害,敌人追击时伤害,是否追不到敌人就返回Wander,检测攻击的扇形范围半径,检测攻击的扇形范围角度,子弹速度;射程,敌人难度等级（10表示最高）
+petID,PetNum,ChineseName,addressableLink,AttackType,WanderSpeed,WeaponCarryingType,WanderBulletLink,AttackEff,PetAttackSensitiveDis,WanderShootInterval,IsMoveWhenAttacking,FollowTypeInBattle,ChaseShootFunc,ChaseShootInterval,ChaseBulletPrefab,StartHealth,WanderDamage,ChaseDamage,IsReturnWander,DetectAttackDis,DetectAttackAngle,BulletAttribute,Level
+string,string,string,string,string,float,string,string,string,float,float,int,float,string,string,float,string,int,int,int,int,int,int,string
+RenCatcake,77000001,刃猫猫糕,RenCatcake,RangedAttack,2,Bullet,BulletRen_Friend,null,10,10,0,Close,ShootBulletMuzzleCircleBumping;8;false,3,null,5,1,1,1,0,0,2;20,0
+DanhengCatcake,77000000,丹恒猫猫糕,DanhengCatcake,RangedAttack,2,Bullet,BulletTaichi_Friend,null,10,5,0,Close,ShootBulletMuzzleCircleAtOnce;8;false,3,null,5,1,1,1,0,0,5;20,0
+XingCatcake,77000002,星猫猫糕,XingCatcake,MeleeAttack,2,Init,WeaponXingBat,SwordSlash12BatEff,10,5,1,notConcern,UseMeleeWeapons;8;false,3,null,5,1,1,1,0,0,5;20,0
+KafkaCatcake,77000003,卡芙卡猫猫糕,KafkaCatcake,ChaseBeforeMeleeAttack,2,SelfCarrying,WeaponXingBat,SwordSlash12BatEff,5,5,1,notConcern,UseCommonWeapons;8;false,3,null,5,1,1,1,3,60,5;20,0
+March7thCatcake,77000004,三月七猫猫糕,March7thCatcake,ChaseBeforeMeleeAttack,2,SelfCarrying,WeaponXingBat,SwordSlash12BatEff,5,6,0,notConcern,UseCommonWeapons2;8;false,3,null,5,1,1,1,5,30,5;20,0
