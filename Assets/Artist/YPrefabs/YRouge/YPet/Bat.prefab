@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2166134278729768292}
   - component: {fileID: 2911648934173029604}
   - component: {fileID: 8558639820420910328}
-  - component: {fileID: 9057011333903317835}
   - component: {fileID: 5458377332862507567}
+  - component: {fileID: -6542974516511956209}
   m_Layer: 10
   m_Name: Bat
   m_TagString: Untagged
@@ -107,20 +107,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.37810165, y: 0.6998396, z: 0.24080521}
   m_Center: {x: -0.08121458, y: 0.59072447, z: -0.0035091096}
---- !u!114 &9057011333903317835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 472889147960262428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f53e6bd221bcfd4a9357eddd862ea64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boxCollider: {fileID: 8558639820420910328}
-  bulletDamage: 4
 --- !u!54 &5458377332862507567
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -148,3 +134,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &-6542974516511956209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472889147960262428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb3a0ee9428c43c42a2f36b628b97bb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxCollider: {fileID: 8558639820420910328}
+  bulletDamage: 1
+  hitEff: {fileID: 0}
+  EffAddress: SwordSlash12BatEff

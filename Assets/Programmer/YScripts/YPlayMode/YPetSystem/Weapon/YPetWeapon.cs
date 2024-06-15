@@ -10,7 +10,7 @@ public class YPetWeapon : MonoBehaviour
     public BoxCollider boxCollider;
     [SerializeField]int bulletDamage = 1;
     [SerializeField] protected GameObject hitEff;
-    private void Start()
+    protected void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
     }
@@ -20,6 +20,11 @@ public class YPetWeapon : MonoBehaviour
     {
         boxCollider.enabled = true;
     }
+    public virtual void SetDetectShootOn(Transform AttackEffTrans)
+    {
+        boxCollider.enabled = true;
+    }
+    
     public virtual void SetDetectShootOff()
     {
         boxCollider.enabled = false;
@@ -72,24 +77,6 @@ public class YPetWeapon : MonoBehaviour
                 enemyPatrolAI.ChangeHealth(-bulletDamage);
             }
         }
-        
-        // if(hitPrefab != null)
-        // {
-        //     var hitVFX = Instantiate(hitPrefab, pos, rot);
-        //     var psHit = hitVFX.GetComponent<ParticleSystem>();
-        //     if (psHit != null) 
-        //     {
-        //         Destroy(hitVFX, psHit.main.duration);
-        //     }
-        //     else
-        //     {
-        //         var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
-        //         Destroy(hitVFX, psChild.main.duration);
-        //     }
-        // }
-        
-        //检测一次过后就停止检测
-        // boxCollider.enabled = false;
         
     }
 }

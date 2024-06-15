@@ -56,9 +56,9 @@ public class Class_RoguePetCSVFile {
 		float value = float.Parse(WanderShootInterval);
 		return value;
 	}
-	public string ChaseMaxSpeed { get; set; }    //追击玩家的最大速度
-	  public float _ChaseMaxSpeed (){
-		float value = float.Parse(ChaseMaxSpeed);
+	public string IsMoveWhenAttacking { get; set; }    //攻击时是否追逐（不追逐则会原地停止）
+	public int _IsMoveWhenAttacking (){
+		int value = int.Parse(IsMoveWhenAttacking);
 		return value;
 	}
 	public string FollowTypeInBattle { get; set; }    //宠物战场跟随类型（如果是Close，那么战场中不会距离主人很远，否则会自己打不关注人在哪）

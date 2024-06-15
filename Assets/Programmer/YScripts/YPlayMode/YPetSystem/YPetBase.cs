@@ -28,6 +28,17 @@ public abstract class YPetBase : MonoBehaviour
     [SerializeField]GameObject AttackEff;
     [SerializeField]Transform AttackEffTrans;
     [SerializeField] private GameObject weapon;
+    
+    bool isMoveWhenAttacking = false;
+    public bool IsMoveWhenAttacking
+    {
+        get => isMoveWhenAttacking;
+    }
+    float shootInterval = 0f;
+    public float ShootInterval
+    {
+        get => shootInterval;
+    }
     protected virtual void Start()
     {
         animator = gameObject.GetComponentInChildren<Animator>();
@@ -56,6 +67,9 @@ public abstract class YPetBase : MonoBehaviour
         
         if(bulletPrefabLink!=null && bulletPrefabLink!="null")
             bulletPrefab = Addressables.LoadAssetAsync<GameObject>(bulletPrefabLink).WaitForCompletion();
+        
+        isMoveWhenAttacking = pet._IsMoveWhenAttacking()==1;
+        shootInterval = pet._WanderShootInterval();
     }
     YFriendBulletMuzzleUtility muzzleUtility;
     private void InitMuzzle()

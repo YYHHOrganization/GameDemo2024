@@ -190,6 +190,8 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
     }
     private void UseMeleeWeapons()
     {
+        petWeapon.SetDetectShootOn(AttackEffTrans);
+        return;
         ////想在这里使用dotween等实现一个挥舞球棒的动作，例如斜上方挥到斜下方那种
         // 创建一条路径，使其从斜上方挥到斜下方并带有弧线效果
         // 通过定义沿着弧线旋转的路径来实现球棒挥舞的效果
@@ -229,18 +231,6 @@ public class YFriendBulletMuzzleUtility : HBulletMuzzleUtility
         {
             petWeapon.SetDetectShootOff();
         });
-        
-        //生成特效
-        // if (AttackEff != null)
-        // {
-        //     AttackEff.SetActive(true);
-        //     DOVirtual.DelayedCall(DelayDuration+HuiWuDuration+RecoverDuration,()=>
-        //     {
-        //         AttackEff.SetActive(false);
-        //     });
-        // }
-        //
-
         if (pet.AttackEff != "null")
         {
             GameObject effPrefab = Addressables.LoadAssetAsync<GameObject>(pet.AttackEff).WaitForCompletion();

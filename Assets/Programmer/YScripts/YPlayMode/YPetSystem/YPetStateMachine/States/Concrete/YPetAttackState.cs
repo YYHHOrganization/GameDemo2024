@@ -9,14 +9,24 @@ using UnityEngine;
 public class YPetAttackState : YPetBaseState
 {
     private YPetBase mPatrolAI;
+    bool isMoveWhenAttack = false;
+    float shootInterval = 0;
+    bool canMove = false;
 
     public YPetAttackState(YPetBase yPetBase) : base(yPetBase.gameObject)
     {
         mPatrolAI = yPetBase;
+        isMoveWhenAttack = mPatrolAI.IsMoveWhenAttacking;
+        shootInterval = mPatrolAI.ShootInterval;
     }
 
     public override Type Tick()
     {
+        //如果在攻击的时候不可以移动，且还在攻击时间内
+        if(!isMoveWhenAttack&&!canMove)
+        {
+            return null;
+        }
         //return null;//test
         //如果距离角色远 或者 没有敌人，都会就切换到FOLLOW状态
         if (mPatrolAI.followTypeInBattle == FollowTypeInBattle.Close)
@@ -29,6 +39,7 @@ public class YPetAttackState : YPetBaseState
         }
         else if (mPatrolAI.followTypeInBattle == FollowTypeInBattle.notConcern)
         {
+           
             //可能正在打怪中，看一下怪物有没有跑掉，如果跑掉了，就追上去
             
             //如果怪物全死了
@@ -60,6 +71,12 @@ public class YPetAttackState : YPetBaseState
     private void ExitState()
     {
         mPatrolAI.MuzzleStopShoot();
+        
+        if(!isMoveWhenAttack)
+        {
+            Debug.Log("BackMove////////!!!!!!!!!!!");
+            mPatrolAI.mNavMeshAgent.enabled = true;
+        }
     }
 
     private void SetNavmeshDestination()
@@ -83,6 +100,22 @@ public class YPetAttackState : YPetBaseState
         //mPatrolAI.mNavMeshAgent.enabled = true;
         mPatrolAI.MuzzleShoot();
         //
-        Debug.Log("Attack");
+        Debug.Log("Attack!!!!!!!!!!!");
+        
+        if(!isMoveWhenAttack)
+        {
+            canMove = false;
+            //此时应该开启一个计数器，当这个技能结束才能继续移动
+            Debug.Log("AttackAndStopMove////////!!!!!!!!!!!");
+            mPatrolAI.mNavMeshAgent.enabled = false;
+            // DOVirtual.DelayedCall(shootInterval, () =>
+            // {
+            //     canMove = true;
+            // });
+            DOVirtual.DelayedCall(mPatrolAI.ShootInterval, () =>
+            {
+                canMove = true;
+            });
+        }
     }
 }
