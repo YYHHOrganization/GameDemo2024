@@ -28,7 +28,7 @@ public class HRobinPet :YPetBase
             HAudioManager.Instance.EaseOutAndStop(HAudioManager.instance.gameObject);
             DOVirtual.DelayedCall(1.5f,() =>
             {
-                HAudioManager.Instance.Play("RobinCatcakeBattleAudio", HAudioManager.instance.gameObject, 33.5f);
+                HAudioManager.Instance.Play("RobinCatcakeBattleAudio", HAudioManager.instance.gameObject, 85.3f);
             });
             //mPetStateMachine.JustSwitchState(typeof(YPetAttackState));
         }
