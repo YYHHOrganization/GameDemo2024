@@ -30,15 +30,15 @@ public class YGrowVines : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        //测试用
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            BeginGrowVines();
-        }
-    }
-    void BeginGrowVines()
+    // void Update()
+    // {
+    //     //测试用
+    //     if (Input.GetKeyDown(KeyCode.G))
+    //     {
+    //         BeginGrowVines();
+    //     }
+    // }
+    public void BeginGrowVines()
     {
         for(int i=0;i<_materials.Count;i++)
         {
@@ -70,5 +70,45 @@ public class YGrowVines : MonoBehaviour
         }
         if(growValue>=maxGrow)isFullyGrow = true;
         else isFullyGrow = false;
+    }
+
+    IEnumerator GrowVines(Material material,bool isOn)
+    {
+        float growValue = material.GetFloat("_Grow");
+        if (isOn)//生长
+        {
+            //material.SetFloat("_Grow", minGrow);
+            while(growValue< maxGrow)
+            {
+                growValue += refreshRate / time2Grow;//例子 refreshRate = 0.05f, time2Grow = 5.0f 时，每次增加0.01
+                material.SetFloat("_Grow", growValue);
+                yield return new WaitForSeconds(refreshRate);
+            }
+        }
+        else //凋零 缩小
+        {
+            //material.SetFloat("_Grow", maxGrow);
+            while (growValue > minGrow)
+            {
+                growValue -= refreshRate / time2Grow;//例子 refreshRate = 0.05f, time2Grow = 5.0f 时，每次增加0.01
+                material.SetFloat("_Grow", growValue);
+                yield return new WaitForSeconds(refreshRate);
+            }
+        }
+    }
+
+    public void SetGrowVinesOn()
+    {
+        for(int i=0;i<_materials.Count;i++)
+        {
+            StartCoroutine(GrowVines(_materials[i],true));
+        }
+    }
+    public void SetGrowVinesOff()
+    {
+        for(int i=0;i<_materials.Count;i++)
+        {
+            StartCoroutine(GrowVines(_materials[i],false));
+        }
     }
 }

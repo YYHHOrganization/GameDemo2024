@@ -102,8 +102,8 @@ public class Class_RoguePetCSVFile {
 		return value;
 	}
 	public string DetectAttackDis { get; set; }    //检测攻击的扇形范围半径
-	public int _DetectAttackDis (){
-		int value = int.Parse(DetectAttackDis);
+	  public float _DetectAttackDis (){
+		float value = float.Parse(DetectAttackDis);
 		return value;
 	}
 	public string DetectAttackAngle { get; set; }    //检测攻击的扇形范围角度
