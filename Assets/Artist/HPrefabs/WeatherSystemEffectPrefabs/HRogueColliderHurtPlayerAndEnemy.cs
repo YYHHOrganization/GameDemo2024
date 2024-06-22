@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
@@ -17,7 +18,7 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
     private bool isInCD = false;
     private void OnTriggerStay(Collider other)
     {
-        //Debug.Log("OnTriggerEnter!!!");
+        if (!detectInCD) return;
         if (!isTrigger) return;
         if (other.gameObject.CompareTag("Player"))
         {
@@ -25,15 +26,16 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Enemy"))
         {
-            if (detectInCD)
-            {
+            Debug.Log("OnTriggerStay!!!" + other.name);
+            //if (detectInCD)
+            //{
                 if (isInCD) return;
                 isInCD = true;
                 DOVirtual.DelayedCall(detectCDTime, () =>
                 {
                     isInCD = false;
                 });
-            }
+            //}
             
             YPatrolAI patrolAI = other.gameObject.GetComponentInParent<YPatrolAI>();
             if (patrolAI != null)
@@ -68,7 +70,6 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("OnTriggerEnter!!!");
         if (!isTrigger) return;
         if (other.gameObject.CompareTag("Player"))
         {
@@ -76,6 +77,8 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Enemy"))
         {
+            Debug.Log("OnTriggerEnter!!!"+ other.name);
+            Debug.Log("男人！！！");
             YPatrolAI patrolAI = other.gameObject.GetComponentInParent<YPatrolAI>();
             if (patrolAI != null)
             {
