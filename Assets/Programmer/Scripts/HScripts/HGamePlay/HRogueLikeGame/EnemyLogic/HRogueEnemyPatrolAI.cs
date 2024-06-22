@@ -88,7 +88,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private ElementType enemyElementType = ElementType.None;
     public ElementType EnemyElementType => enemyElementType;
 
-    private HWorldUIShowManager worldUIManager;
+    protected HWorldUIShowManager worldUIManager;
 
     protected virtual void Awake()
     {
@@ -98,9 +98,14 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         isAttackingHash = Animator.StringToHash("isAttacking");
         isDeadHash = Animator.StringToHash("isDead");
         shootOrigin = transform.Find("ShootOrigin");
+        ReadTableAndSetAttribute();
+        LoadAllRefPrefabs();
+    }
+
+    protected virtual void LoadAllRefPrefabs()
+    {
         vaporizePrefab = Addressables.LoadAssetAsync<GameObject>("VaporizePrefab").WaitForCompletion();
         electroChargedPrefab = Addressables.LoadAssetAsync<GameObject>("ElectroChargedPrefab").WaitForCompletion();
-        ReadTableAndSetAttribute();
         worldUIManager = yPlanningTable.Instance.gameObject.GetComponent<HWorldUIShowManager>();
     }
 

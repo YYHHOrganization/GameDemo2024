@@ -9,6 +9,7 @@ public class YPetWeapon_RobinAttack : YPetWeapon
     // [SerializeField]
     float duration = 6f;
     public List<Material> materials;
+    private GameObject musicEffects;
 
     IEnumerator EaseMusicEffectInOrOut(bool isIn)
     {
@@ -25,12 +26,26 @@ public class YPetWeapon_RobinAttack : YPetWeapon
                 }
                 yield return new WaitForSeconds(deltaTime);
             }
+            boxCollider.enabled = true;
+            musicEffects.SetActive(true);
+            if (hitEff != null)
+            {
+                //与parent解绑，否则会跟随parent的位置
+                //hitEff.transform.parent = null;
+                hitEff.SetActive(true);
+            }
+            DOVirtual.DelayedCall(duration, () =>
+            {
+                SetDetectShootOff();
+            }); 
         }
         else
         {
             startValue = 0.9f;
             endValue = 2.0f;
             deltaTime = 0.02f;
+            musicEffects.SetActive(false);
+            boxCollider.enabled = false;
             for (float i = startValue; i <= endValue; i += deltaTime)
             {
                 for(int j = 0; j < materials.Count; j++)
@@ -39,7 +54,6 @@ public class YPetWeapon_RobinAttack : YPetWeapon
                 }
                 yield return new WaitForSeconds(deltaTime);
             }
-            boxCollider.enabled = false;
             if(hitEff != null)
             {
                 hitEff.SetActive(false);
@@ -52,19 +66,12 @@ public class YPetWeapon_RobinAttack : YPetWeapon
         hitEff.transform.parent = transform;
         hitEff.transform.localPosition = Vector3.zero;
         hitEff.transform.localRotation = Quaternion.identity;
-        boxCollider.enabled = true;
+        if (!musicEffects)
+        {
+            musicEffects = hitEff.transform.Find("RobinBullet/MusicEffect").gameObject;
+        }
         StopAllCoroutines();
         StartCoroutine(EaseMusicEffectInOrOut(true));
-        if (hitEff != null)
-        {
-            //与parent解绑，否则会跟随parent的位置
-            hitEff.transform.parent = null;
-            hitEff.SetActive(true);
-        }
-        DOVirtual.DelayedCall(duration, () =>
-        {
-            SetDetectShootOff();
-        }); 
     }
     public override void SetDetectShootOff()
     {

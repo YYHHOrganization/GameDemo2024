@@ -35,6 +35,7 @@ public class YEnemyBT : HRogueEnemyPatrolAI
         {
             skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         }
+        LoadAllRefPrefabs();
     }
 
     // Start is called before the first frame update
