@@ -354,7 +354,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     public virtual void ChangeHealthWithReaction(int value, ElementReaction reaction)
     {
-        Debug.Log("ChangeHealthWithReaction  " + reaction + "  " + value);
+        //Debug.Log("ChangeHealthWithReaction  " + reaction + "  " + value);
         switch (reaction)
         {
             case ElementReaction.Vaporize:  //蒸发反应正常扣血就行
@@ -484,7 +484,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private GameObject electroChargedPrefab;
     public void AddElementReactionEffects(ElementReaction reaction)
     {
-        Debug.Log("AddElementReactionEffects  " + reaction);
+        //Debug.Log("AddElementReactionEffects  " + reaction);
         //两种状态下，会直接返回
         //1.元素反应并没有发生变化
         if (canSummonNewReactionPrefab)

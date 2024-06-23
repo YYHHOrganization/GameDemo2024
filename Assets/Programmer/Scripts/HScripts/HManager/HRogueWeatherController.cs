@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using BehaviorDesigner.Runtime.Tasks.Unity.UnityAnimation;
 using CartoonFX;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -35,7 +36,7 @@ public class HRogueWeatherController : MonoBehaviour
     private Coroutine lightningCoroutine;
     
     private float minWeatherDuration = 45.0f; // 每种天气最少持续时间
-    private float minClearDuration = 10.0f; // 天晴到下雨/下雪之间最少间隔时间
+    private float minClearDuration = 45.0f; // 天晴到下雨/下雪之间最少间隔时间
     
     //一些与天气有关的bool值
     private bool isRaining = false;
@@ -55,8 +56,23 @@ public class HRogueWeatherController : MonoBehaviour
 
     public void StartWeatherControl()
     {
-        //StartCoroutine(WeatherRoutine());
+        StartCoroutine(WeatherRoutine());
     }
+
+    public void SetWeatherControl(bool isOn)
+    {
+        if (isOn)
+        {
+            StopAllCoroutines();
+            StartCoroutine(WeatherRoutine());
+        }
+        else
+        {
+            StopAllCoroutines();
+            ResetEverything();
+        }
+    }
+    
     private IEnumerator WeatherRoutine()
     {
         while (true)
@@ -84,6 +100,7 @@ public class HRogueWeatherController : MonoBehaviour
     
     IEnumerator ChangeToSunnyDay()
     {
+        Debug.Log("change to sunny day!");
         //3.雨逐渐停下
         float i = 1f;
         float rate = 1f / startRainTime;

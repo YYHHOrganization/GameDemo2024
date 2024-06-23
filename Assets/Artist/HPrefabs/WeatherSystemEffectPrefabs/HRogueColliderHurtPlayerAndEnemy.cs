@@ -9,13 +9,15 @@ using UnityEngine;
 public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
 {
     public bool isTrigger = true;
-    public int damage = 2;
+    public int damage = 1;
     public ElementType hurtElement = ElementType.None;
     
     public bool detectInCD = false; //是否有cd检测时间
     public float detectCDTime = 0.8f; //cd时间
 
     private bool isInCD = false;
+    public bool justHurtPlayerOnce = true;
+    private bool hasHurtPlayer = false;
     private void OnTriggerStay(Collider other)
     {
         if (!detectInCD) return;
@@ -26,7 +28,7 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("OnTriggerStay!!!" + other.name);
+            //Debug.Log("OnTriggerStay!!!" + other.name);
             //if (detectInCD)
             //{
                 if (isInCD) return;
@@ -73,12 +75,17 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
         if (!isTrigger) return;
         if (other.gameObject.CompareTag("Player"))
         {
+            if (justHurtPlayerOnce)
+            {
+                if (hasHurtPlayer) return;
+                hasHurtPlayer = true;
+            }
             HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(-damage);
         }
         else if (other.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("OnTriggerEnter!!!"+ other.name);
-            Debug.Log("男人！！！");
+            //Debug.Log("OnTriggerEnter!!!"+ other.name);
+            //Debug.Log("男人！！！");
             YPatrolAI patrolAI = other.gameObject.GetComponentInParent<YPatrolAI>();
             if (patrolAI != null)
             {

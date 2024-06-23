@@ -241,8 +241,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         if (score > 0)
         {
             addOrMinusText.text = "+" + score;
-            addOrMinusText.transform.DOShakePosition(0.3f, 2f);
-            DOVirtual.DelayedCall(0.4f, () =>
+            addOrMinusText.transform.DOShakePosition(0.2f, 2f);
+            DOVirtual.DelayedCall(0.3f, () =>
             {
                 addOrMinusText.text = "";
                 scoreText.text = totalScore.ToString();
@@ -260,8 +260,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         else  //现在是减分
         {
             addOrMinusText.text = score.ToString();
-            addOrMinusText.transform.DOShakeScale(0.3f, 2f);
-            DOVirtual.DelayedCall(0.4f, () =>
+            addOrMinusText.transform.DOShakeScale(0.2f, 2f);
+            DOVirtual.DelayedCall(0.3f, () =>
             {
                 addOrMinusText.text = "";
                 scoreText.text = totalScore.ToString();

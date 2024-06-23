@@ -38,6 +38,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         songList.Add("ZhongmuSong");
         songList.Add("MojingSong");
         songList.Add("AixiMusic");
+        //int randomIndex = Random.Range(0, songList.Count);
         int randomIndex = 2;
         thisSong = Addressables.LoadAssetAsync<Koreography>(songList[randomIndex]).WaitForCompletion();
         Koreographer.Instance.LoadKoreography(thisSong);
@@ -157,6 +158,8 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         
         //如果下雨的话，把打雷效果给关了
         yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>().ControlThundering(false);
+        //怕出各种情况，角色锁血
+        HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(true);
     }
 
     private void SetGamePanelActive()
@@ -326,7 +329,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         {
             weatherController.ControlThundering(true);
         }
-        
+        HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(false);
     }
     
     private void GiveOutTreasure(float accuracy)

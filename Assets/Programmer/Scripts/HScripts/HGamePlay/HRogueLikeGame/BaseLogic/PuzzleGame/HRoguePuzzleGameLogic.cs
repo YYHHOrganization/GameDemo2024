@@ -34,6 +34,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
 
     private void LoadGame()
     {
+        ResetWeather();
         SetTextureForPuzzle();
         PrepareForGame();
         puzzleRootName = "Puzzle" + UnityEngine.Random.Range(0, 29999);
@@ -70,6 +71,16 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
     {
         InitializePuzzleFragments();
         RollingPuzzleFragments();
+    }
+
+    private void ResetWeather()
+    {
+        //重置天气系统
+        HRogueWeatherController weatherController =
+            yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        weatherController.SetWeatherControl(false);
+        //怕出各种情况，角色锁血
+        HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(true);
     }
 
     private List<Transform> countDownNumbers = new List<Transform>();
@@ -252,6 +263,11 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
         SetGameOverAndGiveoutTreasure();
         //HAudioManager.Instance.Play("StartRogueAudio", HAudioManager.Instance.gameObject);
         HMessageShowMgr.Instance.RemoveTickMessage("拼图游戏倒计时：");
+        HRogueWeatherController weatherController =
+            yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        weatherController.SetWeatherControl(true);
+        //怕出各种情况，角色锁血
+        HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(false);
         Destroy(transform.parent.gameObject, 1f);
     }
 

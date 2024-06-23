@@ -228,6 +228,10 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     
     #endregion
 
+    public void SetCharacterInvincible(bool isInvincible)
+    {
+        cannotBeHurt = isInvincible;
+    }
 
     public void ChangeHealth(int value)
     {
