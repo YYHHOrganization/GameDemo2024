@@ -96,6 +96,14 @@ public class HPlayerSkillManager : MonoBehaviour
         
     }
     
+    public void PushGachaPanel()
+    {
+        if (!gachaPanelBeenPushed)
+        {
+            YGameRoot.Instance.Push(new HGachaBasePanel());
+            gachaPanelBeenPushed = true;
+        }
+    }
     IEnumerator ResumeIntensity()
     {
         if (postProcessVolume)
