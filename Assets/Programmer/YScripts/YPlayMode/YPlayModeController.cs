@@ -60,6 +60,11 @@ public class YPlayModeController : MonoBehaviour
     public void StartGameAndSet(int characterIndex,string curChooseCatcakeIndexStr)
     {
         SetCharacter(characterIndex);
+        SetCatcake(curChooseCatcakeIndexStr);
+    }
+
+    public void SetCatcake(string curChooseCatcakeIndexStr)
+    {
         if(curChooseCatcakeIndexStr != "")
         {
             // 使用Addressables加载，然后位置设置在角色周围
@@ -70,7 +75,7 @@ public class YPlayModeController : MonoBehaviour
             catCakeList.Add(catCake);
         }
     }
-   
+
     public void SetCharacter(int characterIndex)
     {
         PlayerDieFlag = false;

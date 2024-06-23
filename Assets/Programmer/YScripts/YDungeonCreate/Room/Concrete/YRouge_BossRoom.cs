@@ -178,7 +178,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         Class_BossRoomCSVFile battleRoomData = null;//最后返回的房间数据,如果没有找到就返回最后一次的
         
         //测试 公子boss
-        battleRoomData = SD_BossRoomCSVFile.Class_Dic["66621010"];return battleRoomData;
+        //battleRoomData = SD_BossRoomCSVFile.Class_Dic["66621010"];return battleRoomData;
         
         for (int i = 0; i < rollTimes; i++)
         {
