@@ -108,7 +108,7 @@ public class HAudioManager : MonoBehaviour
         source.spatialBlend = s.spatialBlend;
     }
 
-    public void Play(string name, GameObject go)
+    public void Play(string name, GameObject go, float playFromTime = -1f)
     {
         AudioSource audioSource = go.GetComponent<AudioSource>();
         if(audioSource == null)
@@ -134,6 +134,10 @@ public class HAudioManager : MonoBehaviour
         
         SetAudioSource(audioSource, s);
         audioSourceList.Add(go);
+        if (playFromTime > 0)
+        {
+            audioSource.time = playFromTime;
+        }
         audioSource.Play();
     }
 

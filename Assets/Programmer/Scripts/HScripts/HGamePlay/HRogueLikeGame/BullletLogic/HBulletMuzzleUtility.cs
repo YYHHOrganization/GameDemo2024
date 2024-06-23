@@ -122,7 +122,7 @@ public class HBulletMuzzleUtility : MonoBehaviour
     IEnumerator LaserRotateAround(int laserCnt)
     {
         List<GameObject> lasers = new List<GameObject>();
-        transform.parent = null;  //不然会跟着父节点一起旋转
+        //transform.parent = null;  //不然会跟着父节点一起旋转
         // 先生成laserCnt个激光作为transform的子节点，然后过2s后muzzle开始缓慢旋转
         for(int i = 0; i < laserCnt; i++)
         {
@@ -134,7 +134,7 @@ public class HBulletMuzzleUtility : MonoBehaviour
         //muzzle开始缓慢旋转
         for (int j = 0; j < 4; j++)
         {
-            transform.DOLocalRotate(new Vector3(0, 90, 0), 4f, RotateMode.LocalAxisAdd);
+            transform.DORotate(new Vector3(0, 90, 0), 4f, RotateMode.LocalAxisAdd);
             yield return new WaitForSeconds(4.1f);
         }
         

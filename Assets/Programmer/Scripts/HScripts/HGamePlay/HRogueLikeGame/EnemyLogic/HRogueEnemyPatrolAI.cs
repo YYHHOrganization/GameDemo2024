@@ -88,7 +88,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private ElementType enemyElementType = ElementType.None;
     public ElementType EnemyElementType => enemyElementType;
 
-    private HWorldUIShowManager worldUIManager;
+    protected HWorldUIShowManager worldUIManager;
 
     protected virtual void Awake()
     {
@@ -98,9 +98,14 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         isAttackingHash = Animator.StringToHash("isAttacking");
         isDeadHash = Animator.StringToHash("isDead");
         shootOrigin = transform.Find("ShootOrigin");
+        ReadTableAndSetAttribute();
+        LoadAllRefPrefabs();
+    }
+
+    protected virtual void LoadAllRefPrefabs()
+    {
         vaporizePrefab = Addressables.LoadAssetAsync<GameObject>("VaporizePrefab").WaitForCompletion();
         electroChargedPrefab = Addressables.LoadAssetAsync<GameObject>("ElectroChargedPrefab").WaitForCompletion();
-        ReadTableAndSetAttribute();
         worldUIManager = yPlanningTable.Instance.gameObject.GetComponent<HWorldUIShowManager>();
     }
 
@@ -349,6 +354,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     public virtual void ChangeHealthWithReaction(int value, ElementReaction reaction)
     {
+        Debug.Log("ChangeHealthWithReaction  " + reaction + "  " + value);
         switch (reaction)
         {
             case ElementReaction.Vaporize:  //蒸发反应正常扣血就行
@@ -478,6 +484,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private GameObject electroChargedPrefab;
     public void AddElementReactionEffects(ElementReaction reaction)
     {
+        Debug.Log("AddElementReactionEffects  " + reaction);
         //两种状态下，会直接返回
         //1.元素反应并没有发生变化
         if (canSummonNewReactionPrefab)

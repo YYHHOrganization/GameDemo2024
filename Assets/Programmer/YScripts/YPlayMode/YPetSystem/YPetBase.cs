@@ -105,7 +105,7 @@ public abstract class YPetBase : MonoBehaviour
         muzzleUtility.ShootOff();
     }
 
-    private void EnterNewRoom(object sender, YTriggerEnterRoomTypeEventArgs e)
+    protected virtual void EnterNewRoom(object sender, YTriggerEnterRoomTypeEventArgs e)
     {
         //判断是什么房间。状态转换条件：进入战斗房/进入boss房（目前好像就这两个房间有怪），
         //进入商店房/进入普通房间（目前好像就这两个房间没有怪）
