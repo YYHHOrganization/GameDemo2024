@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
@@ -8,6 +9,10 @@ public class YLoadPanel : BasePanel
 {
     static readonly string path = "Prefabs/UI/Panel/YLoadPanel";
     Button enterGameButton = null;
+    
+    #if BUILD_MODE
+    Button settingButton = null;
+    #endif
     
     Slider slider = null;
     YSliderChange sliderChange = null;
@@ -28,7 +33,15 @@ public class YLoadPanel : BasePanel
         enterGameButton.gameObject.SetActive(false);
         //2s后出现按钮EnterGameButton
         //Invoke("ShowEnterGameButton",2f);
-        
+        #if BUILD_MODE
+        settingButton = uiTool.GetOrAddComponentInChilden<Button>("SettingButton");
+        settingButton.gameObject.SetActive(false);
+        TMP_Text descriptText = uiTool.GetOrAddComponentInChilden<TMP_Text>("DescriptionText");
+        descriptText.text = "游戏版本：0.0.5\n仅为学习项目使用";
+        //todo:设置按钮的功能，后面做一下，绑定一个监听事件
+        #else
+            descriptText.text = "开发版本：0.0.6";
+        #endif
         //加载进度条
         // uiTool.GetOrAddComponentInChilden<Slider>("LoadSlider")
         //     .GetComponent<YSliderChange>().SetSliderOn(0,0.9f,0.2f);

@@ -97,6 +97,25 @@ public class YChooseCharacterPanel : BasePanel
         
         Debug.Log("角色数量"+yPlanningTable.Instance.GetCharacterNum());
         //循环遍历角色列表
+        #if BUILD_MODE
+        uiTool.GetOrAddComponentInChilden<Button>("CharacterButton0").gameObject.SetActive(false);
+        uiTool.GetOrAddComponentInChilden<Button>("CharacterButton1").onClick.AddListener(() =>
+        {
+            //第二个变成了随机选择角色
+            int randomIndex = Random.Range(2, yPlanningTable.Instance.GetCharacterNum());
+            SetCharacter(randomIndex);
+        });
+        for (int i = 2; i < yPlanningTable.Instance.GetCharacterNum(); i++)
+        {
+            //不可以直接传i 因为i会变，因为是引用类型
+            int index = i;
+            //给每个角色按钮添加点击事件
+            uiTool.GetOrAddComponentInChilden<Button>("CharacterButton"+index).onClick.AddListener(()=>
+            {
+                SetCharacter(index);
+            });
+        }
+        #else
         for (int i = 0; i < yPlanningTable.Instance.GetCharacterNum(); i++)
         {
             //不可以直接传i 因为i会变，因为是引用类型
@@ -107,6 +126,7 @@ public class YChooseCharacterPanel : BasePanel
                 SetCharacter(index);
             });
         }
+        #endif
         //遍历SD_RoguePetCSVFile.Class_Dic，将其id取出
         foreach (var item in SD_RoguePetCSVFile.Class_Dic)
         {
@@ -174,6 +194,13 @@ public class YChooseCharacterPanel : BasePanel
             else
             {
                 interactButton.GetComponentInChildren<TMP_Text>().text = "鉴赏模式";
+                #if BUILD_MODE  //发行版本暂不包含ChatGPT聊天功能
+                    inputField.gameObject.SetActive(false);
+                    chatAnswerText.gameObject.SetActive(false);
+                    sendMessageButton.gameObject.SetActive(false);
+                    chatAnswerText.gameObject.GetComponentInParent<Image>().enabled=false;
+                    HMessageShowMgr.Instance.ShowMessage("BUILD_NOT_SHOW_GPT_MSG");
+                #endif
             }
 
             if (curCharacter)
@@ -311,8 +338,9 @@ public class YChooseCharacterPanel : BasePanel
         //如果这个角色没解锁，就上锁shader，现在都默认上锁吧
         bool isUnLock = YCharacterInfoManager.GetCharacterUnLockStatusByID(index.ToString());
         YEffManager._Instance.SetLockedShaderOnOrOff(!isUnLock, go.transform);
+        UpdateLockState(true,!isUnLock);
         //如果此时选择的角色是锁定的，这个"BeginButton"就应该是不可点击的是灰色的
-        uiTool.GetOrAddComponentInChilden<Button>("BeginButton").interactable = isUnLock;
+        //uiTool.GetOrAddComponentInChilden<Button>("BeginButton").interactable = isUnLock;
     }
     //退出面板
     public override void OnExit()
