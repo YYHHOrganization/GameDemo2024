@@ -15,7 +15,7 @@ public abstract class YPetBase : MonoBehaviour
     public Animator animator;
     float attackDistance;
     public float AttackDistance => attackDistance;
-    
+    float detectAttackAngle;
     
     public YPetStateMachine mPetStateMachine => GetComponent<YPetStateMachine>();
     [SerializeField]Transform shootOrigin;
@@ -61,7 +61,9 @@ public abstract class YPetBase : MonoBehaviour
         attackType1 = pet.AttackType;
         attackType = (PetAttackType)Enum.Parse(typeof(PetAttackType), attackType1);
 
-        attackDistance = pet._PetAttackSensitiveDis();
+        // attackDistance = pet._PetAttackSensitiveDis();
+        attackDistance = pet._DetectAttackDis();
+        detectAttackAngle = pet._DetectAttackAngle();
         
         followTypeInBattle = (FollowTypeInBattle)Enum.Parse(typeof(FollowTypeInBattle), pet.FollowTypeInBattle);
         
@@ -180,6 +182,21 @@ public abstract class YPetBase : MonoBehaviour
     {
         
     }
+    //测试与目标的距离
+    //有可能出现不在攻击范围内（扇形区域内），但是在很近的距离（背对背），那么navmesh并不会行动，此时需要旋转到朝向目标方向
+    public bool isDistanceWithTargetLessThanDetect()
+    {
+        float distance = Vector3.Distance(transform.position, ChaseTarget.position);
+        return distance < 2;//先暂定2吧。
+    }
+    public void RotateToTarget()
+    {
+        //直接旋转到目标方向
+        //将navmesh禁用
+        mNavMeshAgent.enabled = false;
+        transform.LookAt(ChaseTarget);
+        mNavMeshAgent.enabled = true;
+    }
 
     public bool EnemyInAttackRange()
     {
@@ -190,11 +207,27 @@ public abstract class YPetBase : MonoBehaviour
         // return Vector3.Distance(ChaseTarget.position, transform.position) < attackDistance;
         // https://blog.csdn.net/qq2512667/article/details/83281203
         
-        return CheckPosition(ChaseTarget.position, 60, attackDistance);
+        return CheckPosition(ChaseTarget.position,  detectAttackAngle, attackDistance);
+    }
+    
+    public void testrm()
+    {
+        // //debug 出检测范围：
+        // Debug.Log(attackDistance+" !!!!!attackDistance!!!"+detectAttackAngle);
+        Debug.DrawLine(transform.position, 
+            transform.position + transform.forward * attackDistance, Color.red);
+        
+        // Gizmos.color = Color.green;
+        // Gizmos.DrawWireSphere(ChaseTarget.position, 0.5f);
     }
     bool CheckPosition(Vector3 targetPos,float angle,float radius)
     {
- 
+        // //debug 出检测范围：
+        // Gizmos.color = Color.red;
+        // Gizmos.DrawWireSphere(transform.position, radius);
+        // Gizmos.color = Color.green;
+        // Gizmos.DrawWireSphere(targetPos, 0.5f);
+        
         bool isCheck = false;
  
         //Mathf.Deg2Rad 角度转弧度
@@ -219,6 +252,8 @@ public abstract class YPetBase : MonoBehaviour
         return false;
  
     }
+
+   
 }
 
 public enum PetAttackType

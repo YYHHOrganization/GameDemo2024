@@ -58,11 +58,8 @@ public class YPetAttackState : YPetBaseState
                 ExitState();
                 return typeof(YPetChaseState);
             }
-            // if (Vector3.Distance(mPatrolAI.ChaseTarget.position, mPatrolAI.transform.position) > mPatrolAI.AttackDistance)
-            // {
-            //     ExitState();
-            //     return typeof(YPetChaseState);
-            // }
+
+           
         }
 
         return null;

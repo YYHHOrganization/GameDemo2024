@@ -55,7 +55,7 @@ public class HRogueWeatherController : MonoBehaviour
 
     public void StartWeatherControl()
     {
-        StartCoroutine(WeatherRoutine());
+        //StartCoroutine(WeatherRoutine());
     }
     private IEnumerator WeatherRoutine()
     {
