@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class YRouge_BornRoom : YRouge_RoomBase
 {
+    public Class_BornRoomCSVFile RoomData;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,12 +19,24 @@ public class YRouge_BornRoom : YRouge_RoomBase
         goBornPlace.transform.localPosition = new Vector3(0, 0, 0);
         
         YRogueDungeonManager.Instance.SetRogueBornPlace(goBornPlace.transform);
-        //yPlanningTable.Instance.UpdateCharacterGeneratePlace(3,"RogueBornPlace");
+        
+        ReadRoomData();
+        GenerateOtherItems(RoomData);
     }
-
-    // Update is called once per frame
-    void Update()
+    void ReadRoomData()
     {
+        //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
+        int randomIndex = Random.Range(0,SD_BornRoomCSVFile.Class_Dic.Count);
+        
+        RoomData = SD_BornRoomCSVFile.Class_Dic["6667000"+randomIndex];//66680000
+    }
+    private void GenerateOtherItems(Class_BornRoomCSVFile RoomCsvFile)
+    {
+        string itemIDs = RoomCsvFile.OtherItemIDField;
+        string[] itemIDArray = itemIDs.Split(';');
+        string[] itemCounts = RoomCsvFile.OtherItemCountField.Split(';');
+        
+        GenerateFromItemIDArray(itemIDArray, itemCounts);
         
     }
 }

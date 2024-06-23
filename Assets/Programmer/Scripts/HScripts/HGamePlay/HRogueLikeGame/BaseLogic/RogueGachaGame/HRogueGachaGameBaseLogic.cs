@@ -536,6 +536,7 @@ public class HRogueGachaGameBaseLogic : MonoBehaviour
             case "ItemRogueMaomaogao":
                 YCharacterInfoManager.SetCatcakeStatusByID(id, true);
                 //todo:局内解锁这个猫猫糕，并且可以使用这个猫猫糕
+                YPlayModeController.Instance.SetCatcake(id);
                 break;
         }
     }
