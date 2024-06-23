@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +23,11 @@ public class StartPanel : BasePanel
             Push(new YLevelPanel(1));//演绎模式
             // Push(new YChooseScreenplayPanel());
         });
+        #if BUILD_MODE
+        uiTool.GetOrAddComponentInChilden<Button>("StartButton").interactable = false;
+        uiTool.GetOrAddComponentInChilden<TMP_Text>("Descript").text = "暂未开放";
+        #endif
+        
         //游玩模式
         uiTool.GetOrAddComponentInChilden<Button>("PlayButton").onClick.AddListener(()=>
         {
@@ -35,5 +42,9 @@ public class StartPanel : BasePanel
             //Debug.Log("点击了设置按钮");
             Push(new SettingPanel());
         });
+        
+        #if BUILD_MODE
+        uiTool.GetOrAddComponentInChilden<Button>("SettingButton").gameObject.SetActive(false);
+        #endif
     }
 }

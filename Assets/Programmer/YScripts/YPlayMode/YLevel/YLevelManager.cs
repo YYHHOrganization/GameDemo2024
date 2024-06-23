@@ -133,6 +133,9 @@ public static class YLevelManager
     
     public static void LoadAndBeginLevel()
     {
+        #if BUILD_MODE
+            currentLevelIndex = 3;
+        #endif
         string levelName = levelnames[currentLevelIndex];
         int levelID = currentLevelIndex;
         //如果点击新的关卡

@@ -71,9 +71,10 @@ public class HTestCharacterShoot : MonoBehaviour
         YTriggerEvents.OnMouseLeftShoot+=HandleOrdinaryShoot;
     }
 
-    private bool canAimAndShoot = true;
+    private bool canAimAndShoot = false;
     void HandleOrdinaryShoot(object sender, YTriggerEventArgs e)
     {
+        Debug.Log("are we in handle origin shoot?");
         canAimAndShoot = e.activated;
     }
 

@@ -68,6 +68,7 @@ public class YRogueDungeonManager : MonoBehaviour
         dungeonCreator.BakeNavMesh();
         //将加载界面关闭
         YGameRoot.Instance.Pop();
+        YTriggerEvents.RaiseOnMouseLeftShoot(true);
     }
 
     //再角色生成的时候调用 让游戏开始 可以判断蜘蛛是否开始追角色
