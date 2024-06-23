@@ -18,6 +18,6 @@ public class YRuanmeiPet : YPetBase
     //test
     private void Update()
     {
-        testrm();
+        // testrm();
     }
 }

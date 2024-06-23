@@ -182,6 +182,21 @@ public abstract class YPetBase : MonoBehaviour
     {
         
     }
+    //测试与目标的距离
+    //有可能出现不在攻击范围内（扇形区域内），但是在很近的距离（背对背），那么navmesh并不会行动，此时需要旋转到朝向目标方向
+    public bool isDistanceWithTargetLessThanDetect()
+    {
+        float distance = Vector3.Distance(transform.position, ChaseTarget.position);
+        return distance < 2;//先暂定2吧。
+    }
+    public void RotateToTarget()
+    {
+        //直接旋转到目标方向
+        //将navmesh禁用
+        mNavMeshAgent.enabled = false;
+        transform.LookAt(ChaseTarget);
+        mNavMeshAgent.enabled = true;
+    }
 
     public bool EnemyInAttackRange()
     {
@@ -194,10 +209,11 @@ public abstract class YPetBase : MonoBehaviour
         
         return CheckPosition(ChaseTarget.position,  detectAttackAngle, attackDistance);
     }
+    
     public void testrm()
     {
         // //debug 出检测范围：
-        Debug.Log(attackDistance+" !!!!!attackDistance!!!"+detectAttackAngle);
+        // Debug.Log(attackDistance+" !!!!!attackDistance!!!"+detectAttackAngle);
         Debug.DrawLine(transform.position, 
             transform.position + transform.forward * attackDistance, Color.red);
         
@@ -236,6 +252,8 @@ public abstract class YPetBase : MonoBehaviour
         return false;
  
     }
+
+   
 }
 
 public enum PetAttackType

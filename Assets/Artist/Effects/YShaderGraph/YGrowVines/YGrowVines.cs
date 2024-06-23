@@ -96,19 +96,42 @@ public class YGrowVines : MonoBehaviour
             }
         }
     }
-
+    IEnumerator GrowVinesUp(Material material)
+    {
+        float growValue = material.GetFloat("_Grow");
+        //material.SetFloat("_Grow", minGrow);
+        while(growValue< maxGrow)
+        {
+            growValue += refreshRate / time2Grow;//例子 refreshRate = 0.05f, time2Grow = 5.0f 时，每次增加0.01
+            material.SetFloat("_Grow", growValue);
+            yield return new WaitForSeconds(refreshRate);
+        }
+    }
+    IEnumerator GrowVinesDown(Material material)
+    {
+        float growValue = material.GetFloat("_Grow");
+        //material.SetFloat("_Grow", maxGrow);
+        while (growValue > minGrow)
+        {
+            growValue -= refreshRate / time2Grow;//例子 refreshRate = 0.05f, time2Grow = 5.0f 时，每次增加0.01
+            material.SetFloat("_Grow", growValue);
+            yield return new WaitForSeconds(refreshRate);
+        }
+    }
     public void SetGrowVinesOn()
     {
         for(int i=0;i<_materials.Count;i++)
         {
-            StartCoroutine(GrowVines(_materials[i],true));
+            // StartCoroutine(GrowVines(_materials[i],true));
+            StartCoroutine(GrowVinesUp(_materials[i]));
         }
     }
     public void SetGrowVinesOff()
     {
         for(int i=0;i<_materials.Count;i++)
         {
-            StartCoroutine(GrowVines(_materials[i],false));
+            // StartCoroutine(GrowVines(_materials[i],false));
+            StartCoroutine(GrowVinesDown(_materials[i]));
         }
     }
 }

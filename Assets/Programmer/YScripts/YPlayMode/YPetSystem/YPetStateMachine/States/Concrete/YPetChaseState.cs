@@ -42,8 +42,7 @@ public class YPetChaseState  : YPetBaseState
             }
             
         }
-        //还是要一直设置目的地的吧？navmeshagent的destination是不是会自动更新？
-        mPatrolAI.mNavMeshAgent.SetDestination(mPatrolAI.ChaseTarget.position);
+        
         
         //这里应该有一个是说 如果追到了敌人，即敌人在视野内，那么就切换到攻击状态
         //敌人在视野内,与敌人的距离小于攻击距离
@@ -54,11 +53,14 @@ public class YPetChaseState  : YPetBaseState
             ExitState();
             return typeof(YPetAttackState);
         } 
-        // if (Vector3.Distance(mPatrolAI.ChaseTarget.position, mPatrolAI.transform.position) < mPatrolAI.AttackDistance)
-        // {
-        //     ExitState();
-        //     return typeof(YPetAttackState);
-        // }
+        if(mPatrolAI.isDistanceWithTargetLessThanDetect()==true)
+        {
+            mPatrolAI.RotateToTarget();
+            return null;
+        }
+        //还是要一直设置目的地的吧？navmeshagent的destination是不是会自动更新？
+        
+        mPatrolAI.mNavMeshAgent.SetDestination(mPatrolAI.ChaseTarget.position);
         
         return null;
     }
