@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 以下这个代码的作用是：将一个矩形区域进行二分分割，直到每个区域的宽度和长度都小于等于指定的最小值。
+/// </summary>
 public class YRouge_BinarySpacePartitioner 
 {
     YRoomNode rootNode;
@@ -15,6 +18,13 @@ public class YRouge_BinarySpacePartitioner
             new Vector2Int(width, length), null, 0);
         
     }
+    /// <summary>
+    /// 此代码作用是：准备节点集合，将根节点加入队列，然后遍历队列，直到队列为空或者达到最大迭代次数。
+    /// </summary>
+    /// <param name="maxIterations"></param>
+    /// <param name="roomWidthMin"></param>
+    /// <param name="roomLengthMin"></param>
+    /// <returns></returns>
     public List<YRoomNode> PrepareNodesCollection(int maxIterations, int roomWidthMin, int roomLengthMin)
     {
         Queue<YRoomNode> graph = new Queue<YRoomNode>();
@@ -35,6 +45,14 @@ public class YRouge_BinarySpacePartitioner
         return listToReturn;
     }
 
+    /// <summary>
+    /// 此代码作用是：将当前节点分割成两个节点，然后将这两个节点加入到队列和节点集合中。
+    /// </summary>
+    /// <param name="currentNode"></param>
+    /// <param name="listToReturn"></param>
+    /// <param name="graph"></param>
+    /// <param name="roomWidthMin"></param>
+    /// <param name="roomLengthMin"></param>
     private void SplitTheSpace(YRoomNode currentNode, List<YRoomNode> listToReturn, Queue<YRoomNode> graph, int roomWidthMin, int roomLengthMin)
     {
         YRouge_Line line = GetLineDivingTheSpace(

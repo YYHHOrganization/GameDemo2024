@@ -20,6 +20,7 @@ public class YRouge_CorridorNode : YRouge_Node
 
     private void GenerateCorridor()
     {
+        //检查两个结构之间的相对位置，返回一个枚举值，表示两个结构之间的相对位置
         var relativePositionOfStructure2 = CheckPositionStructure1AgainstStructure2();
         switch(relativePositionOfStructure2)
         {
@@ -123,46 +124,72 @@ public class YRouge_CorridorNode : YRouge_Node
     private int GetValidYForNeighourLeftRight(Vector2Int leftNodeUp, Vector2Int leftNodeDown, Vector2Int rightNodeUp, Vector2Int rightNodeDown)
     {
        
-        //右上>左上，左下>右下 左边的全被右边的包含 二者相交处就是左边
+        //右上>左上，左下>右下 左边的全被右边的包含 二者相交处就是左边（图1111-2）（= 二）
         if(rightNodeUp.y >= leftNodeUp.y && leftNodeDown.y >= rightNodeDown.y)
         {
+            //则直接取左边的中心
             return YRouge_StructureHelper.CalculateMiddlePoint(
                 leftNodeDown + new Vector2Int(0, modifierDistanceFromWall),
                 leftNodeUp - new Vector2Int(0, modifierDistanceFromWall + this.corridorWidth)
             ).y;
         }
-        if(rightNodeUp.y <= leftNodeUp.y && leftNodeDown.y <= rightNodeDown.y)
+        //右上<左上，左下<右下 （图1111-4）（_   -）  但是下面这个应该是真的错了吧
+        //if(rightNodeUp.y <= leftNodeUp.y && leftNodeDown.y <= rightNodeDown.y)
+        //改为 右上<左上，右下>左下 则是图（图1111-1） 右边全部被左边包含（二 =）
+        if(rightNodeUp.y <= leftNodeUp.y && rightNodeDown.y>=leftNodeDown.y)
         {
+            //则直接取右边的中心
             return YRouge_StructureHelper.CalculateMiddlePoint(
                 rightNodeDown+new Vector2Int(0,modifierDistanceFromWall),
                 rightNodeUp - new Vector2Int(0, modifierDistanceFromWall+this.corridorWidth)
             ).y;
         }
+        //左上>右下，左上<右上 （图1111-4） 也就是左上点在右边node之间
         if(leftNodeUp.y >= rightNodeDown.y && leftNodeUp.y <= rightNodeUp.y)
+        //改为  右上>左上，右下>左下 则是图（图1111-4） （_   -） 不能这样改 这样可能会完全错开
+        //if(rightNodeUp.y >= leftNodeUp.y && rightNodeDown.y>=leftNodeDown.y)
         {
+            if(leftNodeUp.y-rightNodeDown.y<this.corridorWidth)
+            {
+                return -1;
+            }
             return YRouge_StructureHelper.CalculateMiddlePoint(
                 rightNodeDown+new Vector2Int(0,modifierDistanceFromWall),
-                leftNodeUp-new Vector2Int(0,modifierDistanceFromWall)
+                leftNodeUp-new Vector2Int(0,modifierDistanceFromWall+this.corridorWidth)
             ).y;
         }
+        //左下在右边之间 （图1111-3） 也就是左下点在右边node之间
         if(leftNodeDown.y >= rightNodeDown.y && leftNodeDown.y <= rightNodeUp.y)
+        //if(rightNodeUp.y <= leftNodeUp.y && rightNodeDown.y<=leftNodeDown.y)
         {
+            if(rightNodeUp.y-leftNodeDown.y<this.corridorWidth)
+            {
+                return -1;
+            }
             return YRouge_StructureHelper.CalculateMiddlePoint(
                 leftNodeDown+new Vector2Int(0,modifierDistanceFromWall),
                 rightNodeUp-new Vector2Int(0,modifierDistanceFromWall+this.corridorWidth)
             ).y;
         }
+        
+        //等等 这可以优化吧，不管是哪种情况  取出上边最小和 下边最小的 ，然后取中心点不就行了。。
         return- 1;//二者完全不相交 错开了
     }
     
-    
+    /// <summary>
+    /// 此代码作用是：处理两个结构之间的相对位置，如果一个在上面，一个在下面，那么就生成一个走廊
+    /// </summary>
+    /// <param name="structure1"></param>
+    /// <param name="structure2"></param>
     private void ProcessRoomInRelativePositionUpOrDown(YRouge_Node structure1, YRouge_Node structure2)
     {
         YRouge_Node bottomStructure = null;
+        //找到底部结构的所有叶子结构
         List<YRouge_Node> structureBottmChildren = YRouge_StructureHelper.TraverseGraphToExtractLowestLeafs(structure1);
         YRouge_Node topStructure = null;
         List<YRouge_Node> structureAboveChildren = YRouge_StructureHelper.TraverseGraphToExtractLowestLeafs(structure2);
 
+        //sortedBottomStructure是按照y轴从大到小排序的
         var sortedBottomStructure = structureBottmChildren.OrderByDescending(child => child.TopRightAreaCorner.y).ToList();
 
         if (sortedBottomStructure.Count == 1)
@@ -172,7 +199,9 @@ public class YRouge_CorridorNode : YRouge_Node
         else
         {
             int maxY = sortedBottomStructure[0].TopLeftAreaCorner.y;
-            sortedBottomStructure = sortedBottomStructure.Where(child => Mathf.Abs(maxY - child.TopLeftAreaCorner.y) < 10).ToList();
+            //找到y轴最大的结构
+            sortedBottomStructure = sortedBottomStructure.
+                Where(child => Mathf.Abs(maxY - child.TopLeftAreaCorner.y) < 10).ToList();
             int index = UnityEngine.Random.Range(0, sortedBottomStructure.Count);
             bottomStructure = sortedBottomStructure[index];
         }
@@ -214,6 +243,8 @@ public class YRouge_CorridorNode : YRouge_Node
     private int GetValidXForNeighbourUpDown(Vector2Int bottomNodeLeft, 
         Vector2Int bottomNodeRight, Vector2Int topNodeLeft, Vector2Int topNodeRight)
     {
+        //........
+        //  ...
         if(topNodeLeft.x < bottomNodeLeft.x && bottomNodeRight.x < topNodeRight.x)
         {
             return YRouge_StructureHelper.CalculateMiddlePoint(
@@ -221,6 +252,8 @@ public class YRouge_CorridorNode : YRouge_Node
                 bottomNodeRight - new Vector2Int(this.corridorWidth + modifierDistanceFromWall, 0)
                 ).x;
         }
+        //  ...
+        //........
         if(topNodeLeft.x >= bottomNodeLeft.x && bottomNodeRight.x >= topNodeRight.x)
         {
             return YRouge_StructureHelper.CalculateMiddlePoint(
@@ -228,16 +261,30 @@ public class YRouge_CorridorNode : YRouge_Node
                 topNodeRight - new Vector2Int(this.corridorWidth+modifierDistanceFromWall,0)
                 ).x;
         }
+        // ........
+        //    “。”..........
+        //下面node的左下角的x 在上面node的左右角之间
         if(bottomNodeLeft.x >= (topNodeLeft.x) && bottomNodeLeft.x <= topNodeRight.x)
         {
+            if(topNodeRight.x-bottomNodeLeft.x<this.corridorWidth)
+            {
+                return -1;
+            }
             return YRouge_StructureHelper.CalculateMiddlePoint(
                 bottomNodeLeft + new Vector2Int(modifierDistanceFromWall,0),
                 topNodeRight - new Vector2Int(this.corridorWidth+modifierDistanceFromWall,0)
 
                 ).x;
         }
+        //      ..................
+        //..........“。”
+        //下面node的右下角的x 在上面node的左右角之间
         if(bottomNodeRight.x <= topNodeRight.x && bottomNodeRight.x >= topNodeLeft.x)
         {
+            if(bottomNodeRight.x-topNodeLeft.x<this.corridorWidth)
+            {
+                return -1;
+            }
             return YRouge_StructureHelper.CalculateMiddlePoint(
                 topNodeLeft + new Vector2Int(modifierDistanceFromWall, 0),
                 bottomNodeRight - new Vector2Int(this.corridorWidth + modifierDistanceFromWall, 0)
@@ -246,8 +293,13 @@ public class YRouge_CorridorNode : YRouge_Node
         }
         return -1;
     }
+    /// <summary>
+    /// 此代码具体作用是：检查两个结构之间的相对位置，返回一个枚举值，表示两个结构之间的相对位置
+    /// </summary>
+    /// <returns></returns>
     private RelativePosition CheckPositionStructure1AgainstStructure2()
     {
+        //计算两个结构的中心点
         Vector2 middlePointStructure1 = new Vector2(
             (structure1.BottomLeftAreaCorner.x + structure1.TopRightAreaCorner.x) / 2,
             (structure1.BottomLeftAreaCorner.y + structure1.TopRightAreaCorner.y) / 2);

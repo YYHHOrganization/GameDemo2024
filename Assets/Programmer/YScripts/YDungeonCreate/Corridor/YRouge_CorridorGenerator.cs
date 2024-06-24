@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class YRouge_CorridorGenerator
 {
+    /// <summary>
+    /// 此代码文件用于生成走廊，具体做法是根据房间节点的树结构，从树的最底层开始，每次取出两个子节点，然后生成一个走廊节点。
+    /// </summary>
+    /// <param name="allRoomNodes"></param>
+    /// <param name="corridorWidth"></param>
+    /// <returns></returns>
     public List<YRouge_Node> CreateCorridor(List<YRoomNode> allRoomNodes, int corridorWidth)
     {
         List<YRouge_Node> corridorList = new List<YRouge_Node>();
