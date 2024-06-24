@@ -51,6 +51,7 @@ public class YDungeonGenerator
         // YRouge_CreateItem createItem = new YRouge_CreateItem();
         // createItem.GenerateRoomScript(roomLists);
         
+        //生成走廊
         YRouge_CorridorGenerator corridorGenerator = new YRouge_CorridorGenerator();
         var corridorList = corridorGenerator.CreateCorridor(allSpacesNodes ,corridorWidth);
         
