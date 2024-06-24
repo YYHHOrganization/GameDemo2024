@@ -29,6 +29,11 @@ public class YExitPanel : BasePanel
         //此时应该禁止再次点击退出快捷键
         YTriggerEvents.RaiseOnShortcutKeyEsc(false);
        
+        uiTool.GetOrAddComponentInChilden<Button>("SettingButton").onClick.AddListener(()=>
+        {
+            //Debug.Log("点击了设置按钮");
+            Push(new SettingPanel());
+        });
         
         uiTool.GetOrAddComponentInChilden<Button>("PlayAgainButton").onClick.AddListener(()=>
         {

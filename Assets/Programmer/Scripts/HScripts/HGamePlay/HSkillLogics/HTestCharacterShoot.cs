@@ -69,6 +69,7 @@ public class HTestCharacterShoot : MonoBehaviour
         
         ShowWeaponChangeMessage();
         YTriggerEvents.OnMouseLeftShoot+=HandleOrdinaryShoot;
+        UpdateMouseSensitive();
     }
 
     private bool canAimAndShoot = false;
@@ -252,6 +253,17 @@ public class HTestCharacterShoot : MonoBehaviour
     float TurnSpeed = 3;
     float VerticalRotMin = -60;
     float VerticalRotMax = 60;
+
+    float sensitiveMultiplier = 1;
+    private bool aimHelperIsOn = true;
+    public void UpdateMouseSensitive()
+    {
+        sensitiveMultiplier = HRoguePlayerAttributeAndItemManager.Instance.MouseSensitive;
+    }
+    public void UpdateAimHelper()
+    {
+        aimHelperIsOn = HRoguePlayerAttributeAndItemManager.Instance.AimHelperIsOn;
+    }
     
     void RotateCharacterWithMouse2()
     {
@@ -260,16 +272,16 @@ public class HTestCharacterShoot : MonoBehaviour
         var rotInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         var rot = transform.eulerAngles;
         var rot2 = transform.eulerAngles;
-        rot.y += rotInput.x * TurnSpeed;
-        rot2.y += rotInput.x * TurnSpeed * 0.8f;
+        rot.y += rotInput.x * TurnSpeed * sensitiveMultiplier;
+        rot2.y += rotInput.x * TurnSpeed * 0.8f * sensitiveMultiplier;
         transform.rotation = Quaternion.Euler(rot);
 
         if (thirdPersonFollowPlace != null && thirdPersonCommonFollowPlace != null)
         {
             rot = thirdPersonFollowPlace.localRotation.eulerAngles;
             rot2 = thirdPersonCommonFollowPlace.localRotation.eulerAngles;
-            rot.x -= rotInput.y * TurnSpeed;
-            rot2.x -= rotInput.y * TurnSpeed * 0.8f;
+            rot.x -= rotInput.y * TurnSpeed * sensitiveMultiplier;
+            rot2.x -= rotInput.y * TurnSpeed * 0.8f * sensitiveMultiplier;
             if (rot.x > 180)
                 rot.x -= 360;
             if (rot2.x > 180)
@@ -342,28 +354,31 @@ public class HTestCharacterShoot : MonoBehaviour
             bool needShootHelp = false;
             bool hitButNoNeedHelp = false;
             //中心位置射出9条射线，检测射中的物体
-            for(int i=-1; i<=1; i++)
+            if (aimHelperIsOn)
             {
-                for(int j=-1; j<=1; j++)
+                for(int i=-1; i<=1; i++)
                 {
-                    Ray ray = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX + i * deltaX, middleY + j * deltaY, -3));
-                    RaycastHit hit;
-                    if(Physics.Raycast(ray, out hit, HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRange"], layerMask))
+                    if(needShootHelp)
+                        continue;
+                    for(int j=-1; j<=1; j++)
                     {
-                        //Debug.Log(hit.collider.gameObject.name);
-                        if (hit.collider.gameObject.CompareTag("Enemy"))
+                        Ray ray = mainPlayerCamera.ScreenPointToRay(new Vector3(middleX + i * deltaX, middleY + j * deltaY, -3));
+                        RaycastHit hit;
+                        if(Physics.Raycast(ray, out hit, HRoguePlayerAttributeAndItemManager.Instance.characterValueAttributes["RogueShootRange"], layerMask))
                         {
-                            hitPosition = hit.point;
-                            //draw ray
-                            Debug.DrawRay(ray.origin, ray.direction * 100, Color.red);
-                            Debug.Log(hit.collider.gameObject.name);
-                            needShootHelp = true;
-                            continue;
+                            //Debug.Log(hit.collider.gameObject.name);
+                            if (hit.collider.gameObject.CompareTag("Enemy"))
+                            {
+                                hitPosition = hit.point;
+                                //draw ray
+                                Debug.DrawRay(ray.origin, ray.direction * 100, Color.red);
+                                Debug.Log(hit.collider.gameObject.name);
+                                needShootHelp = true; //9根射线有一根打到怪，近似处理，辅助瞄准，needShootHelp=true
+                                continue;
+                            }
                         }
                     }
                 }
-                if(needShootHelp)
-                    continue;
             }
             //使用hitSphere 检测射中的物体
             // if(Physics.SphereCast(mainPlayerCamera.transform.position, 0.1f, mainPlayerCamera.transform.forward, out RaycastHit hit, 100))
@@ -387,7 +402,7 @@ public class HTestCharacterShoot : MonoBehaviour
             RaycastHit hit2;
             if (Physics.Raycast(middleRay, out hit2, 100, layerMask))
             {
-                if (!needShootHelp)
+                if (!needShootHelp) //9根都没打到怪，但屏幕中间射线打到了东西，以屏幕中间的射线为准
                 {
                     hitButNoNeedHelp = true;
                     hitPosition = hit2.point;

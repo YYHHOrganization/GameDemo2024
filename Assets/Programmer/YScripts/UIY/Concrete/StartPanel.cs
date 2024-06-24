@@ -43,8 +43,8 @@ public class StartPanel : BasePanel
             Push(new SettingPanel());
         });
         
-        #if BUILD_MODE
-        uiTool.GetOrAddComponentInChilden<Button>("SettingButton").gameObject.SetActive(false);
-        #endif
+        // #if BUILD_MODE
+        // uiTool.GetOrAddComponentInChilden<Button>("SettingButton").gameObject.SetActive(false);
+        // #endif
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine.Audio;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -29,8 +30,18 @@ public class HSoundBase
 
 public class HAudioManager : MonoBehaviour
 {
-    public List<HSoundBase> sounds;
+    public List<HSoundBase> sounds = new List<HSoundBase>();
     public static HAudioManager instance;
+    private float volumeMultiplier = 1f;
+    public float VolumeMultiplier
+    {
+        get => volumeMultiplier;
+        set
+        {
+            volumeMultiplier = value;
+        }
+    }
+    
     public static HAudioManager Instance
     {
         get
@@ -68,6 +79,7 @@ public class HAudioManager : MonoBehaviour
             yield return handle;
             sound.clip = handle.Result;
             soundDict.Add(sound.name, sound);
+            sounds.Add(sound);
         }
         Play("BeginGameMusic", this.gameObject);
         YTriggerEvents.RaiseOnLoadResourceStateChanged(true);
@@ -106,6 +118,7 @@ public class HAudioManager : MonoBehaviour
         source.pitch = s.pitch;
         source.loop = s.isLoop;
         source.spatialBlend = s.spatialBlend;
+        s.source = source;
     }
 
     public void Play(string name, GameObject go, float playFromTime = -1f)
@@ -139,6 +152,21 @@ public class HAudioManager : MonoBehaviour
             audioSource.time = playFromTime;
         }
         audioSource.Play();
+        UpdateAllAudioVolumes();
+    }
+
+    public void UpdateAllAudioVolumes()
+    {
+        //Debug.Log("UpdateAllAudioVolumes");
+        foreach (HSoundBase sound in sounds)
+        {
+            //Debug.Log(sound.name);
+            if (sound.source)
+            {
+                sound.source.volume = sound.volume * volumeMultiplier;
+                //Debug.Log(sound.name);
+            }
+        }
     }
 
     public void StopAllAudio()

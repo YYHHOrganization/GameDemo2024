@@ -47,7 +47,26 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     private HRogueWeatherController weatherController;
 
     public bool cannotBeHurt = false;
-    
+    private float mouseSensitive = 1.0f;
+    public float MouseSensitive{get => mouseSensitive; set => mouseSensitive = value;}
+    private bool aimHelperIsOn = true;
+    public bool AimHelperIsOn{get => aimHelperIsOn; set => aimHelperIsOn = value;}
+    public void UpdateMouseSensitive()
+    {
+        if (player)
+        {
+            player.GetComponent<HTestCharacterShoot>().UpdateMouseSensitive();
+        }
+    }
+
+    public void UpdateAimHelper()
+    {
+        if (player)
+        {
+            player.GetComponent<HTestCharacterShoot>().UpdateAimHelper();
+        }
+    }
+
     public static HRoguePlayerAttributeAndItemManager Instance
     {
         get
