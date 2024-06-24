@@ -74,7 +74,7 @@ public class HTestCharacterShoot : MonoBehaviour
     private bool canAimAndShoot = false;
     void HandleOrdinaryShoot(object sender, YTriggerEventArgs e)
     {
-        Debug.Log("are we in handle origin shoot?");
+        Debug.Log("are we in handle origin shoot? " + e.activated);
         canAimAndShoot = e.activated;
     }
 

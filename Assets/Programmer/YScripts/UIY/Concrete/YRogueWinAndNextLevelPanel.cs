@@ -54,4 +54,10 @@ public class YRogueWinAndNextLevelPanel : BasePanel
             level0Str.gameObject.SetActive(false);
         }
     }
+    
+    public override void OnResume()
+    {
+        base.OnResume();
+        YTriggerEvents.RaiseOnMouseLeftShoot(false);
+    }
 }

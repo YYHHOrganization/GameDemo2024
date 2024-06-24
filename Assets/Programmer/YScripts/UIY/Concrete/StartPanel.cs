@@ -20,7 +20,7 @@ public class StartPanel : BasePanel
             Pop();
             //Push(new YMainPanel());
             
-            Push(new YLevelPanel(1));//演绎模式
+            Push(new YLevelPanel(0));//演绎模式
             // Push(new YChooseScreenplayPanel());
         });
         #if BUILD_MODE

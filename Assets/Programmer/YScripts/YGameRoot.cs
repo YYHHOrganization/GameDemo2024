@@ -75,10 +75,10 @@ public class YGameRoot : MonoBehaviour
     public void PlayAgain()
     {
         // SceneSystem.SetScene(new YStartScene());
-        
-
-        SceneManager.LoadScene ("Level1DemoScene");
-        
+        Push(new YLevelPanel(0));//肉鸽游戏
+        //string currentSceneName = SceneManager.GetActiveScene().name;
+        //SceneManager.LoadScene ("Level1DemoScene");
+        //SceneManager.LoadScene(currentSceneName);
     }
     
     

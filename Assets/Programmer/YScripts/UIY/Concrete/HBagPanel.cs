@@ -21,9 +21,16 @@ public class HBagPanel : BasePanel
         YPlayModeController.Instance.LockPlayerInput(false);
         exitButton.onClick.AddListener(() =>
         {
-            RemoveSelfPanel();
             YTriggerEvents.RaiseOnMouseLeftShoot(true);
+            RemoveSelfPanel();
             HPlayerSkillManager.instance.SetBagBeenPushed(false);
         });
+    }
+
+    public override void OnResume()
+    {
+        //Debug.Log("OnResume, HBagPanel");
+        base.OnResume();
+        YTriggerEvents.RaiseOnMouseLeftShoot(false);
     }
 }
