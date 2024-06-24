@@ -19832,8 +19832,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 7.2397866, y: 0.71283036, z: 6.3944144}
-  m_Center: {x: 0.24566102, y: 0.027418524, z: 0.11214852}
+  m_Size: {x: 5.149699, y: 0.71283036, z: 5.1621056}
+  m_Center: {x: 0.030581951, y: 0.027418524, z: -0.024128914}
 --- !u!114 &8714441921165012423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19849,6 +19849,9 @@ MonoBehaviour:
   isTrigger: 1
   damage: 2
   hurtElement: 2
+  detectInCD: 0
+  detectCDTime: 0.8
+  justHurtPlayerOnce: 1
 --- !u!54 &-6238007978772328195
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -24763,7 +24766,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.58000004, g: 0.85999995, b: 1, a: 1}
-  m_Intensity: 0
+  m_Intensity: 3.9897404
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

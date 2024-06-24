@@ -36,7 +36,7 @@ public class HRogueWeatherController : MonoBehaviour
     private Coroutine lightningCoroutine;
     
     private float minWeatherDuration = 45.0f; // 每种天气最少持续时间
-    private float minClearDuration = 45.0f; // 天晴到下雨/下雪之间最少间隔时间
+    private float minClearDuration = 90.0f; // 天晴到下雨/下雪之间最少间隔时间
     
     //一些与天气有关的bool值
     private bool isRaining = false;
@@ -198,12 +198,12 @@ public class HRogueWeatherController : MonoBehaviour
             Vector3 strikePos = randomPos;
             strikePos.y = 0f;
             GameObject thunderLightingStrike = Instantiate(thunderLightingStrikeVFX, strikePos, Quaternion.identity);
-            HRogueCameraManager.Instance.ShakeCamera(10f, 0.5f);
+            HRogueCameraManager.Instance.ShakeCamera(5f, 0.5f);
             HAudioManager.Instance.Play("LightningAttackSound", thunderLightingStrike.gameObject);
             yield return new WaitForSeconds(1f);
             Destroy(thunderLightingStrike,2f);
             //随机6~12秒
-            float intervalTime = Random.Range(3f, 6f);
+            float intervalTime = Random.Range(9f, 12f);
             yield return new WaitForSeconds(intervalTime);
         }
     }

@@ -62,12 +62,12 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
             }
         }
         //处理猫猫糕的问题
-        else if (other.gameObject.GetComponent<YPetStateMachine>())
-        {
-            Debug.Log("猫猫糕炸了Trigger！");
-            //todo:后面有需要的话做一个猫猫糕被炸飞的效果，暂时先不管了
-            
-        }
+        // else if (other.gameObject.GetComponent<YPetStateMachine>())
+        // {
+        //     Debug.Log("猫猫糕炸了Trigger！");
+        //     //todo:后面有需要的话做一个猫猫糕被炸飞的效果，暂时先不管了
+        //     
+        // }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -109,12 +109,12 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
             }
         }
         //处理猫猫糕的问题
-        else if (other.gameObject.GetComponent<YPetStateMachine>())
-        {
-            Debug.Log("猫猫糕炸了Trigger！");
-            //todo:后面有需要的话做一个猫猫糕被炸飞的效果，暂时先不管了
-            
-        }
+        // else if (other.gameObject.GetComponent<YPetStateMachine>())
+        // {
+        //     Debug.Log("猫猫糕炸了Trigger！");
+        //     //todo:后面有需要的话做一个猫猫糕被炸飞的效果，暂时先不管了
+        //     
+        // }
     }
     
     // Start is called before the first frame update
