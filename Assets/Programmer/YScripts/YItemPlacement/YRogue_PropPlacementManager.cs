@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class YRogue_PropPlacementManager : MonoBehaviour
 {
@@ -8,12 +10,53 @@ public class YRogue_PropPlacementManager : MonoBehaviour
     [SerializeField, Header("道具的预制体")]
     private GameObject propPrefab;
 
-    [SerializeField]
-    [Header("需要放置的道具列表")]
-    private List<ItemDataInfo> itemDataInfos;
+    // [SerializeField]
+    // [Header("需要放置的道具列表")]
+    // private List<ItemDataInfo> itemDataInfos;
 
+    private List<ItemDataInfoFromCsvTable> itemDataInfosNew = new List<ItemDataInfoFromCsvTable>();
+    
     private GameObject itemDataParent;//物品父类
     Transform parent;
+
+    private void LoadAllScriptableInfos()
+    {
+        itemDataInfosNew = new List<ItemDataInfoFromCsvTable>();
+        //遍历SD_PlacementItemDataCSVFile表格中的所有数据
+        for (int i = 0; i < SD_PlacementItemDataCSVFile.Class_Dic.Count; i++)
+        {
+            int index = 37200000 + i;
+            string key = index.ToString();
+            ItemDataInfoFromCsvTable itemDataInfo = new ItemDataInfoFromCsvTable();
+            var placementItemData = SD_PlacementItemDataCSVFile.Class_Dic[key];
+            //itemDataInfo.modelAddressableLink = SD_PlacementItemDataCSVFile.Class_Dic[key].threeModelAddressableLink;
+            
+            GameObject model = Addressables.LoadAssetAsync<GameObject>
+                (placementItemData.threeModelAddressableLink).WaitForCompletion();
+            itemDataInfo.model = model;
+            
+            itemDataInfo.sizeX = placementItemData._SizeX();
+            itemDataInfo.sizeY = placementItemData._SizeX();
+            
+            string placementType = placementItemData.placementType;
+            itemDataInfo.placementType = (PlacementType)Enum.Parse(typeof(PlacementType), placementType);
+            
+            itemDataInfo.addOffset = placementItemData._addOffset() == 1;
+            itemDataInfo.minQuantity = placementItemData._minQuantity();
+            itemDataInfo.maxQuantity = placementItemData._maxQuantity();
+            
+            itemDataInfo.theName = placementItemData._Describe();
+            itemDataInfosNew.Add(itemDataInfo);
+        }
+        
+        
+        //itemDataInfos = new List<ItemDataInfo>();//可删
+        
+    }
+    private void Awake()
+    {
+        LoadAllScriptableInfos();
+    }
 
     // 放置物品
     public void SetData(YRogue_ItemPlacementHelper itemPlacementHelper,Transform parent)
@@ -21,7 +64,8 @@ public class YRogue_PropPlacementManager : MonoBehaviour
         // ClearData();
         this.parent = parent;
 
-        foreach (var itemDataInfo in itemDataInfos)
+        // foreach (var itemDataInfo in itemDataInfos)
+        foreach (var itemDataInfo in itemDataInfosNew)
         {
             bool useProbility = itemDataInfo.useProbility;
             if (useProbility)
@@ -36,7 +80,13 @@ public class YRogue_PropPlacementManager : MonoBehaviour
             int count = UnityEngine.Random.Range(itemDataInfo.minQuantity, itemDataInfo.maxQuantity + 1);
             for (int i = 0; i < count; i++)
             {
-                var position = itemPlacementHelper.GetItemPlacementPosition(itemDataInfo.itemData.placementType, 10, itemDataInfo.itemData.size, itemDataInfo.itemData.addOffset);
+                Vector2Int size = new Vector2Int(itemDataInfo.sizeX, itemDataInfo.sizeY);
+                var position = itemPlacementHelper.GetItemPlacementPosition
+                    (
+                        itemDataInfo.placementType,
+                        10,
+                        size, 
+                        itemDataInfo.addOffset);
                 if (position != null)
                 {
                     Vector3 pos3From2 = new Vector3(position.Value.x, 0, position.Value.y);
@@ -56,12 +106,12 @@ public class YRogue_PropPlacementManager : MonoBehaviour
     }
 
     //放置物品
-    private void SetIteamData(Vector3 position, ItemDataInfo itemDataInfo)
+    private void SetIteamData(Vector3 position, ItemDataInfoFromCsvTable itemDataInfo)
     {
         // 实例化道具对象
         // GameObject prop = Instantiate(propPrefab, position, Quaternion.identity);
         
-        GameObject model = Instantiate(itemDataInfo.itemData.model, position, Quaternion.identity);
+        GameObject model = Instantiate(itemDataInfo.model, position, Quaternion.identity);
         GameObject prop = model;
 
         //绑定父级
@@ -69,8 +119,8 @@ public class YRogue_PropPlacementManager : MonoBehaviour
         prop.transform.SetParent(parent);
 
         //修改名称
-        prop.name = itemDataInfo.itemData.name;
-
+        prop.name = itemDataInfo.theName;
+        
         // SpriteRenderer propSpriteRenderer = prop.GetComponentInChildren<SpriteRenderer>();
 
         // 添加碰撞体
