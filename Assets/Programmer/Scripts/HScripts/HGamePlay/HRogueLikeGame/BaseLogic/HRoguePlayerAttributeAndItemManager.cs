@@ -51,6 +51,11 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     public float MouseSensitive{get => mouseSensitive; set => mouseSensitive = value;}
     private bool aimHelperIsOn = true;
     public bool AimHelperIsOn{get => aimHelperIsOn; set => aimHelperIsOn = value;}
+    
+    //是否正在玩挑战房的游戏
+    private bool isPlayingRogueInsideGame = false;
+    public bool IsPlayingRogueInsideGame { get => isPlayingRogueInsideGame; set => isPlayingRogueInsideGame = value; }
+
     public void UpdateMouseSensitive()
     {
         if (player)

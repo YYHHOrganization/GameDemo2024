@@ -147,7 +147,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
             HPostProcessingFilters.Instance.GetRenderFeature(name);
         feature.SetActive(true);
     }
-
+    
     private void LoadGame()
     {
         SetExitPanelFalse();
@@ -160,6 +160,41 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>().ControlThundering(false);
         //怕出各种情况，角色锁血
         HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(true);
+        //进入rogue内部小游戏模式，以下代码是必须加的
+        HRoguePlayerAttributeAndItemManager.Instance.IsPlayingRogueInsideGame = true;
+    }
+
+    private float timeScale = 1;
+    private void CancelAndExitGame()
+    {
+        timeScale = Time.timeScale;
+        Time.timeScale = 0;
+        GetComponent<SimpleMusicPlayer>().Pause();
+        HMessageShowMgr.Instance.ShowMessageWithActions("CANCEL_GAME_IN_ROGUE", EndGameByCancel, ResumeTimeScale,ResumeTimeScale);
+    }
+
+    private void EndGameByCancel()
+    {
+        gameBeforeNormalOver = true; //因为玩家的操作中途退出了游戏
+        gameAccruacy = 0.2f;
+        Time.timeScale = timeScale;
+        //SetThisGameOver();
+        //cancel playerInput.Always.Exit.started += context => CancelAndExitGame();
+        HMessageShowMgr.Instance.RemoveTickMessage("歌曲倒计时：");
+        StopAllCoroutines();
+        EndGame();
+    }
+
+    private void ResumeTimeScale()
+    {
+        //string name = GetComponent<SimpleMusicPlayer>().GetCurrentClipName();
+        //int sampleTime = GetComponent<SimpleMusicPlayer>().GetSampleTimeForClip(name);
+        //GetComponent<SimpleMusicPlayer>().SeekToSample(sampleTime);
+        GetComponent<SimpleMusicPlayer>().Play();
+        gameBeforeNormalOver = false;
+        canOpenExitPanel = true;
+        YPlayModeController.Instance.LockPlayerInput(true);
+        Time.timeScale = timeScale;
     }
 
     private void SetGamePanelActive()
@@ -300,6 +335,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
     }
 
     private float gameAccruacy = 0;
+    private bool gameBeforeNormalOver = false; //游戏是否提前结束了，比如中途退出
     private void SetThisGameOver()
     {
         //计算一下玩家的准度，然后显示出来
@@ -321,7 +357,6 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
         HAudioManager.Instance.Play("StartRogueAudio", HAudioManager.Instance.gameObject);
-        Destroy(gameObject, 1f);
         
         //如果下雨的话，把打雷效果给开了
         HRogueWeatherController weatherController = yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
@@ -330,6 +365,9 @@ public class HRogueMusicGame1Logic : MonoBehaviour
             weatherController.ControlThundering(true);
         }
         HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(false);
+        //退出玩游戏
+        HRoguePlayerAttributeAndItemManager.Instance.IsPlayingRogueInsideGame = false;
+        Destroy(gameObject, 1f);
     }
     
     private void GiveOutTreasure(float accuracy)
@@ -367,7 +405,20 @@ public class HRogueMusicGame1Logic : MonoBehaviour
             CycleBackgroundImage();
         }
     }
-    
+
+    private bool canOpenExitPanel = true;
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (canOpenExitPanel)
+            {
+                CancelAndExitGame();
+                canOpenExitPanel = false;
+            }
+        }
+    }
+
     //背景循环播放的动画
     bool currentCheckbg1 = false;
     private void CycleBackgroundImage()

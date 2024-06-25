@@ -140,6 +140,7 @@ public class HRogueWeatherController : MonoBehaviour
     }
     private void ResetEverything()
     {
+        if (isRaining == false) return;
         isRaining = false;
         // 1.先把落雷劈下的效果停掉
         isLightingFall = false;
@@ -149,8 +150,18 @@ public class HRogueWeatherController : MonoBehaviour
         {
             StopCoroutine(lightningCoroutine);
         }
-        spppMat.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
 
+        if (spppMat)
+        {
+            spppMat.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
+        }
+        else
+        {
+            GameObject cameraMesh = playerCamera.transform.GetChild(0).gameObject;
+            cameraMesh.SetActive(true);
+            spppMat = cameraMesh.GetComponent<Renderer>().sharedMaterial;
+        }
+        
         StartCoroutine(ChangeToSunnyDay());
     }
     

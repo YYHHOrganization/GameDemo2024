@@ -179,6 +179,9 @@ public class YEntershortcutKey : MonoBehaviour
     
     private void ExitPanelOn()
     {
-        YGameRoot.Instance.Push(new YExitPanel());
+        if (!HRoguePlayerAttributeAndItemManager.Instance.IsPlayingRogueInsideGame)
+        {
+            YGameRoot.Instance.Push(new YExitPanel());
+        }
     }
 }
