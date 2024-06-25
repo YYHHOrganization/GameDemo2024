@@ -14,7 +14,7 @@ namespace Core.AI
         public override TaskStatus OnUpdate()
         {
             enemyBT.curHealth = Health.Value;
-            enemyBT.UpdateUI();
+            enemyBT.UpdateUI(Health.Value);
             return TaskStatus.Success;
         }
     }

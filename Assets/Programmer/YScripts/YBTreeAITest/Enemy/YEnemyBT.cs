@@ -56,6 +56,12 @@ public class YEnemyBT : HRogueEnemyPatrolAI
     {
         UpdateEnemyHeathAndShieldUI();
     }
+    public void UpdateUI(int maxHealth)
+    {
+        base.maxHealth = maxHealth;
+        UpdateEnemyHeathAndShieldUI();
+    }
+    
     public void bloodFrozeEffect(bool isFroze)
     {
         if (isFroze)
