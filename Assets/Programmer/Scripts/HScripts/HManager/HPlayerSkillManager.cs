@@ -69,6 +69,7 @@ public class HPlayerSkillManager : MonoBehaviour
 
     public void CheckSpaceSkill()
     {
+        if (HRoguePlayerAttributeAndItemManager.Instance.IsUsingGMPanel) return;
         if (Input.GetKeyDown(KeyCode.R)) 
         {
             //Debug.Log("Space");

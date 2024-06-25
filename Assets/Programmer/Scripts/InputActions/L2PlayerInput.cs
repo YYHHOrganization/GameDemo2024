@@ -333,6 +333,15 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GameManager"",
+                    ""type"": ""Button"",
+                    ""id"": ""1356a5c0-4bf9-4a33-aa0a-38040bedb99f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -346,6 +355,39 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Exit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""1a994035-55de-4a3e-95a0-801ee26aecdc"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GameManager"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""7f6b6d7c-f919-410b-a0d2-92f9180c9467"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GameManager"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""8cb50148-0da2-4951-b753-10eea3302712"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GameManager"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -421,6 +463,7 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         // Always
         m_Always = asset.FindActionMap("Always", throwIfNotFound: true);
         m_Always_Exit = m_Always.FindAction("Exit", throwIfNotFound: true);
+        m_Always_GameManager = m_Always.FindAction("GameManager", throwIfNotFound: true);
         // LockView
         m_LockView = asset.FindActionMap("LockView", throwIfNotFound: true);
         m_LockView_Lock = m_LockView.FindAction("Lock", throwIfNotFound: true);
@@ -719,11 +762,13 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Always;
     private List<IAlwaysActions> m_AlwaysActionsCallbackInterfaces = new List<IAlwaysActions>();
     private readonly InputAction m_Always_Exit;
+    private readonly InputAction m_Always_GameManager;
     public struct AlwaysActions
     {
         private @L2PlayerInput m_Wrapper;
         public AlwaysActions(@L2PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Exit => m_Wrapper.m_Always_Exit;
+        public InputAction @GameManager => m_Wrapper.m_Always_GameManager;
         public InputActionMap Get() { return m_Wrapper.m_Always; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -736,6 +781,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
             @Exit.started += instance.OnExit;
             @Exit.performed += instance.OnExit;
             @Exit.canceled += instance.OnExit;
+            @GameManager.started += instance.OnGameManager;
+            @GameManager.performed += instance.OnGameManager;
+            @GameManager.canceled += instance.OnGameManager;
         }
 
         private void UnregisterCallbacks(IAlwaysActions instance)
@@ -743,6 +791,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
             @Exit.started -= instance.OnExit;
             @Exit.performed -= instance.OnExit;
             @Exit.canceled -= instance.OnExit;
+            @GameManager.started -= instance.OnGameManager;
+            @GameManager.performed -= instance.OnGameManager;
+            @GameManager.canceled -= instance.OnGameManager;
         }
 
         public void RemoveCallbacks(IAlwaysActions instance)
@@ -839,6 +890,7 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
     public interface IAlwaysActions
     {
         void OnExit(InputAction.CallbackContext context);
+        void OnGameManager(InputAction.CallbackContext context);
     }
     public interface ILockViewActions
     {

@@ -56,6 +56,8 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     private bool isPlayingRogueInsideGame = false;
     public bool IsPlayingRogueInsideGame { get => isPlayingRogueInsideGame; set => isPlayingRogueInsideGame = value; }
 
+    private bool isUsingGMPanel = false;
+    public bool IsUsingGMPanel { get => isUsingGMPanel; set => isUsingGMPanel = value; }
     public void UpdateMouseSensitive()
     {
         if (player)
