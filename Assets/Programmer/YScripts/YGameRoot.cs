@@ -74,11 +74,14 @@ public class YGameRoot : MonoBehaviour
         }
     public void PlayAgain()
     {
+        Time.timeScale = 1;
         // SceneSystem.SetScene(new YStartScene());
-        Push(new YLevelPanel(0));//肉鸽游戏
-        //string currentSceneName = SceneManager.GetActiveScene().name;
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        YPlayModeController.Instance.CancelAllListeners(); //重新加载场景时，取消所有监听器，参考文章：https://blog.csdn.net/mo_qi_qi/article/details/106806988，这是一个坑点
+        HRogueItemFuncUtility.Instance.CancelAllListeners();
         //SceneManager.LoadScene ("Level1DemoScene");
-        //SceneManager.LoadScene(currentSceneName);
+        SceneManager.LoadSceneAsync(currentSceneName);
+        
     }
     
     
