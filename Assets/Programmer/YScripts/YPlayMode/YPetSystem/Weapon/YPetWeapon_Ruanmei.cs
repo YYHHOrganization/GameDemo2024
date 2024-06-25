@@ -6,7 +6,9 @@ using UnityEngine;
 public class YPetWeapon_Ruanmei  : YPetWeapon
 {
     [SerializeField]YGrowVines growVines;
-    // [SerializeField]
+    [SerializeField]
+    private float DetectCollisionDelay = 1f;
+    [SerializeField]
     private float duration = 3f;
     void Start()
     {
@@ -14,9 +16,6 @@ public class YPetWeapon_Ruanmei  : YPetWeapon
     }
     public override void SetDetectShootOn()
     {
-        
-        boxCollider.enabled = true;
-        
         growVines.transform.parent = transform;
         growVines.transform.localPosition = Vector3.zero;
         growVines.transform.localRotation = Quaternion.identity;
@@ -29,6 +28,10 @@ public class YPetWeapon_Ruanmei  : YPetWeapon
             //
             hitEff.SetActive(true);
         }
+        DOVirtual.DelayedCall(DetectCollisionDelay, () =>
+        {
+            boxCollider.enabled = true;
+        });
         DOVirtual.DelayedCall(duration, () =>
         {
             SetDetectShootOff();

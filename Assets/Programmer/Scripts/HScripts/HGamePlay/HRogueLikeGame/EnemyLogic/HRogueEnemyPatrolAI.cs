@@ -74,7 +74,9 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private Transform shootOrigin;
     protected int maxHealth;
 
-    public Image enemyHealthImage;
+    [Header("血条")]
+    [SerializeField]YEnemyUICanvas enemyUICanvas;
+    
     public string enemyID;
 
     public Class_RogueEnemyCSVFile enemy;
@@ -311,11 +313,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     protected void UpdateEnemyHeathAndShieldUI()
     {
-        //enemyHealthImage.fillAmount
-        if (enemyHealthImage)
-        {
-            enemyHealthImage.fillAmount = health * 1.0f / maxHealth;
-        }
+        if(enemyUICanvas != null)
+            enemyUICanvas.UpdateEnemyHeathUI(health, maxHealth);
     }
 
     public void UpdateEnemyCurrentElement(ElementType addElementType) //更新携带的元素
