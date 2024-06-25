@@ -33,14 +33,17 @@ public class YLoadPanel : BasePanel
         enterGameButton.gameObject.SetActive(false);
         //2s后出现按钮EnterGameButton
         //Invoke("ShowEnterGameButton",2f);
-        #if BUILD_MODE
         settingButton = uiTool.GetOrAddComponentInChilden<Button>("SettingButton");
-        settingButton.gameObject.SetActive(false);
+        settingButton.onClick.AddListener(() =>
+        {
+            Push(new SettingPanel());
+        });
         TMP_Text descriptText = uiTool.GetOrAddComponentInChilden<TMP_Text>("DescriptionText");
-        descriptText.text = "游戏版本：0.0.5\n仅为学习项目使用";
+        #if BUILD_MODE
+        descriptText.text = "游戏版本：0.0.6\n仅为学习项目使用";
         //todo:设置按钮的功能，后面做一下，绑定一个监听事件
         #else
-            descriptText.text = "开发版本：0.0.6";
+            descriptText.text = "开发版本：0.0.7";
         #endif
         //加载进度条
         // uiTool.GetOrAddComponentInChilden<Slider>("LoadSlider")

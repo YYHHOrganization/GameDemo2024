@@ -26,10 +26,46 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
     private int correctPuzzleCnt = 0;
     private Button startGameButton;
     private GameObject gameScorePanel;
-
+    
     private void Start()
     {
         LoadGame();
+    }
+    
+    private float timeScale = 1;
+    private void CancelAndExitGame()
+    {
+        timeScale = Time.timeScale;
+        Time.timeScale = 0;
+        HMessageShowMgr.Instance.ShowMessageWithActions("CANCEL_GAME_IN_ROGUE", EndGameByCancel, ResumeTimeScale,ResumeTimeScale);
+    }
+    
+    bool canOpenEscapePanel = true;
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (canOpenEscapePanel)
+            {
+                canOpenEscapePanel = false;
+                CancelAndExitGame();
+            }
+        }
+    }
+
+    private void EndGameByCancel()
+    {
+        isFinishedPuzzleGame = false; //没有完成拼图
+        Time.timeScale = timeScale;
+        StopAllCoroutines();
+        correctPuzzleCnt = 0;
+        EndGame();
+    }
+
+    private void ResumeTimeScale()
+    {
+        Time.timeScale = timeScale;
+        canOpenEscapePanel = true;
     }
 
     private void LoadGame()
@@ -71,6 +107,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
     {
         InitializePuzzleFragments();
         RollingPuzzleFragments();
+        HRoguePlayerAttributeAndItemManager.Instance.IsPlayingRogueInsideGame = true;
     }
 
     private void ResetWeather()
@@ -268,6 +305,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
         weatherController.SetWeatherControl(true);
         //怕出各种情况，角色锁血
         HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(false);
+        HRoguePlayerAttributeAndItemManager.Instance.IsPlayingRogueInsideGame = false;
         Destroy(transform.parent.gameObject, 1f);
     }
 

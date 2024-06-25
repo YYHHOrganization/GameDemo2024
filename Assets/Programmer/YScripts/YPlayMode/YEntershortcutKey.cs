@@ -26,6 +26,14 @@ public class YEntershortcutKey : MonoBehaviour
 
         playerInput.LockView.Lock.started += context => SetLockView();
         playerInput.LockView.GiveUpBackPanel.started += context => GiveUpPanelOn();
+
+        playerInput.Always.GameManager.started += context => OpenGMWindow();
+    }
+
+    private void OpenGMWindow()
+    {
+        Debug.Log("now I open GM Window");
+        YGameRoot.Instance.Push(new GMPanel());
     }
 
     // Start is called before the first frame update
@@ -179,6 +187,9 @@ public class YEntershortcutKey : MonoBehaviour
     
     private void ExitPanelOn()
     {
-        YGameRoot.Instance.Push(new YExitPanel());
+        if (!HRoguePlayerAttributeAndItemManager.Instance.IsPlayingRogueInsideGame)
+        {
+            YGameRoot.Instance.Push(new YExitPanel());
+        }
     }
 }

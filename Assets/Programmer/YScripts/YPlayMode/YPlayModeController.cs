@@ -19,21 +19,48 @@ public class YPlayModeController : MonoBehaviour
 {
     //单例
     private static YPlayModeController instance;
+    // public static YPlayModeController Instance
+    // {
+    //     get
+    //     {
+    //         return instance;
+    //     }
+    // }
+    
     public static YPlayModeController Instance
     {
         get
         {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<YPlayModeController>();
+            }
+
             return instance;
         }
     }
     private void Awake()
     {
-        instance = this;
-        CanVasUI = GameObject.Find("CanvasShowUI");
-        CanvasShowUINew = GameObject.Find("CanvasShowUINew");
+        //instance = this;
+        if (instance == null)
+        {
+            instance = this;
+            //GameObject.DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        //CanVasUI = GameObject.Find("CanvasShowUI");
+        //CanvasShowUINew = GameObject.Find("CanvasShowUINew");
         
+    }
+
+    private void Start()
+    {
         YTriggerEvents.OnShortcutKeyInteractionStateChanged += SetNameUILabel;
     }
+
     HCameraLayoutManager CameraLayoutManager;
     public GameObject curCharacter;
     private GameObject FreeLookCamera;
@@ -236,6 +263,12 @@ public class YPlayModeController : MonoBehaviour
             j++;
         }
     }
+
+    public void CancelAllListeners()
+    {
+        YTriggerEvents.OnShortcutKeyInteractionStateChanged -= SetNameUILabel;
+    }
+    
     bool flagEnterDetectViewOnOrOff = false;
     public void DetectViewOnOrOff()
     {
@@ -276,7 +309,7 @@ public class YPlayModeController : MonoBehaviour
         
     }
 
-    private GameObject CanvasShowUINew;
+    public GameObject CanvasShowUINew;
     private GameObject ShowPlaceUI = null;
     YNameUI yNameUiSctipt;
     public void SetNameUILabel(object sender, YTriggerGameObjectEventArgs e)

@@ -21,9 +21,15 @@ public class HGachaBasePanel : BasePanel
         YPlayModeController.Instance.LockPlayerInput(false);
         exitButton.onClick.AddListener(() =>
         {
-            RemoveSelfPanel();
             YTriggerEvents.RaiseOnMouseLeftShoot(true);
+            RemoveSelfPanel();
             HPlayerSkillManager.instance.SetGachaPanelBeenPushed(false);
         });
+    }
+
+    public override void OnResume()
+    {
+        base.OnResume();
+        YTriggerEvents.RaiseOnMouseLeftShoot(false);
     }
 }

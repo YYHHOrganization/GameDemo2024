@@ -20,7 +20,7 @@ public class StartPanel : BasePanel
             Pop();
             //Push(new YMainPanel());
             
-            Push(new YLevelPanel(1));//演绎模式
+            Push(new YLevelPanel(0));//演绎模式
             // Push(new YChooseScreenplayPanel());
         });
         #if BUILD_MODE
@@ -43,8 +43,8 @@ public class StartPanel : BasePanel
             Push(new SettingPanel());
         });
         
-        #if BUILD_MODE
-        uiTool.GetOrAddComponentInChilden<Button>("SettingButton").gameObject.SetActive(false);
-        #endif
+        // #if BUILD_MODE
+        // uiTool.GetOrAddComponentInChilden<Button>("SettingButton").gameObject.SetActive(false);
+        // #endif
     }
 }

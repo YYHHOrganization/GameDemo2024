@@ -1110,4 +1110,11 @@ public class HRogueItemFuncUtility : MonoBehaviour
         yield return new WaitForSeconds(lastTime);
         HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform.DOLocalRotate(new Vector3(180, 0, 0), 2f, RotateMode.LocalAxisAdd);
     }
+    
+    public void CancelAllListeners()
+    {
+        YTriggerEvents.OnEnterRoomType -= EnterNewRoomEffect;
+        YTriggerEvents.OnEnterRoomType -= EnterNewRoomEffectWithCnt;
+        YTriggerEvents.OnEnterRoomType -= EnterNewRoomForPositiveItem;
+    }
 }

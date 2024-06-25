@@ -142,7 +142,10 @@ public class YDungeonCreator : MonoBehaviour
     public NavMeshSurface surface;
     public void BakeNavMesh()
     {
-        surface.BuildNavMesh();
+        if (surface)
+        {
+            surface.BuildNavMesh();
+        }
     }
     
 

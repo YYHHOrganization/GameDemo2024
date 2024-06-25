@@ -47,7 +47,33 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
     private HRogueWeatherController weatherController;
 
     public bool cannotBeHurt = false;
+    private float mouseSensitive = 1.0f;
+    public float MouseSensitive{get => mouseSensitive; set => mouseSensitive = value;}
+    private bool aimHelperIsOn = true;
+    public bool AimHelperIsOn{get => aimHelperIsOn; set => aimHelperIsOn = value;}
     
+    //是否正在玩挑战房的游戏
+    private bool isPlayingRogueInsideGame = false;
+    public bool IsPlayingRogueInsideGame { get => isPlayingRogueInsideGame; set => isPlayingRogueInsideGame = value; }
+
+    private bool isUsingGMPanel = false;
+    public bool IsUsingGMPanel { get => isUsingGMPanel; set => isUsingGMPanel = value; }
+    public void UpdateMouseSensitive()
+    {
+        if (player)
+        {
+            player.GetComponent<HTestCharacterShoot>().UpdateMouseSensitive();
+        }
+    }
+
+    public void UpdateAimHelper()
+    {
+        if (player)
+        {
+            player.GetComponent<HTestCharacterShoot>().UpdateAimHelper();
+        }
+    }
+
     public static HRoguePlayerAttributeAndItemManager Instance
     {
         get
