@@ -93,6 +93,8 @@ public class YEnemyBT : HRogueEnemyPatrolAI
         
         // OnDie?.Invoke();
         OnDie?.Invoke(gameObject);
+        
+        enemyUICanvas.gameObject.SetActive(false);
     }
     
     private void OnTriggerEnter(Collider other)

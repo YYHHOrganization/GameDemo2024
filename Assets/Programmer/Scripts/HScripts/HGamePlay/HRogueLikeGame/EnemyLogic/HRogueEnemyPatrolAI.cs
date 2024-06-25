@@ -70,12 +70,13 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private int isWalkingHash;
     private int isAttackingHash;
     private int isDeadHash;
+    private int isGetHitHash;
     public int IsAttackingHash => isAttackingHash;
     private Transform shootOrigin;
     protected int maxHealth;
 
     [Header("血条")]
-    [SerializeField]YEnemyUICanvas enemyUICanvas;
+    [SerializeField]protected YEnemyUICanvas enemyUICanvas;
     
     public string enemyID;
 
@@ -99,6 +100,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         isWalkingHash = Animator.StringToHash("isWalking");
         isAttackingHash = Animator.StringToHash("isAttacking");
         isDeadHash = Animator.StringToHash("isDead");
+        isGetHitHash = Animator.StringToHash("isGetHit");
         shootOrigin = transform.Find("ShootOrigin");
         ReadTableAndSetAttribute();
         LoadAllRefPrefabs();
