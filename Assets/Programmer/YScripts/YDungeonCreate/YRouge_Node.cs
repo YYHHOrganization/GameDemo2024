@@ -13,6 +13,9 @@ public abstract class YRouge_Node
     
     private YRouge_Node parentNode;
     
+    // 添加一个新的属性来存储邻居
+    public List<YRouge_Node> Neighbors { get; private set; }
+    
     public bool isVisited { get; set; }
     public Vector2Int BottomLeftAreaCorner { get; set; }//左下角
     public Vector2Int BottomRightAreaCorner { get; set; }//右下角
@@ -29,6 +32,9 @@ public abstract class YRouge_Node
         {
             parentNode.AddChildNode(this);
         }
+        
+        // 初始化邻居列表
+        Neighbors = new List<YRouge_Node>();
     }
     public void AddChildNode(YRouge_Node childNode)
     {
@@ -37,5 +43,14 @@ public abstract class YRouge_Node
     public void RemoveChildNode(YRouge_Node childNode)
     {
         childrenNodeList.Remove(childNode);
+    }
+    
+    // 添加一个新的方法来添加邻居
+    public void AddNeighbor(YRouge_Node neighbor)
+    {
+        if (!Neighbors.Contains(neighbor))
+        {
+            Neighbors.Add(neighbor);
+        }
     }
 }
