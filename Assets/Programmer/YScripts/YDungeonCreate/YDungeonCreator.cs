@@ -60,11 +60,12 @@ public class YDungeonCreator : MonoBehaviour
     List<YRouge_Node> corridorList ;
     
     List<YRouge_RoomBase> roomBaseList;
-    public void CreateDungeon(int style=0 )
+    public void CreateDungeon(int style=0 ,bool testGenerateIcon=false)
     {
         DestroyAllChildren();
         
         YDungeonGenerator generator = new YDungeonGenerator(dungeonWidth, dungeonLength);
+        //以下的CalculateRooms同样生成了走廊的结构
         StructWithRoomListAndCorridorList ListOfRooms = generator.CalculateRooms(
             maxIterations,
             roomWidthMin, 
@@ -129,10 +130,38 @@ public class YDungeonCreator : MonoBehaviour
         CorridorParent.transform.parent = transform;
         CrrateCorridorWall(CorridorParent.transform);
         
+        if(testGenerateIcon)
+        {
+            TestGenerateAllIcon();
+        }
         //移动到（-400，0，-400）
         //transform.position = new Vector3(-400, 0, -400);
         // BakeNavMesh();
     }
+    //测试用的代码 调用每个房间的脚本的GenerateLittleMapMask(); 显示出图标
+    public void TestGenerateAllIcon()
+    {
+        //foreach (var roomBase in roomBaseList)
+        for(int i = 0; i < roomBaseList.Count; i++)
+        {
+            YRouge_RoomBase roomBase = roomBaseList[i];
+            RoomType roomType = roomBase.roomNode.RoomType;
+            roomBase.GenerateIcon(roomType);
+            //将命名改为第几个
+            roomBase.gameObject.name = "Room_"+i;
+            
+            //Debug输出每个房间的邻居
+            Debug.Log("Room_"+i+"的邻居有:");
+            foreach (var neighbor in roomBase.roomNode.Neighbors)
+            {
+                YRoomNode neighbor1 = neighbor as YRoomNode;
+                Debug.Log(neighbor1.RoomType);
+            }
+            
+        }
+        
+    }
+    
     
     public List<YRouge_RoomBase> GetRoomBaseList()
     {

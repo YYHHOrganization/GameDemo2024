@@ -104,7 +104,7 @@ public class YRouge_RoomBase : MonoBehaviour
         
     }
 
-    private void GenerateLittleMapMask()
+   private void GenerateLittleMapMask()
     {
         //生成一个黑色mask mask在地图上 大小根据roomSpaceKeep的大小来确定
         string AddressLink = "YPlaneMask";
@@ -128,7 +128,20 @@ public class YRouge_RoomBase : MonoBehaviour
         roomLittleMapMask.transform.localScale = new Vector3(roomSpaceKeep.width/10.0f+0.05f, 1, roomSpaceKeep.length/10.0f+0.05f);
     }
 
-    private void GenerateIcon()
+    public void GenerateIcon()
+    {
+        //YmapBattleRoomIcon
+        string Link = "YmapIcon_"+roomType.ToString();
+        var op = Addressables.LoadAssetAsync<GameObject>(Link);
+        GameObject go = op.WaitForCompletion() as GameObject;
+        if (go == null)
+        {
+            return;
+        }
+        GameObject iconGo = Instantiate(go, transform);
+        iconGo.transform.parent = transform;
+    }
+    public void GenerateIcon(RoomType roomType)
     {
         //YmapBattleRoomIcon
         string Link = "YmapIcon_"+roomType.ToString();

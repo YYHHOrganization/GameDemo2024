@@ -24,6 +24,8 @@ public class YRouge_RoomType
         // int battleRoomCount = SD_RogueRoomFile.Class_Dic["66600000"]._RoomCount();
         int battleRoomCount = roomCount - bornRoomCount - shopCount - bossCount - challengeCount - gameCount - itemRoomCount - adeventureRoomCount;
         
+        //todo:在这里可以去做房间类型的合理排布
+        
         // if(ElseRoomCount < 0)
         if(battleRoomCount < 0)
         {

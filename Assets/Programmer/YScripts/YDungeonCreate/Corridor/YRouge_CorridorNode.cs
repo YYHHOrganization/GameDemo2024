@@ -15,7 +15,6 @@ public class YRouge_CorridorNode : YRouge_Node
         this.structure2 = structure2;
         this.corridorWidth = corridorWidth;
         GenerateCorridor();
-        
     }
 
     private void GenerateCorridor()
@@ -41,6 +40,8 @@ public class YRouge_CorridorNode : YRouge_Node
 
     private void ProcessRoomInRelativePositionRightOrLeft(YRouge_Node p0, YRouge_Node p1)
     {
+        //p0 p1 指的是整个大结构 类似整个左边和整个右边
+        //leftStructure是子结构 最终是最后选定要作为走廊连接的叶子结构 真正的房间
         YRouge_Node leftStructure = null;
         List<YRouge_Node> leftStructureChildren = YRouge_StructureHelper.TraverseGraphToExtractLowestLeafs(structure1);
         YRouge_Node rightStructure = null;
@@ -111,6 +112,15 @@ public class YRouge_CorridorNode : YRouge_Node
         //最后找到了合适的y值，那么就可以生成走廊了
         BottomLeftAreaCorner = new Vector2Int(leftStructure.BottomRightAreaCorner.x, y);
         TopRightAreaCorner = new Vector2Int(rightStructure.TopLeftAreaCorner.x, y + this.corridorWidth);
+        
+        //让左边结构和右边结构互相添加邻居
+        AddNeighborForTwoStructures(leftStructure, rightStructure);
+    }
+
+    private void AddNeighborForTwoStructures(YRouge_Node leftStructure, YRouge_Node rightStructure)
+    {
+        leftStructure.AddNeighbor(rightStructure);
+        rightStructure.AddNeighbor(leftStructure);
     }
 
     /// <summary>
@@ -238,6 +248,8 @@ public class YRouge_CorridorNode : YRouge_Node
         }
         BottomLeftAreaCorner = new Vector2Int(x, bottomStructure.TopLeftAreaCorner.y);
         TopRightAreaCorner = new Vector2Int(x + this.corridorWidth, topStructure.BottomLeftAreaCorner.y);
+        
+        AddNeighborForTwoStructures(bottomStructure, topStructure);
     }
 
     private int GetValidXForNeighbourUpDown(Vector2Int bottomNodeLeft, 
