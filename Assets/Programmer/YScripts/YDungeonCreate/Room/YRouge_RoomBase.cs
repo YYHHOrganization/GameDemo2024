@@ -104,7 +104,7 @@ public class YRouge_RoomBase : MonoBehaviour
         
     }
 
-   private void GenerateLittleMapMask()
+    private void GenerateLittleMapMask()
     {
         //生成一个黑色mask mask在地图上 大小根据roomSpaceKeep的大小来确定
         string AddressLink = "YPlaneMask";
