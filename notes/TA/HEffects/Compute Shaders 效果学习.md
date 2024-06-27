@@ -4,6 +4,10 @@
 
 【1】首先，学习一下这篇博客：https://shahriyarshahrabi.medium.com/gentle-introduction-to-fluid-simulation-for-programmers-and-technical-artists-7c0045c40bac
 
+【2】学习一下Unity的Compute Shader的基本知识：先看一下学习群里的”compute shader“这篇，
+
+
+
 ## 1.流体模拟基础原理（GPT翻译，但应该不影响阅读）
 
 ​	流体模拟的资源可能会让人望而却步。我还记得第一次读到相关论文并看到纳维-斯托克斯方程（ Navier Stoke equations）时，感到非常吓人。随着时间的推移，我意识到这个主题本身并不复杂。事实上，如果你被分配任务编写自己的流体模拟器，你可能会依靠对流体运动直觉的理解，最终实现类似的东西。如果你看了看斯托克斯方程并说：“啊，我明白了，有道理”，那么你可能会更快地完成流体模拟的实现，通过阅读文章末尾引用的论文资源。在这里，我尽量慢慢地解释事物。
@@ -74,7 +78,7 @@ FluidStateForFieldX = Diffusion_of_X + Advection_of_X + X_Added_by_the_user
 
 ​	到目前为止，这个方法足够简单，可以在GPU或CPU上实现。
 
-> 注：**我的理解是这里就是一个基础实现，看上面的公式应该很好理解。**
+> 注：**我的理解是这里就是一个基础实现，看上面的公式应该很好理解。**（直观理解，+的部分是流进来的，而-的部分（`- 4*d0_X`）则表示流出去的）
 
 
 
@@ -104,9 +108,9 @@ Amount_of_field_X += user_input_for_this_cell
 
 ### （5）What’s So Naïve About This?
 
-​	如果您实现了上述内容，可能会发现某些类似于流体行为的东西（例如扩散部分会使其看起来像水彩撞击纸张），并且甚至可以在CPU上实现而不会有太多问题，只要事情保持单线程。然而，当前的实现存在三个主要缺陷：流体是可压缩的，不适合多线程，并且对于较大的时间步长不稳定。
+​	如果您实现了上述内容，可能会发现某些类似于流体行为的东西（例如扩散部分会使其看起来像水彩撞击纸张），并且甚至可以在CPU上实现而不会有太多问题，只要事情保持单线程。然而，当前的实现存在三个主要缺陷：流体实际上是不可压缩的，现在的算法不适合多线程，并且对于较大的时间步长不稳定。
 
-#### （a）问题1：流体实际上不具备可压缩性
+#### （a）缺陷1：流体实际上不具备可压缩性
 
 ​	流体的一个关键特征就是当您在水中移动手指时，会出现那些美丽的卷曲（curls）。问题是，为什么会出现这些卷曲，而我们的模拟中却没有呢？
 
@@ -126,7 +130,7 @@ Amount_of_field_X += user_input_for_this_cell
 
 ​	上述情景指出了我们的模拟缺少的一些内容，即流体不能被压缩（或者至少这是一个足够好的假设，以便进行可信的流体模拟）。在我们当前的模拟中，我们没有补偿这样一个事实：我们无法无限地将水推向空间的某一部分而没有任何后果。
 
-​	流体的不可压缩性是为什么流体体中会出现美丽的卷曲的原因。直观地说，你可以这样想，如果你在向前推动某物体，它实际上是无法被无限推进的，那么它会侧向移动，形成卷曲。我们通过投影来修正这一点，我们将在讨论完其他两个问题后立即涵盖。
+​	流体的不可压缩性是为什么流体体中会出现美丽的卷曲的原因。直观地说，你可以这样想，如果你在向前推动某物体，它实际上是无法被无限推进的，那么它会侧向移动，形成卷曲。我们通过投影（Projection）来修正这一点，我们将在讨论完其他两个问题后立即涵盖。
 
 ![img](./assets/1CAp7wGtwWo4JP8x2utynrg-1719394130474-13.jpeg)
 
@@ -160,7 +164,7 @@ Amount_of_field_X += user_input_for_this_cell
 
 ​				Figure -7- Too large delta time lead to values blowing up. Each step has a local error which compounds over time to very large values
 
-​	我不会深入讨论细节，因为在我们从散射操作（scatter operation）切换到聚集操作(gather operation)，并重新构思我们的扩散计算以消除此问题后，平流中的问题将自动消失。在新的扩散设置中，**单元格的值通过它们对每个其他单元格字段值的依赖隐式定义**。尽管时间步长过大时，这种方法仍可能导致值不准确。这里的权衡是，我们必须解方程系统来找出我们的新值（下文详述）。不稳定性困扰了一些基于物理的模拟，你可能从物理仿真中的关节失控和疯狂移动中了解到这一点，在每帧中，骨骼都被移动到某个其他位置。
+​	我不会深入讨论细节，**因为在我们从散射操作（scatter operation）切换到聚集操作(gather operation)，并重新构思我们的扩散计算以消除此问题后，平流中的问题将自动消失。**（todo：存疑，这里没太看懂，到时候看完后面的再回来理解）在新的扩散设置中，**单元格的值通过它们对每个其他单元格字段值的依赖隐式定义**。尽管时间步长过大时，这种方法仍可能导致值不准确。这里的权衡是，我们必须解方程系统来找出我们的新值（下文详述）。不稳定性困扰了一些基于物理的模拟，你可能从物理仿真中的关节失控和疯狂移动中了解到这一点，在每帧中，骨骼都被移动到某个其他位置。
 
 > todo：是切换到了隐式欧拉的拟合方式么？后面有时间的话可以复习一下。
 
@@ -168,7 +172,16 @@ Amount_of_field_X += user_input_for_this_cell
 
 ### （6）Projection
 
-​	我们想在计算中实现以消除压缩问题的过程称为投影。命名背后的原因是，您将您的场（field）投影到一个新的向量基上，其中一个基具有卷曲（curls），另一个具有散度（divergence），尽管我将尝试用更简单的非数学术语来解释这一点。**投影是将我们的速度场进行调整的行为，以便流体在任何地方都不会被压缩。**
+​	我们想在计算中实现以消除压缩问题的过程称为投影。命名背后的原因是，您将您的场（field）投影到一个新的向量基上，其中一个基具有旋度（curls），另一个具有散度（divergence），尽管我将尝试用更简单的非数学术语来解释这一点。**投影是将我们的速度场进行调整的行为，以便流体在任何地方都不会被压缩。**
+
+> 强烈建议这里看一下3B1B的视频：https://www.bilibili.com/video/BV19s41157Z4/?spm_id_from=333.999.0.0&vd_source=f0e5ebbc6d14fe7f10f6a52debc41c99
+>
+> 省流：
+> 【1】在流体模拟中，向量场上某一点的散度，表示这种想象的流体在该点附近，向外发射或向内吸收的程度如何；
+>
+> 【2】对于真实（不可压缩）的流体来说，div F处处为0（**也就是每一处的散度值都应该为0**）
+>
+> 【3】旋度则表示流体绕着这一点旋转的趋势的大小。逆时针旋转时旋度为正，顺时针旋转时旋度为负。
 
 ​	首先让我们建立对此的直观理解。一种不能被压缩的物质不能有高低压力区域。当我们以某种方式推动水体以建立一种瞬时的压力（例如上图4所示），被推动的粒子试图从高压区域移动到低压区域，以避免被压缩。这些粒子会不断从高压到低压区域移动，直到整体粒子密度相等。如果我们能计算由这种压力差引起的速度（由流体体内的运动引起），并将其添加到我们现有的速度中，我们将得到一个速度场，其中没有压力积聚的区域。因此，这是一个速度场，其中没有发生压缩。另一种看待这个问题的方法是，我们通过改变场的速度来补偿不能推向或从中取走水的区域。
 
@@ -193,7 +206,7 @@ velocity_field = new_velocity_with_no_pressure_difference + Difference_In_Pressu
 
 ```c++
 velocity_field = Difference_In_Pressure + divergence_free_velocity
-divergence_free_velocity = velocity_field -Difference_In_Pressure
+divergence_free_velocity = velocity_field - Difference_In_Pressure
 ```
 
 But how do we calculate the pressure build up in a cell? Consider the following diagram.
@@ -208,11 +221,13 @@ But how do we calculate the pressure build up in a cell? Consider the following 
 
 ​	如果我们减去我们感兴趣的单元格右侧和左侧单元格的速度的X分量，我们得到一个数值，告诉我们这两个速度是否沿X轴同向运动，因此在该维度上的相邻单元格是否导致压力积聚。我们可以对上下单元格做同样的操作（但使用速度的Y分量），通过将这两个有符号的标量（沿水平和垂直轴的压力积聚贡献）相加，得到一个标量数值，代表有多少水正在汇聚到单元格中心，或者从中心散开。**这个数量恰好是给定单元格的速度场的散度（divergence）。**
 
- 	![img](./assets/1dHctee0t44x2zev5GBwPoQ.jpeg)
+> 散度（简单理解）：整体来讲往外出的话散度为正数；整体来讲往里压的话散度为负数。
+
+![img](./assets/1dHctee0t44x2zev5GBwPoQ.jpeg)
 
 ​							Figure -9- graphics and explanation to the Divergence operator
 
-​	在第9图中，您可以看到所提供解释的可视化效果。如果将此计算放入函数中，您将得到一个散度函数，它接受一个向量场，并返回一个标量场。这个函数通常被称为运算符，它是一种可以对场进行的操作，就像您可以对它们进行加法或减法一样。
+​	在第9图中，您可以看到所提供解释的可视化效果。如果将此计算放入函数中，**您将得到一个散度函数，它接受一个向量场，并返回一个标量场**。这个函数通常被称为运算符，它是一种可以对场进行的操作，就像您可以对它们进行加法或减法一样。
 
 ​	然而，散度并不是我们的压力。尽管它与压力有关，但有不同的解释方法可以解释它们之间的关系。数学上来说这很容易，但由于我希望提供更直观的理解，我会首先尝试一些不同的方法，这可能不是描述现象最精确的方式，但更能轻松地解释这两个概念如何相关。
 
@@ -295,3 +310,257 @@ Divergence(Gradient(Pressure)) = Divergence(velocity_field)
 (p[10] + p[01] + p[12] + p[21])- 4 * p[11] = Divergence(velocity_field)
 ```
 
+
+
+### （7）Solvers
+
+​	一开始看起来解压力散度方程似乎是不可能的，因为我们有5个未知数和一个方程式。但事实上，我们在我们的场中每个单元格都有一个方程式。所以在一个N乘N的场中，我们有N*N个未知数和同样数量的方程式。这实际上是一个线性方程组。
+
+​	简单回顾一下，一个方程系统可能看起来像这样：
+
+```c++
+Equation 1) y = x  + 1
+Equation 2) y = 5x - 2
+```
+
+​	上述每个方程式都有自己的graph，而几何上这两个graph相交的点（如果存在的话），就是方程式的解。换言之，就是满足两个语句的x和y值对。
+如果你还记得高中时的知识，一种解决这个简单系统的方法是通过代入法，即将第一个方程式代入第二个方程式，解出一个参数，然后将该参数的值代回任意一个方程式以获取第二个参数。大致过程如下：（这里就是解方程了）
+
+```c++
+Equation 2) y = (x  + 1) = 5x - 2 <= since y is also x +1
+=>               x - 5x = -2 -1 = -3 
+=>               x = -3/-4 = 3/4 
+Insert back in Equation 1)
+y = 3/4 + 1 = 7/4
+X = 3/4 = 0.75, y = 7/4 = 1.75
+```
+
+​	然而我们的系统与上述方程式完全不同。在一个128x128的网格中，我们有16,000个未知数和方程式。没有办法想在CPU或GPU中编程上述方法。此外，我们的系统还有一个独特之处，即每个cell的压力值仅取决于其4个邻居，与其他16,000个未知数无关。因此，如果您写下其中一个16,000个方程式，您将看到每行中的99%系数都是零。因此，您也不想将其写成矩阵并将其求逆，因为大多数项都是零。有一种更快的方法！
+
+​	在解释更快的方法之前，让我们在简单系统中进行一个魔术技巧。让我们重新排列这两个方程式，使其中一个有X在左侧，另一个有Y在左侧。
+
+```c++
+Equation 1) y = x  + 1
+Equation 2) x = y/5 + 2/5 
+```
+
+​	现在，取任意初始值x和y（例如零），并将其插入右侧。您将得到：
+
+```c++
+Equation 1) y = 0  + 1 = 1（上式取x=0）
+Equation 2) x = 0/5 + 2/5 = 2/5 = 0.4（上式取y=0）
+```
+
+​	现在，您有新的X和Y值，0.4和1。让我们重复上面的步骤，但不是使用零，而是插入我们的新值。
+
+```c++
+Equation 1) y = 0.4  + 1 = 1.4
+Equation 2) x = 1/5 + 2/5 = 3/5 = 0.6
+```
+
+​	我们可以重复这些步骤数次，在每个步骤中，我们将前一个X和Y的值插入方程式中。让我们看看会发生什么！
+
+```c++
+步骤0) 输入(X, y) = (0, 0)，输出 = (0.4, 1)
+步骤1) 输入(0.4, 1)，输出(0.6, 1.4)
+步骤2) 输入(0.6, 1.4)，输出((1.4 + 2)/5 , 0.6 + 1 ) = (0.68, 1.6)
+步骤3) 输入(0.68, 1.6)，输出((1.6 + 2)/5 , 0.68 + 1 ) = (0.72, 1.68)
+步骤4) 输入(0.72, 1.68)，输出((1.68+ 2)/5 , 0.72 + 1 ) = (0.736, 1.72)
+```
+
+​	Magic！即使在四步骤后，我们几乎达到了解决方案。您可以重复这些步骤许多次，最后您将非常接近精确的解决方案。上述是迭代求解器（ **Iterative Solver**），具体来说是雅克比求解器**Jacobi Solver**。好消息是，这个解决方案同样适用于我们的系统，并且它在GPU中非常易于实现。我们只需要在每个迭代步骤中保存每个细胞的压力值（作为纹理或计算缓冲），然后将其插回下一个step中。
+
+​	有很多不同的求解器，一些需要较少的内存使用，一些需要较少的步骤来达到解决方案，一些提供了更多的准确性（请记住，由于浮点错误，它确实很重要）。我在这里使用雅克比，因为其他求解器对于GPU的实现都是痛苦的，（Jacobi — Gauss Seidel — Successive Overrelaxation — Multigrid）。还有更多复杂的求解器您将在科学工程中遇到，但它们与我们的用例无关。
+
+​	然而，还有一个问题：为什么这工作？虽然使用矩阵形式（雅克比矩阵的对角矩阵、Gauss Seidel的下三角矩阵、successive relaxation的特殊下三角矩阵、multi-grid的多网格）来解释求解器是最精确的方法，我们可以轻松地解释稳定性、准确性等，但我想避免这些，以免失去那些只想获得基本理解的人。
+
+​	相反，我想使用Gauss Seidel来解释，而不是我们在实际实现中使用的雅克比求解器，因为它可以两倍快地达到结果。两个求解器之间的区别非常简单，在高斯-赛德尔中，您立即使用计算出的未知数值来计算下一个未知数，而不等待整个步骤。因此，在上面的例子中，不是使用0和0作为X和Y的值，您将使用0作为X，解决Y为1，然后在方程式2中使用计算出的Y值1，而不是使用0，这将给您0.6。然后，您将进入步骤2，并使用0.6作为X来找到新的Y（1.6），依此类推。注意您如何使用相同的解决方案，但只需要一半的步骤。太棒了！然而，**对于GPU和多线程来说，有一个问题，因为我们同时解决所有cell，所以不能使用这种技术，除非使用红黑访问模式（https://www.it.ubi.pt/17epcg/Actas/artigos/17epcg_submission_39.pdf， red-black access pattern），这将将步骤数减半，但同时double draw calls。所以这是一个边际收益。**
+
+​	再次回到我们的简单系统，下面是两个方程式的图形。记住，这两个图形相交的点就是我们的解决方案。我们已经从解析解决方案中知道这个值，即X=0.75和Y=1.75。
+
+```c++
+方程式1) y = x + 1
+方程式2) y = 5x - 2
+```
+
+​	我们的求解器实际上做什么？对于我们的起始值，让我们取3作为x（之前的起始值是零，但我们可以取任何值）。在步骤1中，我们找到图形1（对应红色的线）对应于X=3的Y值。然后，我们看到图形2（对应蓝色的线）对应于我们刚刚找到的Y值的X值。随着我们重复这些步骤，您可能注意到，我们正在将图形投影到彼此身上，反复地，因为这两个图形收敛到一个点，我们不断接近交点，就像一个球滚下山崖。
+
+![img](./assets/1mErJyNRKlIYFvNOqmC7ZyQ.jpeg)
+
+​	当然，这并不适用于所有方程式。两个图形可能不会收敛或有多个解决方案等。但是在我们的情况下，它确实有效。
+
+​	要使用我们的求解器，我们将方程式重写，以便将中间的字段放在左侧，并对于任何给定的cell坐标i和j，我们有：
+
+```c++
+Solve(Velocity_Divergence)
+{
+	p_new[i, j] =((p[i+1,j] + p[i,j+1] + p[i-1,j] + p[i,j-1]) - Velocity_Divergence[i, j])/4
+}
+```
+
+​	一旦这运行，我们可以执行：
+
+```c++
+CopyOldToNew()
+{
+	p[i, j] = p_new[i, j]
+}
+```
+
+​	然后重复计算，以新的p值。我们重复这个过程大约30步，直到我们获得该帧的解决方案。对于第一个步骤，我们将p设置为零。
+
+​	因此放在一起，将我们的投影看起来像这样：
+
+```c++
+Velocity_Div_field = Divergence(velocity_field); 
+for(int i = 0; i < 30; i++) 
+{
+   Solve(Velocity_Div_field);
+   CopyOldToNew();
+}
+deltaP = Gradient(p);
+new_divergent_free_velocity = velocity_field - deltaP;
+```
+
+​	当然，以上是伪代码，您不会像那样编写compute shader管道。但是，您将创建所有这些缓冲区，并设置源/目标，然后调用内核。
+
+​	请注意，在计算压力后，我计算了它的梯度，以便将其插入我们开始的速度场方程式中，并将其与我们想要结束的散度自由版本联系起来。
+
+​	这就是投影的所有内容。在代码中，我将所有这些内容包装在一个名为`Project()`的函数中，您可以随时调用它。
+
+------
+
+
+
+### （8）Diffusion Implementation
+
+​	首先，我们解决了通过投影来压缩性问题，现在我们可以解决通过显式公式引入的扩散计算函数的不稳定性。
+
+​	如果您记得上面的内容，给定任何字段d，其中d0是前一帧每个cell的字段值，我们的显式公式是（这个是之前的版本）：
+
+```c++
+d_X= d0_X + diffusionFactor * deltaTime *(d0_01 + d0_02+ d0_03 + d0_04 -4*d0_X)
+```
+
+​	在扩散情况下，不难看到不稳定的来源，对于大delta时间或扩散率，如果来自邻近细胞的密度小于中心细胞离开的密度，并且diffusionFactor*deltaTime大于1，那么我们的密度值将变为负值，这是不合理的。
+
+​	我们可以以不同的方式公式化扩散，以便在下一帧中将字段值向后推到初始值。因此：
+
+```c++
+d0_X = d_X - diffusionFactor * deltaTime * (d_01 + d_02+ d_03 + d_04 -4*d_X)
+```
+
+​	注意，我们不是扩散d0，而是扩散d，即下一帧的值。要理解上面的方程式，您需要理解扩散的作用。扩散查看中心cell中的某些东西与其周围的平均值进行比较，如果中心cell中有更多，它会从中拿走一些，如果中心cell少于周围的平均值，它会添加一些。这导致值随着时间的推移而平衡，达到均匀状态。由于我们假设时间向前推移时事情会平衡each other out，反之亦然，如果您向后看过程（向后推移时间）。在那里，反扩散发生，在密度高于其周围平均值的区域，吸收更多粒子。这是我们上面的方程式的第二部分。
+
+​	但是，为什么这种公式更稳定或更好？如果您重新公式化上面的方程式（我们需要这样做），以便将新的d值放在左侧，您将得到：
+
+```c++
+d_X = (d0_X + diffusionFactor * deltaTime * (d_01 + d_02+ d_03 + d_04)) / (1 + 4 * diffusionFactor * deltaTime)
+```
+
+​	注意，与显式公式相比，这里只有加法。因此，不管delta时间或扩散率的大小，我们的新密度值都不会变为负值。因此，d_x将始终保持正值。**重要的是再次提醒，稳定性和准确性不同。对于大delta时间或扩散率，您不会得到有意义的数字。至少它不会爆炸了！**（把他理解成一个trick感觉就行）
+
+​	您可能已经注意到，这个公式与我们之前的投影公式非常相似。代替`d_X`，我们计算中心cell中的压力。`d_01`到`d_04`是邻近压力值，`d0_x`是速度场的散度。
+
+​	就像投影一样，这似乎不可能解决（一个方程式和5个未知数，d_x和d_01到d_04），但这也是一个线性方程式系统。每个细胞一个方程式，总共N*N个方程式。好消息是，我们可以使用我们已经有的求解器来解决它。
+
+​	您可以为投影和扩散的求解器编写不同的内核/着色器，或者以更一般的方式重写方程式，以便通过设置某个参数，可以使用相同的代码来解决这两个方程式，这是我在代码中所做的。
+
+![img](./assets/1W2LU8IeXJue_CfnA2cu7QQ.jpeg)
+
+​				By changing _rDiagonal and _centerFactor and switching _b_buffer to be divergnece(velocity) in one and d_x0 in the other, I 								can use the same solver for both equations（这里应该指的是Projection+Diffusion两个方程）
+
+​	更细致的内容在第二部分代码实战部分会进一步进行分析。
+
+
+
+### （9）Advection Implementation
+
+​	Last but not least,我们需要修复我们的对流，以便使用gather操作而不是scatter操作。
+
+​	我们可以使用我们在扩散实现中的一个学习来做到这一点。在扩散中，我们根据需要在时间上回溯的真实情况来公式化我们的方程式。相反，我们不再向前看（下一帧）并问自己我们的速度将如何对我们的不同字段进行对流（移动），而是向后看并公式化当前速度从前一帧的其他细胞携带过来的数量。
+
+​	在这种设置中，我们的对流值将始终落后一帧，这对我们的模拟不是问题。根据图表，对于任何给定的细胞，在这个帧中计算对流部分：
+
+```c++
+field_amount_new_frame[cellPosition] += field_amount_old_frame[cellPosion-current_cell_velocity * timestep ]
+```
+
+> 依旧是一种隐式欧拉的思想，往以前看，而不是往后看。
+
+
+
+### （10）Some Last Points
+
+那就是主要流体模拟的全部内容。有了这些代码（代码很好地记录了）和Github上的文档，您应该能够运行一个您实际理解的模拟。
+
+对于简单的模拟，您的设置将看起来像这样（我做了多次投影，因为那样看起来更好）：
+
+```c#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Simple2DFluidSim : MonoBehaviour
+{
+ // ------------------------------------------------------------------
+    // VARIABLES
+    //___________
+    // public
+    public  FluidSimulater    fluid_simulater;
+    //___________
+    // private
+    private FluidGPUResources resources;
+    // ------------------------------------------------------------------
+    // INITALISATION
+    void Start()
+    {
+        fluid_simulater.Initialize();
+        resources = new FluidGPUResources(fluid_simulater);
+        resources.Create();
+
+        //--
+        fluid_simulater.AddUserForce           (resources.velocity_buffer                                   );
+        fluid_simulater.HandleCornerBoundaries (resources.velocity_buffer, FieldType.Velocity               );
+        fluid_simulater.Diffuse                (resources.velocity_buffer                                   );
+        fluid_simulater.HandleCornerBoundaries (resources.velocity_buffer, FieldType.Velocity               );
+        fluid_simulater.Project                (resources.velocity_buffer, resources.divergence_buffer, resources.pressure_buffer);
+        fluid_simulater.Advect                 (resources.velocity_buffer, resources.velocity_buffer, 0.999f);
+        fluid_simulater.HandleCornerBoundaries (resources.velocity_buffer, FieldType.Velocity               );
+        fluid_simulater.Project                (resources.velocity_buffer, resources.divergence_buffer, resources.pressure_buffer);
+
+        fluid_simulater.AddDye                 (resources.dye_buffer                                        );
+        fluid_simulater.Advect                 (resources.dye_buffer, resources.velocity_buffer, 0.992f);
+        fluid_simulater.HandleCornerBoundaries (resources.dye_buffer, FieldType.Dye                         );
+        fluid_simulater.Diffuse                (resources.dye_buffer                                        );
+        fluid_simulater.HandleCornerBoundaries (resources.dye_buffer, FieldType.Dye                         );
+
+        fluid_simulater.Visualiuse             (resources.dye_buffer);
+
+        fluid_simulater.BindCommandBuffer();
+    }
+
+    // ------------------------------------------------------------------
+    // DESTRUCTOR
+    void OnDisable()
+    {
+        fluid_simulater.Release();
+        resources      .Release();
+    }
+
+    // ------------------------------------------------------------------
+    // LOOP
+    void Update()
+    {
+        fluid_simulater.Tick(Time.deltaTime);
+    }
+}
+```
+
+
+
+## 2.代码解读
+
+### （1）TestProject场景
+
+这个主要是用来测试上面写的Projection的准确性的，**测试这个场景会得到一种绘制的东西逐渐晕开的效果。**
