@@ -35,6 +35,7 @@ public class YRogueLossAndAgainPanel : BasePanel
             // Push(new YChooseCharacterPanel());
             // //变回全屏
             // YPlayModeController.Instance.SetCameraLayout(0);
+            YGameRoot.Instance.PlayAgain();
         });
         //ChooseLevelButton
        

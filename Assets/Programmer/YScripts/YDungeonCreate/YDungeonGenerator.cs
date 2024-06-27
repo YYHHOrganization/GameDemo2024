@@ -41,7 +41,7 @@ public class YDungeonGenerator
         List<YRoomNode> roomLists = roomGenerator.GenerateRoomsInGivenSpaces(roomSpaces,roomBottomCornerModifier,roomTopCornerModifier,offset);
         
         //test roomSpacesKeep是否会变化
-        Debug.Log("roomSpacesKeep.Count:"+roomSpacesKeepList.Count);
+        //Debug.Log("roomSpacesKeep.Count:"+roomSpacesKeepList.Count);
         
         
         // //创建房间类型
