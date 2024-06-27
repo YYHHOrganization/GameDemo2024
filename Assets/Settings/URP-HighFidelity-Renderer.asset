@@ -162,7 +162,8 @@ MonoBehaviour:
   - {fileID: -1801058755438430029}
   - {fileID: -2287976088617968739}
   - {fileID: 8650699066453416813}
-  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78
+  - {fileID: 8416566405279359754}
+  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d780aa3297f8da6cd74
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -251,6 +252,25 @@ MonoBehaviour:
   passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1
+--- !u!114 &8416566405279359754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72d4874957138df4ca17ef3d654f13d9, type: 3}
+  m_Name: HFluidSimulationRenderFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_Setting:
+    m_passEvent: 500
+    CS: {fileID: 7200000, guid: 401f285841812d24196a0a87c2d7ed54, type: 3}
+    m_Brightness: 1
+    m_Saturation: 1
+    m_Contrast: 1
 --- !u!114 &8650699066453416813
 MonoBehaviour:
   m_ObjectHideFlags: 0
