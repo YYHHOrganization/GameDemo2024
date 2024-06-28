@@ -118,7 +118,7 @@ public class Fluid3D : MonoBehaviour
 		Vector3 velocity = npos - sphere_prevPos;
 		shader.SetVector("sphereVelocity",velocity);
 		shader.SetFloat("_deltaTime", Time.fixedDeltaTime);
-		shader.SetVector("dyeColor",SetSphereColor.color);
+		//shader.SetVector("dyeColor",SetSphereColor.color);
 
 		//Run compute shader
 		DispatchCompute (kernel_Diffusion);

@@ -18,6 +18,10 @@ public class YRouge_RoomBase : MonoBehaviour
     
     //房间的初始space
     roomSpaceKeep roomSpaceKeep;
+    public roomSpaceKeep RoomSpaceKeep
+    {
+        get => roomSpaceKeep;
+    }
     protected GameObject roomLittleMapMask;
     public GameObject RoomLittleMapMask
     {
