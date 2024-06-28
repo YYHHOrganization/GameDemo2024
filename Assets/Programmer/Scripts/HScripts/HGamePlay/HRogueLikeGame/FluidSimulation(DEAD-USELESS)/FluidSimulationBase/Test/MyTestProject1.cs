@@ -6,8 +6,6 @@ using UnityEngine;
 public class MyTestProject1 : MonoBehaviour
 {
     public MyFluidSimulator1 fluid_simulator;
-    public Texture2D source_texture;
-    
     private MyFluidGPUResources1 resources;
 
     private void Start()
@@ -17,8 +15,10 @@ public class MyTestProject1 : MonoBehaviour
         resources.Create();
         
         fluid_simulator.AddDye(resources.dye_buffer);
-        fluid_simulator.Visualize(resources.dye_buffer);
-        fluid_simulator.BindCommandBuffer();
+        //fluid_simulator.Diffuse(resources.velocity_buffer);
+        fluid_simulator.Diffuse(resources.dye_buffer);
+        //fluid_simulator.Visualize(resources.dye_buffer);
+        //fluid_simulator.BindCommandBuffer();
     }
     
     void OnDisable()
@@ -30,5 +30,6 @@ public class MyTestProject1 : MonoBehaviour
     void Update()
     {
         fluid_simulator.Tick(Time.deltaTime);
+        fluid_simulator.Diffuse(resources.velocity_buffer);
     }
 }

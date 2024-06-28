@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class HFluidSimulationRenderFeature : ScriptableRendererFeature
+public class HBaseScreenPPRenderFeatureWithComputeShader : ScriptableRendererFeature
 { 
       [System.Serializable]
       public class PassSetting
@@ -35,7 +35,7 @@ public class HFluidSimulationRenderFeature : ScriptableRendererFeature
           private const string m_ProfilerTag = "BSC Pass";
      
           // 用于存储pass setting
-          private HFluidSimulationRenderFeature.PassSetting m_passSetting;
+          private HBaseScreenPPRenderFeatureWithComputeShader.PassSetting m_passSetting;
      
           private ComputeShader m_CS;
           private int kernal;   // compute shader中的kernal Handle
@@ -59,7 +59,7 @@ public class HFluidSimulationRenderFeature : ScriptableRendererFeature
               public static int ThreadGroupCountZ;
           }
      
-          public HFluidSimulationPass(HFluidSimulationRenderFeature.PassSetting passSetting) 
+          public HFluidSimulationPass(HBaseScreenPPRenderFeatureWithComputeShader.PassSetting passSetting) 
           {
               this.m_passSetting = passSetting;
      
