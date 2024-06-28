@@ -102,20 +102,20 @@ public class Fluid : MonoBehaviour
 
 		roomSize = this.transform.parent.GetComponent<YRouge_RoomBase>().RoomSpaceKeep;
 		// Debug.Log("roomSIZE1!!!!!" + roomSize.length + "  " + roomSize.width);
-		GameObject objTest1 = new GameObject("objTest1");
-		objTest1.transform.position = new Vector3(roomSize.bottomLeft.x, 0, roomSize.bottomLeft.y) + YRogueDungeonManager.Instance.RogueDungeonOriginPos;
-		GameObject objTest2 = new GameObject("objTest2");
-		objTest2.transform.position = new Vector3(roomSize.topRight.x, 0, roomSize.topRight.y) + YRogueDungeonManager.Instance.RogueDungeonOriginPos;
+		// GameObject objTest1 = new GameObject("objTest1");
+		// objTest1.transform.position = new Vector3(roomSize.bottomLeft.x, 0, roomSize.bottomLeft.y) + YRogueDungeonManager.Instance.RogueDungeonOriginPos;
+		// GameObject objTest2 = new GameObject("objTest2");
+		// objTest2.transform.position = new Vector3(roomSize.topRight.x, 0, roomSize.topRight.y) + YRogueDungeonManager.Instance.RogueDungeonOriginPos;
 	}
 
 	private roomSpaceKeep roomSize;
 	private Vector2 GetPlayerPos()
 	{
 		Vector3 playerPos = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform.position;
-		Vector2 tmppos = new Vector2((playerPos.x - roomSize.bottomLeft.x - YRogueDungeonManager.Instance.RogueDungeonOriginPos.x) / (roomSize.length), (playerPos.z - roomSize.bottomLeft.y - YRogueDungeonManager.Instance.RogueDungeonOriginPos.z) / (roomSize.width));
+		Vector2 tmppos = new Vector2((playerPos.x - roomSize.bottomLeft.x - YRogueDungeonManager.Instance.RogueDungeonOriginPos.x) / (roomSize.width), (playerPos.z - roomSize.bottomLeft.y - YRogueDungeonManager.Instance.RogueDungeonOriginPos.z) / (roomSize.length));
 		//把npos归一化到-0.5到0.5之间
 		Vector2 npos = new Vector2(tmppos.x - 0.5f, tmppos.y - 0.5f);
-		Debug.Log("PlayerPos" + npos);
+		//Debug.Log("PlayerPos" + npos);
 		return npos;
 	}
 
@@ -143,7 +143,7 @@ public class Fluid : MonoBehaviour
 
 		//Send sphere (mouse) velocity
 		Vector2 velocity = (npos - sphere_prevPos);
-		shader.SetVector("sphereVelocity",velocity);
+		shader.SetVector("sphereVelocity",velocity * 0.5f);
 		shader.SetFloat("_deltaTime", Time.fixedDeltaTime);
 		shader.SetVector("dyeColor",color);
 		Debug.Log(SetSphereColor.color);
