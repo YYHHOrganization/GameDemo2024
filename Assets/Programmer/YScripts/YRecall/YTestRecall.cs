@@ -4,12 +4,14 @@ using UnityEngine.UI;
 public class YTestRecall  : MonoBehaviour
 {
     public Button recallButton; // Assign this in the inspector
+    public Button DrawRecallTailButton; // Assign this in the inspector
     public GameObject[] recallableObject; // Assign the object with the YRecallable script in the inspector
 
     private void Start()
     {
         // Add a listener to the button's onClick event
         recallButton.onClick.AddListener(StartRecall);
+        DrawRecallTailButton.onClick.AddListener(DrawRecallTail);
     }
 
     private void StartRecall()
@@ -26,5 +28,18 @@ public class YTestRecall  : MonoBehaviour
             }
         }
         
+    }
+
+    private void DrawRecallTail()
+    {
+        Debug.Log("DrawRecallTail");
+        foreach (GameObject obj in recallableObject)
+        {
+            YRecallable recallable = obj.GetComponent<YRecallable>();
+            if (recallable != null)
+            {
+                recallable.DrawRecallTail();
+            }
+        }
     }
 }
