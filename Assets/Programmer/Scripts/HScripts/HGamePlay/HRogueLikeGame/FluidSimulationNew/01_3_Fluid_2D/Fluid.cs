@@ -36,6 +36,9 @@ public class Fluid : MonoBehaviour
 	private int kernel_Divergence = 0;
 	private int kernel_SubtractGradient = 0;
 
+	public bool userDefDiffusionFactor;
+	public float diffusionFactor = 100f;
+	
 	private RenderTexture CreateTexture(GraphicsFormat format)
 	{
 		RenderTexture dataTex = new RenderTexture(size, size, 0, format);
@@ -43,9 +46,10 @@ public class Fluid : MonoBehaviour
 		dataTex.wrapMode = TextureWrapMode.Clamp;
 		dataTex.enableRandomWrite = true;
 		dataTex.Create();
-
 		return dataTex;
 	}
+
+	public Texture2D showOriginTexture;
 
 	private void DispatchCompute(int kernel)
 	{
@@ -59,6 +63,12 @@ public class Fluid : MonoBehaviour
 		densityTex = CreateTexture(GraphicsFormat.R16G16B16A16_SFloat); //float3 color , float density
 		pressureTex = CreateTexture(GraphicsFormat.R16_SFloat); //float pressure
 		divergenceTex = CreateTexture(GraphicsFormat.R16_SFloat); //float divergence
+		
+		// // 创建一个ComputeBuffer用于存储纹理数据: 这个不能用
+		// ComputeBuffer texBuffer = new ComputeBuffer(size * size, sizeof(float) * 4);
+		// // 从纹理中获取像素数据并传递给ComputeBuffer
+		// Color[] texData = showOriginTexture.GetPixels();
+		// texBuffer.SetData(texData);
 
 		//Output
 		matResult.SetTexture("_MainTex", densityTex);
@@ -67,7 +77,19 @@ public class Fluid : MonoBehaviour
 		shader.SetInt("size", size); //texture resolution
 		shader.SetFloat("forceIntensity", forceIntensity);
 		shader.SetFloat("forceRange", forceRange);
-
+		if (userDefDiffusionFactor)
+		{
+			shader.SetFloat("diffisionFactor", diffusionFactor);
+		}
+		else
+		{
+			shader.SetFloat("diffisionFactor", size);
+		}
+		
+		Texture2D scaledTexture = new Texture2D(size, size);
+		Graphics.ConvertTexture(showOriginTexture, scaledTexture);
+		//DestroyImmediate(showOriginTexture);
+		
 		//Set texture for compute shader
 		kernel_Init = shader.FindKernel("Kernel_Init");
 		kernelCount++;
@@ -94,6 +116,9 @@ public class Fluid : MonoBehaviour
 			shader.SetTexture(kernel, "PressureTex", pressureTex);
 			shader.SetTexture(kernel, "DivergenceTex", divergenceTex);
 			shader.SetTexture(kernel, "ObstacleTex", obstacleTex);
+			
+			//my add
+			shader.SetTexture(kernel, "inputTex", scaledTexture);
 		}
 
 		//Init data texture value
@@ -127,14 +152,10 @@ public class Fluid : MonoBehaviour
 	}
 	
 	public static Color color;
-	public Material sphereMat;
-	public Material planeMat;
 	[Range(1f,20f)] public float timeSpeed = 10f;
 	void FixedUpdate()
 	{
 		if (!isInteractive) return;
-		//Send sphere (mouse) position
-		//todo:后面改成玩家所在的位置，应该是相对于当前房间的位置，方便计算
 		
 		Vector2 npos = GetPlayerPos();
 		//Vector2 npos = new Vector2( sphere.position.x / transform.localScale.x, sphere.position.z / transform.localScale.z );
@@ -143,10 +164,9 @@ public class Fluid : MonoBehaviour
 
 		//Send sphere (mouse) velocity
 		Vector2 velocity = (npos - sphere_prevPos);
-		shader.SetVector("sphereVelocity",velocity * 0.5f);
+		shader.SetVector("sphereVelocity",velocity);
 		shader.SetFloat("_deltaTime", Time.fixedDeltaTime);
 		shader.SetVector("dyeColor",color);
-		Debug.Log(SetSphereColor.color);
 
 		//Run compute shader
 		DispatchCompute (kernel_Diffusion);
@@ -163,7 +183,6 @@ public class Fluid : MonoBehaviour
 		sphere_prevPos = npos;
 		
 		color = Color.HSVToRGB( 0.5f*(Mathf.Sin( Time.time * Time.fixedDeltaTime * timeSpeed )+1f) , 1f, 1f);
-		if(sphereMat != null) sphereMat.SetColor("_Color",color);
-		if(planeMat != null) planeMat.SetColor("_Color",color);
+		
 	}
 }
