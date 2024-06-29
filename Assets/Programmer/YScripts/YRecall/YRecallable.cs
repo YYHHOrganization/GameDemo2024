@@ -93,6 +93,7 @@ public class YRecallable : MonoBehaviour
     public IEnumerator Recall()
     {
         lineRenderer.material = Recall_lineRendererMat;
+        SetRecallObjectMat(true);
         DrawRecallTail();
         
         // Create a copy of the list to iterate over
@@ -131,7 +132,7 @@ public class YRecallable : MonoBehaviour
     //选中时的轨迹
     public void ChooseRecallTail()
     {
-        SetRecallObjectMat(true);
+        
         lineRenderer.material = Choose_lineRendererMat;
         DrawRecallTail();
     }
@@ -149,5 +150,9 @@ public class YRecallable : MonoBehaviour
     void SetRecallObjectMat(bool isRecall)
     {
         meshRenderer.material.SetFloat("_isRecall", isRecall?1:0);
+    }
+    void SetCouldRecallObjectMat(bool isCouldRecall)
+    {
+        meshRenderer.material.SetFloat("_isCouldRecall", isCouldRecall?1:0);
     }
 }
