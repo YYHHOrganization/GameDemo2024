@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// 在物体（例如，Rigidbody）上添加一个新的脚本，比如YRecallable.
@@ -88,6 +89,8 @@ public class YRecallable : MonoBehaviour
     public IEnumerator Recall()
     {
         lineRenderer.material = Recall_lineRendererMat;
+        DrawRecallTail();
+        
         // Create a copy of the list to iterate over
         List<YRecallObject> tempRecallObjects = new List<YRecallObject>(recallObjects);
         tempRecallObjects.Reverse();
@@ -96,13 +99,15 @@ public class YRecallable : MonoBehaviour
             // Set the object's position, rotation, velocity, and angular velocity
             rb.position = recallObject.Position;
             rb.rotation = recallObject.Rotation;
+            
             rb.velocity = recallObject.Velocity;
             rb.angularVelocity = recallObject.AngularVelocity;
-
+            
             // Apply the inverse force
             rb.AddForce(-recallObject.Force, ForceMode.Force);
             
             //此处将已经经历过的position删掉，也就是linerenderer并不会绘制
+            lineRenderer.positionCount -= 1;
 
             // Wait for the next physics update
             yield return new WaitForFixedUpdate();
@@ -111,11 +116,16 @@ public class YRecallable : MonoBehaviour
         // Clear the original list after the recall
         recallObjects.Clear();
     }
-    
-    
-    public void DrawRecallTail()
+
+    //选中时的轨迹
+    public void ChooseRecallTail()
     {
         lineRenderer.material = Choose_lineRendererMat;
+        DrawRecallTail();
+    }
+    
+    private void DrawRecallTail()
+    {
         lineRenderer.positionCount = recallObjects.Count;
         
         for (int i = 0; i < recallObjects.Count; i++)
