@@ -1,7 +1,12 @@
+// #define TEST_CLOESE_OPENAI
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using OpenAI;
+
+// #ifdef TEST_CLOESE_OPENAI
+using OpenAI; 
+// #endif
 
 public class HChatGPTManager : MonoBehaviour
 {
