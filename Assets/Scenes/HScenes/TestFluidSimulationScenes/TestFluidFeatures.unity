@@ -167,8 +167,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06536b738bd82c40b519b1a89d2e5d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fluid_simulator: {fileID: 1993593682}
-  source_texture: {fileID: 0}
+  fluid_simulator:
+    ApplyDyeKey: 323
+    Viscosity: 0.5
+    canvas_dimension: 1024
+    simulation_dimension: 1024
+    solver_iteration_num: 80
+    time_step: 1
+    dye_radius: 20
+    dye_falloff: 5
+    UserInputShader: {fileID: 7200000, guid: aaacdc5354708a14c89e64043f29d91b, type: 3}
+    StructuredBufferToTextureShader: {fileID: 7200000, guid: e178c831485f2e44a922a291b195ff83,
+      type: 3}
+    SolverShader: {fileID: 7200000, guid: 82123fed04ff76b468aa02b78910bf87, type: 3}
+    StructuredBufferUtilityShader: {fileID: 7200000, guid: 681b738a8cccaae4d8a33b2b54a68be0,
+      type: 3}
+    showMaterial: {fileID: 2100000, guid: c3703782c8427a04da3351d866904ab8, type: 2}
 --- !u!1 &1218542887
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,13 +210,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1218542887}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0.70710677, z: -0.70710677, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0.63}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.12914677, y: 0.057075214, z: 0.07661603}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1299901512}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 90, z: -90}
 --- !u!64 &1218542889
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -531,64 +545,10 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &1993593681
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1993593683}
-  - component: {fileID: 1993593682}
-  m_Layer: 0
-  m_Name: Simulator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1993593682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1993593681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c740ed030fed51b4fb09c419e23e2baf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ApplyDyeKey: 323
-  canvas_dimension: 1024
-  simulation_dimension: 512
-  dye_radius: 20
-  dye_falloff: 5
-  UserInputShader: {fileID: 7200000, guid: aaacdc5354708a14c89e64043f29d91b, type: 3}
-  StructuredBufferToTextureShader: {fileID: 7200000, guid: e178c831485f2e44a922a291b195ff83,
-    type: 3}
-  testMaterial: {fileID: 2100000, guid: c3703782c8427a04da3351d866904ab8, type: 2}
---- !u!4 &1993593683
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1993593681}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 203, y: 386, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1949402117}
   - {fileID: 686277850}
-  - {fileID: 1993593683}
   - {fileID: 1299901512}
