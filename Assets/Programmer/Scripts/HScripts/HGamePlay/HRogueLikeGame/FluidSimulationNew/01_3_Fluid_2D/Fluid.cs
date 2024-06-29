@@ -132,7 +132,7 @@ public class Fluid : MonoBehaviour
 	[Range(1f,20f)] public float timeSpeed = 10f;
 	void FixedUpdate()
 	{
-		//if (!isInteractive) return;
+		if (!isInteractive) return;
 		//Send sphere (mouse) position
 		//todo:后面改成玩家所在的位置，应该是相对于当前房间的位置，方便计算
 		

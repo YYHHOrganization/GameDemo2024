@@ -567,3 +567,6 @@ public class Simple2DFluidSim : MonoBehaviour
 
 ### （1）`Fluid.cs`
 
+- `Start`函数：主要是用来创建一些RenderTexture，并为对应的Compute shader指定参数（这个仓库里只用了一个compute shader来完成所有的计算）；
+- `FixedUpdate函数`（修改后）：依据于玩家所在的位置，替换原来的鼠标坐标（范围是[-0.5，0.5]之间），这里把长和宽方向搞反了，研究了好久；
+- 

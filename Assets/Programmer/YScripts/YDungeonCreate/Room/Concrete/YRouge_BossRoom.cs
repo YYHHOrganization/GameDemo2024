@@ -72,7 +72,10 @@ public class YRouge_BossRoom : YRouge_RoomBase
         //     
         //     // SetAllDoorsUp();//第一次进入房间门会关
         // }
-        fluid.GetComponent<Fluid>().SetCheckInteractive(true);
+        if (fluid)
+        {
+            fluid.GetComponent<Fluid>().SetCheckInteractive(true);
+        }
     }
     protected override void FirstEnterRoom()
     {
