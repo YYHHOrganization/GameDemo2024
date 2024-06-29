@@ -20,11 +20,15 @@ public class YRecallable : MonoBehaviour
 
     public Material Choose_lineRendererMat;//回头可以弄成addlink
     public Material Recall_lineRendererMat;
+
+    // public Material CouldRecallObjectMat;
+    private MeshRenderer meshRenderer;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         recallObjects = new List<YRecallObject>();
         lineRenderer = GetComponent<LineRenderer>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
     
     private bool isMoving = false;
@@ -115,11 +119,19 @@ public class YRecallable : MonoBehaviour
 
         // Clear the original list after the recall
         recallObjects.Clear();
+
+        EndRecall();
+    }
+
+    private void EndRecall()
+    {
+        SetRecallObjectMat(false);
     }
 
     //选中时的轨迹
     public void ChooseRecallTail()
     {
+        SetRecallObjectMat(true);
         lineRenderer.material = Choose_lineRendererMat;
         DrawRecallTail();
     }
@@ -132,5 +144,10 @@ public class YRecallable : MonoBehaviour
         {
             lineRenderer.SetPosition(i, recallObjects[i].Position);
         }
+    }
+
+    void SetRecallObjectMat(bool isRecall)
+    {
+        meshRenderer.material.SetFloat("_isRecall", isRecall?1:0);
     }
 }

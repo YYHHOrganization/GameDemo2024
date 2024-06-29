@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SelectRecallToonLit_OutlineShi 2
+  m_Name: CouldRecalObject
   m_Shader: {fileID: -6465566751694194690, guid: 9ad7757a1a57b8243921ae2a7ac58b99,
     type: 3}
   m_Parent: {fileID: 2100000, guid: dd60e85ceae316141984d5e31919f7d7, type: 2}
@@ -24,21 +24,20 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _RecallTexture2D:
-        m_Texture: {fileID: 2800000, guid: 40c448cbceb3ad24cb0fa29e224983bc, type: 3}
+    - _CommonTexture2D:
+        m_Texture: {fileID: 2800000, guid: cacfcc09b4fbf7e4baebb23fbaaff36b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2D:
-        m_Texture: {fileID: 2800000, guid: 40c448cbceb3ad24cb0fa29e224983bc, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _power: 1
+    - _isRecall: 0
+    - _power: 2
     m_Colors:
-    - _BaseColor: {r: 9.08241, g: 4.7713003, b: 2.039257, a: 0}
-    - _RecallBaseColor: {r: 7.3772097, g: 3.8755002, b: 1.6563915, a: 0}
-    - _uvTillingOfNoise: {r: 1, g: 0.2, b: 0, a: 0}
+    - _BaseColor: {r: 2.2706027, g: 1.1928252, b: 0.5098143, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &6168094276229784257
 MonoBehaviour:

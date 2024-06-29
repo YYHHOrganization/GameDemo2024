@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6830646274569287122
+--- !u!114 &-2843798776191009259
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_YFrenelOutLineTest
-  m_Shader: {fileID: -6465566751694194690, guid: 9ad7757a1a57b8243921ae2a7ac58b99,
+  m_Name: _YCouclRecallObjectShader
+  m_Shader: {fileID: -6465566751694194690, guid: 5d1295e2d624c894dacb9cc2aa92f736,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -37,7 +37,11 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _Texture2D:
+    - _CommonTexture2D:
+        m_Texture: {fileID: 2800000, guid: 6450329bf1bc5314d894e25d73e26b89, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RecallTexture2D:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -57,8 +61,9 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _power: 20
+    - _isRecall: 0
+    - _power: 1
     m_Colors:
-    - _BaseColor: {r: 1.866066, g: 0.9803082, b: 0.4189844, a: 0}
+    - _RecallBaseColor: {r: 1.866066, g: 0.9803082, b: 0.4189844, a: 0}
     - _uvTillingOfNoise: {r: 0.2, g: 0.2, b: 0, a: 0}
   m_BuildTextureStacks: []
