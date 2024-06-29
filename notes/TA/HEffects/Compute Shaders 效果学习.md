@@ -561,8 +561,9 @@ public class Simple2DFluidSim : MonoBehaviour
 
 ## 2.代码解读
 
-### （1）TestProject场景
-
-这个主要是用来测试上面写的Projection的准确性的，**测试这个场景会得到一种绘制的东西逐渐晕开的效果。**
-
 这篇Compute Shader有关的博客可以解决与后处理一起的问题：[Unity Compute Shader 个人理解 – 往事乐土 (chenglixue.top)](http://chenglixue.top/?p=143)，明天如果有机会的话一定要好好把相关功能实现一下。
+
+这里参考的代码是https://github.com/cinight/MinimalCompute这里的`01_3_Fluid_2D`项目，在学完之后会放入到最终项目当中。核心代码用一个Compute Shader来实现。
+
+### （1）`Fluid.cs`
+

@@ -1,0 +1,18 @@
+#pragma kernel CSMain // 定义compute shader
+ 
+RWTexture2D<float4> _Result;  // 可读可写的RW结构化缓冲区
+Texture2D<float4> _Sour;  // 只可读
+ 
+float _Brightness;
+float _Saturation;
+float _Contrast;
+ 
+[numthreads(8,8,1)]   // 定义每个线程组中的线程数
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    _Result[id.xy] = _Sour[id.xy];
+    _Result[id.xy] *= _Brightness;  // 明度
+    float gray = _Result[id.xy].x * 0.21f + _Result[id.xy].y * 0.71f + _Result[id.xy].z * 0.08f;    // 灰度
+    _Result[id.xy] = lerp(float4(gray, gray, gray, 1.f), _Result[id.xy], _Saturation);    // 饱和度
+    _Result[id.xy] = lerp(float4(0.5f, 0.5f, 0.5f, 1.f), _Result[id.xy], _Contrast);    // 对比度
+}

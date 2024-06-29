@@ -26,8 +26,23 @@ public class YRouge_BossRoom : YRouge_RoomBase
         GenerateBossSpecialDoor();
         
         GenerateItemPlacement();
+
+        GenerateInteractiveFluid();
     }
 
+    private GameObject fluid;
+    protected void GenerateInteractiveFluid()
+    {
+        //生成交互流体,y=0.2，大小正好覆盖整个房间
+        fluid = Addressables.InstantiateAsync("HInteractiveFluid", transform).WaitForCompletion();
+        fluid.transform.position = new Vector3
+        (RoomSpaceKeep.bottomLeft.x + (RoomSpaceKeep.width) / 2,
+            0.3f,
+            RoomSpaceKeep.bottomLeft.y + (RoomSpaceKeep.length) / 2) + YRogueDungeonManager.Instance.RogueDungeonOriginPos;
+        
+        fluid.transform.parent = transform;
+        fluid.transform.localScale = new Vector3(RoomSpaceKeep.width, RoomSpaceKeep.length, 1);
+    }
     
 
     bool isFirstTimeInRoom = true;
@@ -57,6 +72,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         //     
         //     // SetAllDoorsUp();//第一次进入房间门会关
         // }
+        fluid.GetComponent<Fluid>().SetCheckInteractive(true);
     }
     protected override void FirstEnterRoom()
     {

@@ -87,6 +87,7 @@ public class YRecallable : MonoBehaviour
     }
     public IEnumerator Recall()
     {
+        lineRenderer.material = Recall_lineRendererMat;
         // Create a copy of the list to iterate over
         List<YRecallObject> tempRecallObjects = new List<YRecallObject>(recallObjects);
         tempRecallObjects.Reverse();
@@ -100,6 +101,8 @@ public class YRecallable : MonoBehaviour
 
             // Apply the inverse force
             rb.AddForce(-recallObject.Force, ForceMode.Force);
+            
+            //此处将已经经历过的position删掉，也就是linerenderer并不会绘制
 
             // Wait for the next physics update
             yield return new WaitForFixedUpdate();
@@ -112,6 +115,7 @@ public class YRecallable : MonoBehaviour
     
     public void DrawRecallTail()
     {
+        lineRenderer.material = Choose_lineRendererMat;
         lineRenderer.positionCount = recallObjects.Count;
         
         for (int i = 0; i < recallObjects.Count; i++)
