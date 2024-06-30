@@ -26,5 +26,10 @@ public class Class_ObjectPoolCSVFile {
 		string value = bulletHitId;
 		return value;
 	}
+	public string isRecallable { get; set; }    //是否可以时间回溯
+	public int _isRecallable (){
+		int value = int.Parse(isRecallable);
+		return value;
+	}
 	}
 	

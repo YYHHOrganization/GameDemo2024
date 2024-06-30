@@ -30,7 +30,7 @@ public class YRecallable : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         meshRenderer = GetComponent<MeshRenderer>();
     }
-    
+
     private bool isMoving = false;
     private Vector3 lastPosition;
     private Vector3 lastVelocity;
@@ -44,7 +44,7 @@ public class YRecallable : MonoBehaviour
         Vector3 acceleration = (rb.velocity - lastVelocity) / Time.fixedDeltaTime;
 
         // Check if the object is moving
-        if (Vector3.Distance(rb.position, lastPosition) > 0.01f)
+        if (Vector3.Distance(rb.position, lastPosition) > 0f)
         {
             // If the object starts moving, clear the list
             if (!isMoving)
@@ -132,11 +132,17 @@ public class YRecallable : MonoBehaviour
     //选中时的轨迹
     public void ChooseRecallTail()
     {
-        
+        SetRecallObjectMat(true);
         lineRenderer.material = Choose_lineRendererMat;
         DrawRecallTail();
     }
-    
+
+    public void ClearRecallTail()
+    {
+        SetRecallObjectMat(false);
+        //后面可以优化 画一次就行了
+        lineRenderer.positionCount = 0;
+    }
     private void DrawRecallTail()
     {
         lineRenderer.positionCount = recallObjects.Count;
@@ -150,6 +156,11 @@ public class YRecallable : MonoBehaviour
     void SetRecallObjectMat(bool isRecall)
     {
         meshRenderer.material.SetFloat("_isRecall", isRecall?1:0);
+    }
+
+    public void SetCouldRecall()
+    {
+        SetCouldRecallObjectMat(true);
     }
     void SetCouldRecallObjectMat(bool isCouldRecall)
     {

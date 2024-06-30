@@ -56,15 +56,23 @@ public class YPlayModeController : MonoBehaviour
         
     }
 
+    public YRecallObjectPool RecallObjectPool;
     private void Start()
     {
         YTriggerEvents.OnShortcutKeyInteractionStateChanged += SetNameUILabel;
+        
+        RecallObjectPool = gameObject.AddComponent<YRecallObjectPool>();
     }
 
     HCameraLayoutManager CameraLayoutManager;
     public GameObject curCharacter;
     private GameObject FreeLookCamera;
-    GameObject PlayerCamera; 
+    GameObject PlayerCamera;
+
+    public GameObject playerCamera()
+    {
+        return PlayerCamera;
+    }
     
     GameObject PuppetCamera;
     
@@ -164,8 +172,7 @@ public class YPlayModeController : MonoBehaviour
         testCharacterShoot.effectToSpawn = yGunShootPre.effectToSpawn;
         testCharacterShoot.gunTrans = yGunShootPre.gunTrans;
         testCharacterShoot.muzzleToSpawn = yGunShootPre.muzzlePrefab;
-        
-        
+
         // testCharacterShoot.thirdAimCamera.gameObject.SetActive(false);
         thirdAimCamera.gameObject.SetActive(false);
         //如果当前关卡是第3个关卡
