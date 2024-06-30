@@ -12,12 +12,15 @@ float forceIntensity;
 float forceRange;
 float _deltaTime;
 float3 dyeColor;
+float diffisionFactor;
 
 Texture2D<float> ObstacleTex; //0 is obstacle, 1 is fluid
 RWTexture2D<float2> VelocityTex;
 RWTexture2D<float4> DensityTex; //r,g,b is dye color, a is density
 RWTexture2D<float> PressureTex;
 RWTexture2D<float> DivergenceTex;
+
+Texture2D<float4> inputTex;
 
 uint size; //texture resolution
 
@@ -37,11 +40,14 @@ float3 BlendColor(float3 col1, float3 col2, float factor)
 [numthreads(16,16,1)]
 void Kernel_Init (uint3 id : SV_DispatchThreadid)
 {
-	DensityTex[id.xy] = 0;
+	//DensityTex[id.xy] = 0;
+	DensityTex[id.xy] = inputTex[id.xy];
 	VelocityTex[id.xy] = 0;
 	PressureTex[id.xy] = 0;
 	DivergenceTex[id.xy] = 0;
 }
+
+
 //===========================================================
 [numthreads(16,16,1)]
 void Kernel_Diffusion (uint3 Id : SV_DispatchThreadid)
@@ -67,8 +73,9 @@ void Kernel_Diffusion (uint3 Id : SV_DispatchThreadid)
 	float4 d_R = DensityTex[id_R] * obstacle_B;
 	float4 d_L = DensityTex[id_L] * obstacle_L;
 	
-	//Diffision
-	float4 dnew = (d + size * _deltaTime * (d_T + d_B + d_R + d_L)) / (1 + 4.0 * size * _deltaTime);
+	//Diffusion
+	//float4 dnew = (d + size * _deltaTime * (d_T + d_B + d_R + d_L)) / (1 + 4.0 * size * _deltaTime);
+	float4 dnew = (d + size * _deltaTime * (d_T + d_B + d_R + d_L)) / (1 + 4.0 * diffisionFactor * _deltaTime);
 	dnew *= obstacle;
 
 	//Assign
@@ -90,11 +97,11 @@ void Kernel_Advection (uint3 id : SV_DispatchThreadid)
 	float4 densityPrev = DensityTex[previd];
 	density.a = 0.999f * densityPrev.a * obstacle;
 
-	//Advect dye color
+	//Advect dye color，更多像是trick，差不多就行
 	density.rgb = BlendColor(density.rgb, densityPrev.rgb, 0.8f);
 	DensityTex[id.xy] = density;
 
-	//Advect velocity
+	//Advect velocity，更多像是trick，差不多就行
 	VelocityTex[id.xy] = 0.99f * VelocityTex[previd] * obstacle;
 }
 //===========================================================
@@ -108,7 +115,7 @@ void Kernel_UserInput (uint3 id : SV_DispatchThreadid)
 
 	float2 velocity = VelocityTex[id.xy].xy;
 	float4 density = DensityTex[id.xy];
-	float obstacle = ObstacleTex[id.xy].x;
+	float obstacle = ObstacleTex[id.xy].x; //障碍物贴图非障碍区域R为1，障碍区域R为0
 
 	//Impulse factor
 	float dist = distance(uv,sphereUV);
@@ -121,10 +128,11 @@ void Kernel_UserInput (uint3 id : SV_DispatchThreadid)
 
 	//Add dye color
 	density.rgb = BlendColor(density.rgb, dyeColor, impulse * speed);
-
+	//density.rgb = DensityTex[id.xy];
+	
 	//Buoyancy, making the fluid goes out from center, instead of having gravity
 	float2 cdir = uv - center;
-	velocity += _deltaTime * density.a * cdir * 2.0;
+	velocity += _deltaTime * density.a * cdir * 2.0; //本来项目这里是2.0，有需求的话再改一下
 
 	//Add mouse velocity
 	float2 dir = sphereVelocity;
@@ -136,7 +144,7 @@ void Kernel_UserInput (uint3 id : SV_DispatchThreadid)
 }
 //===========================================================
 [numthreads(16,16,1)]
-void Kernel_Divergence (uint3 Id : SV_DispatchThreadid)
+void Kernel_Divergence (uint3 Id : SV_DispatchThreadid) //计算散度
 {
 	//Grid positions
 	int2 id = int2(Id.xy);

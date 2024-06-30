@@ -567,3 +567,263 @@ public class Simple2DFluidSim : MonoBehaviour
 
 ### （1）`Fluid.cs`
 
+- `Start`函数：主要是用来创建一些RenderTexture，并为对应的Compute shader指定参数（这个仓库里只用了一个compute shader来完成所有的计算）；
+- `FixedUpdate函数`（修改后）：依据于玩家所在的位置，替换原来的鼠标坐标（范围是[-0.5，0.5]之间），这里把长和宽方向搞反了，研究了好久；
+  - 主要就是依次Dispatch Compute shader当中对应的kernel。
+
+
+
+### （2）`Fluid.compute`解析
+
+#### （a）`Init`
+
+```c#
+[numthreads(16,16,1)]
+void Kernel_Init (uint3 id : SV_DispatchThreadid)
+{
+	DensityTex[id.xy] = 0;
+	VelocityTex[id.xy] = 0;
+	PressureTex[id.xy] = 0;
+	DivergenceTex[id.xy] = 0;
+}
+```
+
+这个很好理解，就是将所有的RWTexture2D的值清空。
+
+> 补充：如果想让DensityTex一开始有一个纹理的颜色（比如最简单的吞星之鲸周本里的底面），需要将胎海水的Texture2D赋值给Compute shader，此时可以这样写：
+>
+> ```c#
+> Texture2D scaledTexture = new Texture2D(size, size);
+> Graphics.ConvertTexture(showOriginTexture, scaledTexture);
+> //DestroyImmediate(showOriginTexture);
+> ```
+>
+> 其中的showOriginTexture就是输入的纹理（原始胎海水图），需要缩放到size * size不然Compute shader赋值的时候结果不对（因为其他的RWTexture的尺寸都是（size，size），Compute Shader中的Kernel_Init改写为：
+>
+> ```c#
+> DensityTex[id.xy] = inputTex[id.xy];
+> ```
+
+
+
+#### （b）`UserInput`
+
+把其他的功能全部注释掉，只保留UserInput：
+
+```c#
+void Kernel_UserInput (uint3 id : SV_DispatchThreadid)
+{
+	//mouse position
+	float2 center = 0.5;
+	float2 uv = float2(id.xy) / float(size);
+	float2 sphereUV = ( spherePos + center ); //sphere world position to 0-1 uv space（之前spherePos地范围是(-0.5，0.5)）
+
+	float2 velocity = VelocityTex[id.xy].xy;
+	float4 density = DensityTex[id.xy];
+	float obstacle = ObstacleTex[id.xy].x;
+
+	//Impulse factor
+	float dist = distance(uv,sphereUV);
+	dist = 1.0-smoothstep(dist, 0.0, forceRange);
+	float impulse = forceIntensity * dist * _deltaTime * obstacle;
+
+	//Add dye density
+	float speed = distance(sphereVelocity,0);
+	density.a += impulse * speed;
+
+	//Add dye color
+	density.rgb = BlendColor(density.rgb, dyeColor, impulse * speed);
+
+	//Buoyancy, making the fluid goes out from center, instead of having gravity
+	float2 cdir = uv - center;
+	velocity += _deltaTime * density.a * cdir * 2.0;
+
+	//Add mouse velocity
+	float2 dir = sphereVelocity;
+	velocity += dir * impulse;
+
+	//Assign
+	VelocityTex[id.xy] = float2(velocity);
+	DensityTex[id.xy] = density;
+}
+```
+
+观察到**效果就是单纯地在地上涂抹，没有扩散等效果。**
+
+补充说明：
+
+> 【1】关于下面这段：
+>
+> ```c#
+> //Buoyancy, making the fluid goes out from center, instead of having gravity
+> float2 cdir = uv - center;
+> velocity += _deltaTime * density.a * cdir * 2.0;
+> ```
+>
+> 这段代码是用于实现流体模拟中的浮力效果的。在这个上下文中，浮力被用来使流体从中心向外移动，而不是受到重力的影响。  第一行代码` float2 cdir = uv - center;` 计算了从流体的中心到当前像素（或流体粒子）的方向。这里的 uv 表示当前像素的坐标，已经被归一化到 [0, 1] 的范围，而 center 是一个常量向量，表示流体的中心。  第二行代码 `velocity += _deltaTime * density.a * cdir * 2.0;` 更新了流体粒子的速度。_deltaTime 是自上一帧以来经过的时间，density.a 是当前像素处流体密度的 alpha 组件（可以理解为流体的量），cdir 是在上一行计算的方向。速度增加了这三个因素的乘积，有效地使流体随着时间的推移从中心向外移动。2.0 这个因子可能是用来控制流体移动速度的。  总的来说，这段代码是流体模拟中浮力的简单实现，使流体随着时间的推移从模拟的中心向外移动。
+
+
+
+#### （c）`Diffusion`
+
+> 这部分跟上面公式所描述的是一样的，见1.（8）Diffusion Implementation
+
+```c#
+void Kernel_Diffusion (uint3 Id : SV_DispatchThreadid)
+{		
+	//Grid positions
+	int2 id = int2(Id.xy);
+	int2 id_T = id + off_T;
+	int2 id_B = id + off_B;
+	int2 id_L = id + off_L;
+	int2 id_R = id + off_R;
+
+	//Obstacle
+	float obstacle = ObstacleTex[id].x;
+	float obstacle_T = ObstacleTex[id_T].x;
+	float obstacle_R = ObstacleTex[id_R].x;
+	float obstacle_B = ObstacleTex[id_B].x;
+	float obstacle_L = ObstacleTex[id_L].x;
+
+	//Density
+	float4 d = DensityTex[id];
+	float4 d_T = DensityTex[id_T] * obstacle_T;
+	float4 d_B = DensityTex[id_B] * obstacle_R;
+	float4 d_R = DensityTex[id_R] * obstacle_B;
+	float4 d_L = DensityTex[id_L] * obstacle_L;
+	
+	//Diffusion
+	//float4 dnew = (d + size * _deltaTime * (d_T + d_B + d_R + d_L)) / (1 + 4.0 * size * _deltaTime);
+	float4 dnew = (d + size * _deltaTime * (d_T + d_B + d_R + d_L)) / (1 + 4.0 * diffisionFactor * _deltaTime);
+	dnew *= obstacle;
+
+	//Assign
+	DensityTex[id] = dnew;
+}
+```
+
+
+
+#### （d）`Jacobi Solver`
+
+这部分的原理见上面的1.（7）部分。
+
+```c#
+[numthreads(16,16,1)]
+void Kernel_Jacobi (uint3 Id : SV_DispatchThreadid)
+{
+	//Grid positions
+	int2 id = int2(Id.xy);
+	int2 id_T = id + off_T;
+	int2 id_B = id + off_B;
+	int2 id_L = id + off_L;
+	int2 id_R = id + off_R;
+
+	//Obstacle
+	float obstacle_T = ObstacleTex[id_T].x;
+	float obstacle_R = ObstacleTex[id_R].x;
+	float obstacle_B = ObstacleTex[id_B].x;
+	float obstacle_L = ObstacleTex[id_L].x;
+
+	//Pressure
+	float p = PressureTex[id.xy].x;
+	float p_T = lerp( p , PressureTex[id_T].x , obstacle_T ) ;
+	float p_B = lerp( p , PressureTex[id_B].x , obstacle_R ) ;
+	float p_R = lerp( p , PressureTex[id_R].x , obstacle_B ) ;
+	float p_L = lerp( p , PressureTex[id_L].x , obstacle_L ) ;
+
+	//New pressure
+	float div = DivergenceTex[id.xy].x * size;
+	p = (p_L + p_R + p_B + p_T - div ) / 4.0;
+	PressureTex[id.xy] = p;
+}
+```
+
+> 解释一下一部分代码：
+>
+> 【1】关于以下代码：
+>
+> ```c#
+> //Pressure
+> float p = PressureTex[id.xy].x;
+> float p_T = lerp( p , PressureTex[id_T].x , obstacle_T ) ;
+> float p_B = lerp( p , PressureTex[id_B].x , obstacle_R ) ;
+> float p_R = lerp( p , PressureTex[id_R].x , obstacle_B ) ;
+> float p_L = lerp( p , PressureTex[id_L].x , obstacle_L ) ;
+> ```
+>
+> ​	这段代码是用于计算每个像素（或流体粒子）及其邻居的压力。  第一行代码` float p = PressureTex[id.xy].x;` 获取当前像素的压力。这里的 PressureTex 是一个纹理，存储每个流体粒子的压力，id.xy 是当前像素的坐标。  接下来的四行代码计算当前像素上方、下方、右方和左方邻居的压力。lerp 函数用于根据邻居像素处的障碍物值，在当前像素的压力和邻居像素的压力之间进行插值。例如，在行` float p_T = lerp( p , PressureTex[id_T].x , obstacle_T ) ; `中，p 是当前像素的压力，PressureTex[id_T].x 是上方邻居的压力，obstacle_T 是上方邻居的障碍物值。如果 obstacle_T 是1（表示没有障碍物），则使用上方邻居的压力。如果 obstacle_T 是0（表示有障碍物），则使用当前像素的压力。对于0和1之间的值，结果是两个压力的混合。  总的来说，这段代码计算了当前像素及其邻居的压力，并考虑了障碍物的存在。这些信息可能在流体模拟算法的后续步骤中用于计算流体的运动。
+>
+> 【2】`DivergenceTex`：
+>
+> 这张贴图由
+
+
+
+#### （e）`Kernel_Advection`
+
+```c#
+[numthreads(16,16,1)]
+void Kernel_Advection (uint3 id : SV_DispatchThreadid)
+{		
+	float2 velocity = VelocityTex[id.xy].xy;
+	float obstacle = ObstacleTex[id.xy].x;
+
+	//Get previous id for Prev value -> current value
+	float2 displacement = velocity * _deltaTime * size;
+	int2 previd = round(float2(id.xy) - displacement);
+
+	//Advect density
+	float4 density = DensityTex[id.xy];
+	float4 densityPrev = DensityTex[previd];
+	density.a = 0.999f * densityPrev.a * obstacle;
+
+	//Advect dye color
+	density.rgb = BlendColor(density.rgb, densityPrev.rgb, 0.8f);
+	DensityTex[id.xy] = density;
+
+	//Advect velocity
+	VelocityTex[id.xy] = 0.99f * VelocityTex[previd] * obstacle;
+}
+```
+
+关于`densityTex`和`velocityTex`，个人感觉这里更像是使用了Trick，原理前面其实已经提过了。
+
+
+
+#### （f）`Kernel_SubtractGradient`
+
+```c#
+[numthreads(16,16,1)]
+void Kernel_SubtractGradient (uint3 Id : SV_DispatchThreadid)
+{
+	//Grid positions
+	int2 id = int2(Id.xy);
+	int2 id_T = id + off_T;
+	int2 id_B = id + off_B;
+	int2 id_L = id + off_L;
+	int2 id_R = id + off_R;
+
+	//Obstacle
+	float obstacle_T = ObstacleTex[id_T].x;
+	float obstacle_R = ObstacleTex[id_R].x;
+	float obstacle_B = ObstacleTex[id_B].x;
+	float obstacle_L = ObstacleTex[id_L].x;
+
+	//Pressure
+	float p = PressureTex[id.xy].x;
+	float p_T = lerp( p , PressureTex[id_T].x , obstacle_T ) ;
+	float p_B = lerp( p , PressureTex[id_B].x , obstacle_R ) ;
+	float p_R = lerp( p , PressureTex[id_R].x , obstacle_B ) ;
+	float p_L = lerp( p , PressureTex[id_L].x , obstacle_L ) ;
+
+	//Pressure affect velocity, where the curl happens
+	float2 velocity = VelocityTex[id.xy].xy;
+	float curlSize = 1.0; // 0.2 - feels like thicker, 1.0 - more flowy
+	float2 grad = float2(p_R - p_L, p_T - p_B) * curlSize;
+	velocity -= grad;
+	VelocityTex[id.xy] = float2(velocity); 
+}
+```
+
+> ​	这段代码是用于计算流体模拟中的压力梯度，并从流体的速度中减去这个梯度。这是模拟流体运动的关键步骤之一。  首先，代码定义了当前像素及其邻居（上，下，左，右）的位置。例如，`int2 id = int2(Id.xy);`设置了当前像素的位置，`int2 id_T = id + off_T; `计算了上方邻居的位置。  接着，代码获取了每个位置的障碍物值。例如，`float obstacle_T = ObstacleTex[id_T].x;` 获取了上方邻居的障碍物值。障碍物值用于确定像素处是否有障碍。如果有障碍，流体不能移动到该像素。  然后，代码获取了当前像素及其邻居的压力值，使用 lerp 函数根据邻居像素处的障碍物值，在当前像素的压力和邻居像素的压力之间进行插值。例如，`float p_T = lerp( p , PressureTex[id_T].x , obstacle_T ) ;` 计算了上方邻居的压力。  最后，代码计算了压力的梯度，并从流体的速度中减去这个梯度。`float2 grad = float2(p_R - p_L, p_T - p_B) * curlSize; `计算了压力的梯度，`velocity -= grad; `从速度中减去了这个梯度。这一步在模拟流体运动中至关重要，因为它使流体从高压区域向低压区域移动。  总的来说，这段代码是流体模拟算法的关键部分，负责计算压力对流体运动的影响。

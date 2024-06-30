@@ -37,7 +37,7 @@ public class YRouge_BossRoom : YRouge_RoomBase
         fluid = Addressables.InstantiateAsync("HInteractiveFluid", transform).WaitForCompletion();
         fluid.transform.position = new Vector3
         (RoomSpaceKeep.bottomLeft.x + (RoomSpaceKeep.width) / 2,
-            0.3f,
+            0.02f,
             RoomSpaceKeep.bottomLeft.y + (RoomSpaceKeep.length) / 2) + YRogueDungeonManager.Instance.RogueDungeonOriginPos;
         
         fluid.transform.parent = transform;
@@ -72,7 +72,10 @@ public class YRouge_BossRoom : YRouge_RoomBase
         //     
         //     // SetAllDoorsUp();//第一次进入房间门会关
         // }
-        fluid.GetComponent<Fluid>().SetCheckInteractive(true);
+        if (fluid)
+        {
+            fluid.GetComponent<Fluid>().SetCheckInteractive(true);
+        }
     }
     protected override void FirstEnterRoom()
     {
