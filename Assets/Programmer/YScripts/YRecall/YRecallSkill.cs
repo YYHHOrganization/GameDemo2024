@@ -55,46 +55,6 @@ public class YRecallSkill : MonoBehaviour
     YRecallable preRecallable=null;
     YRecallable recallable = null;
     private GameObject target = null;
-    /*
-    private void BeginDetectObject()
-    {
-        
-        // 从摄像头位置创建射线
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-
-        
-        //改为鼠标悬停的地方检测是否有合适的物体，改在这里：
-        if (Physics.Raycast(ray, out hitInfo))
-        {
-            target = hitInfo.collider.gameObject;
-            recallable = target.GetComponent<YRecallable>();
-            //上一次的轨迹先清除，但是如果是同一个物体 按理说不需要清除的。
-            
-            if (recallable != null)
-            {
-                if (recallable != preRecallable)
-                {
-                    preRecallable?.ClearRecallTail();
-                    recallable.ChooseRecallTail();
-                    preRecallable = recallable;
-                }
-                // //否则是同一个就先不管了 毕竟后面选择的时候是要时停的
-            }
-            //击中墙壁啥的
-            else
-            {
-                preRecallable?.ClearRecallTail();
-            }
-            
-        }
-        //啥也没击中
-        else
-        {
-            preRecallable?.ClearRecallTail();
-        }
-    }
-*/
     private void BeginDetectObject()
     {
         // 从摄像头位置创建射线
@@ -135,20 +95,25 @@ public class YRecallSkill : MonoBehaviour
         }
     }
 
-    private bool duringRecalling=false;
+    private bool isRecalling=false;
     // Update is called once per frame
     void Update()
     {
-        
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            if(!duringRecall)
+            if (!isRecalling)
+            {
+                isRecalling = true;
                 BeginRecallSkill();
+            }
             else
+            {
+                isRecalling = false;
                 EndRecall();
+            }
         }
 
-        if (beginDetect)
+        if (!duringRecall&&beginDetect)
         {
             BeginDetectObject();
 
@@ -162,14 +127,31 @@ public class YRecallSkill : MonoBehaviour
     void Recall()
     {
         Time.timeScale = 1;
+        
+        Debug.Log(">>_<<Begin Recall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        //搞个计时器，
+        
         duringRecall = true;
         recallable.StartCoroutine(recallable.Recall());
     }
 
     void EndRecall()
     {
+        Time.timeScale = 1;
+        Debug.Log("()()()()END Recall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        //将所有复原  包括shader，然后进行到一半的recall先停下
+        recallable.EndRecall();
+        
+        foreach (GameObject obj in recallObjectPool.recallableObjectPool)
+        {
+            YRecallable recallable = obj.GetComponent<YRecallable>();
+            if (recallable != null)
+            {
+                recallable.EndRecall();
+            }
+        }
+        
         duringRecall = false;
-        //将所有复原  包括shader
     }
 
 }

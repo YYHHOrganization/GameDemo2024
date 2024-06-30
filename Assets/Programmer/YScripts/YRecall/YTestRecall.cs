@@ -24,7 +24,7 @@ public class YTestRecall  : MonoBehaviour
             if (recallable != null)
             {
                 Debug.Log("Recalling object");
-                recallable.StartCoroutine(recallable.Recall());
+                recallable.Recalling();
             }
         }
         

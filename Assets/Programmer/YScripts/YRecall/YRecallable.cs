@@ -90,6 +90,12 @@ public class YRecallable : MonoBehaviour
         lastPosition = rb.position;
         lastVelocity = rb.velocity;
     }
+
+    private Coroutine RecallCoroutine;
+    public void Recalling()
+    {
+        RecallCoroutine = StartCoroutine(Recall());
+    }
     public IEnumerator Recall()
     {
         lineRenderer.material = Recall_lineRendererMat;
@@ -124,14 +130,18 @@ public class YRecallable : MonoBehaviour
         EndRecall();
     }
 
-    private void EndRecall()
+    public void EndRecall()
     {
-        SetRecallObjectMat(false);
+        if(RecallCoroutine!=null)StopCoroutine(RecallCoroutine);
+        //SetRecallObjectMat(false); 包含在下面了
+        ClearRecallTail();
     }
 
     //选中时的轨迹
     public void ChooseRecallTail()
     {
+        
+        
         SetRecallObjectMat(true);
         lineRenderer.material = Choose_lineRendererMat;
         DrawRecallTail();
