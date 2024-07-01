@@ -175,7 +175,7 @@ public class Fluid : MonoBehaviour
 		shader.SetVector("sphereVelocity",velocity);
 		shader.SetFloat("_deltaTime", Time.fixedDeltaTime);
 		shader.SetVector("dyeColor",color);
-
+		Debug.Log(SetSphereColor.color);
 		//Run compute shader
 		DispatchCompute (kernel_Diffusion);
 		DispatchCompute (kernel_Advection);

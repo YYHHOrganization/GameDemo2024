@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.AddressableAssets;
 
+/// <summary>
+/// 是单例
+/// </summary>
 public class YObjectPool : YSingleTemplate<YObjectPool>
 {
     //用string名字来区分子对象池
@@ -23,9 +26,11 @@ public class YObjectPool : YSingleTemplate<YObjectPool>
         
         CreateSubPool("33300004");
         CreateSubPool("33300005");
+        CreateSubPool("33310000");
     }
 
     //取对象
+    public event Action<GameObject> ObjectSpawned;
     public GameObject Spawn(string nameid)
     {
         GameObject go = null;
@@ -34,8 +39,16 @@ public class YObjectPool : YSingleTemplate<YObjectPool>
             CreateSubPool(nameid);
         }
         go = objectPoolDic[nameid].GetPooledObject();
+
+        if (SD_ObjectPoolCSVFile.Class_Dic[nameid]._isRecallable() == 1)
+        {
+            //感觉这里耦合了 用观察者模式可能能解决，这里我们是需要将go加入到recall的列表中
+            ObjectSpawned?.Invoke(go);
+        }
         return go;
     }
+    
+   
     //回收对象
     public void UnSpawn(GameObject go)
     {

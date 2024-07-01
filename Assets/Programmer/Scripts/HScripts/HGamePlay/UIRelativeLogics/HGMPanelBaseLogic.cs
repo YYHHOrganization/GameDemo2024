@@ -57,6 +57,8 @@ public class HGMPanelBaseLogic : MonoBehaviour
         autoCompleteOptions.Add("set me invincible @true"); //无敌
         autoCompleteOptions.Add("set me invincible @false"); //不无敌
         autoCompleteOptions.Add("summon enemy @id = 4, number = 2");
+        
+        autoCompleteOptions.Add("test add recall object @id = 33310000, number = 8");
     }
     // Start is called before the first frame update
     void Start()
@@ -265,6 +267,25 @@ public class HGMPanelBaseLogic : MonoBehaviour
                 Debug.Log("add sth with id: " + id2 + ", number: " + number2);
                 SummonEnemy(id2, number2);
                 break;
+            case "test add recall object ":
+                string addPart3 = commandParts[1]; 
+                string[] addParts3 = addPart3.Split(',');
+                string id3 = addParts3[0].Split('=')[1].Trim();
+                int number3 = int.Parse(addParts3[1].Split('=')[1].Trim());
+                Debug.Log("add sth with id: " + id3 + ", number: " + number3);
+                TestAddRecallObject(id3, number3);
+                break;
+        }
+    }
+
+    private void TestAddRecallObject(string id, int number)
+    {
+        Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
+        for (int j = 0; j < number; j++)
+        {
+            GameObject go = YObjectPool._Instance.Spawn(id);
+            go.transform.position = player.position+new Vector3(Random.Range(-4,4),Random.Range(1,5),Random.Range(-4,4));
+            go.SetActive(true);
         }
     }
     

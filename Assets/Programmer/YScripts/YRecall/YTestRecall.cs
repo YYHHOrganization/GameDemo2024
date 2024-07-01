@@ -24,7 +24,7 @@ public class YTestRecall  : MonoBehaviour
             if (recallable != null)
             {
                 Debug.Log("Recalling object");
-                recallable.StartCoroutine(recallable.Recall());
+                recallable.Recalling();
             }
         }
         
@@ -38,7 +38,7 @@ public class YTestRecall  : MonoBehaviour
             YRecallable recallable = obj.GetComponent<YRecallable>();
             if (recallable != null)
             {
-                recallable.DrawRecallTail();
+                recallable.ChooseRecallTail();
             }
         }
     }

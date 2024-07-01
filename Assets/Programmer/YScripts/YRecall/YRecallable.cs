@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// 在物体（例如，Rigidbody）上添加一个新的脚本，比如YRecallable.
@@ -19,13 +20,17 @@ public class YRecallable : MonoBehaviour
 
     public Material Choose_lineRendererMat;//回头可以弄成addlink
     public Material Recall_lineRendererMat;
+
+    // public Material CouldRecallObjectMat;
+    private MeshRenderer meshRenderer;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         recallObjects = new List<YRecallObject>();
         lineRenderer = GetComponent<LineRenderer>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
-    
+
     private bool isMoving = false;
     private Vector3 lastPosition;
     private Vector3 lastVelocity;
@@ -39,7 +44,7 @@ public class YRecallable : MonoBehaviour
         Vector3 acceleration = (rb.velocity - lastVelocity) / Time.fixedDeltaTime;
 
         // Check if the object is moving
-        if (Vector3.Distance(rb.position, lastPosition) > 0.01f)
+        if (Vector3.Distance(rb.position, lastPosition) > 0f)
         {
             // If the object starts moving, clear the list
             if (!isMoving)
@@ -85,9 +90,21 @@ public class YRecallable : MonoBehaviour
         lastPosition = rb.position;
         lastVelocity = rb.velocity;
     }
+
+    private Coroutine RecallCoroutine;
+    
+    float duration = 10f;
+    public void Recalling(float duration = 10f)
+    {
+        this.duration = duration;
+        RecallCoroutine = StartCoroutine(Recall());
+    }
     public IEnumerator Recall()
     {
         lineRenderer.material = Recall_lineRendererMat;
+        SetRecallObjectMat(true);
+        DrawRecallTail();
+        
         // Create a copy of the list to iterate over
         List<YRecallObject> tempRecallObjects = new List<YRecallObject>(recallObjects);
         tempRecallObjects.Reverse();
@@ -96,13 +113,15 @@ public class YRecallable : MonoBehaviour
             // Set the object's position, rotation, velocity, and angular velocity
             rb.position = recallObject.Position;
             rb.rotation = recallObject.Rotation;
+            
             rb.velocity = recallObject.Velocity;
             rb.angularVelocity = recallObject.AngularVelocity;
-
+            
             // Apply the inverse force
             rb.AddForce(-recallObject.Force, ForceMode.Force);
             
             //此处将已经经历过的position删掉，也就是linerenderer并不会绘制
+            lineRenderer.positionCount -= 1;
 
             // Wait for the next physics update
             yield return new WaitForFixedUpdate();
@@ -110,17 +129,73 @@ public class YRecallable : MonoBehaviour
 
         // Clear the original list after the recall
         recallObjects.Clear();
+        //如果此时还没被终止，应该是要停在原地，也就是此时物体不再移动，那么其gravity应该为0
+        StopMoving();
+        
+        //按理说应该会中途被停止 
+        yield return new WaitForSeconds(duration);
+        
+        EndRecall();
     }
-    
-    
-    public void DrawRecallTail()
+
+    private void StopMoving()
     {
+        // Stop the object from moving
+        rb.useGravity = false;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        
+    }
+
+
+    public void EndRecall()
+    {
+        if(RecallCoroutine!=null)StopCoroutine(RecallCoroutine);
+        SetCouldRecallObjectMat(false);
+        
+        //SetRecallObjectMat(false); 包含在下面了
+        ClearRecallTail();
+        
+        rb.useGravity = true;
+    }
+
+    //选中时的轨迹
+    public void ChooseRecallTail()
+    {
+        SetRecallObjectMat(true);
+        
         lineRenderer.material = Choose_lineRendererMat;
+        DrawRecallTail();
+    }
+
+    public void ClearRecallTail()
+    {
+        SetRecallObjectMat(false);
+        
+        //后面可以优化 画一次就行了
+        lineRenderer.positionCount = 0;
+    }
+    private void DrawRecallTail()
+    {
         lineRenderer.positionCount = recallObjects.Count;
         
         for (int i = 0; i < recallObjects.Count; i++)
         {
             lineRenderer.SetPosition(i, recallObjects[i].Position);
         }
+    }
+
+    void SetRecallObjectMat(bool isRecall)
+    {
+        meshRenderer.material.SetFloat("_isRecall", isRecall?1:0);
+    }
+
+    public void SetCouldRecall()
+    {
+        SetCouldRecallObjectMat(true);
+    }
+    void SetCouldRecallObjectMat(bool isCouldRecall)
+    {
+        meshRenderer.material.SetFloat("_isCouldRecall", isCouldRecall?1:0);
     }
 }

@@ -71,6 +71,15 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skill2"",
+                    ""type"": ""Button"",
+                    ""id"": ""db6b4638-33f5-4f4c-acd2-c13bd78f575e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -192,6 +201,17 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Skill1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e3b1cc66-b87f-40a1-8d85-4c23887de833"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -449,6 +469,7 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         m_CharacterControls_Jump = m_CharacterControls.FindAction("Jump", throwIfNotFound: true);
         m_CharacterControls_Look = m_CharacterControls.FindAction("Look", throwIfNotFound: true);
         m_CharacterControls_Skill1 = m_CharacterControls.FindAction("Skill1", throwIfNotFound: true);
+        m_CharacterControls_Skill2 = m_CharacterControls.FindAction("Skill2", throwIfNotFound: true);
         // ShortcutKey
         m_ShortcutKey = asset.FindActionMap("ShortcutKey", throwIfNotFound: true);
         m_ShortcutKey_GetPuppet = m_ShortcutKey.FindAction("GetPuppet", throwIfNotFound: true);
@@ -534,6 +555,7 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_CharacterControls_Jump;
     private readonly InputAction m_CharacterControls_Look;
     private readonly InputAction m_CharacterControls_Skill1;
+    private readonly InputAction m_CharacterControls_Skill2;
     public struct CharacterControlsActions
     {
         private @L2PlayerInput m_Wrapper;
@@ -543,6 +565,7 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_CharacterControls_Jump;
         public InputAction @Look => m_Wrapper.m_CharacterControls_Look;
         public InputAction @Skill1 => m_Wrapper.m_CharacterControls_Skill1;
+        public InputAction @Skill2 => m_Wrapper.m_CharacterControls_Skill2;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -567,6 +590,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
             @Skill1.started += instance.OnSkill1;
             @Skill1.performed += instance.OnSkill1;
             @Skill1.canceled += instance.OnSkill1;
+            @Skill2.started += instance.OnSkill2;
+            @Skill2.performed += instance.OnSkill2;
+            @Skill2.canceled += instance.OnSkill2;
         }
 
         private void UnregisterCallbacks(ICharacterControlsActions instance)
@@ -586,6 +612,9 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
             @Skill1.started -= instance.OnSkill1;
             @Skill1.performed -= instance.OnSkill1;
             @Skill1.canceled -= instance.OnSkill1;
+            @Skill2.started -= instance.OnSkill2;
+            @Skill2.performed -= instance.OnSkill2;
+            @Skill2.canceled -= instance.OnSkill2;
         }
 
         public void RemoveCallbacks(ICharacterControlsActions instance)
@@ -872,6 +901,7 @@ public partial class @L2PlayerInput: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnSkill1(InputAction.CallbackContext context);
+        void OnSkill2(InputAction.CallbackContext context);
     }
     public interface IShortcutKeyActions
     {
