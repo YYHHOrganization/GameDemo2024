@@ -13,6 +13,9 @@ public class YRecallSkill : MonoBehaviour
     
     YCountDownUI countDownUI;
     private float duration = 20f;
+    
+    private bool duringRecall;
+    HPlayerStateMachine playerStateMachine;
     public void setPool(YRecallObjectPool yRecallObjectPool)
     {
         recallObjectPool = yRecallObjectPool;
@@ -25,16 +28,21 @@ public class YRecallSkill : MonoBehaviour
         countDownUI = gameObject.AddComponent<YCountDownUI>();
         countDownUI.addCountDownUIlink = "RecallCountDownPanel";
         countDownUI.skillLastTime = duration ;
+        
+        
         //playerInput.CharacterControls.Skill2.started +=context =>  BeginRecallSkill();
     }
 
     //33310000,炸弹可时间回溯,BombCouldRecallFromPool,10,0 没用到
-    
-    private bool duringRecall;
+
     //王国之泪出recall 的skill的条件：1.到时间了。2.手动停止。
     //简易点，可以先实现到时间停止，
     public void BeginRecallSkill()
     {
+        //改变动画
+        if(playerStateMachine==null)playerStateMachine = YPlayModeController.Instance.curCharacter.GetComponent<HPlayerStateMachine>();
+        playerStateMachine.OnStandingIdle();
+        
         Time.timeScale = 0;
         // YTriggerEvents.RaiseOnMouseLeftShoot(false);
         YTriggerEvents.RaiseOnMouseLockStateChanged(false);
@@ -133,11 +141,14 @@ public class YRecallSkill : MonoBehaviour
     {
         Time.timeScale = 1;
         
+        //动画
+        playerStateMachine.OnSpellRecall();
+        playerStateMachine.OnStandingIdleBack();
+        
         Debug.Log(">>_<<Begin Recall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         //搞个计时器，
         countDownUI.BeginCountDown();
         CountDownCoroutine = StartCoroutine(CountDown(duration));
-        
         
         duringRecall = true;
         recallable.Recalling(duration);
@@ -156,6 +167,9 @@ public class YRecallSkill : MonoBehaviour
         Time.timeScale = 1;
         Debug.Log("()()()()END Recall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         countDownUI.EndCountDown();
+        
+        //改变动画
+        playerStateMachine.OnStandingIdleBack();
         
         //将所有复原  包括shader，然后进行到一半的recall先停下
         // recallable.EndRecall();
