@@ -92,8 +92,11 @@ public class YRecallable : MonoBehaviour
     }
 
     private Coroutine RecallCoroutine;
-    public void Recalling()
+    
+    float duration = 10f;
+    public void Recalling(float duration = 10f)
     {
+        this.duration = duration;
         RecallCoroutine = StartCoroutine(Recall());
     }
     public IEnumerator Recall()
@@ -126,23 +129,41 @@ public class YRecallable : MonoBehaviour
 
         // Clear the original list after the recall
         recallObjects.Clear();
-
+        //如果此时还没被终止，应该是要停在原地，也就是此时物体不再移动，那么其gravity应该为0
+        StopMoving();
+        
+        //按理说应该会中途被停止 
+        yield return new WaitForSeconds(duration);
+        
         EndRecall();
     }
+
+    private void StopMoving()
+    {
+        // Stop the object from moving
+        rb.useGravity = false;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        
+    }
+
 
     public void EndRecall()
     {
         if(RecallCoroutine!=null)StopCoroutine(RecallCoroutine);
+        SetCouldRecallObjectMat(false);
+        
         //SetRecallObjectMat(false); 包含在下面了
         ClearRecallTail();
+        
+        rb.useGravity = true;
     }
 
     //选中时的轨迹
     public void ChooseRecallTail()
     {
-        
-        
         SetRecallObjectMat(true);
+        
         lineRenderer.material = Choose_lineRendererMat;
         DrawRecallTail();
     }
@@ -150,6 +171,7 @@ public class YRecallable : MonoBehaviour
     public void ClearRecallTail()
     {
         SetRecallObjectMat(false);
+        
         //后面可以优化 画一次就行了
         lineRenderer.positionCount = 0;
     }

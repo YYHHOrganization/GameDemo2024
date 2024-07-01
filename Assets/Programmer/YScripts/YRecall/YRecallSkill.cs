@@ -10,6 +10,9 @@ public class YRecallSkill : MonoBehaviour
     private bool beginDetect;
 
     private Camera playerCamera = null;
+    
+    YCountDownUI countDownUI;
+    private float duration = 20f;
     public void setPool(YRecallObjectPool yRecallObjectPool)
     {
         recallObjectPool = yRecallObjectPool;
@@ -19,7 +22,9 @@ public class YRecallSkill : MonoBehaviour
     void Start()
     {
         playerInput = new L2PlayerInput();
-        
+        countDownUI = gameObject.AddComponent<YCountDownUI>();
+        countDownUI.addCountDownUIlink = "RecallCountDownPanel";
+        countDownUI.skillLastTime = duration ;
         //playerInput.CharacterControls.Skill2.started +=context =>  BeginRecallSkill();
     }
 
@@ -123,24 +128,37 @@ public class YRecallSkill : MonoBehaviour
             }
         }
     }
-
+    
     void Recall()
     {
         Time.timeScale = 1;
         
         Debug.Log(">>_<<Begin Recall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         //搞个计时器，
+        countDownUI.BeginCountDown();
+        CountDownCoroutine = StartCoroutine(CountDown(duration));
+        
         
         duringRecall = true;
-        recallable.StartCoroutine(recallable.Recall());
+        recallable.Recalling(duration);
     }
-
+    private Coroutine CountDownCoroutine;
+    public IEnumerator CountDown(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        EndRecall();
+    }
     void EndRecall()
     {
+        if(CountDownCoroutine!=null)StopCoroutine(CountDownCoroutine);
+        
+        //如果进入了选择物体界面再退出 已经选中了
         Time.timeScale = 1;
         Debug.Log("()()()()END Recall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        countDownUI.EndCountDown();
+        
         //将所有复原  包括shader，然后进行到一半的recall先停下
-        recallable.EndRecall();
+        // recallable.EndRecall();
         
         foreach (GameObject obj in recallObjectPool.recallableObjectPool)
         {
@@ -152,6 +170,8 @@ public class YRecallSkill : MonoBehaviour
         }
         
         duringRecall = false;
+        beginDetect = false;
     }
 
+    
 }
