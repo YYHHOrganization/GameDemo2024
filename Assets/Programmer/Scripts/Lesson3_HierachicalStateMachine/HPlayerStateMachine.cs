@@ -24,6 +24,8 @@ public class HPlayerStateMachine : MonoBehaviour
     private int velocityXHash;
     private int velocityZHash;
     private int isSkill1Hash;
+    private int isRecallStandingIdleHash;
+    private int isSpellRecallHash;
     private float rotationFactorPerFrame = 15.0f;
 
     private bool isRunPressed;
@@ -78,6 +80,14 @@ public class HPlayerStateMachine : MonoBehaviour
     public int IsSkill1Hash
     {
         get { return isSkill1Hash; }
+    }
+    public int IsRecallStandingIdleHash
+    {
+        get { return isRecallStandingIdleHash; }
+    }
+    public int IsSpellRecallHash
+    {
+        get { return isSpellRecallHash; }
     }
     public bool IsJumpPressed
     {
@@ -255,6 +265,8 @@ public class HPlayerStateMachine : MonoBehaviour
         isJumpingHash = Animator.StringToHash("isJumping");
         jumpCountHash = Animator.StringToHash("jumpCount");
         isSkill1Hash = Animator.StringToHash("isSkill1");
+        isRecallStandingIdleHash = Animator.StringToHash("isRecallStandingIdle");
+        isSpellRecallHash = Animator.StringToHash("isSpellRecall");
         velocityXHash = Animator.StringToHash("VelocityX");
         velocityZHash = Animator.StringToHash("VelocityZ");
         
@@ -346,6 +358,22 @@ public class HPlayerStateMachine : MonoBehaviour
         }
     }
     
+    public void OnStandingIdle()
+    {
+        if(characterController.isGrounded)
+        {
+            animator.SetBool(isRecallStandingIdleHash, true);
+        }
+    }
+    public void OnSpellRecall()
+    {
+        animator.SetBool(isSpellRecallHash, true);
+    }
+    public void OnStandingIdleBack()
+    {
+        animator.SetBool(isRecallStandingIdleHash, false);
+    }
+    
     void OnRun(InputAction.CallbackContext context)
     {
         isRunPressed = context.ReadValueAsButton();
@@ -395,4 +423,6 @@ public class HPlayerStateMachine : MonoBehaviour
         _cameraRelativeMovement = ConvertToCameraSpace(appliedMovement);
         characterController.Move(_cameraRelativeMovement * Time.deltaTime);
     }
+
+    
 }
