@@ -15,6 +15,8 @@ public class Fluid : MonoBehaviour
 	public Transform sphere; //represents mouse
 	public int solverIterations = 50;
 	public Texture2D obstacleTex;
+	public float startHue = 72f;
+	public float endHue = 252f;
 
 	[Header("Force Settings")] public float forceIntensity = 200f;
 	public float forceRange = 0.01f;
@@ -35,6 +37,7 @@ public class Fluid : MonoBehaviour
 	private int kernel_Advection = 0;
 	private int kernel_Divergence = 0;
 	private int kernel_SubtractGradient = 0;
+	private int kernel_addForce = 0;
 
 	public bool userDefDiffusionFactor;
 	public float diffusionFactor = 100f;
@@ -50,7 +53,8 @@ public class Fluid : MonoBehaviour
 	}
 
 	public Texture2D showOriginTexture;
-
+	public float advectSpeed = 1.0f;
+	public float vscosity = 0.5f;
 	private void DispatchCompute(int kernel)
 	{
 		shader.Dispatch(kernel, dispatchSize, dispatchSize, 1);
@@ -85,6 +89,8 @@ public class Fluid : MonoBehaviour
 		{
 			shader.SetFloat("diffisionFactor", size);
 		}
+		shader.SetFloat("advectSpeed", advectSpeed);
+		shader.SetFloat("vscosity", vscosity);
 		
 		Texture2D scaledTexture = new Texture2D(size, size);
 		Graphics.ConvertTexture(showOriginTexture, scaledTexture);
@@ -104,6 +110,8 @@ public class Fluid : MonoBehaviour
 		kernel_Advection = shader.FindKernel("Kernel_Advection");
 		kernelCount++;
 		kernel_SubtractGradient = shader.FindKernel("Kernel_SubtractGradient");
+		kernelCount++;
+		kernel_addForce = shader.FindKernel("Kernel_AddForce");
 		kernelCount++;
 		for (int kernel = 0; kernel < kernelCount; kernel++)
 		{
@@ -172,6 +180,7 @@ public class Fluid : MonoBehaviour
 		DispatchCompute (kernel_Diffusion);
 		DispatchCompute (kernel_Advection);
 		DispatchCompute (kernel_UserInput);
+		DispatchCompute(kernel_addForce);
 		DispatchCompute (kernel_Divergence);
 		for(int i=0; i<solverIterations; i++)
 		{
@@ -181,8 +190,12 @@ public class Fluid : MonoBehaviour
 		
 		//Save the previous position for velocity
 		sphere_prevPos = npos;
-		
-		color = Color.HSVToRGB( 0.5f*(Mathf.Sin( Time.time * Time.fixedDeltaTime * timeSpeed )+1f) , 1f, 1f);
+
+		float tmpvalue = 0.5f * (Mathf.Sin(Time.time * Time.fixedDeltaTime * timeSpeed) + 1f);
+		//映射到61/360，161/360之间
+		//float hue = 61f / 360f + tmpvalue * (161f / 360f - 61f / 360f);
+		float hue = startHue / 360f + tmpvalue * (endHue / 360f - startHue / 360f);
+		color = Color.HSVToRGB( hue, 1f, 1f);
 		
 	}
 }
