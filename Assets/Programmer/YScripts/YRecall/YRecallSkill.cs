@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,8 @@ public class YRecallSkill : MonoBehaviour
     
     private bool duringRecall;
     HPlayerStateMachine playerStateMachine;
+
+    private bool CanDoRecallSkill = false;
     public void setPool(YRecallObjectPool yRecallObjectPool)
     {
         recallObjectPool = yRecallObjectPool;
@@ -28,9 +31,25 @@ public class YRecallSkill : MonoBehaviour
         countDownUI = gameObject.AddComponent<YCountDownUI>();
         countDownUI.addCountDownUIlink = "RecallCountDownPanel";
         countDownUI.skillLastTime = duration ;
+
         
-        
+        YTriggerEvents.OnLoadEndAndBeginPlay += LoadEndAndBeginPlay;
         //playerInput.CharacterControls.Skill2.started +=context =>  BeginRecallSkill();
+    }
+
+    private void LoadEndAndBeginPlay(object sender, YTriggerEventArgs e) //sender是触发事件的对象，e是事件的参数
+    {
+        if (e.activated)
+        {
+            CanDoRecallSkill = true;
+            countDownUI.Init();
+            
+        }
+        else
+        {
+            CanDoRecallSkill = false;
+        }
+        
     }
 
     //33310000,炸弹可时间回溯,BombCouldRecallFromPool,10,0 没用到
@@ -39,6 +58,7 @@ public class YRecallSkill : MonoBehaviour
     //简易点，可以先实现到时间停止，
     public void BeginRecallSkill()
     {
+        
         //改变动画
         if(playerStateMachine==null)playerStateMachine = YPlayModeController.Instance.curCharacter.GetComponent<HPlayerStateMachine>();
         playerStateMachine.OnStandingIdle();
@@ -112,6 +132,7 @@ public class YRecallSkill : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!CanDoRecallSkill) return;
         if (Input.GetKeyDown(KeyCode.Z))
         {
             if (!isRecalling)
@@ -187,5 +208,8 @@ public class YRecallSkill : MonoBehaviour
         beginDetect = false;
     }
 
-    
+    private void OnDestroy()
+    {
+        YTriggerEvents.OnLoadEndAndBeginPlay -= LoadEndAndBeginPlay;
+    }
 }

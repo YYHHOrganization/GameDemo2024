@@ -51,6 +51,7 @@ public class YRogueLoadPanel : BasePanel
         base.OnExit();
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
+        YTriggerEvents.RaiseOnLoadEndAndBeginPlay(true);
     }
     
     
