@@ -790,6 +790,12 @@ public class HRogueItemFuncUtility : MonoBehaviour
         HRoguePlayerAttributeAndItemManager.Instance.RefleshPositiveItemUI(0);
         float lastTime = float.Parse(funcParams);
         HPostProcessingFilters.Instance.SetPostProcessingWithNameAndTime("HeibaiHong",lastTime);
+        float timeScale = Time.timeScale;
+        Time.timeScale = 0.2f;
+        DOVirtual.DelayedCall(1.5f, () =>
+        {
+            Time.timeScale = timeScale;
+        });
         SetAttributeWithCertainLogic("AddAll;1");
         DOVirtual.DelayedCall(lastTime, () => 
         {
