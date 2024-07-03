@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,6 +12,7 @@ public class YCountDownUI : MonoBehaviour
     protected TMP_Text countDownText;
     protected Image countDownImage;
     public string addCountDownUIlink = "RecallCountDownPanel";
+    private GameObject CountDownPanel;
     
     public float skillLastTime;  //技能的持续时间
     Coroutine countDownCoroutine;
@@ -18,12 +20,20 @@ public class YCountDownUI : MonoBehaviour
     void Start()
     {
         GameObject countDownUIGO = Addressables.InstantiateAsync(addCountDownUIlink).WaitForCompletion();
+        
         countDownUI = Instantiate(countDownUIGO, GameObject.Find("Canvas").transform);
         countDownUI.gameObject.SetActive(false);
+        
         countDownText = countDownUI.GetComponentInChildren<TMP_Text>();
         countDownImage = countDownUI.transform.Find("skillIcon").GetComponent<Image>();
+        SetCountDownTickUI(false);
     }
-
+    
+    void SetCountDownTickUI(bool isShow)
+    {
+        countDownText.gameObject.SetActive(isShow);
+        countDownImage.gameObject.SetActive(isShow);
+    }
     
     public void BeginCountDown()
     {
@@ -32,7 +42,8 @@ public class YCountDownUI : MonoBehaviour
 
     IEnumerator BeginCountDownCoroutine()
     {
-        countDownUI.gameObject.SetActive(true);
+        //countDownUI.gameObject.SetActive(true);
+        SetCountDownTickUI(true);
         
         int tickCount = (int)(skillLastTime / 0.1f);
         for(int i = 0;i < tickCount;i++)
@@ -46,7 +57,13 @@ public class YCountDownUI : MonoBehaviour
     
     public void EndCountDown()
     {
-        countDownUI.gameObject.SetActive(false);
+        //countDownUI.gameObject.SetActive(false);
+        SetCountDownTickUI(false);
         if(countDownCoroutine!=null)StopCoroutine(countDownCoroutine);
+    }
+
+    public void Init()
+    {
+        countDownUI.gameObject.SetActive(true);
     }
 }

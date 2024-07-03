@@ -145,4 +145,10 @@ public class YTriggerEvents : MonoBehaviour
         OnInterruptCombo?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
     
+    //加载完load界面 真正出现在地牢里面
+    public static event EventHandler<YTriggerEventArgs> OnLoadEndAndBeginPlay;
+    public static void RaiseOnLoadEndAndBeginPlay(bool activated)
+    {
+        OnLoadEndAndBeginPlay?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
 }
