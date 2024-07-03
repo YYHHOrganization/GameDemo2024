@@ -12,6 +12,12 @@ public class HTerrianScanRenderFeatureSettings: VolumeComponent, IPostProcessCom
 
     [Tooltip("Scan Width")]
     public ClampedFloatParameter scanWidth = new ClampedFloatParameter(30f, 1f, 100f);
+    
+    [Tooltip("Scan Color")]
+    // 传输hdr的颜色：
+    public ColorParameter scanColor = new ColorParameter(Color.yellow, true, false, true);
+    
+    //public ColorParameter scanColor = new ColorParameter(Color.yellow);
     public bool IsActive()
     {
         return (scanDepth.value >= 0.0f) && (scanWidth.value >= 0.0f);

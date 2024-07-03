@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 public class YRecallSkill : MonoBehaviour
 {
@@ -65,6 +66,8 @@ public class YRecallSkill : MonoBehaviour
     //简易点，可以先实现到时间停止，
     public void BeginRecallSkill()
     {
+        HPostProcessingFilters.Instance.SetScanEffectPostProcessing(true);
+        
         //显示高光亮
         //绑定到YPlayModeController.Instance.curCharacter的手上，比如“zHandTwist_R”节点下,
         //Transform.Find方法只能查找直接的子对象 
@@ -88,7 +91,7 @@ public class YRecallSkill : MonoBehaviour
         playerStateMachine.OnStandingIdle();
         
         Time.timeScale = 0;
-        // YTriggerEvents.RaiseOnMouseLeftShoot(false);
+        YTriggerEvents.RaiseOnMouseLeftShoot(false);
         YTriggerEvents.RaiseOnMouseLockStateChanged(false);
         
         playerCamera = HCameraLayoutManager.Instance.playerCamera;
@@ -112,10 +115,14 @@ public class YRecallSkill : MonoBehaviour
     YRecallable preRecallable=null;
     YRecallable recallable = null;
     private GameObject target = null;
+    
+    Vector2 mousePos = Vector2.zero;
     private void BeginDetectObject()
     {
         // 从摄像头位置创建射线
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+        //在这里存储鼠标在屏幕上的位置
+        mousePos = Mouse.current.position.ReadValue();
+        Ray ray = playerCamera.ScreenPointToRay(mousePos);
         RaycastHit hitInfo;
 
         // 改为鼠标悬停的地方检测是否有合适的物体
@@ -185,12 +192,16 @@ public class YRecallSkill : MonoBehaviour
     void Recall()
     {
         Time.timeScale = 1;
+        HPostProcessingFilters.Instance.SetScanEffectPostProcessing(false);
+        
+        SetPostProcessing(true,mousePos);
         
         //动画
         playerStateMachine.OnSpellRecall(true);
-        DOVirtual.DelayedCall(0.5f, () =>
+        DOVirtual.DelayedCall(0.1f, () =>
         {
             playerStateMachine.OnStandingIdleBack();
+            YTriggerEvents.RaiseOnMouseLeftShoot(true);
         });
         
         YRecallLightHandVFX.SetActive(false);
@@ -202,7 +213,40 @@ public class YRecallSkill : MonoBehaviour
         
         duringRecall = true;
         recallable.Recalling(duration);
+        
+        YTriggerEvents.RaiseOnMouseLeftShoot(true);
+        YTriggerEvents.RaiseOnMouseLockStateChanged(true);
     }
+
+    private ScriptableRendererFeature feature = null;
+    private void SetPostProcessing(bool isOn,Vector2 screenPos )
+    {
+        if (isOn)
+        {
+            if (this.feature == null)
+            {
+                string name = "FullScreenDaozhuanqiankun";
+                feature =
+                    HPostProcessingFilters.Instance.GetRenderFeature(name);
+            }
+            
+            //将mousePos转换为屏幕坐标 且归一化为0-1
+            Vector2 pos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
+            
+            //设置这个feature里面的参数
+            HPostProcessingFilters.Instance.SetPassMaterialParameters
+                (feature, "_FlowValue",3f, 0, 1.5f,
+                    "_StartPos",pos);
+        }
+        else
+        {
+            if (this.feature != null)
+            {
+                feature.SetActive(false);
+            }
+        }
+    }
+
     private Coroutine CountDownCoroutine;
     public IEnumerator CountDown(float duration)
     {
@@ -212,6 +256,7 @@ public class YRecallSkill : MonoBehaviour
     void EndRecall()
     {
         YRecallLightHandVFX.SetActive(false);
+        HPostProcessingFilters.Instance.SetScanEffectPostProcessing(false);
         
         if(CountDownCoroutine!=null)StopCoroutine(CountDownCoroutine);
         
@@ -238,10 +283,17 @@ public class YRecallSkill : MonoBehaviour
         
         duringRecall = false;
         beginDetect = false;
+        
+        YTriggerEvents.RaiseOnMouseLeftShoot(true);
+        YTriggerEvents.RaiseOnMouseLockStateChanged(true);
+        
+        if(feature!=null)HPostProcessingFilters.Instance.SetPassMaterialParameters
+            (feature, false);
     }
 
     private void OnDestroy()
     {
         YTriggerEvents.OnLoadEndAndBeginPlay -= LoadEndAndBeginPlay;
+        SetPostProcessing(false,Vector2.zero);
     }
 }

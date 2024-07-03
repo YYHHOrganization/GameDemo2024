@@ -5,6 +5,7 @@ Shader "HPostProcessing/HTerrianScanning"
         _MainTex ("Texture", 2D) = "white" {}
         _ScanDepth("ScanDepth",Range(0, 1))=0
 		_ScanWidth("ScanWidth",Range(0.01, 100))=1
+        [HDR]_LineColor("LineColor",Color)=(1,1,0,1)
 		_CamFar("CamFar",float)=500
     }
     SubShader
@@ -28,6 +29,7 @@ Shader "HPostProcessing/HTerrianScanning"
             float4 _MainTex_TexelSize;
             float _ScanDepth;
             float _ScanWidth;
+            float4 _LineColor;
             float _CamFar;
         CBUFFER_END
 
@@ -93,12 +95,15 @@ Shader "HPostProcessing/HTerrianScanning"
                 // return col;
                 
                 //这个会让场景以条带方式向外扫，但我们需要的效果是整个场景都有扫描效果
+                //判断线性深度是否在扫描深度 _ScanDepth 和 _ScanDepth - _ScanWidth/_CamFar 之间
                 if(linearDepth < _ScanDepth && (linearDepth>(_ScanDepth-_ScanWidth/_CamFar)) && linearDepth<1) //最后linearDepth<1是为了防止到天空盒的位置
                 {
                     //return lerp(col, float4(1,1,0,1), _ScanDepth);
                     //做一个渐变效果
+                    //在这个深度范围内，对颜色进行插值处理，使得颜色有一个从原始颜色到某个颜色的过渡效果
 					float scanPercent = 1 - (_ScanDepth-linearDepth)/(_ScanWidth/_CamFar);
-                    float4 lerpColor = lerp(col,float4(1,1,0,1) * 15.0f,scanPercent);
+                    //float4 lerpColor = lerp(col,float4(1,1,0,1) * 15.0f,scanPercent);
+                    float4 lerpColor = lerp(col,_LineColor,scanPercent);
 					return lerpColor;
                 }
 
