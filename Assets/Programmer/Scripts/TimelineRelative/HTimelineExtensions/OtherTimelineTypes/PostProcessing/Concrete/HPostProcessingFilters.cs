@@ -298,7 +298,8 @@ public class HPostProcessingFilters : HPostProcessingBase
                     {
                         var sequence = DOTween.Sequence();
                         //2s的时间把saturation从0到-100，过10s之后从-100重置回originValue
-                        sequence.Append(DOTween.To(() => colorAdjustments.saturation.value, x => colorAdjustments.saturation.value = x, -60f, 2f));
+                        float duration = 2f * (1.0f / Time.timeScale);
+                        sequence.Append(DOTween.To(() => colorAdjustments.saturation.value, x => colorAdjustments.saturation.value = x, -60f, duration));
                         yield return new WaitForSeconds(time);
                         colorAdjustments.saturation.value = originValue;
                         colorCurves.active = false;
