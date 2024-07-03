@@ -103,7 +103,10 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000099,SilverWolfCheatOne,银狼炸弹：进入房间有较小概率秒杀全部敌人，boss房除外,1,进入房间有较小概率秒杀全部敌人，boss房除外,Negative,RegisterEnterNewRoomFunc,MayKillEnemy2!All;0.2,-1,SilverWolfIcon,false,silverwolf,SilverWolfCheatOne,true,5,所属——银狼,true,false
 80000100,GanhaiPicture1,希儿的照片,1,似乎需要另外一部分...,Negative,GetGanhaiPicture,seele,-1,SeelePicture,true,bronya,GanhaiPicture1,true,5,所属——布洛妮娅,true,false
 80000101,GanhaiPicture2,布洛妮娅的照片,1,似乎需要另外一部分...,Negative,GetGanhaiPicture,bronya,-1,BronyaPicture,true,seele,GanhaiPicture2,true,5,所属——希儿,true,false
-80000102,PortalToSomeRoom,传送门：立即传送到boss房,1,立即传送到boss房,Negative,PortalToSomeRoom,BossRoom,-1,portalIcon,false,shajin,PortalToBossRoom,true,4,所属——砂金,true,true,
-80000103,PortalToSomeRoom,传送门：立即传送到道具房,1,立即传送到item房,Negative,PortalToSomeRoom,ItemRoom,-1,portalIcon,false,shajin,PortalToItemRoom,true,4,所属——砂金,true,true,
-80000104,PortalToSomeRoom,传送门：立即传送到挑战房,1,立即传送到挑战房,Negative,PortalToSomeRoom,ChallengeRoom,-1,portalIcon,false,shajin,PortalToChallengeRoom,true,4,所属——砂金,true,true,
-80000105,ShuangZiTaModelItem,微缩版双子塔：传送到隐藏地图-双子塔,1,传送到隐藏地图-双子塔,Negative,PortalToSpecialMap,ShuangZiTa,-1,shuangzitaUIIcon,false,shajin,ShuangZiTaModelItem,true,5,所属——砂金,true,true,
+80000102,PortalToSomeRoom,传送门：立即传送到boss房,1,立即传送到boss房,Negative,PortalToSomeRoom,BossRoom,-1,portalIcon,false,shajin,PortalToBossRoom,true,4,所属——砂金,true,true
+80000103,PortalToSomeRoom,传送门：立即传送到道具房,1,立即传送到item房,Negative,PortalToSomeRoom,ItemRoom,-1,portalIcon,false,shajin,PortalToItemRoom,true,4,所属——砂金,true,true
+80000104,PortalToSomeRoom,传送门：立即传送到挑战房,1,立即传送到挑战房,Negative,PortalToSomeRoom,ChallengeRoom,-1,portalIcon,false,shajin,PortalToChallengeRoom,true,4,所属——砂金,true,true
+80000105,ShuangZiTaModelItem,微缩版双子塔：传送到隐藏地图-双子塔,1,传送到隐藏地图-双子塔,Negative,PortalToSpecialMap,ShuangZiTa,-1,shuangzitaUIIcon,false,shajin,ShuangZiTaModelItem,true,5,所属——砂金,true,true
+80000106,AddHeartAll,丰饶赐福：将角色恢复到满生命值,1,将角色恢复至满生命值状态,Negative,AddHeartOrShield,Health;12,-1,HeartUpIcon,false,fengrao,AddHeartAll,false,5,所属——丰饶：药师,true,false
+80000107,SummonRandomCatcake,猫主子其一：召唤随机一只猫猫糕作为跟宠,1,召唤随机一只猫猫糕,Negative,SummonSth,Catcake;Random;1,-1,XingCatcakeIcon,false,pamu,XingCatcakeItem,true,5,所属——帕姆,true,false
+80000108,RuanmeiQiSan,阮梅其三：召唤所有猫猫糕x1,1,召唤全部的猫猫糕,Negative,SummonSth,Catcake;All;1,-1,RuanmeiCatcakeIcon,false,pamu,RuanmeiCatcakeItem,true,5,所属——帕姆,true,false

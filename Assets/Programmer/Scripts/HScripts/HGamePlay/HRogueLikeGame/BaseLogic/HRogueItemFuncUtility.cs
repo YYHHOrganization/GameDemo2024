@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -117,9 +118,45 @@ public class HRogueItemFuncUtility : MonoBehaviour
             case "PortalToSpecialMap":
                 PortalToSpecialMap(funcParams);
                 break;
+            case "SummonSth":
+                SummonSth(funcParams);
+                break;
             default:
                 System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
                 method.Invoke(this, new object[] {funcParams});
+                break;
+        }
+    }
+
+    private void SummonSth(string funcParams)
+    {
+        string[] paramList = funcParams.Split(';');
+        string kind = paramList[0];
+        string type = paramList[1];
+        int number = int.Parse(paramList[2]);
+        switch (kind)
+        {
+            case "Catcake":
+                int catcakeCount = SD_RoguePetCSVFile.Class_Dic.Count;
+                if (type == "Random")
+                {
+                    for (int i = 0; i < number; i++)
+                    {
+                        int randomIndex = Random.Range(0, catcakeCount);
+                        string petId = SD_RoguePetCSVFile.Class_Dic.Keys.ToArray()[randomIndex];
+                        YPlayModeController.Instance.SetCatcake(petId);
+                    }
+                }
+                else if (type == "All")
+                {
+                    for (int i = 0; i < number; i++)
+                    {
+                        foreach (string key in SD_RoguePetCSVFile.Class_Dic.Keys)
+                        {
+                            YPlayModeController.Instance.SetCatcake(key);
+                        }
+                    }
+                }
                 break;
         }
     }
