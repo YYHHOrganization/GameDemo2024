@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 
 public class YRecallSkill : MonoBehaviour
@@ -19,6 +21,9 @@ public class YRecallSkill : MonoBehaviour
     HPlayerStateMachine playerStateMachine;
 
     private bool CanDoRecallSkill = false;
+
+    private string YRecallLightHandVFXAddLink = "YRecallLightHandVFX";
+    GameObject YRecallLightHandVFX;
     public void setPool(YRecallObjectPool yRecallObjectPool)
     {
         recallObjectPool = yRecallObjectPool;
@@ -32,6 +37,8 @@ public class YRecallSkill : MonoBehaviour
         countDownUI.addCountDownUIlink = "RecallCountDownPanel";
         countDownUI.skillLastTime = duration ;
 
+        GameObject YRecallLightHandVFXGO = Addressables.InstantiateAsync(YRecallLightHandVFXAddLink).WaitForCompletion();
+        YRecallLightHandVFX = Instantiate(YRecallLightHandVFXGO);
         
         YTriggerEvents.OnLoadEndAndBeginPlay += LoadEndAndBeginPlay;
         //playerInput.CharacterControls.Skill2.started +=context =>  BeginRecallSkill();
@@ -58,6 +65,23 @@ public class YRecallSkill : MonoBehaviour
     //简易点，可以先实现到时间停止，
     public void BeginRecallSkill()
     {
+        //显示高光亮
+        //绑定到YPlayModeController.Instance.curCharacter的手上，比如“zHandTwist_R”节点下,
+        //Transform.Find方法只能查找直接的子对象 
+        // YRecallLightHandVFX.transform.SetParent
+        //     (YPlayModeController.Instance.curCharacter.transform
+        //         .Find("Armature/Hips/Spine/Chest/Right shoulder/Right arm/Right elbow/zHandTwist_R"));
+        Transform[] allChildren = YPlayModeController.Instance.curCharacter.GetComponentsInChildren<Transform>();
+        foreach (Transform child in allChildren)
+        {
+            if (child.name == "zHandTwist_R")
+            {
+                YRecallLightHandVFX.transform.SetParent(child);
+                YRecallLightHandVFX.transform.localPosition = Vector3.zero;
+                break;
+            }
+        }
+        YRecallLightHandVFX.SetActive(true);
         
         //改变动画
         if(playerStateMachine==null)playerStateMachine = YPlayModeController.Instance.curCharacter.GetComponent<HPlayerStateMachine>();
@@ -163,8 +187,13 @@ public class YRecallSkill : MonoBehaviour
         Time.timeScale = 1;
         
         //动画
-        playerStateMachine.OnSpellRecall();
-        playerStateMachine.OnStandingIdleBack();
+        playerStateMachine.OnSpellRecall(true);
+        DOVirtual.DelayedCall(0.5f, () =>
+        {
+            playerStateMachine.OnStandingIdleBack();
+        });
+        
+        YRecallLightHandVFX.SetActive(false);
         
         Debug.Log(">>_<<Begin Recall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         //搞个计时器，
@@ -182,6 +211,8 @@ public class YRecallSkill : MonoBehaviour
     }
     void EndRecall()
     {
+        YRecallLightHandVFX.SetActive(false);
+        
         if(CountDownCoroutine!=null)StopCoroutine(CountDownCoroutine);
         
         //如果进入了选择物体界面再退出 已经选中了
@@ -191,6 +222,7 @@ public class YRecallSkill : MonoBehaviour
         
         //改变动画
         playerStateMachine.OnStandingIdleBack();
+        playerStateMachine.OnSpellRecall(false);
         
         //将所有复原  包括shader，然后进行到一半的recall先停下
         // recallable.EndRecall();

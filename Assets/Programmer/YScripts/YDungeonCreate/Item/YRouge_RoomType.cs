@@ -37,8 +37,6 @@ public class YRouge_RoomType
         int battleRoomCount = roomCount - bornRoomCount - shopCount - bossCount - challengeCount - gameCount -
                               itemRoomCount - adeventureRoomCount;
 
-        
-
         // if(ElseRoomCount < 0)
         if (battleRoomCount < 0)
         {

@@ -365,13 +365,14 @@ public class HPlayerStateMachine : MonoBehaviour
             animator.SetBool(isRecallStandingIdleHash, true);
         }
     }
-    public void OnSpellRecall()
+    public void OnSpellRecall(bool isSpellRecall)
     {
-        animator.SetBool(isSpellRecallHash, true);
+        animator.SetBool(isSpellRecallHash, isSpellRecall);
     }
     public void OnStandingIdleBack()
     {
         animator.SetBool(isRecallStandingIdleHash, false);
+        
     }
     
     void OnRun(InputAction.CallbackContext context)
