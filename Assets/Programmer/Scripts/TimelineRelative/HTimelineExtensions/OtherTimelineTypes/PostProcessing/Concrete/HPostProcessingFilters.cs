@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using Sequence = DG.Tweening.Sequence;
 
 public class HPostProcessingFilters : HPostProcessingBase
 {
@@ -357,5 +358,90 @@ public class HPostProcessingFilters : HPostProcessingBase
          */
     }
     
+    //设置特效中的pass material中的参数
+    Tween tween;
+    
+    public void SetPassMaterialParameters(ScriptableRendererFeature feature,string paramName1,
+        float duration,float startValue,float endValue,string paramName2pos,Vector2 pos)
+    {
+        feature.SetActive(true);
+        Material material = null;
+        if (feature is FullScreenPassRendererFeature myCustomFeature)
+        {
+            // 设置特性的材质
+            material = myCustomFeature.passMaterial;
+            material.SetColor(paramName2pos,new Color(pos.x*1f, pos.y*1f, 0f,0f));
+            // 设置材质的参数 在给定的时间内，将参数从startValue逐渐的变化到endValue
+            tween=DOTween.To(() => startValue, x => material.SetFloat(paramName1, x), endValue, duration);
+            
+        }
+    }
+    public void SetPassMaterialParameters(ScriptableRendererFeature feature,bool isOff)
+    {
+        feature.SetActive(isOff);
+        StopPassMaterialParameters();
+    }
+    //Stop
+    public void StopPassMaterialParameters()
+    {
+        if (tween != null)
+        {
+            tween.Kill();
+        }
+    }
+    
+    private float scanningIntensity = -2f;
+    Sequence scanningSequence;
+    private float originPostExposureValue = 0.6f;
+    public void SetScanEffectPostProcessing(bool isOn)
+    {
+        if (isOn)
+        {
+            if (postProcessVolume)
+            {
+                var profile = postProcessVolume.profile;
+                if (profile)
+                {
+                    //修改曝光度
+                    profile.TryGet(out ColorAdjustments settings);
+                    originPostExposureValue = settings.postExposure.value;
+                    settings.postExposure.value = scanningIntensity;
+                    //修改扫描深度
+                    profile.TryGet(out HTerrianScanRenderFeatureSettings settings2);
+                    
+                    if (settings2)
+                    {
+                        scanningSequence = DOTween.Sequence().Append(DOTween.To(() => settings2.scanDepth.value, x => settings2.scanDepth.value = x, 0.25f, 10)).SetUpdate(true).
+                            AppendCallback(
+                                () =>
+                                {
+                                    settings2.scanDepth.value = 0f;
+                                    // DOTween.To(() => settings2.scanDepth.value, x => settings2.scanDepth.value = x,
+                                    //     0.25f, 10f).SetUpdate(true);
+                                }).SetLoops(100);
+                        // settings2.scanDepth.value = scanningSkillCDTimer * 0.5f;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (postProcessVolume)
+            {
+                var profile = postProcessVolume.profile;
+                if (profile)
+                {
+                    profile.TryGet(out ColorAdjustments settings);
+                    settings.postExposure.value = originPostExposureValue;
+                    profile.TryGet(out HTerrianScanRenderFeatureSettings settings2);
+                    if (settings2)
+                    {
+                        settings2.scanDepth.value = 0f;
+                        scanningSequence?.Kill();
+                    }
+                }
+            }
+        }
+    }
     
 }

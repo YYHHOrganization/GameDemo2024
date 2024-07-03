@@ -62,6 +62,7 @@ public class HTerrianScanRenderFeature : ScriptableRendererFeature
                 //Debug.Log("fuck unity scanDepth value" + settings.scanDepth.value);
                 material.SetFloat("_ScanDepth", settings.scanDepth.value);
                 material.SetFloat("_ScanWidth", settings.scanWidth.value);
+                material.SetColor("_LineColor", settings.scanColor.value);
                 cmd.GetTemporaryRT(scanShaderTex.id, opaqueDesc);
                 cmd.Blit(source, scanShaderTex.Identifier(), material);
                 cmd.Blit(scanShaderTex.Identifier(), source);
