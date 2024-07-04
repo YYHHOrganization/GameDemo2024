@@ -59,6 +59,7 @@ public class HGMPanelBaseLogic : MonoBehaviour
         autoCompleteOptions.Add("summon enemy @id = 4, number = 2");
         
         autoCompleteOptions.Add("test add recall object @id = 33310000, number = 8");
+        autoCompleteOptions.Add("Add RogueQuestPlatform");
     }
     // Start is called before the first frame update
     void Start()
@@ -274,6 +275,10 @@ public class HGMPanelBaseLogic : MonoBehaviour
                 int number3 = int.Parse(addParts3[1].Split('=')[1].Trim());
                 Debug.Log("add sth with id: " + id3 + ", number: " + number3);
                 TestAddRecallObject(id3, number3);
+                break;
+            case "Add RogueQuestPlatform":
+                GameObject go = Addressables.InstantiateAsync("RogueQuestPlatform").WaitForCompletion();
+                go.transform.position = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
                 break;
         }
     }

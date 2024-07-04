@@ -83,11 +83,27 @@ public class HDialogSystemMgr : MonoBehaviour
         ShowDialogRow();
     }
 
+    private Coroutine textShowCoroutine;
     public void UpdateText(string strname, string title, string text)
     {
         nameText.text = strname;
-        contentText.text = text;
+        //1 秒的时间，文本依次出现
+        contentText.text = "";
+        if (textShowCoroutine != null)
+        {
+            StopCoroutine(textShowCoroutine);
+        }
+        textShowCoroutine = StartCoroutine(ShowText(text));
         titleText.text = title;
+    }
+    
+    IEnumerator ShowText(string text)
+    {
+        for (int i = 0; i < text.Length; i++)
+        {
+            contentText.text += text[i];
+            yield return new WaitForSeconds(0.04f);
+        }
     }
 
     public void UpdateCinemachine(string strname)
@@ -125,6 +141,8 @@ public class HDialogSystemMgr : MonoBehaviour
         string[] files = System.IO.Directory.GetFiles(fullPath, "*.csv");
         //随机选一个文件
         int randomIndex = Random.Range(0, files.Length);
+        //test
+        randomIndex = 2;
         string file = files[randomIndex];
         //读取这个文件
         string content = System.IO.File.ReadAllText(file);
@@ -211,14 +229,18 @@ public class HDialogSystemMgr : MonoBehaviour
 
     private void ShowOptionEffects(string funcName, string funcParams)
     {
-        Debug.Log("ShowOptionEffects" + funcName + "   " + funcParams);
+        //Debug.Log("ShowOptionEffects" + funcName + "   " + funcParams);
         switch (funcName)
         {
             case "GiveItemWithId":
                 HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(funcParams);
                 break;
             case "AddXingqiong":
+                Debug.Log("now we should add xingqiong");
                 HRogueItemFuncUtility.Instance.AddMoney("RogueXingqiong;" + funcParams);
+                break;
+            case "AddCatcake":
+                YPlayModeController.Instance.SetCatcake(funcParams);
                 break;
         }
     }
