@@ -52,6 +52,8 @@ public class HDialogSystemMgr : MonoBehaviour
         //锁住角色的移动和鼠标
         YPlayModeController.Instance.LockPlayerInput(true);
         YTriggerEvents.RaiseOnMouseLeftShoot(false);
+        YPlayModeController.Instance.LockEveryInputKey = true;
+
     }
 
     public void SetTrigger(GameObject trigger)
@@ -69,7 +71,7 @@ public class HDialogSystemMgr : MonoBehaviour
         // cinemachineDict["左"] = virtualCameras[0];
         // cinemachineDict["右"] = virtualCameras[1];
         nextButton.onClick.AddListener(OnClickNext);
-        ReadText(dialogDataFile);
+        //ReadText(dialogDataFile);
     }
     
 
@@ -110,8 +112,23 @@ public class HDialogSystemMgr : MonoBehaviour
 
     public void ReadText(TextAsset textAsset)
     {
-        dialogRows = textAsset.text.Split('\n');
+        string asset = ReadTextsFromPath("Programmer/Scripts/HScripts/HGamePlay/HRogueLikeGame/DialogSystem/DialogQuestions/");
+        //找到textAsset对应的目录下的所有的文件
+        dialogRows = asset.Split('\n');
         
+    }
+
+    private string ReadTextsFromPath(string path)
+    {
+        string fullPath = Application.dataPath + "/" + path;
+        //获取这个路径下的所有文件
+        string[] files = System.IO.Directory.GetFiles(fullPath, "*.csv");
+        //随机选一个文件
+        int randomIndex = Random.Range(0, files.Length);
+        string file = files[randomIndex];
+        //读取这个文件
+        string content = System.IO.File.ReadAllText(file);
+        return content;
     }
 
     public void ShowDialogRow()
@@ -138,10 +155,15 @@ public class HDialogSystemMgr : MonoBehaviour
                 print("剧情结束");
                 panel.gameObject.SetActive(false);
                 //triggerToDialog.gameObject.GetComponent<TriggerToDialog>().Reset(CheckFinalLine());
-                gameObject.SetActive(false);
+                //gameObject.SetActive(false);
                 
                 YPlayModeController.Instance.LockPlayerInput(false);
                 YTriggerEvents.RaiseOnMouseLeftShoot(true);
+                YPlayModeController.Instance.LockEveryInputKey = false;
+                if (triggerToDialog)
+                {
+                    triggerToDialog.gameObject.GetComponent<HTriggerDialogSystem>().SetInteracted(true);
+                }
             }
         }
     }
@@ -178,14 +200,27 @@ public class HDialogSystemMgr : MonoBehaviour
                     OnOptionClick(int.Parse(cells[6]));
                     if (cells[7] != "")
                     {
-                        string[] effect = cells[7].Split(('@'));
-                        cells[8] = Regex.Replace(cells[8], @"[\r\n]", ""); //因为最后一列可能包含\r\n，所以用正则表达式去掉
-                        //OptionEffect(effect[0], int.Parse(effect[1]), cells[8]);//这里可以调用一些选项的特殊效果，后面再说
+                        string[] effect = cells[7].Split((';'));
+                        ShowOptionEffects(effect[0], effect[1]);
                     }
                 });
             GenerateOptionButton(index + 1);
         }
         
+    }
+
+    private void ShowOptionEffects(string funcName, string funcParams)
+    {
+        Debug.Log("ShowOptionEffects" + funcName + "   " + funcParams);
+        switch (funcName)
+        {
+            case "GiveItemWithId":
+                HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem(funcParams);
+                break;
+            case "AddXingqiong":
+                HRogueItemFuncUtility.Instance.AddMoney("RogueXingqiong;" + funcParams);
+                break;
+        }
     }
 
     public void OnOptionClick(int id)
