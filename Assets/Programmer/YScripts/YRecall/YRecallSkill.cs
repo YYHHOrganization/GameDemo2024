@@ -163,6 +163,7 @@ public class YRecallSkill : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (YPlayModeController.Instance.LockEveryInputKey) return;
         if (!CanDoRecallSkill) return;
         if (Input.GetKeyDown(KeyCode.Z))
         {

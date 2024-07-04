@@ -379,7 +379,8 @@ public class HRogueItemFuncUtility : MonoBehaviour
         int attributeValue = int.Parse(paramList[1]);
         if (attributeValue < 0)
         {
-            DecreaseMoney(attributeName, attributeValue);
+            DecreaseMoney(attributeName, -attributeValue);
+            return;
         }
         switch (attributeName)
         {

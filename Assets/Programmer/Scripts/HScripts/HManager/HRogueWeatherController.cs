@@ -202,6 +202,7 @@ public class HRogueWeatherController : MonoBehaviour
             Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
             //在玩家周围0~5米范围内随机选择一个Position，生成ThunderAlertVFX
             Vector3 randomPos = player.position + new Vector3(Random.Range(-5f, 5f), 0.05f, Random.Range(-5f, 5f));
+            randomPos.y = 0.05f;
             GameObject thunderAlert = Instantiate(thunderAlertVFX, randomPos, Quaternion.Euler(-90f, 0f, 0f));
             yield return new WaitForSeconds(5f);
             //降下落雷

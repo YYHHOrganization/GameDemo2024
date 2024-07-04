@@ -69,6 +69,13 @@ public class YPlayModeController : MonoBehaviour
     private GameObject FreeLookCamera;
     GameObject PlayerCamera;
 
+    private bool lockEveryInputKey = false;
+    public bool LockEveryInputKey
+    {
+        get => lockEveryInputKey;
+        set => lockEveryInputKey = value;
+    }
+    
     public GameObject playerCamera()
     {
         return PlayerCamera;
