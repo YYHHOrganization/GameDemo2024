@@ -8,6 +8,7 @@ using UnityEngine.Rendering.Universal;
 public class HTerrianScanRenderFeatureSettings: VolumeComponent, IPostProcessComponent
 {
     [Tooltip("Scan Depth")]
+    // public ClampedFloatParameter scanDepth = new ClampedFloatParameter(0f, 0.0f, 1.0f);
     public ClampedFloatParameter scanDepth = new ClampedFloatParameter(0f, 0.0f, 1.0f);
 
     [Tooltip("Scan Width")]
