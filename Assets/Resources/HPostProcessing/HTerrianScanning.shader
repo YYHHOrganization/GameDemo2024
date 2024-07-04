@@ -85,6 +85,10 @@ Shader "HPostProcessing/HTerrianScanning"
             #pragma fragment frag
             float4 horizBars(float2 p)
             {
+                //*frac* 函数返回其参数的小数部分。
+                //*round* 函数将其参数四舍五入到最接近的整数。
+                //abs(frac(p.y * 100) * 2) 的结果是 p.y * 100 的小数部分乘以 2 的绝对值，这个值的范围是 [0, 2]。
+                //然后 round 函数将这个值四舍五入到最接近的整数，所以结果只能是 0、1 或 2。
                 return 1 - saturate(round(abs(frac(p.y * 100) * 2)));
             }
             float4 frag (v2f i) : SV_Target
@@ -148,12 +152,22 @@ Shader "HPostProcessing/HTerrianScanning"
                 _TrailColor = float4(1,0, 0, 1)*2.0f;//float4(1, 0, 0, 1)这是红色
 
                 float dist = distance(wsPos, _WorldSpaceCameraPos);
-
+                //判断线性深度是否在扫描深度 _ScanDepth 和 _ScanDepth - _ScanWidth/_CamFar 之间
                 if (dist < _ScanDepth && dist > _ScanDepth- _ScanWidth)
                 {
+                    //当前片元（fragment）距离扫描线的相对距离。
                     float diff = 1 - (_ScanDepth - dist) / (_ScanWidth);
+                    
+                    // 这行代码计算的是扫描线的颜色。
+                    // lerp 是线性插值函数，它根据 diff 的值在 _MidColor（扫描线中心的颜色）和 _LineColor（扫描线边缘的颜色）之间进行插值。
+                    // pow(diff, _LeadSharp) 是对 diff 进行了指数运算，
+                    // _LeadSharp 是一个大于 0 的数，这样可以使得颜色从 _MidColor 到 _LineColor 的过渡更加尖锐
                     half4 edge = lerp(_MidColor, _LineColor, pow(diff, _LeadSharp));
+                    
                     scannerCol = lerp(_TrailColor, edge, diff) + horizBars(i.uv) * _HBarColor;
+
+                    //scannerCol *= diff; 这行代码是对最终的扫描线颜色进行了淡化处理。
+                    //diff 的值越小，颜色就越淡，这样可以使得扫描线的边缘颜色更淡，从而产生一种扫描线从中心向外扩散的效果
                     scannerCol *= diff;
                 }
 
