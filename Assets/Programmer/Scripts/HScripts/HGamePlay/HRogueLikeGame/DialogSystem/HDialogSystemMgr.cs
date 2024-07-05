@@ -142,7 +142,7 @@ public class HDialogSystemMgr : MonoBehaviour
         //随机选一个文件
         int randomIndex = Random.Range(0, files.Length);
         //test
-        randomIndex = 2;
+        //randomIndex = 2;
         string file = files[randomIndex];
         //读取这个文件
         string content = System.IO.File.ReadAllText(file);
