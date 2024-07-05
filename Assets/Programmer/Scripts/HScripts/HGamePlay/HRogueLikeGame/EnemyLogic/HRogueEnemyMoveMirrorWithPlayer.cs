@@ -48,7 +48,7 @@ public class HRogueEnemyMoveMirrorWithPlayer : MonoBehaviour
         Vector3 playerPos = player.position;
         //与玩家以startPos和playerPos为中心的对称点
         Vector3 mirrorPos = new Vector3(2 * startPos.x - playerPos.x, playerPos.y, 2 * startPos.z - playerPos.z);
-        UpdateAnimatorInfo();
+        UpdateAnimatorInfo(mirrorPos);
         UpdateEnemyLocation(mirrorPos);
         transform.LookAt(player);
     }
@@ -58,22 +58,13 @@ public class HRogueEnemyMoveMirrorWithPlayer : MonoBehaviour
         transform.position = mirrorPos;
     }
 
-    private void UpdateAnimatorInfo()
+    private void UpdateAnimatorInfo(Vector3 mirrorPos)
     {
+        animator.SetBool("isWalking", playerAnimator.GetBool("isWalking"));
+        animator.SetBool("isRunning", playerAnimator.GetBool("isRunning"));
+        
         //保持animator的状态和playerAnimator的状态一致
-        if (playerAnimator.GetBool("isWalking"))
-        {
-            animator.SetBool("isWalking", true);
-            animator.SetBool("isRunning", false);
-            animator.SetBool("isJumping", false);
-        }
-        else if (playerAnimator.GetBool("isRunning"))
-        {
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isRunning", true);
-            animator.SetBool("isJumping", false);
-        }
-        else if (playerAnimator.GetBool("isJumping"))
+        if (playerAnimator.GetBool("isJumping"))
         {
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
@@ -85,6 +76,8 @@ public class HRogueEnemyMoveMirrorWithPlayer : MonoBehaviour
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
         }
+
+        
     }
 
 }
