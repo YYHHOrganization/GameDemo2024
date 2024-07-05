@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering.Universal;
 
 /// <summary>
@@ -20,6 +21,8 @@ public class YRecallable : MonoBehaviour
 
     public Material Choose_lineRendererMat;//回头可以弄成addlink
     public Material Recall_lineRendererMat;
+
+    public string YRecallFinalStateMatAddLink = "YRecallFinalStateMat";
 
     // public Material CouldRecallObjectMat;
     private MeshRenderer meshRenderer;
@@ -129,6 +132,7 @@ public class YRecallable : MonoBehaviour
 
         // Clear the original list after the recall
         recallObjects.Clear();
+        SetFinalStateShow(false);
         //如果此时还没被终止，应该是要停在原地，也就是此时物体不再移动，那么其gravity应该为0
         StopMoving();
         
@@ -166,6 +170,60 @@ public class YRecallable : MonoBehaviour
         
         lineRenderer.material = Choose_lineRendererMat;
         DrawRecallTail();
+        
+        //此时还应该将物体的最后一个时刻的形态显现出来，也就是物体最后回溯完的形态显现出来
+        //该采用何种方式呢，初始化一个新的物体，然后将其形态设置为最后一个时刻的形态（位置和旋转）?
+        //todo:
+        SetFinalStateShow(true);
+    }
+    
+    GameObject lastStateDisplay;
+    private void SetFinalStateShow(bool isOn)
+    {
+        if (!isOn)
+        {
+            if(lastStateDisplay!=null)lastStateDisplay.SetActive(false);
+            return;
+        }
+        // if(isOn)
+        YRecallObject lastState = recallObjects[0];// Get the last state of the object
+        //如果只有一个点，那么就不显示了，否则会互相穿插很丑
+        // if (recallObjects.Count <= 1)
+        //如果lastState的点和当前的点位置小于某个距离且旋转小于某个角度，那么就不显示了
+        if (recallObjects.Count <= 1 
+            || (Vector3.Distance(lastState.Position, rb.position) < 0.1f && Quaternion.Angle(lastState.Rotation, rb.rotation) < 5f))
+        {
+            return;
+        }
+
+        if (lastStateDisplay == null)
+        {
+            Material finalStateMat =
+                Addressables.LoadAssetAsync<Material>(YRecallFinalStateMatAddLink).WaitForCompletion();
+            // Create a new game object to display the last state of the object
+            lastStateDisplay = new GameObject("LastStateDisplay");
+            
+            // Get the MeshFilter and MeshRenderer components from the original object
+            MeshFilter originalMeshFilter = GetComponent<MeshFilter>();
+            MeshRenderer originalMeshRenderer = GetComponent<MeshRenderer>();
+
+            // Add a MeshFilter and MeshRenderer components to the new game object
+            MeshFilter newMeshFilter = lastStateDisplay.AddComponent<MeshFilter>();
+            MeshRenderer newMeshRenderer = lastStateDisplay.AddComponent<MeshRenderer>();
+
+            // Set the mesh of the new MeshFilter to the mesh of the original MeshFilter
+            newMeshFilter.mesh = originalMeshFilter.mesh;
+
+            // Set the material of the new MeshRenderer to the material of the original MeshRenderer
+            newMeshRenderer.material = finalStateMat;
+            // meshRenderer.material.SetFloat("_isCouldRecall", 1);
+            // meshRenderer.material.SetFloat("_isRecall", 0);
+        }
+        // Set the position and rotation of the new game object to the last state of the object
+        lastStateDisplay.transform.position = lastState.Position;
+        lastStateDisplay.transform.rotation = lastState.Rotation;
+        lastStateDisplay.SetActive(true);
+        
     }
 
     public void ClearRecallTail()
@@ -174,6 +232,8 @@ public class YRecallable : MonoBehaviour
         
         //后面可以优化 画一次就行了
         lineRenderer.positionCount = 0;
+        
+        SetFinalStateShow(false);
     }
     private void DrawRecallTail()
     {
