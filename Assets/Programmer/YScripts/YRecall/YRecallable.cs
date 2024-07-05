@@ -26,12 +26,14 @@ public class YRecallable : MonoBehaviour
 
     // public Material CouldRecallObjectMat;
     private MeshRenderer meshRenderer;
+    private Material[] objMaterials;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         recallObjects = new List<YRecallObject>();
         lineRenderer = GetComponent<LineRenderer>();
         meshRenderer = GetComponent<MeshRenderer>();
+        objMaterials = meshRenderer.materials;
     }
 
     private bool isMoving = false;
@@ -202,10 +204,13 @@ public class YRecallable : MonoBehaviour
                 Addressables.LoadAssetAsync<Material>(YRecallFinalStateMatAddLink).WaitForCompletion();
             // Create a new game object to display the last state of the object
             lastStateDisplay = new GameObject("LastStateDisplay");
+            //设置为原物体的子物体的话就会随着它移动 错误的
+            lastStateDisplay.transform.parent = transform.parent;
+            lastStateDisplay.transform.localScale = transform.localScale;
             
             // Get the MeshFilter and MeshRenderer components from the original object
             MeshFilter originalMeshFilter = GetComponent<MeshFilter>();
-            MeshRenderer originalMeshRenderer = GetComponent<MeshRenderer>();
+            // MeshRenderer originalMeshRenderer = GetComponent<MeshRenderer>();
 
             // Add a MeshFilter and MeshRenderer components to the new game object
             MeshFilter newMeshFilter = lastStateDisplay.AddComponent<MeshFilter>();
@@ -214,8 +219,19 @@ public class YRecallable : MonoBehaviour
             // Set the mesh of the new MeshFilter to the mesh of the original MeshFilter
             newMeshFilter.mesh = originalMeshFilter.mesh;
 
-            // Set the material of the new MeshRenderer to the material of the original MeshRenderer
-            newMeshRenderer.material = finalStateMat;
+            
+            // Create a new materials array with the same length as objMaterials
+            Material[] newMaterials = new Material[objMaterials.Length];
+
+            // Set each material in the new array to finalStateMat
+            for (int i = 0; i < newMaterials.Length; i++)
+            {
+                newMaterials[i] = finalStateMat;
+            }
+
+            // Set the materials of the new MeshRenderer to the new array
+            newMeshRenderer.materials = newMaterials;
+            
             // meshRenderer.material.SetFloat("_isCouldRecall", 1);
             // meshRenderer.material.SetFloat("_isRecall", 0);
         }
@@ -247,7 +263,11 @@ public class YRecallable : MonoBehaviour
 
     void SetRecallObjectMat(bool isRecall)
     {
-        meshRenderer.material.SetFloat("_isRecall", isRecall?1:0);
+        //meshRenderer.material.SetFloat("_isRecall", isRecall?1:0);
+        for (int i = 0; i < objMaterials.Length; i++)
+        {
+            objMaterials[i].SetFloat("_isRecall", isRecall?1:0);
+        }
     }
 
     public void SetCouldRecall()
@@ -256,6 +276,10 @@ public class YRecallable : MonoBehaviour
     }
     void SetCouldRecallObjectMat(bool isCouldRecall)
     {
-        meshRenderer.material.SetFloat("_isCouldRecall", isCouldRecall?1:0);
+        //meshRenderer.material.SetFloat("_isCouldRecall", isCouldRecall?1:0);
+        for (int i = 0; i < objMaterials.Length; i++)
+        {
+            objMaterials[i].SetFloat("_isCouldRecall", isCouldRecall?1:0);
+        }
     }
 }

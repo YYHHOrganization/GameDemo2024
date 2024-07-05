@@ -59,6 +59,7 @@ public class HGMPanelBaseLogic : MonoBehaviour
         autoCompleteOptions.Add("summon enemy @id = 4, number = 2");
         
         autoCompleteOptions.Add("test add recall object @id = 33310000, number = 8");
+        autoCompleteOptions.Add("test add recall object @id = 33310002, number = 8");
         autoCompleteOptions.Add("Add RogueQuestPlatform");
     }
     // Start is called before the first frame update
@@ -289,7 +290,7 @@ public class HGMPanelBaseLogic : MonoBehaviour
         for (int j = 0; j < number; j++)
         {
             GameObject go = YObjectPool._Instance.Spawn(id);
-            go.transform.position = player.position+new Vector3(Random.Range(-4,4),Random.Range(1,5),Random.Range(-4,4));
+            go.transform.position = player.position+new Vector3(Random.Range(-4,4),Random.Range(1,20),Random.Range(-4,4));
             go.SetActive(true);
         }
     }
