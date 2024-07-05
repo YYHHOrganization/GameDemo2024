@@ -56,7 +56,7 @@ public class HGMPanelBaseLogic : MonoBehaviour
         autoCompleteOptions.Add("add sth @name = RogueCharacterShield, number = 2");
         autoCompleteOptions.Add("set me invincible @true"); //无敌
         autoCompleteOptions.Add("set me invincible @false"); //不无敌
-        autoCompleteOptions.Add("summon enemy @id = 4, number = 2");
+        autoCompleteOptions.Add("summon enemy @id = 10, number = 1");
         
         autoCompleteOptions.Add("test add recall object @id = 33310000, number = 8");
         autoCompleteOptions.Add("test add recall object @id = 33310002, number = 8");

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.VFX;
 
 public class HEnemyBulletMoveBase : MonoBehaviour
 {
@@ -10,7 +11,8 @@ public class HEnemyBulletMoveBase : MonoBehaviour
     public float bulletRange = 10f;
     protected Vector3 originPos;
     public GameObject hitPrefab;
-    [SerializeField]private bool isFriendSide = false;
+    [SerializeField]protected bool isFriendSide = false;
+    [SerializeField]protected bool isBothSide = false;
     private bool bulletMoving = true;
     public bool BulletMoving
     {
@@ -80,7 +82,7 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         isChasingYAxis = chasingY;
     }
 
-    protected void OnCollisionEnter (Collision co)
+    protected virtual void CollisionEnterLogic(Collision co)
     {
         bulletSpeed = 0;
 
@@ -101,7 +103,7 @@ public class HEnemyBulletMoveBase : MonoBehaviour
                 fractureExplosionObject.TriggerExplosion(contact.point);
             }
         }
-        else if (isFriendSide && Tag == "Enemy") //子弹打到了敌人，给敌人传递伤害
+        else if ((isFriendSide || isBothSide) && Tag == "Enemy") //子弹打到了敌人，给敌人传递伤害
         {
             //hitObject.GetComponent<YHandleHitPuppet>().HandleHitPuppet();
             YPatrolAI patrolAI = co.gameObject.GetComponentInParent<YPatrolAI>();
@@ -121,10 +123,13 @@ public class HEnemyBulletMoveBase : MonoBehaviour
                 enemyPatrolAI.ChangeHealth(-bulletDamage);
             }
         }
-        else if(!isFriendSide && Tag == "Player")  //子弹打到了Player，给Player传递伤害
+        else if(Tag == "Player")  //子弹打到了Player，给Player传递伤害
         {
-            //bulletDamage 是伤害，要把伤害传递给角色
-            HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(-bulletDamage);
+            if (isBothSide || !isFriendSide)
+            {
+                //bulletDamage 是伤害，要把伤害传递给角色
+                HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(-bulletDamage);
+            }
         }
 
         if(hitPrefab != null)
@@ -137,10 +142,28 @@ public class HEnemyBulletMoveBase : MonoBehaviour
             }
             else
             {
-                var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
-                Destroy(hitVFX, psChild.main.duration);
+                if (hitVFX.GetComponent<VisualEffect>())
+                {
+                    hitVFX.GetComponent<VisualEffect>().Play();
+                    Destroy(hitVFX, 5f);
+                }
+                else
+                {
+                    var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+                    Destroy(hitVFX, psChild.main.duration);
+                }
             }
         }
+        DealWithBulletAfterCollision(gameObject);
+    }
+    
+    protected void OnCollisionEnter (Collision co)
+    {
+        CollisionEnterLogic(co);
+    }
+
+    protected virtual void DealWithBulletAfterCollision(GameObject gameObject)
+    {
         Destroy(gameObject);
     }
 }

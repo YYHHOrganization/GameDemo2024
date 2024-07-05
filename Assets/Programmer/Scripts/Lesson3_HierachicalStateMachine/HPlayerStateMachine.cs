@@ -301,7 +301,10 @@ public class HPlayerStateMachine : MonoBehaviour
     Vector3 ConvertToCameraSpace(Vector3 vectorToRotate)
     {
         float currentYValue = vectorToRotate.y;
-        
+        if (playerCamera == null)
+        {
+            playerCamera = YPlayModeController.Instance.playerCamera().GetComponent<Camera>();
+        }
         Vector3 forward = playerCamera.transform.forward;
         Vector3 right = playerCamera.transform.right;
         forward.y = 0;
