@@ -396,7 +396,11 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         }
         GameObject mesh = Mesh;
         DissolvingControllery dissolving = mesh.GetComponent<DissolvingControllery>();
-        dissolving.SetMaterialsPropAndBeginDissolve(mesh,1f);
+        if (dissolving)
+        {
+            dissolving.SetMaterialsPropAndBeginDissolve(mesh,1f);
+        }
+        
         HRogueCameraManager.Instance.ShakeCamera(15f, 0.1f);
         DisintegrateDissolveVFX.SetActive(true);
         DieExplosionEff.SetActive(true);

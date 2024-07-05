@@ -48,6 +48,10 @@ public class YEnemyUICanvas : MonoBehaviour
         //哎 这里最好用对象池吧 后面改一下
         //生成的粒子位置是-0.8-0.8,根据finalFillAmount来决定生成的粒子位置比例
         Vector3 pos = Vector3.Lerp(VFXEffPos0.position, VFXEffPos1.position, finalFillAmount);
+        if (eff0 == null)
+        {
+            eff0 = Addressables.LoadAssetAsync<GameObject>(AddressablePath).WaitForCompletion();
+        }
         GameObject eff = Instantiate(eff0);
         eff.transform.parent = transform;
         eff.transform.position = pos;
