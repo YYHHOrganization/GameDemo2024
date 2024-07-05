@@ -18,6 +18,14 @@ public class YEnemyUICanvas : MonoBehaviour
     [SerializeField]string AddressablePath = "YEnemyXieTiaoEff";
     [SerializeField]Transform VFXEffPos0;
     [SerializeField]Transform VFXEffPos1;
+
+    private GameObject eff0;
+    private void Start()
+    {
+        //位置设置为pos，是相对的，并挂在这个canvas下
+        eff0 = Addressables.LoadAssetAsync<GameObject>(AddressablePath).WaitForCompletion() ;
+    }
+
     public void UpdateEnemyHeathUI(int health, int maxHealth)
     {
         //enemyHealthImage.fillAmount
@@ -40,8 +48,6 @@ public class YEnemyUICanvas : MonoBehaviour
         //哎 这里最好用对象池吧 后面改一下
         //生成的粒子位置是-0.8-0.8,根据finalFillAmount来决定生成的粒子位置比例
         Vector3 pos = Vector3.Lerp(VFXEffPos0.position, VFXEffPos1.position, finalFillAmount);
-        //位置设置为pos，是相对的，并挂在这个canvas下
-        GameObject eff0 = Addressables.LoadAssetAsync<GameObject>(AddressablePath).WaitForCompletion() ;
         GameObject eff = Instantiate(eff0);
         eff.transform.parent = transform;
         eff.transform.position = pos;

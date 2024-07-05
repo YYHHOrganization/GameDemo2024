@@ -97,6 +97,28 @@ public class HBulletMuzzleUtility : MonoBehaviour
             case "ShootBulletSpecialModal1":
                 StartCoroutine(ShootBulletSpecialModal1(bulletCnt));
                 break;
+            case "ThrowBullet":
+                StartCoroutine(ThrowBullet(bulletCnt, chasePlayer));
+                break;
+        }
+    }
+    
+    IEnumerator ThrowBullet(int bulletCnt, bool chasePlayer)
+    {
+        transform.parent = null; //不要跟着父节点一起动，不然很搞笑
+        // 以当前transform为原点发射bulletCnt颗子弹
+        for (int i = 0; i < bulletCnt; i++)
+        {
+            Vector3 shootDirection = new Vector3(0.2f, 0.5f, 0.2f);
+            GameObject bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 2, Quaternion.Euler(0, 0, 0), transform);
+            bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletAttribute(bulletSpeed, bulletDamage, bulletRange);
+            bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletMoving(false);
+            if (chasePlayer)
+            {
+                bullet.GetComponent<HEnemyBulletMoveBase>().SetTarget(mTarget);
+                bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletMoving(true);
+            }
+            yield return new WaitForSeconds(0.2f);
         }
     }
     

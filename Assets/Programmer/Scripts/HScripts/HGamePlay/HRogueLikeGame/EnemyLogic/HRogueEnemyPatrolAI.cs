@@ -390,7 +390,10 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         Debug.Log("You should really die!!!!");
         StopAllCoroutines();
         animator.SetBool(isDeadHash, true);
-        mNavMeshAgent.enabled = false;
+        if (mNavMeshAgent)
+        {
+            mNavMeshAgent.enabled = false;
+        }
         GameObject mesh = Mesh;
         DissolvingControllery dissolving = mesh.GetComponent<DissolvingControllery>();
         dissolving.SetMaterialsPropAndBeginDissolve(mesh,1f);

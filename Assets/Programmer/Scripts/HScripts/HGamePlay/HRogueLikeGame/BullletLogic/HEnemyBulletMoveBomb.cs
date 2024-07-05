@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.VFX;
 
-public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
+public class HEnemyBulletMoveBomb : HEnemyBulletMoveBase
 {
     public string specialMoveType;
     public bool dontDestroy = false;
+
     public override void SetBulletMoving(bool moving)
     {
         base.SetBulletMoving(moving);
@@ -38,10 +39,10 @@ public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
                 break;
         }
     }
-    
+
     IEnumerator BulletThrowOut()
     {
-        if (hasShootTarget && shootTarget!= null)
+        if (hasShootTarget && shootTarget != null)
         {
             //朝着target沿着抛物线扔出子弹
             Vector3 targetPos = shootTarget.position;
@@ -60,6 +61,80 @@ public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
         //Destroy(this.gameObject, 5f);
     }
 
+    protected override void CollisionEnterLogic(Collision co)
+    {
+        Debug.Log("EnterCollisio!!!!n");
+        ContactPoint contact = co.contacts[0];
+        Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
+        Vector3 pos = contact.point;
+        //炸弹的逻辑要重写一下
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 1f);
+        foreach (var collider in colliders)
+        {
+            if (collider.CompareTag("Player"))
+            {
+                if (isBothSide || !isFriendSide)
+                {
+                    //bulletDamage 是伤害，要把伤害传递给角色
+                    HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(-bulletDamage);
+                }
+            }
+            else if(collider.CompareTag("CouldBroken"))
+            {
+                Debug.Log("CouldBroken: ");
+                //YFractureExplosionObject fractureExplosionObject = hitObject.GetComponent<YFractureExplosionObject>();
+                YFractureExplosionObject fractureExplosionObject 
+                    = co.gameObject.GetComponentInParent<YFractureExplosionObject>();
+                if (fractureExplosionObject != null)
+                {
+                    fractureExplosionObject.TriggerExplosion(contact.point);
+                }
+            }
+            else if ((isFriendSide || isBothSide) && collider.CompareTag("Enemy")) //子弹打到了敌人，给敌人传递伤害
+            {
+                //hitObject.GetComponent<YHandleHitPuppet>().HandleHitPuppet();
+                YPatrolAI patrolAI = co.gameObject.GetComponentInParent<YPatrolAI>();
+                if (patrolAI != null)
+                {
+                    patrolAI.die();
+                    return;//这里不需要传递伤害，因为敌人已经死了，特指蜘蛛怪
+                    //todo:写一个伤害的函数
+                }
+                HRogueEnemyPatrolAI enemyPatrolAI = co.gameObject.GetComponentInParent<HRogueEnemyPatrolAI>();
+                if (enemyPatrolAI == null)
+                {
+                    enemyPatrolAI = co.gameObject.GetComponent<HRogueEnemyPatrolAI>();
+                }
+                if (enemyPatrolAI != null)
+                {
+                    enemyPatrolAI.ChangeHealth(-bulletDamage);
+                }
+            }
+        }
+        if(hitPrefab != null)
+        {
+            var hitVFX = Instantiate(hitPrefab, pos, rot);
+            var psHit = hitVFX.GetComponent<ParticleSystem>();
+            if (psHit != null) 
+            {
+                Destroy(hitVFX, psHit.main.duration);
+            }
+            else
+            {
+                if (hitVFX.GetComponent<VisualEffect>())
+                {
+                    hitVFX.GetComponent<VisualEffect>().Play();
+                    Destroy(hitVFX, 5f);
+                }
+                else
+                {
+                    var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+                    Destroy(hitVFX, psChild.main.duration);
+                }
+            }
+        }
+    }
+
     IEnumerator BulletCircleMove()
     {
         //子弹沿着四分之一圆弧进行移动, 相对于自身发射方向的右侧
@@ -73,6 +148,7 @@ public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
             transform.position += (transform.right * x + transform.forward * y);
             yield return new WaitForSeconds(0.02f);
         }
+
         Destroy(this.gameObject);
     }
 
@@ -83,20 +159,23 @@ public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
         Vector3 p1 = p0 + new Vector3(Random.Range(-10, 10), Random.Range(1, 5), Random.Range(-10, 10));
         Vector3 p2 = p0 + new Vector3(Random.Range(-10, 10), Random.Range(1, 5), Random.Range(-10, 10));
         Vector3 p3 = transform.position + transform.forward * 10;
-        if(hasShootTarget && shootTarget != null)
+        if (hasShootTarget && shootTarget != null)
         {
             p3 = shootTarget.position;
         }
+
         for (float t = 0; t <= 1; t += 0.02f)
         {
-            Vector3 pos = Mathf.Pow(1 - t, 3) * p0 + 3 * Mathf.Pow(1 - t, 2) * t * p1 + 3 * (1 - t) * Mathf.Pow(t, 2) * p2 + Mathf.Pow(t, 3) * p3;
+            Vector3 pos = Mathf.Pow(1 - t, 3) * p0 + 3 * Mathf.Pow(1 - t, 2) * t * p1 +
+                          3 * (1 - t) * Mathf.Pow(t, 2) * p2 + Mathf.Pow(t, 3) * p3;
             transform.LookAt(pos);
             transform.position = pos;
             yield return new WaitForSeconds(0.02f);
         }
+
         Destroy(this.gameObject, 5f);
     }
-    
+
     IEnumerator BulletBumpMove()
     {
         if (bulletSpeed <= 0) yield break;
@@ -110,39 +189,49 @@ public class HEnemyBulletMoveSpecial : HEnemyBulletMoveBase
             if (hasShootTarget && shootTarget != null)
             {
                 Debug.Log("hasShootTarget!!!");
-                shootTargetPos = transform.position + (shootTarget.position - transform.position) * Random.Range(0.2f, 1.2f);
+                shootTargetPos = transform.position +
+                                 (shootTarget.position - transform.position) * Random.Range(0.2f, 1.2f);
                 if (!isChasingYAxis)
                 {
                     shootTargetPos = new Vector3(shootTargetPos.x, 0.5f, shootTargetPos.z);
                 }
                 else
                 {
-                    shootTargetPos = new Vector3(shootTargetPos.x,shootTargetPos.y + shootTarget.localScale.y * 0.5f, shootTargetPos.z);
+                    shootTargetPos = new Vector3(shootTargetPos.x, shootTargetPos.y + shootTarget.localScale.y * 0.5f,
+                        shootTargetPos.z);
                 }
+
                 //transform.LookAt(shootTargetPos);
                 jumpDuration = Random.Range(0.5f, 1.1f);
                 jumpInterval = jumpDuration + Random.Range(0.02f, 0.1f);
                 //transform.position += transform.forward * (bulletSpeed * Time.deltaTime);
             }
+
             // 用Dotween实现子弹的弹跳移动
             transform.DOJump(shootTargetPos, 3f, 1, jumpDuration);
             yield return new WaitForSeconds(jumpInterval);
         }
+
         Destroy(this.gameObject);
     }
+
     protected override void BulletMoveLogic()
     {
         if (!BulletMoving) return;
         // 这里对应特殊的子弹移动逻辑，不像普通子弹那样直线移动，比如说螺旋线移动，跳跃移动，贝塞尔移动等
         switch (specialMoveType)
         {
-            
+
         }
     }
 
     protected override void DealWithBulletAfterCollision(GameObject gameObject)
     {
-        if(!dontDestroy)
+        if (!dontDestroy)
             Destroy(this.gameObject);
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

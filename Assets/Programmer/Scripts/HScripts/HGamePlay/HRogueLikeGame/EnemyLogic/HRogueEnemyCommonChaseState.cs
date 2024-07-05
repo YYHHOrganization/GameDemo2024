@@ -18,7 +18,7 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
     {
         if (mPatrolAI.isDead)
             return null;
-        if(mPatrolAI.mNavMeshAgent.enabled == false)
+        if(mPatrolAI.mNavMeshAgent == null || mPatrolAI.mNavMeshAgent.enabled == false)
             return null;
         mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
         
