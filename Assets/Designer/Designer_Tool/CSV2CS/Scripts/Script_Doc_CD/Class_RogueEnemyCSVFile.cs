@@ -107,9 +107,18 @@ public class Class_RogueEnemyCSVFile {
 		return value;
 	}
 	public string EnemyLevel { get; set; }    //敌人难度等级（10表示最高）
+	public int _EnemyLevel (){
+		int value = int.Parse(EnemyLevel);
+		return value;
+	}
 	public string EnemyElementType { get; set; }    //敌人的元素类型
 	  public string _EnemyElementType (){
 		string value = EnemyElementType;
+		return value;
+	}
+	public string isBulletFromPool { get; set; }    //子弹是否采用对象池，如果是则填写对象池表中的id
+	public int _isBulletFromPool (){
+		int value = int.Parse(isBulletFromPool);
 		return value;
 	}
 	}

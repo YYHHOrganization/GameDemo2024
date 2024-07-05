@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,6 +36,7 @@ public class YRecallable : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
         objMaterials = meshRenderer.materials;
     }
+    
 
     private bool isMoving = false;
     private Vector3 lastPosition;
@@ -46,7 +48,7 @@ public class YRecallable : MonoBehaviour
     private void FixedUpdate()
     {
         // Calculate the acceleration
-        Vector3 acceleration = (rb.velocity - lastVelocity) / Time.fixedDeltaTime;
+        //Vector3 acceleration = (rb.velocity - lastVelocity) / Time.fixedDeltaTime;
 
         // Check if the object is moving
         if (Vector3.Distance(rb.position, lastPosition) > 0f)
@@ -58,17 +60,25 @@ public class YRecallable : MonoBehaviour
                 isMoving = true;
             }
 
+            // Calculate the velocity
+            //Vector3 velocity = (rb.position - lastPosition) / Time.fixedDeltaTime;
             // Store the object's state
             recallObjects.Add(new YRecallObject
             {
                 Position = rb.position,
                 Rotation = rb.rotation,
-                Velocity = rb.velocity,
-                AngularVelocity = rb.angularVelocity,
-                Force = rb.mass * acceleration, // Calculate the force using the acceleration
+                //如果没有重力的纯代码移动，那么这里的速度就是0，那么速度应该由我们来推测
+                // Velocity = velocity,
+                // // Velocity = rb.velocity,
+                // AngularVelocity = rb.angularVelocity,
+                //Force = rb.mass * acceleration, // Calculate the force using the acceleration
                 TimeStamp = Time.time
             });
 
+            // Debug.Log("rb.velocity:"+rb.velocity);
+            // Debug.Log("rb.angularVelocity:"+rb.angularVelocity);
+            // //Debug.Log("acceleration:"+acceleration);
+            
             // Update the last move time
             lastMoveTime = Time.time;
         }
@@ -79,9 +89,9 @@ public class YRecallable : MonoBehaviour
             {
                 Position = rb.position,
                 Rotation = rb.rotation,
-                Velocity = rb.velocity,
-                AngularVelocity = rb.angularVelocity,
-                Force = rb.mass * acceleration, // Calculate the force using the acceleration
+                // Velocity = rb.velocity,
+                // AngularVelocity = rb.angularVelocity,
+                //Force = rb.mass * acceleration, // Calculate the force using the acceleration
                 TimeStamp = Time.time
             });
         }
@@ -93,7 +103,7 @@ public class YRecallable : MonoBehaviour
 
         // Update the last position and velocity
         lastPosition = rb.position;
-        lastVelocity = rb.velocity;
+        //lastVelocity = rb.velocity;
     }
 
     private Coroutine RecallCoroutine;
@@ -106,6 +116,14 @@ public class YRecallable : MonoBehaviour
     }
     public IEnumerator Recall()
     {
+        Debug.Log("RECALLlllllll/////////////////////");
+        
+        HEnemyBulletMoveBase bullet = GetComponent<HEnemyBulletMoveBase>();
+        if (bullet)
+        {
+            bullet.StopCoroutines();
+        }
+        
         lineRenderer.material = Recall_lineRendererMat;
         SetRecallObjectMat(true);
         DrawRecallTail();
@@ -119,11 +137,16 @@ public class YRecallable : MonoBehaviour
             rb.position = recallObject.Position;
             rb.rotation = recallObject.Rotation;
             
-            rb.velocity = recallObject.Velocity;
-            rb.angularVelocity = recallObject.AngularVelocity;
+            // rb.velocity = recallObject.Velocity;
+            // rb.angularVelocity = recallObject.AngularVelocity;
+            //
+            // // Apply the inverse force
+            // rb.AddForce(-recallObject.Force, ForceMode.Force);
             
-            // Apply the inverse force
-            rb.AddForce(-recallObject.Force, ForceMode.Force);
+            
+            // Debug.Log("rb.velocity:"+rb.velocity);
+            // Debug.Log("rb.angularVelocity:"+rb.angularVelocity);
+            // Debug.Log("recallObject.Force:"+recallObject.Force);
             
             //此处将已经经历过的position删掉，也就是linerenderer并不会绘制
             lineRenderer.positionCount -= 1;
@@ -135,13 +158,22 @@ public class YRecallable : MonoBehaviour
         // Clear the original list after the recall
         recallObjects.Clear();
         SetFinalStateShow(false);
+        
         //如果此时还没被终止，应该是要停在原地，也就是此时物体不再移动，那么其gravity应该为0
         StopMoving();
+        
+        //如果这里我们选择不stopmoving，那么物体会继续运动，但是不会再有新的点被加入到recallObjects中
+        //keepMoving();
         
         //按理说应该会中途被停止 
         yield return new WaitForSeconds(duration);
         
         EndRecall();
+    }
+
+    private void keepMoving()
+    {
+        rb.useGravity = true;
     }
 
     private void StopMoving()
@@ -152,8 +184,7 @@ public class YRecallable : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
         
     }
-
-
+    
     public void EndRecall()
     {
         if(RecallCoroutine!=null)StopCoroutine(RecallCoroutine);

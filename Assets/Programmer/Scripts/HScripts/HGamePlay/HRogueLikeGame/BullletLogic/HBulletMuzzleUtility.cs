@@ -16,6 +16,7 @@ public class HBulletMuzzleUtility : MonoBehaviour
     protected GameObject bulletPrefab;
     protected Transform mTarget;
     private Class_RogueEnemyCSVFile enemy;
+    int isBulletFromPoolIndex = 0;
     
     public void SetInitializeAttribute(GameObject bulletPrefab, string muzzleKind, bool isEnemy, string curStateName, Class_RogueEnemyCSVFile enemy = null, Transform mTarget = null)
     {
@@ -58,6 +59,7 @@ public class HBulletMuzzleUtility : MonoBehaviour
             bulletDamage = enemy._EnemyWanderDamage();
         else if(curStateName == "chase")
             bulletDamage = enemy._EnemyChaseDamage();
+        isBulletFromPoolIndex = enemy._isBulletFromPool();
     }
 
     protected void EnemyShoot()
@@ -110,7 +112,18 @@ public class HBulletMuzzleUtility : MonoBehaviour
         for (int i = 0; i < bulletCnt; i++)
         {
             Vector3 shootDirection = new Vector3(0.2f, 0.5f, 0.2f);
-            GameObject bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 2, Quaternion.Euler(0, 0, 0), transform);
+            GameObject bullet;
+            if (isBulletFromPoolIndex!=0)
+            {
+                bullet = YObjectPool._Instance.Spawn(isBulletFromPoolIndex.ToString());
+                bullet.transform.position = transform.position;
+                //bullet.transform.parent = transform;
+                bullet.SetActive(true);
+            }
+            else
+            {
+                bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 2, Quaternion.Euler(0, 0, 0), transform);
+            }
             bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletAttribute(bulletSpeed, bulletDamage, bulletRange);
             bullet.GetComponent<HEnemyBulletMoveBase>().SetBulletMoving(false);
             if (chasePlayer)

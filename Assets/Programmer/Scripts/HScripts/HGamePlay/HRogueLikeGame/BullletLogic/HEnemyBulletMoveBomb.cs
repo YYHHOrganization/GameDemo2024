@@ -1,13 +1,37 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.VFX;
+using Random = UnityEngine.Random;
 
 public class HEnemyBulletMoveBomb : HEnemyBulletMoveBase
 {
     public string specialMoveType;
     public bool dontDestroy = false;
+    protected override void Start()
+    {
+        originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+    }
+
+    public float explosionDelay = 0.5f;
+    private bool couldDetectCollision = false;
+    Tween explosionTweenDelay;
+    //每次从对象池取出来后都会调用这个函数
+    private void OnEnable()
+    {
+        explosionTweenDelay =DOVirtual.DelayedCall(explosionDelay, () =>
+        {
+            couldDetectCollision = true;
+        });
+    }
+
+    private void OnDisable()
+    {
+        couldDetectCollision = false;
+        explosionTweenDelay?.Kill();
+    }
 
     public override void SetBulletMoving(bool moving)
     {
@@ -17,7 +41,7 @@ public class HEnemyBulletMoveBomb : HEnemyBulletMoveBase
             StartBulletCoroutineWithType();
         }
     }
-
+    
     public void StartBulletCoroutineWithType()
     {
         switch (specialMoveType)
@@ -35,10 +59,12 @@ public class HEnemyBulletMoveBomb : HEnemyBulletMoveBase
                 StartCoroutine(BulletCircleMove());
                 break;
             case "ThrowOut":
+                //BulletThrowOutWithForce();
                 StartCoroutine(BulletThrowOut());
                 break;
         }
     }
+    
 
     IEnumerator BulletThrowOut()
     {
@@ -57,12 +83,15 @@ public class HEnemyBulletMoveBomb : HEnemyBulletMoveBase
                 transform.position = Vector3.Lerp(startPos, targetPos, time) + yOffset * Vector3.up;
                 yield return null;
             }
+           
         }
         //Destroy(this.gameObject, 5f);
     }
 
     protected override void CollisionEnterLogic(Collision co)
     {
+        if(couldDetectCollision == false) return;
+        
         Debug.Log("EnterCollisio!!!!n");
         ContactPoint contact = co.contacts[0];
         Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
@@ -133,6 +162,7 @@ public class HEnemyBulletMoveBomb : HEnemyBulletMoveBase
                 }
             }
         }
+        DealWithBulletAfterCollision(gameObject);
     }
 
     IEnumerator BulletCircleMove()
