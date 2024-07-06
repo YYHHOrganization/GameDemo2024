@@ -59,7 +59,7 @@ public class HGMPanelBaseLogic : MonoBehaviour
         autoCompleteOptions.Add("summon enemy @id = 10, number = 1");
         
         autoCompleteOptions.Add("test add recall object @id = 33310000, number = 8");
-        autoCompleteOptions.Add("test add recall object @id = 33310002, number = 8");
+        autoCompleteOptions.Add("test add recall object @id = 33310002, number = 8, height = 10");
         autoCompleteOptions.Add("Add RogueQuestPlatform");
     }
     // Start is called before the first frame update
@@ -270,12 +270,17 @@ public class HGMPanelBaseLogic : MonoBehaviour
                 SummonEnemy(id2, number2);
                 break;
             case "test add recall object ":
-                string addPart3 = commandParts[1]; 
+                string addPart3 = commandParts[1]; //"a,b,c"
                 string[] addParts3 = addPart3.Split(',');
                 string id3 = addParts3[0].Split('=')[1].Trim();
                 int number3 = int.Parse(addParts3[1].Split('=')[1].Trim());
+                float height = -1;
+                if (addPart3.Length >= 3)
+                {
+                    height = float.Parse(addParts3[2].Split('=')[1].Trim()); 
+                }
                 Debug.Log("add sth with id: " + id3 + ", number: " + number3);
-                TestAddRecallObject(id3, number3);
+                TestAddRecallObject(id3, number3, height);
                 break;
             case "Add RogueQuestPlatform":
                 GameObject go = Addressables.InstantiateAsync("RogueQuestPlatform").WaitForCompletion();
@@ -284,13 +289,17 @@ public class HGMPanelBaseLogic : MonoBehaviour
         }
     }
 
-    private void TestAddRecallObject(string id, int number)
+    private void TestAddRecallObject(string id, int number,float height = -1)
     {
         Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
         for (int j = 0; j < number; j++)
         {
             GameObject go = YObjectPool._Instance.Spawn(id);
-            go.transform.position = player.position+new Vector3(Random.Range(-4,4),Random.Range(1,20),Random.Range(-4,4));
+            if(height == -1)
+            {
+                height = Random.Range(1, 20);
+            }
+            go.transform.position = player.position+new Vector3(Random.Range(-4,4),height,Random.Range(-4,4));
             go.SetActive(true);
         }
     }

@@ -197,6 +197,7 @@ public class YRecallSkill : MonoBehaviour
         }
     }
     
+    //Skill的Recall()这个代码会去在Recall开始的时候订阅recallable.是否GoBeRecycled()
     void Recall()
     {
         Time.timeScale = 1;
@@ -221,11 +222,17 @@ public class YRecallSkill : MonoBehaviour
         
         duringRecall = true;
         recallable.Recalling(duration);
+        recallable.beRecycledAction += OnRecallableGoBeRecycled;
+
         
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
     }
-
+    private void OnRecallableGoBeRecycled()
+    {
+        // Handle the event (e.g., stop the recall process)
+        EndRecall();
+    }
     private ScriptableRendererFeature feature = null;
     private void SetPostProcessing(bool isOn,Vector2 screenPos )
     {
@@ -279,6 +286,11 @@ public class YRecallSkill : MonoBehaviour
         
         //将所有复原  包括shader，然后进行到一半的recall先停下
         // recallable.EndRecall();
+        
+        if (recallable != null)
+        {
+            recallable.beRecycledAction -= OnRecallableGoBeRecycled;
+        }
         
         foreach (GameObject obj in recallObjectPool.recallableObjectPool)
         {
