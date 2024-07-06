@@ -28,6 +28,10 @@ public class YRecallable : MonoBehaviour
     // public Material CouldRecallObjectMat;
     private MeshRenderer meshRenderer;
     private Material[] objMaterials;
+    
+    public event Action beRecycledAction;
+    //是否可以记录轨迹
+    bool couldRecallInfoRecord = false;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -36,7 +40,25 @@ public class YRecallable : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
         objMaterials = meshRenderer.materials;
     }
-    
+
+    private void OnDisable()
+    {
+        //直接EndRecall 但是是要YRecalSkill的EndRecall
+        //被回收
+        beRecycledAction?.Invoke();
+        //并且清除轨迹
+        recallObjects?.Clear();
+        couldRecallInfoRecord = false;
+        
+    }
+
+    private void OnEnable()
+    {
+        lastPosition = transform.position;
+        couldRecallInfoRecord = true;
+        
+    }
+
 
     private bool isMoving = false;
     private Vector3 lastPosition;
@@ -47,6 +69,7 @@ public class YRecallable : MonoBehaviour
     private float stationaryTime = 0.5f; 
     private void FixedUpdate()
     {
+        if (!couldRecallInfoRecord) return;
         // Calculate the acceleration
         //Vector3 acceleration = (rb.velocity - lastVelocity) / Time.fixedDeltaTime;
 
