@@ -25,6 +25,8 @@ public class YRecallSkill : MonoBehaviour
 
     private string YRecallLightHandVFXAddLink = "YRecallLightHandVFX";
     GameObject YRecallLightHandVFX;
+    
+    LayerMask layerMask = 0;
     public void setPool(YRecallObjectPool yRecallObjectPool)
     {
         recallObjectPool = yRecallObjectPool;
@@ -43,6 +45,10 @@ public class YRecallSkill : MonoBehaviour
         
         YTriggerEvents.OnLoadEndAndBeginPlay += LoadEndAndBeginPlay;
         //playerInput.CharacterControls.Skill2.started +=context =>  BeginRecallSkill();
+        
+        //layer上   去掉ignoreBullet 
+        layerMask = (1<<LayerMask.NameToLayer("IgnoreBullet"));
+        layerMask = ~layerMask;
     }
 
     private void LoadEndAndBeginPlay(object sender, YTriggerEventArgs e) //sender是触发事件的对象，e是事件的参数
@@ -126,7 +132,8 @@ public class YRecallSkill : MonoBehaviour
         RaycastHit hitInfo;
 
         // 改为鼠标悬停的地方检测是否有合适的物体
-        if (Physics.Raycast(ray, out hitInfo))
+        // if (Physics.Raycast(ray, out hitInfo))
+        if (Physics.Raycast(ray, out hitInfo, 200f, layerMask))
         {
             GameObject newTarget = hitInfo.collider.gameObject;
             YRecallable newRecallable = newTarget.GetComponent<YRecallable>();
