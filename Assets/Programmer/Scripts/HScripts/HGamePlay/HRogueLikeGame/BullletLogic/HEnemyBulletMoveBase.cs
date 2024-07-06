@@ -22,7 +22,7 @@ public class HEnemyBulletMoveBase : MonoBehaviour
     {
         bulletMoving = moving;
     }
-    void Start()
+    protected virtual void Start()
     {
         originPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         Destroy(gameObject, 10f);
@@ -33,6 +33,11 @@ public class HEnemyBulletMoveBase : MonoBehaviour
         bulletSpeed = speed;
         bulletDamage = damage;
         bulletRange = range;
+    }
+    
+    public void StopCoroutines()
+    {
+        StopAllCoroutines();
     }
 
     protected virtual void BulletMoveLogic()
