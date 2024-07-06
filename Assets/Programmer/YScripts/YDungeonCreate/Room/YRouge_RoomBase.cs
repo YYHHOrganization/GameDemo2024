@@ -374,5 +374,7 @@ public class YRouge_RoomBase : MonoBehaviour
         YRogue_PropPlacementManager propPlacementManager = FindObjectOfType<YRogue_PropPlacementManager>();
         propPlacementManager.SetData(itemPlacementHelper, itemDataParent.transform);
     }
-
+    
+    //生成奖励台子与落石，奖励台子一开始就生车工，在角色进入这个房间的时候触发落石
+    
 }
