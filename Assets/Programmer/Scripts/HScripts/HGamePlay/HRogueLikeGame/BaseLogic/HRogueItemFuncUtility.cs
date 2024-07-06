@@ -680,6 +680,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
         if (randomNum <= checkValue) return;
         
         List<GameObject> enemies = roomBaseScript.Enemies;
+        int tryCnt = 0;
         
         if (funcParams.Split(';')[0] == "All")
         {
@@ -716,12 +717,14 @@ public class HRogueItemFuncUtility : MonoBehaviour
                     {
                         int index = Random.Range(0, enemies.Count);
                         var enemy = enemies[index];
-                        while (!enemy)
+                        while (!enemy && tryCnt < 30)  
                         {
+                            tryCnt++;
                             index = Random.Range(0, enemies.Count);
                             enemy = enemies[index];
                         }
-                        //SetEnemyFrozen
+
+                        if (enemy == null) return;
                         if (enemy.GetComponent<HRogueEnemyPatrolAI>())
                         {
                             enemy.GetComponent<HRogueEnemyPatrolAI>().ChangeHealth(-1000);
@@ -814,6 +817,28 @@ public class HRogueItemFuncUtility : MonoBehaviour
             HItemCounter.Instance.RemoveItem("20000013", 10000);
             HurtEveryEnemyInRoomWithValue(-3);
         }
+    }
+
+    public void NiuzhuanwanxiangFunc(string funcParams)
+    {
+        //MayKillEnemy!3;1.0
+        int counter = HRoguePlayerAttributeAndItemManager.Instance.CurScreenPositiveItemRoomCounter;
+        int realCnt = enterNewRoomPositiveItemCounter["NiuzhuanwanxiangFunc"];
+        if (realCnt < counter)
+        {
+            return;
+        }
+        enterNewRoomPositiveItemCounter["NiuzhuanwanxiangFunc"] = 0;
+        HRoguePlayerAttributeAndItemManager.Instance.RefleshPositiveItemUI(0);
+        float timeScale = Time.timeScale;
+        Time.timeScale = 0;
+        GameObject niuzhuanwanxiang = Addressables.LoadAssetAsync<GameObject>("Niuzhuanwanxiang").WaitForCompletion();
+        
+        DOVirtual.DelayedCall(5f, () =>
+        {
+            MayKillEnemy("3;1");
+            Time.timeScale = timeScale;
+        }).SetUpdate(true);
     }
 
     public void HuangquanWuFunc(string funcParams)

@@ -97,7 +97,7 @@ public class HEnemyBulletMoveBomb : HEnemyBulletMoveBase
         Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
         Vector3 pos = contact.point;
         //炸弹的逻辑要重写一下
-        Collider[] colliders = Physics.OverlapSphere(transform.position, 1f);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 2.5f);
         foreach (var collider in colliders)
         {
             if (collider.CompareTag("Player"))

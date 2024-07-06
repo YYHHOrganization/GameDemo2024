@@ -60,8 +60,7 @@ public class HRogueEnemyMoveMirrorWithPlayer : MonoBehaviour
 
     private void UpdateAnimatorInfo(Vector3 mirrorPos)
     {
-        animator.SetBool("isWalking", playerAnimator.GetBool("isWalking"));
-        animator.SetBool("isRunning", playerAnimator.GetBool("isRunning"));
+        animator.SetBool("isWalking", true);
         
         //保持animator的状态和playerAnimator的状态一致
         if (playerAnimator.GetBool("isJumping"))
@@ -73,7 +72,7 @@ public class HRogueEnemyMoveMirrorWithPlayer : MonoBehaviour
         else 
         {
             animator.SetBool("isJumping", false);
-            animator.SetBool("isWalking", false);
+            animator.SetBool("isWalking", true);
             animator.SetBool("isRunning", false);
         }
 
