@@ -53,6 +53,7 @@ public class HDialogSystemMgr : MonoBehaviour
         YPlayModeController.Instance.LockPlayerInput(true);
         YTriggerEvents.RaiseOnMouseLeftShoot(false);
         YPlayModeController.Instance.LockEveryInputKey = true;
+        YTriggerEvents.RaiseOnMouseLockStateChanged(false);
 
     }
 
@@ -178,6 +179,7 @@ public class HDialogSystemMgr : MonoBehaviour
                 YPlayModeController.Instance.LockPlayerInput(false);
                 YTriggerEvents.RaiseOnMouseLeftShoot(true);
                 YPlayModeController.Instance.LockEveryInputKey = false;
+                YTriggerEvents.RaiseOnMouseLockStateChanged(true);
                 if (triggerToDialog)
                 {
                     triggerToDialog.gameObject.GetComponent<HTriggerDialogSystem>().SetInteracted(true);

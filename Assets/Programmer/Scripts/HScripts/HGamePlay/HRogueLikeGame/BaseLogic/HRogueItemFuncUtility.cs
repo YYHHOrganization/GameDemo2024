@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
+using Sequence = DG.Tweening.Sequence;
 
 public class HRogueItemFuncUtility : MonoBehaviour
 {
@@ -831,14 +832,31 @@ public class HRogueItemFuncUtility : MonoBehaviour
         enterNewRoomPositiveItemCounter["NiuzhuanwanxiangFunc"] = 0;
         HRoguePlayerAttributeAndItemManager.Instance.RefleshPositiveItemUI(0);
         float timeScale = Time.timeScale;
-        Time.timeScale = 0;
-        GameObject niuzhuanwanxiang = Addressables.LoadAssetAsync<GameObject>("Niuzhuanwanxiang").WaitForCompletion();
-        
-        DOVirtual.DelayedCall(5f, () =>
+        GameObject niuzhuanwanxiang = Addressables.LoadAssetAsync<GameObject>("NiuzhuanwanxiangScenePrefab").WaitForCompletion();
+        GameObject place = Instantiate(niuzhuanwanxiang);
+        //instantiate 一个角色上去
+        int curChracterIndex = YPlayModeController.Instance.CurCharacterIndex;
+        int id = yPlanningTable.Instance.selectNames2Id["character"];
+        string path = "Prefabs/YCharacter/"+yPlanningTable.Instance.SelectTable[id][curChracterIndex]+"Show";
+        //string path = "Prefabs/YCharacter/2";
+        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(path));
+        Transform father = place.transform.Find("ShowPlace");
+        go.transform.parent = father.transform;
+        go.transform.localPosition = Vector3.zero;
+        Transform sphere = father.transform.Find("Sphere");
+        sphere.transform.parent = father;
+        place.GetComponent<HNiuzhuanwanxiang>().StartSkill();
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(DOVirtual.DelayedCall(0.5f, () =>
         {
+            Time.timeScale = 0.05f;
             MayKillEnemy("3;1");
+        })).SetUpdate(true);
+        sequence.Append(DOVirtual.DelayedCall(1.8f, () =>
+        {
             Time.timeScale = timeScale;
-        }).SetUpdate(true);
+            
+        })).SetUpdate(true);
     }
 
     public void HuangquanWuFunc(string funcParams)
