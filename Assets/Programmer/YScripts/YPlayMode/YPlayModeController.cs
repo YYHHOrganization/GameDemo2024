@@ -103,6 +103,13 @@ public class YPlayModeController : MonoBehaviour
     {
         SetCharacter(characterIndex);
         SetCatcake(curChooseCatcakeIndexStr);
+        curCharacterIndex = characterIndex;
+    }
+
+    private int curCharacterIndex = 0;
+    public int CurCharacterIndex
+    {
+        get => curCharacterIndex;
     }
 
     public void SetCatcake(string curChooseCatcakeIndexStr)
