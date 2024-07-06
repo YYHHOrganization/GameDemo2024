@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using DG.Tweening;
+using Random = UnityEngine.Random;
 
 
 public class YRouge_RoomBase : MonoBehaviour
@@ -83,6 +85,8 @@ public class YRouge_RoomBase : MonoBehaviour
     {
         get => roomNode.BottomLeftAreaCorner + YRogueDungeonManager.Instance.RogueDungeonOriginPos2;
     }
+    
+    public event Action EnterRoomEvent; 
     public void Start()
     {
         SetAllDoorsPosition();
@@ -183,7 +187,7 @@ public class YRouge_RoomBase : MonoBehaviour
 
     protected virtual void FirstEnterRoom()
     {
-        
+        EnterRoomEvent?.Invoke();
     }
 
     private void OnTriggerExit(Collider other)
@@ -200,6 +204,7 @@ public class YRouge_RoomBase : MonoBehaviour
         roomLittleMapMask.gameObject.SetActive(false);
     }
 
+   
     public virtual void EnterRoom()
     {
         // SetAllDoorsUp();
@@ -336,6 +341,18 @@ public class YRouge_RoomBase : MonoBehaviour
                 {
                     item.transform.position = transform.position + new Vector3(0, 0, -5);
                     
+                }
+                else if (itemData.GeneratePlace == "sky")
+                {
+                    item.transform.position = 
+                        transform.position + 
+                        new Vector3(Random.Range(-6, 6), 10, Random.Range(-6, 6));
+                }
+                
+                YRoomAppendant roomAppendant = item.GetComponent<YRoomAppendant>();
+                if(roomAppendant!=null)
+                {
+                    roomAppendant.roomBase = this;
                 }
             }
             

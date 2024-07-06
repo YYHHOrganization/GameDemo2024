@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3690190367068868920}
   - component: {fileID: 1903277910724826651}
   - component: {fileID: 227964215256762866}
+  - component: {fileID: 9179127774724628710}
   m_Layer: 0
   m_Name: tomatoSliceRewardPlatform
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 11, z: 0}
-  m_LocalScale: {x: 30, y: 30, z: 30}
+  m_LocalScale: {x: 21.249601, y: 21.249601, z: 21.249601}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -106,3 +107,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.17999998, y: 0.026, z: 0.17999998}
   m_Center: {x: 0, y: 0.015, z: 0}
+--- !u!114 &9179127774724628710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8614360328339231185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53238a4114ae90b4eb19a037faa3ba44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomBase: {fileID: 0}
+  fallingBoxPrefabID: 33310002
+  number: 1
