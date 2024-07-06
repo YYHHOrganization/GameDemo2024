@@ -7,9 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_FullScreenDaozhuanqiankun
-  m_Shader: {fileID: -6465566751694194690, guid: 53baa6dfe4f057b46aa7da9f83d698b3,
-    type: 3}
+  m_Name: NiuzhuanwanxiangUse
+  m_Shader: {fileID: 4800000, guid: e2c0f16dd42101744896b108a0ef67b3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -24,8 +23,8 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _OriginalMask:
-        m_Texture: {fileID: 2800000, guid: cb025bd1a58d32f419de59ffdec4c4ce, type: 3}
+    - _TextureSample0:
+        m_Texture: {fileID: 8400000, guid: af630cb9b61fba0429abec6af25c0190, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -42,13 +41,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Float: 7.43
-    - _Flow: 0
-    - _FlowNew: 0
-    - _FlowValue: 1.5
-    - _LineWidth: 0.003
+    - _AlphaCutoff: 0.5
+    - _LerpScreenColor: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _lerpValue: 0.5
     m_Colors:
-    - _FlowColor: {r: 3.682702, g: 4, b: 0, a: 0}
-    - _ScreenPosOffset: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _StartPos: {r: 0.51233554, g: 0.8903509, b: 0, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FresnelColor: {r: 1, g: 0.98213, b: 0.03301889, a: 0.4745098}
+    - _FresnelValue: {r: 0, g: 5, b: 3, a: 0}
+    - _OffsetValue: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
