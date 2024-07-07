@@ -38,8 +38,8 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         songList.Add("ZhongmuSong");
         songList.Add("MojingSong");
         songList.Add("AixiMusic");
-        //int randomIndex = Random.Range(0, songList.Count);
-        int randomIndex = 2;
+        int randomIndex = Random.Range(0, songList.Count);
+        //int randomIndex = 2;
         thisSong = Addressables.LoadAssetAsync<Koreography>(songList[randomIndex]).WaitForCompletion();
         Koreographer.Instance.LoadKoreography(thisSong);
     }
@@ -155,6 +155,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         YTriggerEvents.RaiseOnMouseLockStateChanged(false);
         Invoke("SetGamePanelActive", 2.5f);
         YTriggerEvents.RaiseOnMouseLeftShoot(false);
+        YPlayModeController.Instance.LockEveryInputKey = true;
         
         //如果下雨的话，把打雷效果给关了
         yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>().ControlThundering(false);
@@ -356,6 +357,7 @@ public class HRogueMusicGame1Logic : MonoBehaviour
         YPlayModeController.Instance.LockPlayerInput(false);
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
+        YPlayModeController.Instance.LockEveryInputKey = false;
         HAudioManager.Instance.Play("StartRogueAudio", HAudioManager.Instance.gameObject);
         
         //如果下雨的话，把打雷效果给开了

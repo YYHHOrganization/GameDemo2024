@@ -26,6 +26,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
     private int correctPuzzleCnt = 0;
     private Button startGameButton;
     private GameObject gameScorePanel;
+    private Button gameTipButton;
     
     private void Start()
     {
@@ -36,7 +37,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
     private void CancelAndExitGame()
     {
         timeScale = Time.timeScale;
-        Time.timeScale = 0;
+        //Time.timeScale = 0; //为了防止可能存在的游戏卡死问题，暂时不设置为0
         HMessageShowMgr.Instance.ShowMessageWithActions("CANCEL_GAME_IN_ROGUE", EndGameByCancel, ResumeTimeScale,ResumeTimeScale);
     }
     
@@ -74,6 +75,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
         SetTextureForPuzzle();
         PrepareForGame();
         puzzleRootName = "Puzzle" + UnityEngine.Random.Range(0, 29999);
+        YPlayModeController.Instance.LockEveryInputKey = true;
     }
 
     private void PrepareForGame()
@@ -143,6 +145,12 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
         }
 
         startGameButton.onClick.AddListener(StartPuzzleGameCountDown);
+        
+        gameTipButton = gameScorePanel.transform.Find("GameTipButton").GetComponent<Button>();
+        gameTipButton.onClick.AddListener(() =>
+        {
+            HMessageShowMgr.Instance.ShowMessageWithActions("SHOW_CONFIRM_GAMETIP", null, null, null, null, "<size=40>拼图游戏提示：\n1. 拖动碎片到正确的位置(左键)\n2. 将碎片旋转到正确的角度（右键）</size>");
+        });
     }
 
     private void StartPuzzleGameCountDown()
@@ -297,6 +305,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
         YPlayModeController.Instance.LockPlayerInput(false);
         YTriggerEvents.RaiseOnMouseLockStateChanged(true);
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
+        YPlayModeController.Instance.LockEveryInputKey = false;
         SetGameOverAndGiveoutTreasure();
         //HAudioManager.Instance.Play("StartRogueAudio", HAudioManager.Instance.gameObject);
         HMessageShowMgr.Instance.RemoveTickMessage("拼图游戏倒计时：");

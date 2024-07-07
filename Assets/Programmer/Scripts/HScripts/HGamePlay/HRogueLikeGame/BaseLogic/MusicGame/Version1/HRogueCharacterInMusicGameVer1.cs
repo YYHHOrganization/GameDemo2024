@@ -34,6 +34,8 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
     public int GoodPickupCount => goodPickupCount;
     private int scoreMultiplier = 1;  //分数的倍数
     private bool isInvincible = false;  //是否无敌
+
+    private Button gameTipButton;
     
     public void SetScoreMultiplier(int value)
     {
@@ -59,6 +61,12 @@ public class HRogueCharacterInMusicGameVer1 : MonoBehaviour
         }
         startGameButton.onClick.AddListener(StartMusicGame);
         gameLogicScript = logic;
+        
+        gameTipButton = gameScorePanel.transform.Find("GameTipButton").GetComponent<Button>();
+        gameTipButton.onClick.AddListener(() =>
+        {
+            HMessageShowMgr.Instance.ShowMessageWithActions("SHOW_CONFIRM_GAMETIP", null, null, null, null, "<size=40>音游游戏提示：\n1. 按下空格键角色切换轨道\n2. 拾取蘑菇加分，拾取炸弹扣分</size>");
+        });
     }
 
     public void DestroyGameScorePanel()
