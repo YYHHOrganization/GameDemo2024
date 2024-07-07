@@ -35,8 +35,8 @@ public class HRogueWeatherController : MonoBehaviour
     private Coroutine lightningFallCoroutine;
     private Coroutine lightningCoroutine;
     
-    private float minWeatherDuration = 45.0f; // 每种天气最少持续时间
-    private float minClearDuration = 90.0f; // 天晴到下雨/下雪之间最少间隔时间
+    private float minWeatherDuration = 30.0f; // 每种天气最少持续时间
+    private float minClearDuration = 120.0f; // 天晴到下雨/下雪之间最少间隔时间
     
     //一些与天气有关的bool值
     private bool isRaining = false;

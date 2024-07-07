@@ -55,17 +55,21 @@ public class YRogueDungeonManager : MonoBehaviour
         
         StartCoroutine(EnterNewLevelCoroutine());//等待加载完 ，后面用别的方法吧
     }
-    public float loadFakeTime = 5f;
+    float loadFakeTime = 5f;
+    public float GetLoadFakeTime()
+    {
+        return loadFakeTime;
+    }
     IEnumerator EnterNewLevelCoroutine()
     {
-        yield return new WaitForSeconds(loadFakeTime);
+        yield return new WaitForSeconds(loadFakeTime*0.8f);
         flagGameBegin = true;
         //生成新的关卡
         //将角色设置在新的关卡的起始位置，出生房
         // YPlayModeController.Instance.SetRogueCharacterPlace();
         YPlayModeController.Instance.SetRogueCharacterPlace(RogueBornPlace);
-        
         dungeonCreator.BakeNavMesh();
+        yield return new WaitForSeconds(loadFakeTime*0.2f);
         //将加载界面关闭
         YGameRoot.Instance.Pop();
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
