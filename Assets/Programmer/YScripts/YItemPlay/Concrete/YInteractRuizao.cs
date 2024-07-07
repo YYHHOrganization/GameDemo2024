@@ -77,6 +77,7 @@ public class YInteractRuizao : YIInteractiveGroup
             HOpenWorldTreasureManager.Instance.InstantiateATreasureAndSetInfoWithTypeId(chestID, treasurePos, transform);
             ResetWeatherSystem();
             YTriggerEvents.RaiseOnMouseLeftShoot(true);
+            YPlayModeController.Instance.LockEveryInputKey = false;
         }
         else
         {
@@ -101,6 +102,7 @@ public class YInteractRuizao : YIInteractiveGroup
 
         ResetWeatherSystem();
         YTriggerEvents.RaiseOnMouseLeftShoot(true);
+        YPlayModeController.Instance.LockEveryInputKey = false;
     }
 
     public void GetChestAndSetTrans()

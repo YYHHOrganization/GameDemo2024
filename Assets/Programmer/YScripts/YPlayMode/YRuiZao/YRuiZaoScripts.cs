@@ -549,7 +549,7 @@ public class YRuiZaoScripts : MonoBehaviour
         //把天气放晴，尤其是不要起雾
         YTriggerEvents.RaiseOnMouseLeftShoot(false);
         ResetWeather();
-        
+        YPlayModeController.Instance.LockEveryInputKey = true;
     }
 
     public void WinAndExit()
