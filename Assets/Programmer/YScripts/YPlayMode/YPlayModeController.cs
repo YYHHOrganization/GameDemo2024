@@ -438,8 +438,9 @@ public class YPlayModeController : MonoBehaviour
     
     public void SetRogueCharacterPlace(Transform transform)
     {
+        curCharacter.GetComponent<CharacterController>().enabled = false;
         curCharacter.transform.position = transform.position;
-        
+        curCharacter.GetComponent<CharacterController>().enabled = true;
         //同时也要传送当前拥有的宠物
         SetRogueCatCakePlace(transform.position);
     }
@@ -460,6 +461,7 @@ public class YPlayModeController : MonoBehaviour
     public GameObject testCubs;
     public void SetRogueCharacterPlaceFarAway()
     {
+        curCharacter.GetComponent<CharacterController>().enabled = false;
         //测试传送一个cube啥的
         Vector3 pos = new Vector3(-400, 500, -400);
         curCharacter.transform.position = pos;
