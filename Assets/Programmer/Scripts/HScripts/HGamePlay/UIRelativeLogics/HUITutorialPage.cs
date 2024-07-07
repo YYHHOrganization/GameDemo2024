@@ -69,7 +69,7 @@ public class HUITutorialPage : MonoBehaviour
         this.transform.parent.gameObject.SetActive(false);
         Destroy(gameObject, 2f);
         YPlayModeController.Instance.LockPlayerInput(false);
-        Invoke("GiveOutAXingqiong", 1f);
+        //Invoke("GiveOutAXingqiong", 1f);
     }
 
     private void GiveOutAXingqiong()
