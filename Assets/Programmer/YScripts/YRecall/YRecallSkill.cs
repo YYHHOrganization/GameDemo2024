@@ -309,6 +309,9 @@ public class YRecallSkill : MonoBehaviour
         
         if(feature!=null)HPostProcessingFilters.Instance.SetPassMaterialParameters
             (feature, false);
+        
+        isRecalling = false;
+        
     }
 
     private void OnDestroy()
