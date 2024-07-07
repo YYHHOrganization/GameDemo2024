@@ -527,9 +527,6 @@ public class YRuiZaoScripts : MonoBehaviour
 
         this.yInteractRuizao = yInteractRuizao;
         
-        //把天气放晴，尤其是不要起雾
-        ResetWeather();
-        
     }
 
     private void ResetWeather()
@@ -549,6 +546,9 @@ public class YRuiZaoScripts : MonoBehaviour
         YGameRoot.Instance.Push(new YRuiZaoPanel(this,isRogue));
 
         this.yInteractRuizao = yInteractRuizao;
+        //把天气放晴，尤其是不要起雾
+        YTriggerEvents.RaiseOnMouseLeftShoot(false);
+        ResetWeather();
         
     }
 
