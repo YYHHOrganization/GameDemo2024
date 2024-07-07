@@ -46,6 +46,15 @@ public class YInteractRuizao : YIInteractiveGroup
         
     }
 
+    private void ResetWeatherSystem()
+    {
+        HRogueWeatherController weatherController =
+            yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        weatherController.SetWeatherControl(true);
+        //怕出各种情况，角色锁血
+        HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(false);
+    }
+
     public void ExitAndWin()
     {
         if (RuizaoMainGO != null)
@@ -66,6 +75,7 @@ public class YInteractRuizao : YIInteractiveGroup
             string chestID = "10000012";
             //给宝箱
             HOpenWorldTreasureManager.Instance.InstantiateATreasureAndSetInfoWithTypeId(chestID, treasurePos, transform);
+            ResetWeatherSystem();
         }
         else
         {
@@ -87,7 +97,8 @@ public class YInteractRuizao : YIInteractiveGroup
         {
             RuizaoCoreCubeShow.SetActive(true);
         }
-        
+
+        ResetWeatherSystem();
     }
 
     public void GetChestAndSetTrans()

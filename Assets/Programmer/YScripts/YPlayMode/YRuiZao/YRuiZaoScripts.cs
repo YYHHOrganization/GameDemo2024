@@ -527,6 +527,19 @@ public class YRuiZaoScripts : MonoBehaviour
 
         this.yInteractRuizao = yInteractRuizao;
         
+        //把天气放晴，尤其是不要起雾
+        ResetWeather();
+        
+    }
+
+    private void ResetWeather()
+    {
+        //重置天气系统
+        HRogueWeatherController weatherController =
+            yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        weatherController.SetWeatherControl(false);
+        //怕出各种情况，角色锁血
+        HRoguePlayerAttributeAndItemManager.Instance.SetCharacterInvincible(true);
     }
     public void SetRuiZaoOn(YInteractRuizao yInteractRuizao,bool isRogue)
     {
