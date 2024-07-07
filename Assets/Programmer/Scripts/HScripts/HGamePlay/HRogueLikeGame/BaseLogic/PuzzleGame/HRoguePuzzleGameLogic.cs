@@ -30,6 +30,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
     
     private void Start()
     {
+        HRoguePlayerAttributeAndItemManager.Instance.IsPlayingRogueInsideGame = true;
         LoadGame();
     }
     
@@ -109,7 +110,6 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
     {
         InitializePuzzleFragments();
         RollingPuzzleFragments();
-        HRoguePlayerAttributeAndItemManager.Instance.IsPlayingRogueInsideGame = true;
     }
 
     private void ResetWeather()

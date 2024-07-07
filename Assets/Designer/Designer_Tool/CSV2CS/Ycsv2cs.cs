@@ -18,9 +18,7 @@ public class Ycsv2cs : MonoBehaviour
     {
         
     }
-    #if BUILD_MODE
-    //[MenuItem("Tools/ExcelToJson")]
-    #else
+    #if UNITY_EDITOR
     [MenuItem("Tools/ExcelToJson")]
     #endif
     static void excelToJson()
