@@ -18,7 +18,11 @@ public class Ycsv2cs : MonoBehaviour
     {
         
     }
+    #if BUILD_MODE
+    //[MenuItem("Tools/ExcelToJson")]
+    #else
     [MenuItem("Tools/ExcelToJson")]
+    #endif
     static void excelToJson()
     {
         string dataFolderPath=Application.dataPath+ "/Designer/Designer_Tool/CSV2CS/Document";//csv文件夹路径 应该是在Assets下的Document文件夹
