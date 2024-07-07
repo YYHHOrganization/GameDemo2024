@@ -59,6 +59,7 @@ public class HGMPanelBaseLogic : MonoBehaviour
         autoCompleteOptions.Add("summon enemy @id = 10, number = 1");
         
         autoCompleteOptions.Add("test add recall object @id = 33310000, number = 8");
+        autoCompleteOptions.Add("test add recall object @id = 33310002, number = 8");
         autoCompleteOptions.Add("test add recall object @id = 33310002, number = 8, height = 10");
         autoCompleteOptions.Add("Add RogueQuestPlatform");
     }
@@ -275,7 +276,7 @@ public class HGMPanelBaseLogic : MonoBehaviour
                 string id3 = addParts3[0].Split('=')[1].Trim();
                 int number3 = int.Parse(addParts3[1].Split('=')[1].Trim());
                 float height = -1;
-                if (addPart3.Length >= 3)
+                if (addParts3.Length >= 3)
                 {
                     height = float.Parse(addParts3[2].Split('=')[1].Trim()); 
                 }
