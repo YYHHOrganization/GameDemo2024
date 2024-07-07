@@ -64,6 +64,12 @@ public class YRuiZaoPanel : BasePanel
             //弹出是否真的要退出挑战？
              HMessageShowMgr.Instance.ShowMessageWithActions("ConfirmExitRuizao", ExitRuizao, null,null);
         });
+        uiTool.GetOrAddComponentInChilden<Button>("TutButton").onClick.AddListener(()=>
+        {
+            //弹出tutorial
+            HMessageShowMgr.Instance.ShowMessage("Tut_LearnRuizao");
+            
+        });
     }
 
     public void ExitRuizao()
