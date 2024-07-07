@@ -149,7 +149,7 @@ public class HRoguePuzzleGameLogic : MonoBehaviour
         gameTipButton = gameScorePanel.transform.Find("GameTipButton").GetComponent<Button>();
         gameTipButton.onClick.AddListener(() =>
         {
-            HMessageShowMgr.Instance.ShowMessageWithActions("SHOW_CONFIRM_GAMETIP", null, null, null, null, "<size=40>拼图游戏提示：\n1. 拖动碎片到正确的位置(左键)\n2. 将碎片旋转到正确的角度（右键）</size>");
+            HMessageShowMgr.Instance.ShowMessageWithActions("SHOW_CONFIRM_GAMETIP", null, null, null, null, "<size=40>拼图游戏提示：\n1. 拖动碎片到正确的位置(按住鼠标左键)\n2. 将碎片旋转到正确的角度（点按鼠标右键）</size>");
         });
     }
 
