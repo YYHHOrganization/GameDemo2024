@@ -6,6 +6,7 @@
 #pragma kernel Kernel_Advection
 #pragma kernel Kernel_SubtractGradient
 #pragma kernel Kernel_AddForce
+#pragma kernel Kernel_Reset
 
 float2 spherePos;
 float2 sphereVelocity;
@@ -41,7 +42,7 @@ float3 BlendColor(float3 col1, float3 col2, float factor)
 }
 
 //===========================================================
-[numthreads(16,16,1)]
+[numthreads(32,32,1)]
 void Kernel_Init (uint3 id : SV_DispatchThreadid)
 {
 	//DensityTex[id.xy] = 0;
@@ -53,7 +54,7 @@ void Kernel_Init (uint3 id : SV_DispatchThreadid)
 
 
 //===========================================================
-[numthreads(16,16,1)]
+[numthreads(32,32,1)]
 void Kernel_Diffusion (uint3 Id : SV_DispatchThreadid)
 {		
 	//Grid positions
@@ -104,7 +105,7 @@ void Kernel_Diffusion (uint3 Id : SV_DispatchThreadid)
 	// DensityTex[id] = dnew;
 }
 //===========================================================
-[numthreads(16,16,1)]
+[numthreads(32,32,1)]
 void Kernel_Advection (uint3 id : SV_DispatchThreadid)
 {		
 	float2 velocity = VelocityTex[id.xy].xy;
@@ -119,12 +120,12 @@ void Kernel_Advection (uint3 id : SV_DispatchThreadid)
 	float4 densityPrev = DensityTex[previd];
 	density.a = 0.999f * densityPrev.a * obstacle;
 	
-	//Advect dye color，更多像是trick，差不多就行
-	density.rgb = BlendColor(density.rgb, densityPrev.rgb, 0.8f);
-	DensityTex[id.xy] = density;
-	
-	//Advect velocity，更多像是trick，差不多就行
-	VelocityTex[id.xy] = 0.99f * VelocityTex[previd] * obstacle;
+	// //Advect dye color，更多像是trick，差不多就行
+	// density.rgb = BlendColor(density.rgb, densityPrev.rgb, 0.8f);
+	// DensityTex[id.xy] = density;
+	//
+	// //Advect velocity，更多像是trick，差不多就行
+	// VelocityTex[id.xy] = 0.99f * VelocityTex[previd] * obstacle;
 
 	// float2 velocity = VelocityTex[id.xy].xy;
 	// float2 displacement = velocity * _deltaTime * advectSpeed;
@@ -133,13 +134,13 @@ void Kernel_Advection (uint3 id : SV_DispatchThreadid)
 	// float4 density = DensityTex[id.xy];
 	// float4 densityPrev = DensityTex[previd];
 	// density.a = 0.999f * densityPrev.a;
-	// density.rgb = BlendColor(density.rgb, densityPrev.rgb, 0.8f);
-	// DensityTex[id.xy] = density;
-	//
-	// VelocityTex[id.xy] = VelocityTex[previd];
+	density.rgb = BlendColor(density.rgb, densityPrev.rgb, 0.8f);
+	DensityTex[id.xy] = density;
+	
+	VelocityTex[id.xy] = VelocityTex[previd];
 }
 
-[numthreads(16, 16, 1)]
+[numthreads(32, 32, 1)]
 void Kernel_AddForce(uint3 id: SV_DispatchThreadID)
 {
 	float2 vel = VelocityTex[id.xy].xy;
@@ -149,7 +150,7 @@ void Kernel_AddForce(uint3 id: SV_DispatchThreadID)
 }
 
 //===========================================================
-[numthreads(16,16,1)]
+[numthreads(32,32,1)]
 void Kernel_UserInput (uint3 id : SV_DispatchThreadid)
 {
 	//mouse position
@@ -175,8 +176,8 @@ void Kernel_UserInput (uint3 id : SV_DispatchThreadid)
 	//density.rgb = DensityTex[id.xy];
 	
 	//Buoyancy, making the fluid goes out from center, instead of having gravity
-	float2 cdir = uv - center;
-	velocity += _deltaTime * density.a * cdir * 2.0; //本来项目这里是2.0，有需求的话再改一下
+	//float2 cdir = uv - center;
+	//velocity += _deltaTime * density.a * cdir * 2.0; //本来项目这里是2.0，有需求的话再改一下
 
 	//Add mouse velocity
 	float2 dir = sphereVelocity;
@@ -184,10 +185,10 @@ void Kernel_UserInput (uint3 id : SV_DispatchThreadid)
 
 	//Assign
 	VelocityTex[id.xy] = float2(velocity);
-	DensityTex[id.xy] = density;
+	//DensityTex[id.xy] = density;
 }
 //===========================================================
-[numthreads(16,16,1)]
+[numthreads(32,32,1)]
 void Kernel_Divergence (uint3 Id : SV_DispatchThreadid) //计算散度
 {
 	//Grid positions
@@ -215,7 +216,7 @@ void Kernel_Divergence (uint3 Id : SV_DispatchThreadid) //计算散度
 	DivergenceTex[id.xy] = div;
 }
 //===========================================================
-[numthreads(16,16,1)]
+[numthreads(32,32,1)]
 void Kernel_Jacobi (uint3 Id : SV_DispatchThreadid)
 {
 	//Grid positions
@@ -244,7 +245,7 @@ void Kernel_Jacobi (uint3 Id : SV_DispatchThreadid)
 	PressureTex[id.xy] = p;
 }
 //===========================================================
-[numthreads(16,16,1)]
+[numthreads(32,32,1)]
 void Kernel_SubtractGradient (uint3 Id : SV_DispatchThreadid)
 {
 	//Grid positions
@@ -273,6 +274,26 @@ void Kernel_SubtractGradient (uint3 Id : SV_DispatchThreadid)
 	float2 grad = float2(p_R - p_L, p_T - p_B) * curlSize;
 	velocity -= grad;
 	VelocityTex[id.xy] = float2(velocity); 
+}
+
+[numthreads(32,32,1)]
+void Kernel_Reset (uint3 Id : SV_DispatchThreadid)
+{
+	// Get current velocity and density
+	float2 vel = VelocityTex[Id.xy].xy;
+	float4 currentDensity = DensityTex[Id.xy];
+
+	// Calculate displacement based on velocity
+	float2 displacement = vel * _deltaTime * size * 5;
+	int2 previd = round(float2(Id.xy) - displacement);
+
+	// Interpolate between current density and input texture density over time
+	float resetFactor = 0.1f; // Adjust the decay rate as needed
+	float4 targetDensity = inputTex[previd];
+	currentDensity = lerp(currentDensity, targetDensity, resetFactor);
+
+	// Assign back to textures
+	DensityTex[Id.xy] = currentDensity;
 }
 
 

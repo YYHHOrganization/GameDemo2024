@@ -129,7 +129,7 @@ public class HDialogSystemMgr : MonoBehaviour
 
     public void ReadText(TextAsset textAsset)
     {
-        string asset = ReadTextsFromPath("Programmer/Scripts/HScripts/HGamePlay/HRogueLikeGame/DialogSystem/DialogQuestions/");
+        string asset = ReadTextsFromPath("Designer/CsvTable/DialogQuestions/");
         //找到textAsset对应的目录下的所有的文件
         dialogRows = asset.Split('\n');
         

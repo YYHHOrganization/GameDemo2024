@@ -100,16 +100,18 @@ MonoBehaviour:
   shader: {fileID: 7200000, guid: efe02d78b516a2a4d87925c8ea107b6a, type: 3}
   matResult: {fileID: 2100000, guid: f8393e82893fc224cb84c0836b145c16, type: 2}
   size: 1024
-  sphere: {fileID: 0}
   solverIterations: 50
   obstacleTex: {fileID: 2800000, guid: 1f7b6c289317dca4f8b574b3aef3e8cc, type: 3}
-  forceIntensity: 1000
-  forceRange: 0.01
+  startHue: 72
+  endHue: 252
+  forceIntensity: 800
+  forceRange: 0.008
   userDefDiffusionFactor: 0
-  diffusionFactor: 2048
-  showOriginTexture: {fileID: 2800000, guid: 1bfeb3e3e33e78a4fab673c3117a6e1e, type: 3}
-  advectSpeed: 500
+  diffusionFactor: 1024
+  showOriginTexture: {fileID: 2800000, guid: 73b6f7dcd7ec9e94091aa273b02a61c5, type: 3}
+  advectSpeed: 10
   vscosity: 0.5
+  testReset: 1
   timeSpeed: 10
 --- !u!1 &8661854842475042865
 GameObject:
