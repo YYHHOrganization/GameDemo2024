@@ -927,14 +927,134 @@ void Kernel_SubtractGradient (uint3 Id : SV_DispatchThreadid)
 
 
 
+## 4.TakeAway
+
+使用Compute shader进行流体模拟的核心在于下面的部分：
+
+### （1）Divergence的计算
+
+核心的代码如下所示：
+
+```c#
+//Divergence
+float halfPixelSize = ( 1.0/float(size) ) * 0.5;
+float div = halfPixelSize * (v_R.x - v_L.x + v_T.y - v_B.y);
+DivergenceTex[id.xy] = div;
+```
+
+其实就是计算散度，**散度是从velocity那张texture当中得到的**，size是模拟/图像的分辨率，这里是1024。
 
 
-如果要将屏幕上居中的图片纹理放大 x 倍并保持中心不变，你需要调整纹理的tiling（平铺）和offset（偏移）设置如下：
 
-1. **Tiling设置：**
-   - 如果你要将纹理放大 x 倍，那么tiling的参数应该设置为$ ( x \times \text{原始tiling} )$。这样做可以确保纹理在放大后正确覆盖到需要的区域。
-2. **Offset设置：**
-   - 保持中心不变意味着纹理的中心在放大后仍然处于屏幕中心位置。假设原始纹理的中心在 (0.5, 0.5) 的纹理坐标位置，那么放大后，你需要根据放大倍数重新计算offset。
-   - 如果放大倍数为 ( x )，那么新的offset应该为$ ( \left( 0.5 - \frac{0.5}{x}, 0.5 - \frac{0.5}{x} \right) )$。这会使得纹理的中心仍位于屏幕中心。
+### （2）Advect
 
-综上所述，在将纹理放大 x 倍并保持中心不变时，需要同时调整tiling和offset参数，确保纹理正确地放置和显示在屏幕上。
+> 对流平流
+>
+> - 流体会携带流体中的物体, 以及自身流动传送
+> - 采样当前网格的速度, 作用到当前位置, 倒推得到上一时刻的物理量
+> - 上一时刻的物理量就会来到当前位置
+> - 倒推法求出下一时刻会来到当前网格的物理量
+
+在这种规定下，我们的Advect将始终落后一帧，不过这对我们的模拟不是问题。根据图表，对于任何cell的细胞，在这个帧中计算对流部分：
+
+```c++
+field_amount_new_frame[cellPosition] += field_amount_old_frame[cellPosion-current_cell_velocity * timestep ]
+```
+
+> 依旧是一种隐式欧拉的思想，往以前看，而不是往后看。
+
+- Advect的过程是利用之前velocity贴图对应位置的值对当前的velocity贴图进行更新。在最终的实现当中这里也对density贴图进行了更新。
+
+
+
+### （3）Diffusion
+
+核心公式是下面这个：
+
+```c++
+d_X = (d0_X + diffusionFactor * deltaTime * (d_01 + d_02+ d_03 + d_04)) / (1 + 4 * diffusionFactor * deltaTime)
+```
+
+其中dX是当前帧的，d0X是之前帧的，这本质是一种隐式欧拉的思想，具体的推导过程可以参考1.（8）部分：Diffusion Implementation。具体在代码实现上可能会有所不同，但大致思路是类似的。
+
+- Diffusion的过程是利用之前的Density贴图对当前的Density进行更新，本质是一种扩散的过程。
+
+
+
+### （4）Pressure
+
+这里的核心使用Jacobi求解器计算Pressure，并进行更新。需要迭代多次求解，核心代码如下：
+```c#
+//New pressure
+float div = DivergenceTex[id.xy].x * size;
+p = (p_L + p_R + p_B + p_T - div ) / 4.0;
+PressureTex[id.xy] = p;
+```
+
+上面的p指的都是从上一帧的pressureTex中拿到的值，相当于对Pressure的值进行多次迭代求解（迭代求解需要用到之前求解出来的Divergence的值）。这里的核心思路在1.（7）部分已经介绍完了，这里再贴过来一次：
+
+> 要使用我们的求解器，我们将方程式重写，以便将中间的字段放在左侧，并对于任何给定的cell坐标i和j，我们有：
+>
+> ```c++
+> Solve(Velocity_Divergence)
+> {
+> 	p_new[i, j] =((p[i+1,j] + p[i,j+1] + p[i-1,j] + p[i,j-1]) - Velocity_Divergence[i, j])/4
+> }
+> ```
+>
+> ​	一旦这运行，我们可以执行：
+>
+> ```c++
+> CopyOldToNew()
+> {
+> 	p[i, j] = p_new[i, j]
+> }
+> ```
+>
+> ​	然后重复计算，以新的p值。我们重复这个过程大约30步，直到我们获得该帧的解决方案。对于第一个步骤，我们将p设置为零。
+>
+> ​	因此放在一起，将我们的投影看起来像这样：
+>
+> ```c++
+> Velocity_Div_field = Divergence(velocity_field); 
+> for(int i = 0; i < 30; i++) 
+> {
+>    Solve(Velocity_Div_field);
+>    CopyOldToNew();
+> } 
+> deltaP = Gradient(p);  
+> new_divergent_free_velocity = velocity_field - deltaP;
+> ```
+>
+
+
+
+### （5）Kernel_SubtractGradient
+
+其实看这部分的代码就懂了，就是上面Jacobi求解的最后步骤：
+
+```c#
+deltaP = Gradient(p);  
+new_divergent_free_velocity = velocity_field - deltaP;
+```
+
+这里就是对pressure那张贴图求解一个梯度，然后用velocity那张贴图减去求解出来的梯度，并赋值到VelocityTex当中。
+
+
+
+
+
+### （6）User Input
+
+顾名思义，这一项指的是玩家的输入。这里的核心思路应该是：
+
+- 如果考虑到玩家可能会在流体上涂抹新的颜色，则可以直接对density那张贴图进行修改；
+- 考虑玩家移动带来的velocity的影响，velocity那张贴图也会直接被修改；如果要复刻《原神》当中吞星之鲸副本当中的流体平面的流动的话，玩家移动就不要修改density，而是只修改velocity那张贴图。
+
+
+
+### （7）Reset
+
+如果只是玩家可以涂抹在一张图上，那最终的效果会比较丑（相当于把结果抹匀了），这里最好能够在一定程度上复原涂抹的痕迹。大致思路如下：
+
+- 

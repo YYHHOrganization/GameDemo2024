@@ -12,7 +12,6 @@ public class Fluid : MonoBehaviour
 	public ComputeShader shader;
 	public Material matResult; //输出的Material，会作为quad上的材质
 	public int size = 1024;
-	public Transform sphere; //represents mouse
 	public int solverIterations = 50;
 	public Texture2D obstacleTex;
 	public float startHue = 72f;
@@ -38,6 +37,7 @@ public class Fluid : MonoBehaviour
 	private int kernel_Divergence = 0;
 	private int kernel_SubtractGradient = 0;
 	private int kernel_addForce = 0;
+	private int kernel_reset = 0;
 
 	public bool userDefDiffusionFactor;
 	public float diffusionFactor = 100f;
@@ -75,7 +75,7 @@ public class Fluid : MonoBehaviour
 		// texBuffer.SetData(texData);
 
 		//Output
-		matResult.SetTexture("_MainTex", densityTex);
+		matResult.SetTexture("_MainTex", densityTex); 
 
 		//Set shared variables for compute shader
 		shader.SetInt("size", size); //texture resolution
@@ -113,6 +113,8 @@ public class Fluid : MonoBehaviour
 		kernelCount++;
 		kernel_addForce = shader.FindKernel("Kernel_AddForce");
 		kernelCount++;
+		kernel_reset = shader.FindKernel("Kernel_Reset");
+		kernelCount++;
 		for (int kernel = 0; kernel < kernelCount; kernel++)
 		{
 			/*
@@ -130,7 +132,7 @@ public class Fluid : MonoBehaviour
 		}
 
 		//Init data texture value
-		dispatchSize = Mathf.CeilToInt(size / 16);
+		dispatchSize = Mathf.CeilToInt(size / 32);
 		DispatchCompute(kernel_Init);
 
 		roomSize = this.transform.parent.GetComponent<YRouge_RoomBase>().RoomSpaceKeep;
@@ -158,6 +160,8 @@ public class Fluid : MonoBehaviour
 	{
 		this.isInteractive = isInteractive;
 	}
+
+	public bool testReset = false;
 	
 	public static Color color;
 	[Range(1f,20f)] public float timeSpeed = 10f;
@@ -168,7 +172,7 @@ public class Fluid : MonoBehaviour
 		Vector2 npos = GetPlayerPos();
 		//Vector2 npos = new Vector2( sphere.position.x / transform.localScale.x, sphere.position.z / transform.localScale.z );
 		//Debug.Log(npos);
-		shader.SetVector("spherePos",npos);
+		shader.SetVector("spherePos",npos);  //-0.5到0.5
 
 		//Send sphere (mouse) velocity
 		Vector2 velocity = (npos - sphere_prevPos);
@@ -180,13 +184,17 @@ public class Fluid : MonoBehaviour
 		DispatchCompute (kernel_Diffusion);
 		DispatchCompute (kernel_Advection);
 		DispatchCompute (kernel_UserInput);
-		DispatchCompute(kernel_addForce);
+		//DispatchCompute(kernel_addForce);
 		DispatchCompute (kernel_Divergence);
 		for(int i=0; i<solverIterations; i++)
 		{
 			DispatchCompute (kernel_Jacobi);
 		}
 		DispatchCompute (kernel_SubtractGradient);
+		if (testReset)
+		{
+			DispatchCompute (kernel_reset);
+		}
 		
 		//Save the previous position for velocity
 		sphere_prevPos = npos;

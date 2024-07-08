@@ -55,7 +55,11 @@ public class YRogueDungeonManager : MonoBehaviour
         
         StartCoroutine(EnterNewLevelCoroutine());//等待加载完 ，后面用别的方法吧
     }
+    #if UNITY_EDITOR
+    float loadFakeTime = 1f;
+    #else 
     float loadFakeTime = 5f;
+    #endif
     public float GetLoadFakeTime()
     {
         return loadFakeTime;
