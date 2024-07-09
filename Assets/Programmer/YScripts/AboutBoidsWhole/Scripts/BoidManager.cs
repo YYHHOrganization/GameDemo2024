@@ -10,9 +10,12 @@ public class BoidManager : MonoBehaviour {
     public ComputeShader compute;
     Boid[] boids;
     public Transform target;
-
-    void Start () 
+    public Spawner FishspSawner;
+    bool canStartSimu = false;
+    void Start ()
     {
+        //FishspSawner = gameObject.GetComponentInChildren<Spawner>();
+        return;
         boids = FindObjectsOfType<Boid> ();
         foreach (Boid b in boids) 
         {
@@ -21,9 +24,10 @@ public class BoidManager : MonoBehaviour {
         }
 
     }
-
+    
     void Update () 
     {
+        if(!canStartSimu)return;
         if (boids != null)
         {
 
@@ -84,6 +88,40 @@ public class BoidManager : MonoBehaviour {
                 //5个Vector3和一个int
                 return sizeof (float) * 3 * 5 + sizeof (int);
             }
+        }
+    }
+
+    public void SetAndStartBoids(Boid[] boids1)
+    {
+        boids = boids1;
+        //开始模拟
+        StartSimulation();
+    }
+    public void StartBoids()
+    {
+        canStartSimu = true;
+        FishspSawner.SpawnBoid(this);
+    }
+    public void StopBoids()
+    {
+        canStartSimu = false;
+        DestroyBoid();
+    }
+
+    private void StartSimulation()
+    {
+        canStartSimu = true;
+        foreach (Boid b in boids) 
+        {
+            b.Initialize (settings, null);
+            //b.Initialize (settings, target);
+        }
+    }
+    public void DestroyBoid()
+    {
+        for (int i = 0; i < boids.Length; i++)
+        {
+            Destroy(boids[i].gameObject);
         }
     }
 }

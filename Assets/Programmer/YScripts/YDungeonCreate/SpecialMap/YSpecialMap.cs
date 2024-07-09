@@ -55,6 +55,8 @@ public class YSpecialMap : MonoBehaviour
     }
 
     public GameObject waterField;
+
+    public BoidManager boidManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -95,6 +97,13 @@ public class YSpecialMap : MonoBehaviour
         ReadSpecialMapData();
         //展示相机出现
         waterField.gameObject.SetActive(true);
+        
+        //召唤鱼群
+        if (boidManager != null)
+        {
+            boidManager.StartBoids();
+        }
+        
         if (screenDistortFeature == null)
         {
             string name = "WaterDistortion";
@@ -148,6 +157,13 @@ public class YSpecialMap : MonoBehaviour
         //关闭雾效
         SetFogOnOrFalse(false);
         waterField.gameObject.SetActive(false);
+        
+        //将鱼群删除
+        if (boidManager != null)
+        {
+            boidManager.StopBoids();
+        }
+        
         if (screenDistortFeature == null)
         {
             string name = "WaterDistortion";
