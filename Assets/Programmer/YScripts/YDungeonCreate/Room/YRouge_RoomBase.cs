@@ -102,7 +102,9 @@ public class YRouge_RoomBase : MonoBehaviour
         boxCollider = gameObject.AddComponent<BoxCollider>();
         boxCollider.isTrigger = true;
         // boxCollider.size = new Vector3(10, 10, 10);
-        boxCollider.size = new Vector3(roomWidth-0.5f, 10, roomLength-0.5f);
+        
+        float bias = 2f;
+        boxCollider.size = new Vector3(roomWidth-bias, 10, roomLength-bias);
         boxCollider.center = new Vector3(0, 0, 0);
         
         gameObject.layer = LayerMask.NameToLayer("IgnoreBullet");
