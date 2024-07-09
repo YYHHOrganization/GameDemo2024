@@ -1058,3 +1058,21 @@ new_divergent_free_velocity = velocity_field - deltaP;
 如果只是玩家可以涂抹在一张图上，那最终的效果会比较丑（相当于把结果抹匀了），这里最好能够在一定程度上复原涂抹的痕迹。大致思路如下：
 
 - 
+
+- ```
+  float2 vel = VelocityTex[Id.xy];
+  float2 displacement = vel * _deltaTime * size * 3;
+  float2 dir = normalize(vel);
+  float dt = _deltaTime;
+  vel -= vel * dt * advectSpeed * 0.1f;
+  float2 dir1 = normalize(vel);
+  float dotv = dot(dir, dir1);
+  dotv = dotv < 0 ? 0 : 1;
+  vel *= dotv;
+  
+  //Get previous id for Prev value -> current value
+  int2 previd = round(float2(Id.xy) - displacement);
+  
+  VelocityTex[Id.xy] = float2(vel);
+  DensityTex[Id.xy] = inputTex[previd];
+  ```
