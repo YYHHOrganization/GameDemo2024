@@ -203,7 +203,8 @@ MonoBehaviour:
   - {fileID: 8650699066453416813}
   - {fileID: -5216069023767136342}
   - {fileID: -3048806716413776975}
-  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5
+  - {fileID: 6568219776115967600}
+  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -289,6 +290,26 @@ MonoBehaviour:
   fetchColorBuffer: 1
   requirements: 0
   passMaterial: {fileID: 2100000, guid: 2c19ce37a6fc7914cbbb3197c8ff9a01, type: 2}
+  passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1
+--- !u!114 &6568219776115967600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d613f08f173d4dd895bb07b3230baa9, type: 3}
+  m_Name: WaterDistortion
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  injectionPoint: 600
+  fetchColorBuffer: 1
+  requirements: 0
+  passMaterial: {fileID: 2100000, guid: 25b76405c840d25468af5af1ba9e9bba, type: 2}
   passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1

@@ -5,6 +5,7 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Rendering.Universal;
 using Random = UnityEngine.Random;
 
 public class YSpecialMap : MonoBehaviour
@@ -23,7 +24,7 @@ public class YSpecialMap : MonoBehaviour
 
     //当进入特殊地图之后，有一个函数会一直监听是否离开了地图
     
-    
+    private ScriptableRendererFeature screenDistortFeature = null;
     public Transform BornPlace
     {
         get
@@ -52,6 +53,8 @@ public class YSpecialMap : MonoBehaviour
             return landingPlace;
         }
     }
+
+    public GameObject waterField;
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +66,17 @@ public class YSpecialMap : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (screenDistortFeature == null)
+        {
+            string name = "WaterDistortion";
+            screenDistortFeature =
+                HPostProcessingFilters.Instance.GetRenderFeature(name);
+        }
+        screenDistortFeature.SetActive(false);
     }
 
     [SerializeField]private GameObject CameraIn;
@@ -80,7 +94,21 @@ public class YSpecialMap : MonoBehaviour
         //设置角色出生点
         ReadSpecialMapData();
         //展示相机出现
+        waterField.gameObject.SetActive(true);
+        if (screenDistortFeature == null)
+        {
+            string name = "WaterDistortion";
+            screenDistortFeature =
+                HPostProcessingFilters.Instance.GetRenderFeature(name);
+        }
+        screenDistortFeature.SetActive(true);
+        //天气放晴
+        HRogueWeatherController weatherController =
+            yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        weatherController.SetWeatherControl(false);
+        
         CameraIn.SetActive(true);
+        
         DOVirtual.DelayedCall(0.3f, () =>
         {
             CameraIn.SetActive(false);
@@ -97,7 +125,7 @@ public class YSpecialMap : MonoBehaviour
     }
     void SetFogOnOrFalse(bool isOn)
     {
-        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",isOn);
+        HPostProcessingFilters.Instance.SetPostProcessingWithName("FogHeight",isOn, 0.05f);
         HPostProcessingFilters.Instance.SetPostProcessingWithName("FogDistance",isOn);
     }
     private void OnPlayerExit()
@@ -119,6 +147,17 @@ public class YSpecialMap : MonoBehaviour
         
         //关闭雾效
         SetFogOnOrFalse(false);
+        waterField.gameObject.SetActive(false);
+        if (screenDistortFeature == null)
+        {
+            string name = "WaterDistortion";
+            screenDistortFeature =
+                HPostProcessingFilters.Instance.GetRenderFeature(name);
+        }
+        screenDistortFeature.SetActive(true);
+        HRogueWeatherController weatherController =
+            yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
+        weatherController.SetWeatherControl(true);
     }
     private void SetBillboard()
     {
