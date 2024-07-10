@@ -44,6 +44,10 @@ public class HPlayerFallState : HPlayerBaseState, IRootState
         {
             SwitchState(_factory.Die());
         }
+        else if(_ctx.IsFloatOnWater)
+        {
+            SwitchState(_factory.FloatOnWater());
+        }
     }
 
     public override void InitializeSubState()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -27,6 +28,8 @@ public class HPlayerStateMachine : MonoBehaviour
     private int isRecallStandingIdleHash;
     private int isSpellRecallHash;
     private float rotationFactorPerFrame = 15.0f;
+    
+    private int isSwimmingHash;
 
     private bool isRunPressed;
     float runMultiplier = 5.0f;
@@ -40,6 +43,11 @@ public class HPlayerStateMachine : MonoBehaviour
     private float maxJumpTime = 0.75f;
     private bool isJumping = false;
     private bool _requireNewJumpPress = false;
+    private bool isDiveIntoWaterPress = false;
+    public bool IsDiveIntoWaterPress
+    {
+        get { return isDiveIntoWaterPress; }
+    }
     
     float gravity = -9.8f;
     float groundedGravity = -0.05f;
@@ -89,9 +97,27 @@ public class HPlayerStateMachine : MonoBehaviour
     {
         get { return isSpellRecallHash; }
     }
+    
+    public int IsSwimmingHash
+    {
+        get { return isSwimmingHash; }
+    }
     public bool IsJumpPressed
     {
         get { return isJumpPressed; }
+    }
+
+    private bool isInWater = false;
+    private bool isFloatOnWater = false;
+    
+    public bool IsFloatOnWater
+    {
+        get { return isFloatOnWater; }
+    }
+
+    public bool IsInWater
+    {
+        get { return isInWater; }
     }
     
     public HPlayerBaseState CurrentState
@@ -200,6 +226,16 @@ public class HPlayerStateMachine : MonoBehaviour
     {
         get { return isRunningHash; }
     }
+
+    public void SetInWater(bool inWater)
+    {
+        isInWater = inWater;
+    }
+
+    public void SetOnWaterFloat(bool isOnWater)
+    {
+        isFloatOnWater = isOnWater;
+    }
     
     public float AppliedMovementX
     {
@@ -258,6 +294,10 @@ public class HPlayerStateMachine : MonoBehaviour
 
         playerInput.CharacterControls.Skill1.started += OnSkill1;
         playerInput.CharacterControls.Skill1.canceled += OnSkill1;
+        
+        //test!!!
+        playerInput.CharacterControls.Jump.started += OnDiveIntoWater;
+        playerInput.CharacterControls.Jump.canceled += OnDiveIntoWater;
         animator = GetComponent<Animator>();
         
         isWalkingHash = Animator.StringToHash("isWalking");
@@ -269,6 +309,8 @@ public class HPlayerStateMachine : MonoBehaviour
         isSpellRecallHash = Animator.StringToHash("isSpellRecall");
         velocityXHash = Animator.StringToHash("VelocityX");
         velocityZHash = Animator.StringToHash("VelocityZ");
+        
+        isSwimmingHash = Animator.StringToHash("isSwimming");
         
         skillScript = GetComponent<HCharacterSkillBase>();
         
@@ -307,8 +349,11 @@ public class HPlayerStateMachine : MonoBehaviour
         }
         Vector3 forward = playerCamera.transform.forward;
         Vector3 right = playerCamera.transform.right;
-        forward.y = 0;
-        right.y = 0;
+        if (!isInWater)
+        {
+            forward.y = 0;
+            right.y = 0;
+        }
         forward = forward.normalized;
         right = right.normalized;
         //create direction-relative input vectors, 也就是说在相机的前方和右方的投影
@@ -317,7 +362,14 @@ public class HPlayerStateMachine : MonoBehaviour
             
         //create camera-relative movement
         Vector3 cameraRelativeMovement = forwardRelativeVerticalInput + rightRelativeHorizontalInput;
-        cameraRelativeMovement.y = currentYValue;
+        if(!isInWater) cameraRelativeMovement.y = currentYValue;
+        // else
+        // {
+        //     if (isJumpPressed) //在水里，按住空格键的时候只能往下游
+        //     {
+        //         cameraRelativeMovement.y = ((cameraRelativeMovement.y < 0) ? cameraRelativeMovement.y : 0);
+        //     }
+        // }
         return cameraRelativeMovement;
     }
     
@@ -347,6 +399,11 @@ public class HPlayerStateMachine : MonoBehaviour
     {
         isJumpPressed = context.ReadValueAsButton();
         _requireNewJumpPress = false;
+    }
+
+    void OnDiveIntoWater(InputAction.CallbackContext context)
+    {
+        isDiveIntoWaterPress = context.ReadValueAsButton();
     }
 
     void OnSkill1(InputAction.CallbackContext context)

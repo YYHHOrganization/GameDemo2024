@@ -152,6 +152,8 @@ void TriplanarProjection_float(
 - **混合结果**：根据权重Node_Blend混合三个方向上的纹理采样结果，得到最终的输出Out。
 
 > 在当前这个参考的项目当中，Caustics是由Voronoi噪声合成得到的+三平面映射得到的，得到的结果会用一张标记水面上水面下的Mask相乘，然后与基础的材质做add操作。
+>
+> Voronoi合成Caustics的效果实测下来一般，或许用贴图的方式来做会更好一些？
 
 ------
 
