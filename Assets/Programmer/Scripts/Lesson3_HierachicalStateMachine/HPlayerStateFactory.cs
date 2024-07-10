@@ -14,7 +14,12 @@ public class HPlayerStateFactory
         jump,
         fall,
         Skill1,
-        die
+        die,
+        withwater,
+        swimIdle,
+        swimSlow,
+        swimFast,
+        floatOnWater,
     }
     
     public HPlayerStateFactory(HPlayerStateMachine context)
@@ -28,6 +33,11 @@ public class HPlayerStateFactory
         _states[PlayerStates.fall] = new HPlayerFallState(_context, this);
         _states[PlayerStates.Skill1] = new HPlayerSkill1State(_context, this);
         _states[PlayerStates.die] = new YPlayerDieState(_context, this);
+        _states[PlayerStates.withwater] = new HPlayerWithWaterState(_context, this);
+        _states[PlayerStates.swimIdle] = new HPlayerSwimIdleState(_context, this);
+        _states[PlayerStates.swimSlow] = new HPlayerSwimSlowState(_context, this);
+        _states[PlayerStates.swimFast] = new HPlayerSwimFastState(_context, this);
+        _states[PlayerStates.floatOnWater] = new HPlayerWaterFloatState(_context, this);
     }
 
     public HPlayerBaseState Idle()
@@ -69,4 +79,30 @@ public class HPlayerStateFactory
     {
         return _states[PlayerStates.die];
     }
+    
+    public HPlayerBaseState WithWater()
+    {
+        return _states[PlayerStates.withwater];
+    }
+    
+    public HPlayerBaseState SwimIdle()
+    {
+        return _states[PlayerStates.swimIdle];
+    }
+    
+    public HPlayerBaseState SwimSlow()
+    {
+        return _states[PlayerStates.swimSlow];
+    }
+    
+    public HPlayerBaseState SwimFast()
+    {
+        return _states[PlayerStates.swimFast];
+    }
+    
+    public HPlayerBaseState FloatOnWater()
+    {
+        return _states[PlayerStates.floatOnWater];
+    }
+    
 }

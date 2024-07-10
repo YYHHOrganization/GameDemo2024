@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HPlayerJumpState : HPlayerBaseState, IRootState
@@ -61,6 +62,10 @@ public class HPlayerJumpState : HPlayerBaseState, IRootState
         {
             SwitchState(_factory.Die());
         }
+        else if(_ctx.IsFloatOnWater)
+        {
+            SwitchState(_factory.FloatOnWater());
+        }
     }
 
     public override void UpdateState()
@@ -72,6 +77,7 @@ public class HPlayerJumpState : HPlayerBaseState, IRootState
 
     void HandleJump()
     {
+        if (_ctx.IsInWater) return; //在水中的时候不能jump
         if (_ctx.JumpCount <= 3 && _ctx.CurrentJumpResetRoutine != null)
         {
             _ctx.StopCoroutine(_ctx.CurrentJumpResetRoutine);

@@ -53,6 +53,10 @@ public class HPlayerGroundedState : HPlayerBaseState, IRootState
         {
             SwitchState(_factory.Die());
         }
+        else if(_ctx.IsFloatOnWater)
+        {
+            SwitchState(_factory.FloatOnWater());
+        }
     }
 
     // private float gravity = -9.8f;
