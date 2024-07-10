@@ -47,7 +47,6 @@ public class BoidManager : MonoBehaviour {
             compute.SetInt ("numBoids", boids.Length);
             compute.SetFloat ("viewRadius", settings.perceptionRadius);
             compute.SetFloat ("avoidRadius", settings.avoidanceRadius);
-
             
             //threadGroupSize=1024 是线程组的大小，这里的计算是为了确保每个线程组都有1024个线程
             int threadGroups = Mathf.CeilToInt (numBoids / (float) threadGroupSize);

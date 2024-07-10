@@ -12,6 +12,8 @@ public class YSpecialMap : MonoBehaviour
 {
     public string mapName;
     [SerializeField]private Transform PlaceChestCenter;
+    [SerializeField]private Transform UnderWater_PlaceChestCenter;
+    
     [SerializeField]private string specialMapID;
     private List<GameObject> items = new List<GameObject>();
     //平台 放宝物的
@@ -198,9 +200,14 @@ public class YSpecialMap : MonoBehaviour
         //获取应该有几个物体摆放在这个房间中
         // int itemCount = specialMapData._ItemCount();
         int itemCount = Random.Range(1,6);
+        //多增加一个放置于水下的宝箱
+        // int itemCount = Random.Range(1, 6) + 1;
         
         List<Vector3> itemPosition = new List<Vector3>();
         itemPosition=GenerateItemTransorm(itemCount);
+        // //额外生成水下宝箱平台
+        // itemPosition.Add(UnderWater_PlaceChestCenter.position);
+        
         
         //解析道具房间数据 itemRoomData.ItemIDField
         string[] itemIDs = specialMapData.ItemIDField.Split(';');
@@ -224,13 +231,36 @@ public class YSpecialMap : MonoBehaviour
             itemIDList.RemoveAt(randomItemIndex);
             GenerateEffPlatform( PlaceChestCenter,itemPosition[i]);
         }
+        
+        //额外生成水下宝箱
+        int randomItemIndex1 = Random.Range(0, itemIDList.Count);
+        items.Add
+        (
+            HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem
+            (
+                itemIDList[randomItemIndex1],
+                // transform,
+                UnderWater_PlaceChestCenter,
+                new Vector3(0,0.5f,0)
+            )
+        );
+
+        GenerateEffPlatform( UnderWater_PlaceChestCenter,
+            new Vector3(0,0,0),
+            "YPlatformUnderWater");
     }
-    private void GenerateEffPlatform(Transform parent,Vector3 pos)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="localPos">相对于父节点的localPos</param>
+    /// <param name="AddLink"></param>
+    private void GenerateEffPlatform(Transform parent,Vector3 localPos,string AddLink = "YPlatformRogue")
     {
         // YPlatformRogue
-        string AddLink = "YPlatformRogue";
+        //string AddLink = "YPlatformRogue";
         GameObject itemEffPlatform = Addressables.InstantiateAsync(AddLink, parent).WaitForCompletion();
-        itemEffPlatform.transform.localPosition = pos;
+        itemEffPlatform.transform.localPosition = localPos;
         
         platformList.Add(itemEffPlatform);
     }
