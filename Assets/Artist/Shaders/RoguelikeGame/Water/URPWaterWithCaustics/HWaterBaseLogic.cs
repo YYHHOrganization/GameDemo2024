@@ -18,6 +18,7 @@ public class HWaterBaseLogic : MonoBehaviour
     {
         locateY = waterFloor.position.y;
         ripple = Addressables.LoadAssetAsync<GameObject>("EffectWaterRipple").WaitForCompletion();
+        waterMosaicPrefab = Addressables.LoadAssetAsync<GameObject>("DistortionUnderWaterMosaic").WaitForCompletion();
     }
 
     private bool isInWater = false;
@@ -25,6 +26,8 @@ public class HWaterBaseLogic : MonoBehaviour
     private bool isInDivingCD = false;
     private GameObject rippleObj;
     private GameObject ripple;
+    private GameObject waterMosaicPrefab;
+    private GameObject waterMosaic;
     private enum WaterEffectType
     {
         OnWaterFlow, //在水面上
@@ -60,17 +63,38 @@ public class HWaterBaseLogic : MonoBehaviour
                     rippleObj = Instantiate(ripple, player.transform);
                     rippleObj.transform.position = new Vector3(rippleObj.transform.position.x, locateY - 0.2f, rippleObj.transform.position.z);
                 }
+                else
+                {
+                    rippleObj.transform.position = new Vector3(rippleObj.transform.position.x, locateY - 0.2f, rippleObj.transform.position.z);
+                    rippleObj.SetActive(true);
+                }
+                if (waterMosaic != null)  //水面上的Mosaic效果会有bug，因为screen Color是渲染半透明物体之前的，所以颜色有问题，解决方案是在水面上暂时不做这个效果
+                {
+                    waterMosaic.SetActive(false);
+                }
                 break;
             case WaterEffectType.InWater:
                 if (rippleObj)
                 {
-                    Destroy(rippleObj);
+                    rippleObj.SetActive(false);
+                }
+                if (waterMosaic == null)
+                {
+                    waterMosaic = Instantiate(waterMosaicPrefab, player.transform);
+                }
+                else
+                {
+                    waterMosaic.SetActive(true);
                 }
                 break;
             case WaterEffectType.LeaveWater:
                 if (rippleObj)
                 {
                     Destroy(rippleObj);
+                }
+                if (waterMosaic != null)
+                {
+                    Destroy(waterMosaic);
                 }
                 break;
         }
