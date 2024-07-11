@@ -1,6 +1,6 @@
 ﻿消息标识符,消息类型,消息内容,消息显示的持续时间,视觉效果（比如淡入淡出，左滑进入等）,消息的Addressable链接
 MessageId,MessageKind,MessageContent,MessageLastTime,MessageTransitionEffect,MessagePrefabLink
-参考下面的写，不要重复,"（1：屏幕上方出现的消息， 2：大型弹窗（例如教程,需要用户点掉） 3：屏幕下方弹出的消息（比如获得成就），4:屏幕中间弹出的消息（比如重要提示等））,5:二次确认窗口, 6:从背包提交物品窗口,7:问答选项窗口，会把选择的答案记录到文本中;8:Tips,出现的位置为屏幕右上角(目前只支持倒计时);9:黑屏转场;10:屏幕上方重要提示，比如Boss的某个阶段",后面加入一些转义符的配置,消息持续时间,淡入淡出等,没有资源类型的填NULL
+参考下面的写，不要重复,"（1：屏幕上方出现的消息， 2：大型弹窗（例如教程,需要用户点掉） 3：屏幕下方弹出的消息（比如获得成就），4:屏幕中间弹出的消息（比如重要提示等））,5:二次确认窗口, 6:从背包提交物品窗口,7:问答选项窗口，会把选择的答案记录到文本中;8:Tips,出现的位置为屏幕右上角(目前只支持倒计时);9:黑屏转场;10:屏幕上方重要提示，比如Boss的某个阶段;11:按键提示",后面加入一些转义符的配置,消息持续时间,淡入淡出等,没有资源类型的填NULL
 LEVEL_IN_MSG_0,1,关卡1：小城镇,5,FadeInAndFadeOut,NULL
 LEVEL_IN_MSG_1,1,关卡2：无主荒星,5,FadeInAndFadeOut,NULL
 LEVEL_LOCATE_MSG_0,1,<size=80%>宁静祥和的小城市，是休闲的好去处</size>,5,FadeInAndFadeOut,NULL
@@ -44,3 +44,4 @@ ConfirmExitGame,5,是否确定要退出游戏？,-1,ScaleFadeInNoOut,NULL
 CANCEL_GAME_IN_ROGUE,5,是否确定要退出小游戏？,-1,ScaleFadeInNoOut,NULL
 Tut_LearnRuizao,2,基础操作—枘凿六合,-1,ScaleFadeInNoOut,Tut_LearnRuizao
 SHOW_CONFIRM_GAMETIP,5,游戏提示：,-1,ScaleFadeInNoOut,NULL
+SHOW_KEYBOARD_CTRL,11,左Alt+移动视角下潜,-1,ScaleFadeInNoOut,DiveIntoIcon

@@ -14,6 +14,7 @@ public class HMessageShowMgr : MonoBehaviour
     private Transform messageKind1Panel;
     private Transform messageKind2Panel;
     private Transform messageKind10Panel;
+    private Transform messageKind11Panel;
     private string messageKind2UIPath = "messageKind2Prefab";
     private string messageKind3UIPath = "messageKind3Prefab";
     private string messageKind4UIPath = "messageKind4Prefab";
@@ -68,6 +69,7 @@ public class HMessageShowMgr : MonoBehaviour
         messageKind9Panel = messagePanel.Find("messageKind9Prefab");
         messageKind9Panel.gameObject.SetActive(false);
         messageKind10Panel = messagePanel.Find("messageKind10Prefab");
+        messageKind11Panel = messagePanel.Find("messageKind11Prefab");
         messageKind2Content = messageKind2Panel.GetComponentInChildren<TMP_Text>();
         messageKind7Content = messageKind7Panel.GetComponentInChildren<TMP_Text>();
         messageKind9Content = messageKind9Panel.GetComponentInChildren<TMP_Text>();
@@ -85,6 +87,26 @@ public class HMessageShowMgr : MonoBehaviour
         go.transform.GetComponentInChildren<TMP_Text>().text = messageContent;
         DoMessageTransitionEffect(go.transform, messageTransitionEffect, messageShowTime);
         Destroy(go, messageShowTime);
+    }
+
+    private void ShowMessageKind11(MessageBoxBaseStruct message, bool onOrOff)
+    {
+        Transform showUI = messageKind11Panel.Find("KeyboardShowUI");
+        Transform showTips = messageKind11Panel.Find("KeyboardTip");
+        if (onOrOff)
+        {
+            showTips.GetComponent<TMP_Text>().text = message.MessageContent;
+            string link = message.MessageLink;
+            Sprite icon = Addressables.LoadAssetAsync<Sprite>(link).WaitForCompletion();
+            showUI.GetComponent<Image>().sprite = icon;
+            showUI.gameObject.SetActive(true);
+            showTips.gameObject.SetActive(true);
+        }
+        else
+        {
+            showUI.gameObject.SetActive(false);
+            showTips.gameObject.SetActive(false);
+        }
     }
 
     private void ShowMessageKind10(MessageBoxBaseStruct message)
@@ -310,8 +332,21 @@ public class HMessageShowMgr : MonoBehaviour
             }
         }
     }
-    
-    
+
+    public void ShowMessageOnOrOff(string messageId, bool isOn)
+    {
+        MessageBoxBaseStruct message = yPlanningTable.Instance.Messages[messageId];
+        if (message != null)
+        {
+            int messageKind = message.MessageType;
+            switch (messageKind)
+            {
+                case 11:
+                    ShowMessageKind11(message, isOn);
+                    break;
+            }
+        }
+    }
     
     public void ShowMessage(string messageId, string overrideMessageContent=null)
     {
@@ -346,6 +381,7 @@ public class HMessageShowMgr : MonoBehaviour
                 case 10:
                     ShowMessageKind10(message);
                     break;
+                
                     
             }
         }

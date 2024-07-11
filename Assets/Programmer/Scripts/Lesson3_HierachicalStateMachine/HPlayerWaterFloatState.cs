@@ -15,11 +15,20 @@ public class HPlayerWaterFloatState : HPlayerBaseState, IRootState
         _ctx.AppliedMovementY = 0;
         //_ctx.CurrentMovementY = -0.5f;
     }
+    
+    
     public override void EnterState()
     {
         _ctx.Animator.SetBool(_ctx.IsSwimmingHash, true);
         InitializeSubState();
         HandleGravity();
+        HandleUIShow(true);
+    }
+    
+    private void HandleUIShow(bool isActive)
+    {
+        //显示潜水对应的UI
+        HMessageShowMgr.Instance.ShowMessageOnOrOff("SHOW_KEYBOARD_CTRL", isActive);
     }
 
     public override void InitializeSubState()
@@ -40,6 +49,7 @@ public class HPlayerWaterFloatState : HPlayerBaseState, IRootState
     {
         _ctx.Animator.SetBool(_ctx.IsSwimmingHash, false);
         _ctx.SetOnWaterFloat(false);
+        HandleUIShow(false);
     }
 
     public override void CheckSwitchStates()
