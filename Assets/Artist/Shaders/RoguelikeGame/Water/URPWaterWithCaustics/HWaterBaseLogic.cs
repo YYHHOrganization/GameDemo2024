@@ -58,7 +58,7 @@ public class HWaterBaseLogic : MonoBehaviour
                 if (rippleObj == null)
                 {
                     rippleObj = Instantiate(ripple, player.transform);
-                    rippleObj.transform.position = new Vector3(rippleObj.transform.position.x, locateY, rippleObj.transform.position.z);
+                    rippleObj.transform.position = new Vector3(rippleObj.transform.position.x, locateY - 0.2f, rippleObj.transform.position.z);
                 }
                 break;
             case WaterEffectType.InWater:
@@ -95,7 +95,7 @@ public class HWaterBaseLogic : MonoBehaviour
                 other.gameObject.GetComponent<HPlayerStateMachine>().SetOnWaterFloat(true);
                 SetEffect(WaterEffectType.OnWaterFlow, other);
             }
-            else if(other.transform.position.y < locateY - 2.0f) //潜入水里了
+            else if(other.transform.position.y < locateY - 1.5f) //潜入水里了
             {
                 SetEffect(WaterEffectType.InWater, other);
                 //添加进入水里的特效
@@ -121,6 +121,7 @@ public class HWaterBaseLogic : MonoBehaviour
 
     private void Update()
     {
+        locateY = waterFloor.position.y;
         // if (!player)
         // {
         //     GameObject go = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer();
