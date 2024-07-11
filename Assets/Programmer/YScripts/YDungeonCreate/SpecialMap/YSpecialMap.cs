@@ -13,6 +13,7 @@ public class YSpecialMap : MonoBehaviour
     public string mapName;
     [SerializeField]private Transform PlaceChestCenter;
     [SerializeField]private Transform UnderWater_PlaceChestCenter;
+    GameObject UnderWater_PlaceChestGameObject;
     
     [SerializeField]private string specialMapID;
     private List<GameObject> items = new List<GameObject>();
@@ -103,7 +104,8 @@ public class YSpecialMap : MonoBehaviour
         //召唤鱼群
         if (boidManager != null)
         {
-            boidManager.StartBoids();
+            //设置target
+            boidManager.StartBoids(target:UnderWater_PlaceChestGameObject.transform);
         }
         
         if (screenDistortFeature == null)
@@ -236,7 +238,7 @@ public class YSpecialMap : MonoBehaviour
         int randomItemIndex1 = Random.Range(0, itemIDList.Count);
         items.Add
         (
-            HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem
+            UnderWater_PlaceChestGameObject = HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem
             (
                 itemIDList[randomItemIndex1],
                 // transform,
