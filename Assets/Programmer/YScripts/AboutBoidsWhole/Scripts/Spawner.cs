@@ -39,7 +39,7 @@ public class Spawner : MonoBehaviour {
         for (int i = 0; i < spawnCount; i++) 
         {
             Vector3 pos = transform.position + Random.insideUnitSphere * spawnRadius;
-            Boid boid = Instantiate (prefab);
+            Boid boid = Instantiate (prefab,transform);
             boid.transform.position = pos;
             boid.transform.forward = Random.insideUnitSphere;
 
