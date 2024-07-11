@@ -295,9 +295,8 @@ public class HPlayerStateMachine : MonoBehaviour
         playerInput.CharacterControls.Skill1.started += OnSkill1;
         playerInput.CharacterControls.Skill1.canceled += OnSkill1;
         
-        //test!!!
-        playerInput.CharacterControls.Jump.started += OnDiveIntoWater;
-        playerInput.CharacterControls.Jump.canceled += OnDiveIntoWater;
+        playerInput.CharacterControls.DiveIntoWater.started += OnDiveIntoWater;
+        playerInput.CharacterControls.DiveIntoWater.canceled += OnDiveIntoWater;
         animator = GetComponent<Animator>();
         
         isWalkingHash = Animator.StringToHash("isWalking");

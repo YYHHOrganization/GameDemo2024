@@ -2015,7 +2015,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2462171438740946601
 Transform:
   m_ObjectHideFlags: 0
@@ -2051,7 +2051,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 100, y: 3, z: 100}
-  m_Center: {x: 7.43, y: 0, z: 5.46}
+  m_Center: {x: 7.43, y: 0, z: 7.43}
 --- !u!1 &7190122891093699772
 GameObject:
   m_ObjectHideFlags: 0
@@ -2458,12 +2458,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapName: ShuangZiTa
   PlaceChestCenter: {fileID: 8158894530483061557}
+  UnderWater_PlaceChestCenter: {fileID: 0}
   specialMapID: YSpecialMap_ShuangZiTa
   portalToSomeWhere_ExitPortal: {fileID: 7852226190880103226}
   bornPlace: {fileID: 3699227546010020596}
   exitPlace: {fileID: 7081074725314234307}
   landingPlace: {fileID: 4152533429061094701}
   waterField: {fileID: 9155637473320898098}
+  boidManager: {fileID: 0}
   CameraIn: {fileID: 9053805912423061236}
   CameraIn2: {fileID: 2329890152028730917}
 --- !u!1 &9053805912423061236
