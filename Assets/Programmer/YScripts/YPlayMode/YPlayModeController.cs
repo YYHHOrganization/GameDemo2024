@@ -478,6 +478,29 @@ public class YPlayModeController : MonoBehaviour
         //同时也要传送当前拥有的宠物
         SetRogueCatCakePlace(pos);
     }
-
+    
+    //存储原来的范围
+    float originalRadius=0.3f;
+    CapsuleCollider capsuleCollider;
+    //将角色身上的collider的Radius范围设置为10
+    public void SetColliderRadius(float radius)
+    {
+        if(capsuleCollider == null)
+        {
+            capsuleCollider = curCharacter.GetComponent<CapsuleCollider>();
+        }
+        //存储原来的范围
+        if(capsuleCollider != null)
+        {
+            //originalRadius = capsuleCollider.radius;
+            capsuleCollider.radius = radius;
+        }
+    }
+    //归位
+    public void ResetColliderRadius()
+    {
+        if(capsuleCollider != null)capsuleCollider.radius = originalRadius;
+    }
+    
     
 }

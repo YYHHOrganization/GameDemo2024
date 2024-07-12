@@ -22,7 +22,6 @@ public class BoidManager : MonoBehaviour {
             b.Initialize (settings, null);
             //b.Initialize (settings, target);
         }
-
     }
     
     void Update () 
@@ -30,7 +29,6 @@ public class BoidManager : MonoBehaviour {
         if(!canStartSimu)return;
         if (boids != null)
         {
-
             int numBoids = boids.Length;
             var boidData = new BoidData[numBoids];
 
@@ -96,8 +94,9 @@ public class BoidManager : MonoBehaviour {
         //开始模拟
         StartSimulation();
     }
-    public void StartBoids()
+    public void StartBoids(Transform target=null)
     {
+        this.target = target;
         canStartSimu = true;
         FishspSawner.SpawnBoid(this);
     }
@@ -112,8 +111,8 @@ public class BoidManager : MonoBehaviour {
         canStartSimu = true;
         foreach (Boid b in boids) 
         {
-            b.Initialize (settings, null);
-            //b.Initialize (settings, target);
+            //b.Initialize (settings, null);
+            b.Initialize (settings, target);
         }
     }
     public void DestroyBoid()

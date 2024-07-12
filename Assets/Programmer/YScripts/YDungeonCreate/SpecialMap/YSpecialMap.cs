@@ -13,6 +13,7 @@ public class YSpecialMap : MonoBehaviour
     public string mapName;
     [SerializeField]private Transform PlaceChestCenter;
     [SerializeField]private Transform UnderWater_PlaceChestCenter;
+    GameObject UnderWater_PlaceChestGameObject;
     
     [SerializeField]private string specialMapID;
     private List<GameObject> items = new List<GameObject>();
@@ -103,7 +104,8 @@ public class YSpecialMap : MonoBehaviour
         //召唤鱼群
         if (boidManager != null)
         {
-            boidManager.StartBoids();
+            //设置target
+            boidManager.StartBoids(target:UnderWater_PlaceChestGameObject.transform);
         }
         
         if (screenDistortFeature == null)
@@ -133,6 +135,10 @@ public class YSpecialMap : MonoBehaviour
         
         //开启雾效
         SetFogOnOrFalse(true);
+        
+        
+        //??将角色的碰撞箱增大
+        YPlayModeController.Instance.SetColliderRadius(7);
     }
     void SetFogOnOrFalse(bool isOn)
     {
@@ -141,6 +147,9 @@ public class YSpecialMap : MonoBehaviour
     }
     private void OnPlayerExit()
     {
+        //将角色的碰撞箱恢复
+        YPlayModeController.Instance.ResetColliderRadius();
+        
         Debug.Log("OnPlayerExit");
         //删除item
         foreach (var item in items)
@@ -176,6 +185,8 @@ public class YSpecialMap : MonoBehaviour
         HRogueWeatherController weatherController =
             yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
         weatherController.SetWeatherControl(true);
+        
+        
     }
     private void SetBillboard()
     {
@@ -236,7 +247,7 @@ public class YSpecialMap : MonoBehaviour
         int randomItemIndex1 = Random.Range(0, itemIDList.Count);
         items.Add
         (
-            HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem
+            UnderWater_PlaceChestGameObject = HRoguePlayerAttributeAndItemManager.Instance.GiveOutAnFixedItem
             (
                 itemIDList[randomItemIndex1],
                 // transform,
