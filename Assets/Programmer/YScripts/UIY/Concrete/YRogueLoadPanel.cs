@@ -13,7 +13,7 @@ public class YRogueLoadPanel : BasePanel
     Slider slider = null;
     YSliderChange sliderChange = null;
     
-    public float loadFakeTime = 3f;
+    public float loadFakeTime = 4f;
     public float loadFinalTime = 0.1f;
     private int RogueLevel;
     public YRogueLoadPanel() : base(new UIType(path)){}
