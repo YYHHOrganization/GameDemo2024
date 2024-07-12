@@ -135,6 +135,10 @@ public class YSpecialMap : MonoBehaviour
         
         //开启雾效
         SetFogOnOrFalse(true);
+        
+        
+        //??将角色的碰撞箱增大
+        YPlayModeController.Instance.SetColliderRadius(7);
     }
     void SetFogOnOrFalse(bool isOn)
     {
@@ -143,6 +147,9 @@ public class YSpecialMap : MonoBehaviour
     }
     private void OnPlayerExit()
     {
+        //将角色的碰撞箱恢复
+        YPlayModeController.Instance.ResetColliderRadius();
+        
         Debug.Log("OnPlayerExit");
         //删除item
         foreach (var item in items)
@@ -178,6 +185,8 @@ public class YSpecialMap : MonoBehaviour
         HRogueWeatherController weatherController =
             yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
         weatherController.SetWeatherControl(true);
+        
+        
     }
     private void SetBillboard()
     {
