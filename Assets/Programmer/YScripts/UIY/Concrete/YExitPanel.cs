@@ -68,6 +68,15 @@ public class YExitPanel : BasePanel
         {
             player.transform.position = lastRoom.transform.position;
         }
+        else
+        {
+            //注：双子塔卡死脱离的时候，雾效还在，但是应该不影响，那个地图不太会卡死，先这样吧
+            GameObject curRoom = YRogue_RoomAndItemManager.Instance.currentRoom;
+            if (curRoom)
+            {
+                player.transform.position = curRoom.transform.position;
+            }
+        }
         player.GetComponent<CharacterController>().enabled = true;
     }
 
