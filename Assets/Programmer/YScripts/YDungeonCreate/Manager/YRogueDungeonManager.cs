@@ -26,9 +26,7 @@ public class YRogueDungeonManager : MonoBehaviour
         dungeonCreator = gameObject.GetComponent<YDungeonCreator>();
         flagGameBegin = true;
     }
-
     
-
     //getset
     public int GetRogueLevel()
     {
@@ -43,13 +41,7 @@ public class YRogueDungeonManager : MonoBehaviour
         //角色先飞到天上休息下？
         YPlayModeController.Instance.SetRogueCharacterPlaceFarAway();
 
-        //生成新的关卡
-        // dungeonCreator.CreateDungeon(RogueLevel);
-
-        // if (RogueLevel == 0)
-        //     dungeonCreator.CreateDungeon(1);
-        // else
-        //     dungeonCreator.CreateDungeon();
+        
         
         dungeonCreator.CreateDungeon();
         
