@@ -25,8 +25,17 @@ public class YRogue_RoomAndItemManager : MonoBehaviour
     }
 
     public GameObject currentRoom;
+    private GameObject lastRoom;
+    public GameObject LastRoom
+    {
+        get
+        {
+            return lastRoom;
+        }
+    }
     public void SetCurRoom(GameObject room)
     {
+        lastRoom = currentRoom;
         currentRoom = room;
     }
     
