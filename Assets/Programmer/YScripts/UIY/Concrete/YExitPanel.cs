@@ -51,6 +51,24 @@ public class YExitPanel : BasePanel
         {
             ResumeGame();
         });
+        
+        uiTool.GetOrAddComponentInChilden<Button>("FangkasiButton").onClick.AddListener(TeleportToCurrentRoom);
+    }
+
+    private void TeleportToCurrentRoom()
+    {
+        GameObject player = YPlayModeController.Instance.curCharacter;
+        if (player == null)
+        {
+            return;
+        }
+        player.GetComponent<CharacterController>().enabled = false;
+        GameObject lastRoom = YRogue_RoomAndItemManager.Instance.LastRoom;
+        if (lastRoom)
+        {
+            player.transform.position = lastRoom.transform.position;
+        }
+        player.GetComponent<CharacterController>().enabled = true;
     }
 
     private void ResumeGame()
