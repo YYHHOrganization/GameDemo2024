@@ -18,12 +18,15 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
     private bool isInCD = false;
     public bool justHurtPlayerOnce = true;
     private bool hasHurtPlayer = false;
+
+    public bool doNotHurtPlayer = false;
     private void OnTriggerStay(Collider other)
     {
         if (!detectInCD) return;
         if (!isTrigger) return;
         if (other.gameObject.CompareTag("Player"))
         {
+            if(doNotHurtPlayer) return;
             HRoguePlayerAttributeAndItemManager.Instance.ChangeHealth(-damage);
         }
         else if (other.gameObject.CompareTag("Enemy"))
@@ -75,6 +78,7 @@ public class HRogueColliderHurtPlayerAndEnemy : MonoBehaviour
         if (!isTrigger) return;
         if (other.gameObject.CompareTag("Player"))
         {
+            if(doNotHurtPlayer) return;
             if (justHurtPlayerOnce)
             {
                 if (hasHurtPlayer) return;

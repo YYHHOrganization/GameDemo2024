@@ -228,6 +228,11 @@ public class HRoguePlayerAttributeAndItemManager : MonoBehaviour
         {
             characterValueAttributes["RogueCharacterCurDamage"] = characterValueAttributes[name];
         }
+        else if (name == "RogueMoveSpeed")
+        {
+            //最大值是15
+            characterValueAttributes[name] = Mathf.Clamp(characterValueAttributes[name], 1, 15);
+        }
         UpdateEverythingInAttributePanel();
     }
 

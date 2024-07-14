@@ -272,6 +272,8 @@ public class HPlayerStateMachine : MonoBehaviour
         runMultiplier = runSpeed;
         if (runMultiplier <= 1)
             runMultiplier = 1;
+        else if(runMultiplier >= 15)  //这里代码其实写的不太好，但是算是双重保障，不要让玩家移动的太快
+            runMultiplier = 15;
     }
     
     private void Awake()
