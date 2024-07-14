@@ -239,7 +239,7 @@ i.viewDir.z *= depthScale;
 
 
 
-## 3.预投影2D贴图
+# 二.预投影2D贴图
 
 使用Cubemap的缺陷在于，人们基本不可能人为对贴图进行绘制微调，这对艺术家构建多种的内部贴图资产不太友好。而且Cubemap不仅不好做Atlas，而且一般也会更大。
 
@@ -275,3 +275,139 @@ i.viewDir.z *= depthScale;
 
 ------
 
+
+
+### （2）实现
+
+首先是顶点着色器，功能和之前一样，围绕切线空间进行，代码上也是一样的：
+
+```glsl
+v2f vert(appdata v)
+{
+    v2f o;
+    o.pos = UnityObjectToClipPos(v.vertex);
+    o.uv = TRANSFORM_TEX(v.uv, _RoomTex);
+
+    // get tangent space camera vector
+    float4 objCam = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0));
+    float3 viewDir = v.vertex.xyz - objCam.xyz;
+    float tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+    float3 bitangent = cross(v.normal.xyz, v.tangent.xyz) * tangentSign;
+    o.tangentViewDir = float3(
+        dot(viewDir, v.tangent.xyz),
+        dot(viewDir, bitangent),
+        dot(viewDir, v.normal)
+        );
+    o.tangentViewDir *= _RoomTex_ST.xyx;
+    return o;
+}
+```
+
+接下来是片元着色器。片元着色器部分的代码如下：
+```glsl
+// psuedo random
+float2 rand2(float co) {
+    return frac(sin(co * float2(12.9898,78.233)) * 43758.5453);
+}
+
+fixed4 frag(v2f i) : SV_Target
+{
+    // room uvs
+    float2 roomUV = frac(i.uv);
+    float2 roomIndexUV = floor(i.uv);
+
+    // randomize the room
+    float2 n = floor(rand2(roomIndexUV.x + roomIndexUV.y * (roomIndexUV.x + 1)) * _Rooms.xy);
+    //float2 n = floor(_Rooms.xy);
+    roomIndexUV += n;  //因为我们这是一个Atlas图集，因此根据_Rooms的模块数量大小选择一个随机的房间进行展示
+
+    // get room depth from room atlas alpha
+    // fixed farFrac = tex2D(_RoomTex, (roomIndexUV + 0.5) / _Rooms).a;
+
+    // Specify depth manually
+    fixed farFrac = _RoomDepth;
+
+    //remap [0,1] to [+inf,0]
+    //->if input _RoomDepth = 0    -> depthScale = 0      (inf depth room)
+    //->if input _RoomDepth = 0.5  -> depthScale = 1
+    //->if input _RoomDepth = 1    -> depthScale = +inf   (0 volume room)
+    float depthScale = 1.0 / (1.0 - farFrac) - 1.0;
+
+    // raytrace box from view dir
+    // normalized box space's ray start pos is on triangle surface, where z = -1
+    float3 pos = float3(roomUV * 2 - 1, -1);
+    // transform input ray dir from tangent space to normalized box space
+    i.tangentViewDir.z *= -depthScale;
+
+    // 预先处理倒数  t=(1-p)/view=1/view-p/view
+    float3 id = 1.0 / i.tangentViewDir;
+    float3 k = abs(id) - pos * id;
+    float kMin = min(min(k.x, k.y), k.z);
+    pos += kMin * i.tangentViewDir;
+
+    // remap from [-1,1] to [0,1] room depth
+    float interp = pos.z * 0.5 + 0.5;
+
+    // account for perspective in "room" textures
+    // assumes camera with an fov of 53.13 degrees (atan(0.5))
+    // visual result = transform nonlinear depth back to linear
+    float realZ = saturate(interp) / depthScale + 1;
+    interp = 1.0 - (1.0 / realZ);
+    interp *= depthScale + 1.0;
+
+    // iterpolate from wall back to near wall
+    float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
+
+    interiorUV = interiorUV * 0.5 + 0.5;
+
+    // sample room atlas texture
+    fixed4 room = tex2D(_RoomTex, (roomIndexUV + interiorUV.xy) / _Rooms);
+    return room;
+}
+```
+
+接下来对上述代码进行解读。
+
+- 选择房间UV和随机的部分很正常，这里指的是前面的随机选择Atlas中某个房间的过程；
+- 深度值可以从图的alpha通道里获得也可以手动指定，指定depthScale时，把0 ~ 1的深度输入映射到0 ~ +inf；
+- 从贴图中获取深度的代码也就是注释的那一小段，但这里由于Altas并没有提供深度有关的信息，因此统一进行指定；
+
+```
+// fixed farFrac = tex2D(_RoomTex, (roomIndexUV + 0.5) / _Rooms).a;
+```
+
+- 因为背面剔除的关系，能看到的相机永远在平面的正面，所以视线方向永远是指向平面内的；之前cubemap的切线空间里，我们pos的Z值指定为1，该平面位于标准化正方体的顶面，所以视线方向不用调整。现在我们把pos的Z值指定为-1 ：`float3 pos = float3(roomUV * 2 - 1, -1);`该平面位于标准化正方体的底面 所以要把`i.tangentViewDir.z *= -depthScale;`，把视线的Z反转一下。那为什么这次要把pos的Z指定为-1呢？这和平面到立体的映射有关，也就是这一段代码做的事情：
+
+```glsl
+// account for perspective in "room" textures
+// assumes camera with an fov of 53.13 degrees (atan(0.5))
+// visual result = transform nonlinear depth back to linear
+float realZ = saturate(interp) / depthScale + 1;
+interp = 1.0 - (1.0 / realZ);
+interp *= depthScale + 1.0;
+
+// iterpolate from wall back to near wall
+float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
+```
+
+在大佬的[杨超wantnon：interior mapping进阶](https://zhuanlan.zhihu.com/p/509190380)里提到，基于2d图的interior mapping算法是先在切空间trace单位立方体求得内表面交点p，再用p.z缩放p.xy获得2d uv，然后采样2d图。相当于是一个投影变换，通过相似三角形原理来求得。具体来看下图：
+
+![img](./assets/v2-97d2d8074a4f9da4a5b887fe75eab1f3_r.jpg)
+
+> 补充：有必要复习一下下列公式(但感觉似乎也不是特别相关。。。。。可以先记住这种经验)：
+>
+> ![preview](./assets/v2-9fdde939b5d9df2dc2bdd5e0f5bca10a_r.png)
+>
+> todo：这里暂时还是没太看懂，应该是类似透视投影+相似三角形的操作，做一个UV坐标的缩放和映射。**后面有空的话再进一步进行学习吧。**
+
+
+
+# 三、进阶的Shader学习
+
+参考链接：https://github.com/Gaxil/Unity-InteriorMapping
+
+
+
+# 贴图相关的网站
+
+[StarRailTextures/assets/asbres/stages/originalrespos/chapter03/_dependencies/texture/Prop/FakeWindow/10/Far/Chap03_Prop_FakeWindow_10_Far_PackAlbedoMetal.png at 5921e106f28a7248741d8d30147f3bf86ab3b3ed · umaichanuwu/StarRailTextures · GitHub](https://github.com/umaichanuwu/StarRailTextures/blob/5921e106f28a7248741d8d30147f3bf86ab3b3ed/assets/asbres/stages/originalrespos/chapter03/_dependencies/texture/Prop/FakeWindow/10/Far/Chap03_Prop_FakeWindow_10_Far_PackAlbedoMetal.png)
