@@ -41,6 +41,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float2 uv : TEXCOORD0;
                 float3 tangentViewDir : TEXCOORD1;
                 float2 uvFar : TEXCOORD2;
+                float2 uvNear : TEXCOORD3;
+                float2 uvMiddle : TEXCOORD4;
             };
 
             TEXTURE2D(_RoomTex);
@@ -57,6 +59,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
             CBUFFER_START(UnityPerMaterial)
                 float4 _RoomTex_ST;
                 float4 _RoomFarTex_ST;
+                float4 _RoomMiddleTex_ST;
+                float4 _RoomNearTex_ST;
                 float4 _Rooms;
                 float _RoomDepth;
                 float _RoomNearDepth;
@@ -73,6 +77,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 o.pos = TransformObjectToHClip(v.positionOS.xyz);
                 o.uv = TRANSFORM_TEX(v.uv, _RoomTex);
                 o.uvFar = TRANSFORM_TEX(v.uv, _RoomFarTex);
+                o.uvNear = TRANSFORM_TEX(v.uv, _RoomNearTex);
+                o.uvMiddle = TRANSFORM_TEX(v.uv, _RoomMiddleTex);
 
                 // get tangent space camera vector
                 float4 objCam = mul(UNITY_MATRIX_I_M, float4(_WorldSpaceCameraPos, 1.0));
@@ -113,7 +119,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float realZ = saturate(interp) / depthScale + 1;
                 interp = 1.0 - (1.0 / realZ);
                 interp *= depthScale + 1.0;
-
+                
                 // iterpolate from wall back to near wall
                 float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
 
@@ -131,6 +137,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 // room uvs
                 float2 roomUV = frac(i.uv);
                 float2 roomUVFar = frac(i.uvFar);
+                float2 roomUVNear = frac(i.uvNear);
+                float2 roomUVMiddle = frac(i.uvMiddle);
 
                 // Specify depth manually
                 float farFrac = _RoomDepth;
@@ -140,8 +148,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 
                 float2 interiorUV = getRoomUV(farFrac, i, roomUV);
                 float2 farUV = getRoomUV(farDepth, i, roomUVFar);
-                float2 nearUV = getRoomUV(nearDepth, i, roomUV);
-                float2 middleUV = getRoomUV(middleDepth, i, roomUV);
+                float2 nearUV = getRoomUV(nearDepth, i, roomUVNear);
+                float2 middleUV = getRoomUV(middleDepth, i, roomUVMiddle);
                 
                 float4 room = SAMPLE_TEXTURE2D(_RoomTex, sampler_RoomTex,  interiorUV.xy);
                 float4 far = SAMPLE_TEXTURE2D(_RoomFarTex, sampler_RoomFarTex, farUV.xy);

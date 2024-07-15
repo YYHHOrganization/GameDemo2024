@@ -402,9 +402,19 @@ float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
 
 
 
-# 三、进阶的Shader学习
+# 三、进阶特性
+
+## 1.利用法线偏移光线，实现玻璃折射效果
+
+
+
+
+
+# 四、进阶的Shader学习
 
 参考链接：https://github.com/Gaxil/Unity-InteriorMapping
+
+砂金的钱：https://www.youtube.com/watch?v=L1XleXe-o5I
 
 
 
