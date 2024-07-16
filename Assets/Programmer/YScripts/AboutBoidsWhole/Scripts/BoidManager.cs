@@ -50,7 +50,7 @@ public class BoidManager : MonoBehaviour {
             int threadGroups = Mathf.CeilToInt (numBoids / (float) threadGroupSize);
             
             //使用一维向量是因为需要处理的数据没有类似材质、体积之类的三维结构体；1024是为了直接把线程拉满
-            compute.Dispatch (0, threadGroups, 1, 1);
+            compute.Dispatch (0, threadGroups, 1, 1); //todo:存疑？threadGroups是1，为什么不是1024呢？
 
             boidBuffer.GetData (boidData);
 

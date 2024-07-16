@@ -287,6 +287,7 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
         }
 
         //binning, put each posWS into the correct cell
+        //把每个cell填上这个cell中的草实例
         for (int i = 0; i < allGrassPos.Count; i++)
         {
             Vector3 pos = allGrassPos[i];
@@ -298,7 +299,7 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
             cellPosWSsList[xID + zID * cellCountX].Add(pos);
         }
 
-        //combine to a flatten array for compute buffer
+        //combine to a flatten array for compute buffer 组合为计算缓冲区的扁平数组
         int offset = 0;
         Vector3[] allGrassPosWSSortedByCell = new Vector3[allGrassPos.Count];
         for (int i = 0; i < cellPosWSsList.Length; i++)
@@ -335,8 +336,7 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
         ///////////////////////////
         //update cache to prevent future no-op buffer update, which waste performance
         instanceCountCache = allGrassPos.Count;
-
-
+        
         //set buffer
         cullingComputeShader.SetBuffer(0, "_AllInstancesPosWSBuffer", allInstancesPosWSBuffer);
         cullingComputeShader.SetBuffer(0, "_VisibleInstancesOnlyPosWSIDBuffer", visibleInstancesOnlyPosWSIDBuffer);
