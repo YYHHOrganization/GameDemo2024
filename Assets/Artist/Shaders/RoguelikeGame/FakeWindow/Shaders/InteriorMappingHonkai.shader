@@ -15,6 +15,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
         _RoomMiddleDepth("Room Middle Depth",range(0.001,0.999)) = 0.5
         
         _RoomSurfaceNormalMap("Room Surface Normal Map", 2D) = "bump" {}
+        _NormalStrength("Normal Strength", Range(0, 0.5)) = 0.03
     }
     SubShader
     {
@@ -46,6 +47,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float2 uvFar : TEXCOORD2;
                 float2 uvNear : TEXCOORD3;
                 float2 uvMiddle : TEXCOORD4;
+                float2 uvNormal : TEXCOORD5;
                 //float4 scrPos : TEXCOORD5;
             };
 
@@ -73,6 +75,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float _RoomFarDepth;
                 float _RoomMiddleDepth;
                 float4 _CameraOpaqueTexture_TexelSize;
+                float4 _RoomSurfaceNormalMap_ST;
+                float _NormalStrength;
             CBUFFER_END
 
             Varyings vert(Attributes v)
@@ -83,6 +87,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 o.uvFar = TRANSFORM_TEX(v.uv, _RoomFarTex);
                 o.uvNear = TRANSFORM_TEX(v.uv, _RoomNearTex);
                 o.uvMiddle = TRANSFORM_TEX(v.uv, _RoomMiddleTex);
+                o.uvNormal = TRANSFORM_TEX(v.uv, _RoomSurfaceNormalMap);
 
                 // get tangent space camera vector
                 float4 objCam = mul(UNITY_MATRIX_I_M, float4(_WorldSpaceCameraPos, 1.0));
@@ -106,9 +111,6 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 // normalized box space's ray start pos is on triangle surface, where z = -1
                 float3 pos = float3(roomUV * 2 - 1, -1);
                 // transform input ray dir from tangent space to normalized box space
-                float4 bump = SAMPLE_TEXTURE2D(_RoomSurfaceNormalMap, sampler_RoomSurfaceNormalMap, roomUV);
-                float2 distortion = UnpackNormal(bump).rg;
-                i.tangentViewDir.xy += distortion * 0.1; // 根据需要调整偏移强度
                 i.tangentViewDir.z *= -depthScale;
 
                 // 预先处理倒数  t=(1-p)/view=1/view-p/view
@@ -131,6 +133,9 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
 
                 interiorUV = interiorUV * 0.5 + 0.5;
+                float4 bump = SAMPLE_TEXTURE2D(_RoomSurfaceNormalMap, sampler_RoomSurfaceNormalMap, i.uvNormal);
+                float2 distortion = UnpackNormal(bump).rg;
+                interiorUV += distortion * _NormalStrength; // 根据需要调整偏移强度
                 
                 return interiorUV;
             }
