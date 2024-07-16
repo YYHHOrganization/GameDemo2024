@@ -13,10 +13,12 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
         _RoomNearDepth("Room Near Depth",range(0.001,0.999)) = 0.5
         _RoomFarDepth("Room Far Depth",range(0.001,0.999)) = 0.5
         _RoomMiddleDepth("Room Middle Depth",range(0.001,0.999)) = 0.5
+        
+        _RoomSurfaceNormalMap("Room Surface Normal Map", 2D) = "bump" {}
     }
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline"}
+        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent" } // Queue用来保证此时不透明物体的渲染已经完成
         LOD 100
 
         Pass
@@ -26,6 +28,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
             struct Attributes
             {
@@ -43,6 +46,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float2 uvFar : TEXCOORD2;
                 float2 uvNear : TEXCOORD3;
                 float2 uvMiddle : TEXCOORD4;
+                //float4 scrPos : TEXCOORD5;
             };
 
             TEXTURE2D(_RoomTex);
@@ -55,6 +59,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
             SAMPLER(sampler_RoomNearTex);
             TEXTURE2D(_RoomSurfaceTex);
             SAMPLER(sampler_RoomSurfaceTex);
+            TEXTURE2D(_RoomSurfaceNormalMap);
+            SAMPLER(sampler_RoomSurfaceNormalMap);
             
             CBUFFER_START(UnityPerMaterial)
                 float4 _RoomTex_ST;
@@ -66,14 +72,12 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float _RoomNearDepth;
                 float _RoomFarDepth;
                 float _RoomMiddleDepth;
+                float4 _CameraOpaqueTexture_TexelSize;
             CBUFFER_END
 
             Varyings vert(Attributes v)
             {
                 Varyings o;
-                // UNITY_SETUP_INSTANCE_ID(v);
-                // UNITY_TRANSFER_INSTANCE_ID(v, o);
-                // UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
                 o.pos = TransformObjectToHClip(v.positionOS.xyz);
                 o.uv = TRANSFORM_TEX(v.uv, _RoomTex);
                 o.uvFar = TRANSFORM_TEX(v.uv, _RoomFarTex);
@@ -90,7 +94,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                     dot(viewDir, bitangent),
                     dot(viewDir, v.normalOS)
                     );
-                //o.tangentViewDir *= _RoomTex_ST.xyx;
+                
                 return o;
             }
 
@@ -102,6 +106,9 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 // normalized box space's ray start pos is on triangle surface, where z = -1
                 float3 pos = float3(roomUV * 2 - 1, -1);
                 // transform input ray dir from tangent space to normalized box space
+                float4 bump = SAMPLE_TEXTURE2D(_RoomSurfaceNormalMap, sampler_RoomSurfaceNormalMap, roomUV);
+                float2 distortion = UnpackNormal(bump).rg;
+                i.tangentViewDir.xy += distortion * 0.1; // 根据需要调整偏移强度
                 i.tangentViewDir.z *= -depthScale;
 
                 // 预先处理倒数  t=(1-p)/view=1/view-p/view
@@ -124,6 +131,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
 
                 interiorUV = interiorUV * 0.5 + 0.5;
+                
                 return interiorUV;
             }
             
@@ -160,6 +168,14 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float4 lerp2 =  lerp(lerp1, middle, middle.a);
                 float4 lerp3 =  lerp(lerp2, near, near.a);
                 float4 lerp4 =  lerp(lerp3, surface, surface.a);
+
+                // //尝试来点玻璃偏移,对lerp4进行偏移
+                // float4 bump = SAMPLE_TEXTURE2D(_RoomSurfaceNormalMap, sampler_RoomSurfaceNormalMap, roomUV);
+                // float2 distortion = UnpackNormal(bump).rg;
+                // float2 screenUV = GetNormalizedScreenSpaceUV(i.pos);
+                // screenUV += distortion * 0.01;
+                // float3 screenCol = SampleSceneColor(screenUV);
+                // return float4(screenCol, 1.0);
                 return lerp4;
                 
             }
