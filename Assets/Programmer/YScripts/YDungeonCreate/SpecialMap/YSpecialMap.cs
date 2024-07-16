@@ -181,7 +181,7 @@ public class YSpecialMap : MonoBehaviour
             screenDistortFeature =
                 HPostProcessingFilters.Instance.GetRenderFeature(name);
         }
-        screenDistortFeature.SetActive(true);
+        screenDistortFeature.SetActive(false);
         HRogueWeatherController weatherController =
             yPlanningTable.Instance.gameObject.GetComponent<HRogueWeatherController>();
         weatherController.SetWeatherControl(true);

@@ -13,10 +13,13 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
         _RoomNearDepth("Room Near Depth",range(0.001,0.999)) = 0.5
         _RoomFarDepth("Room Far Depth",range(0.001,0.999)) = 0.5
         _RoomMiddleDepth("Room Middle Depth",range(0.001,0.999)) = 0.5
+        
+        _RoomSurfaceNormalMap("Room Surface Normal Map", 2D) = "bump" {}
+        _NormalStrength("Normal Strength", Range(0, 0.5)) = 0.03
     }
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline"}
+        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent" } // Queue用来保证此时不透明物体的渲染已经完成
         LOD 100
 
         Pass
@@ -26,6 +29,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
             struct Attributes
             {
@@ -41,6 +45,10 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float2 uv : TEXCOORD0;
                 float3 tangentViewDir : TEXCOORD1;
                 float2 uvFar : TEXCOORD2;
+                float2 uvNear : TEXCOORD3;
+                float2 uvMiddle : TEXCOORD4;
+                float2 uvNormal : TEXCOORD5;
+                //float4 scrPos : TEXCOORD5;
             };
 
             TEXTURE2D(_RoomTex);
@@ -53,26 +61,33 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
             SAMPLER(sampler_RoomNearTex);
             TEXTURE2D(_RoomSurfaceTex);
             SAMPLER(sampler_RoomSurfaceTex);
+            TEXTURE2D(_RoomSurfaceNormalMap);
+            SAMPLER(sampler_RoomSurfaceNormalMap);
             
             CBUFFER_START(UnityPerMaterial)
                 float4 _RoomTex_ST;
                 float4 _RoomFarTex_ST;
+                float4 _RoomMiddleTex_ST;
+                float4 _RoomNearTex_ST;
                 float4 _Rooms;
                 float _RoomDepth;
                 float _RoomNearDepth;
                 float _RoomFarDepth;
                 float _RoomMiddleDepth;
+                float4 _CameraOpaqueTexture_TexelSize;
+                float4 _RoomSurfaceNormalMap_ST;
+                float _NormalStrength;
             CBUFFER_END
 
             Varyings vert(Attributes v)
             {
                 Varyings o;
-                // UNITY_SETUP_INSTANCE_ID(v);
-                // UNITY_TRANSFER_INSTANCE_ID(v, o);
-                // UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
                 o.pos = TransformObjectToHClip(v.positionOS.xyz);
                 o.uv = TRANSFORM_TEX(v.uv, _RoomTex);
                 o.uvFar = TRANSFORM_TEX(v.uv, _RoomFarTex);
+                o.uvNear = TRANSFORM_TEX(v.uv, _RoomNearTex);
+                o.uvMiddle = TRANSFORM_TEX(v.uv, _RoomMiddleTex);
+                o.uvNormal = TRANSFORM_TEX(v.uv, _RoomSurfaceNormalMap);
 
                 // get tangent space camera vector
                 float4 objCam = mul(UNITY_MATRIX_I_M, float4(_WorldSpaceCameraPos, 1.0));
@@ -84,7 +99,7 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                     dot(viewDir, bitangent),
                     dot(viewDir, v.normalOS)
                     );
-                //o.tangentViewDir *= _RoomTex_ST.xyx;
+                
                 return o;
             }
 
@@ -113,11 +128,15 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float realZ = saturate(interp) / depthScale + 1;
                 interp = 1.0 - (1.0 / realZ);
                 interp *= depthScale + 1.0;
-
+                
                 // iterpolate from wall back to near wall
                 float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
 
                 interiorUV = interiorUV * 0.5 + 0.5;
+                float4 bump = SAMPLE_TEXTURE2D(_RoomSurfaceNormalMap, sampler_RoomSurfaceNormalMap, i.uvNormal);
+                float2 distortion = UnpackNormal(bump).rg;
+                interiorUV += distortion * _NormalStrength; // 根据需要调整偏移强度
+                
                 return interiorUV;
             }
             
@@ -131,6 +150,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 // room uvs
                 float2 roomUV = frac(i.uv);
                 float2 roomUVFar = frac(i.uvFar);
+                float2 roomUVNear = frac(i.uvNear);
+                float2 roomUVMiddle = frac(i.uvMiddle);
 
                 // Specify depth manually
                 float farFrac = _RoomDepth;
@@ -140,8 +161,8 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 
                 float2 interiorUV = getRoomUV(farFrac, i, roomUV);
                 float2 farUV = getRoomUV(farDepth, i, roomUVFar);
-                float2 nearUV = getRoomUV(nearDepth, i, roomUV);
-                float2 middleUV = getRoomUV(middleDepth, i, roomUV);
+                float2 nearUV = getRoomUV(nearDepth, i, roomUVNear);
+                float2 middleUV = getRoomUV(middleDepth, i, roomUVMiddle);
                 
                 float4 room = SAMPLE_TEXTURE2D(_RoomTex, sampler_RoomTex,  interiorUV.xy);
                 float4 far = SAMPLE_TEXTURE2D(_RoomFarTex, sampler_RoomFarTex, farUV.xy);
@@ -152,6 +173,14 @@ Shader "MyShaders/InteriorMapping_2D_URP_Honkai"
                 float4 lerp2 =  lerp(lerp1, middle, middle.a);
                 float4 lerp3 =  lerp(lerp2, near, near.a);
                 float4 lerp4 =  lerp(lerp3, surface, surface.a);
+
+                // //尝试来点玻璃偏移,对lerp4进行偏移
+                // float4 bump = SAMPLE_TEXTURE2D(_RoomSurfaceNormalMap, sampler_RoomSurfaceNormalMap, roomUV);
+                // float2 distortion = UnpackNormal(bump).rg;
+                // float2 screenUV = GetNormalizedScreenSpaceUV(i.pos);
+                // screenUV += distortion * 0.01;
+                // float3 screenCol = SampleSceneColor(screenUV);
+                // return float4(screenCol, 1.0);
                 return lerp4;
                 
             }

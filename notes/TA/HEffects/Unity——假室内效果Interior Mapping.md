@@ -47,7 +47,7 @@ v2f vert(appdata v)
 
     // get object space camera vector
     float4 objCam = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0));
-    o.viewDir = v.vertex.xyz - objCam.xyz;
+    o.viewDir = v.vertex.xyz - objCam.xyz;  //视线方向
 
     // adjust for tiling
     o.viewDir *= _RoomCube_ST.xyx;
@@ -402,9 +402,25 @@ float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
 
 
 
-# 三、进阶的Shader学习
+# 三、进阶特性
+
+## 1.实现玻璃折射效果
+
+### （1）方法1：直接在假室内效果的前面再贴一张plane，上面是玻璃效果
+
+
+
+
+
+# 四、进阶的Shader学习
 
 参考链接：https://github.com/Gaxil/Unity-InteriorMapping
+
+砂金的钱：https://www.youtube.com/watch?v=L1XleXe-o5I
+
+原神云渲染
+
+
 
 
 
