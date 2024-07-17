@@ -117,15 +117,17 @@
             sampler2D _GrassBendingRT;
             sampler2D _BaseColorTexture;
 
+            //法线向量N  视线向量V  基色albedo  位置参数positionOSY。
             half3 ApplySingleDirectLight(Light light, half3 N, half3 V, half3 albedo, half positionOSY)
             {
+                //半向量H，它是光源方向和视线方向的标准化向量
                 half3 H = normalize(light.direction + V);
 
-                //direct diffuse 
+                //direct diffuse 半兰伯特，模拟草的SSS(次表面散射)
                 half directDiffuse = dot(N, light.direction) * 0.5 + 0.5; //half lambert, to fake grass SSS
 
-                //direct specular
-                float directSpecular = saturate(dot(N,H));
+                //direct specular 直接高光
+                float directSpecular = saturate(dot(N,H)); 
                 //pow(directSpecular,8)
                 directSpecular *= directSpecular;
                 directSpecular *= directSpecular;
@@ -144,22 +146,31 @@
             {
                 Varyings OUT;
 
+                //获取每个草的世界空间位置perGrassPivotPosWS
                 float3 perGrassPivotPosWS = _AllInstancesTransformBuffer[_VisibleInstanceOnlyTransformIDBuffer[instanceID]];//we pre-transform to posWS in C# now
 
-                float perGrassHeight = lerp(2,5,(sin(perGrassPivotPosWS.x*23.4643 + perGrassPivotPosWS.z) * 0.45 + 0.55)) * _GrassHeight;
+                float perGrassHeight = lerp(
+                    2,
+                    5,//以下是  sin（草的世界空间位置的x和z坐标的线性组合）=-1~1  * 0.45 -> -0.45~0.45 + 0.55 -> 0.1~1.0
+                    (sin(perGrassPivotPosWS.x*23.4643 + perGrassPivotPosWS.z) * 0.45 + 0.55)
+                    ) * _GrassHeight;//lerp完毕后，perGrassHeight的值在2~5之间
 
-                //get "is grass stepped" data(bending) from RT
+                //get "is grass stepped" data(bending) from RT 从RT中获取“草地是否被踩踏”数据(弯曲)
+                //这是通过计算草地在边界内的位置（grassBendingUV），
                 float2 grassBendingUV = ((perGrassPivotPosWS.xz - _PivotPosWS.xz) / _BoundSize) * 0.5 + 0.5;//claculate where is this grass inside bound (can optimize to 2 MAD)
+                //然后使用这个位置从渲染纹理中采样得到的。
                 float stepped = tex2Dlod(_GrassBendingRT, float4(grassBendingUV, 0, 0)).x;
 
                 //rotation(make grass LookAt() camera just like a billboard)
                 //=========================================
+                //计算摄像机的右向量、上向量和前向量。这些向量在世界空间中表示
                 float3 cameraTransformRightWS = UNITY_MATRIX_V[0].xyz;//UNITY_MATRIX_V[0].xyz == world space camera Right unit vector
                 float3 cameraTransformUpWS = UNITY_MATRIX_V[1].xyz;//UNITY_MATRIX_V[1].xyz == world space camera Up unit vector
                 float3 cameraTransformForwardWS = -UNITY_MATRIX_V[2].xyz;//UNITY_MATRIX_V[2].xyz == -1 * world space camera Forward unit vector
 
                 //Expand Billboard (billboard Left+right)
-                float3 positionOS = IN.positionOS.x * cameraTransformRightWS * _GrassWidth * (sin(perGrassPivotPosWS.x*95.4643 + perGrassPivotPosWS.z) * 0.45 + 0.55);//random width from posXZ, min 0.1
+                float3 positionOS = IN.positionOS.x * cameraTransformRightWS * _GrassWidth *
+                    (sin(perGrassPivotPosWS.x*95.4643 + perGrassPivotPosWS.z) * 0.45 + 0.55);//random width from posXZ, min 0.1
 
                 //Expand Billboard (billboard Up)
                 positionOS += IN.positionOS.y * cameraTransformUpWS;         
@@ -174,18 +185,25 @@
                 //per grass height scale
                 positionOS.y *= perGrassHeight;
 
+                //计算摄像机距离缩放：这是为了使远离摄像机的草的宽度变大，以隐藏小于像素大小的三角形闪烁。
                 //camera distance scale (make grass width larger if grass is far away to camera, to hide smaller than pixel size triangle flicker)        
+                //计算视线向量viewWS，它是摄像机的位置减去草的世界空间位置
                 float3 viewWS = _WorldSpaceCameraPos - perGrassPivotPosWS;
                 float ViewWSLength = length(viewWS);
                 positionOS += cameraTransformRightWS * IN.positionOS.x * max(0, ViewWSLength * 0.0225);
-                
 
                 //move grass posOS -> posWS
                 float3 positionWS = positionOS + perGrassPivotPosWS;
 
                 //wind animation (biilboard Left Right direction only sin wave)            
                 float wind = 0;
-                wind += (sin(_Time.y * _WindAFrequency + perGrassPivotPosWS.x * _WindATiling.x + perGrassPivotPosWS.z * _WindATiling.y)*_WindAWrap.x+_WindAWrap.y) * _WindAIntensity; //windA
+                wind += (sin
+                    (_Time.y * _WindAFrequency
+                        + perGrassPivotPosWS.x * _WindATiling.x
+                        + perGrassPivotPosWS.z * _WindATiling.y
+                        )*_WindAWrap.x//_WindAWrap.x控制风的摆动的范围，越大，随风左右摆动的范围越大
+                        +_WindAWrap.y)//_WindAWrap.y控制风的摆动的偏移，越大，初始偏向偏移越大，会一边倒
+                        * _WindAIntensity; //windA
                 wind += (sin(_Time.y * _WindBFrequency + perGrassPivotPosWS.x * _WindBTiling.x + perGrassPivotPosWS.z * _WindBTiling.y)*_WindBWrap.x+_WindBWrap.y) * _WindBIntensity; //windB
                 wind += (sin(_Time.y * _WindCFrequency + perGrassPivotPosWS.x * _WindCTiling.x + perGrassPivotPosWS.z * _WindCTiling.y)*_WindCWrap.x+_WindCWrap.y) * _WindCIntensity; //windC
                 wind *= IN.positionOS.y; //wind only affect top region, don't affect root region
@@ -241,12 +259,12 @@
                 }
 #endif
 
+                
                 //fog
                 float fogFactor = ComputeFogFactor(OUT.positionCS.z);
                 // Mix the pixel color with fogColor. You can optionaly use MixFogColor to override the fogColor
                 // with a custom one.
                 OUT.color = MixFog(lightingResult, fogFactor);
-
                 return OUT;
             }
 
