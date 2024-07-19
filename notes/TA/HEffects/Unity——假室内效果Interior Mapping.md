@@ -412,6 +412,10 @@ float2 interiorUV = pos.xy * lerp(1.0, farFrac, interp);
 
 
 
+### （2）方法2：直接偏移法线
+
+
+
 # 四、进阶的Shader学习
 
 参考链接：https://github.com/Gaxil/Unity-InteriorMapping
