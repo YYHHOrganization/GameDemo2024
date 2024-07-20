@@ -134,7 +134,7 @@
                 directSpecular *= directSpecular;
                 //directSpecular *= directSpecular; //enable this line = change to pow(directSpecular,16)
 
-                //add direct directSpecular to result
+                //add direct directSpecular to result 渐变 顶上更亮 trick
                 directSpecular *= 0.1 * positionOSY;//only apply directSpecular to grass's top area, to simulate grass AO
 
                 half3 lighting = light.color * (light.shadowAttenuation * light.distanceAttenuation);
@@ -168,6 +168,7 @@
                 float3 cameraTransformUpWS = UNITY_MATRIX_V[1].xyz;//UNITY_MATRIX_V[1].xyz == world space camera Up unit vector
                 float3 cameraTransformForwardWS = -UNITY_MATRIX_V[2].xyz;//UNITY_MATRIX_V[2].xyz == -1 * world space camera Forward unit vector
 
+                //不全是正面朝向相机，有偏移
                 //Expand Billboard (billboard Left+right)
                 float3 positionOS = IN.positionOS.x * cameraTransformRightWS * _GrassWidth *
                     (sin(perGrassPivotPosWS.x*95.4643 + perGrassPivotPosWS.z) * 0.45 + 0.55);//random width from posXZ, min 0.1
@@ -201,8 +202,8 @@
                     (_Time.y * _WindAFrequency
                         + perGrassPivotPosWS.x * _WindATiling.x
                         + perGrassPivotPosWS.z * _WindATiling.y
-                        )*_WindAWrap.x//_WindAWrap.x控制风的摆动的范围，越大，随风左右摆动的范围越大
-                        +_WindAWrap.y)//_WindAWrap.y控制风的摆动的偏移，越大，初始偏向偏移越大，会一边倒
+                        )*_WindAWrap.x//_WindAWrap.x控制风的摆动的范围，越大，随风左右摆动的范围越大 幅度
+                        +_WindAWrap.y)//_WindAWrap.y控制风的摆动的偏移，越大，初始偏向偏移越大，会一边倒 偏移
                         * _WindAIntensity; //windA
                 wind += (sin(_Time.y * _WindBFrequency + perGrassPivotPosWS.x * _WindBTiling.x + perGrassPivotPosWS.z * _WindBTiling.y)*_WindBWrap.x+_WindBWrap.y) * _WindBIntensity; //windB
                 wind += (sin(_Time.y * _WindCFrequency + perGrassPivotPosWS.x * _WindCTiling.x + perGrassPivotPosWS.z * _WindCTiling.y)*_WindCWrap.x+_WindCWrap.y) * _WindCIntensity; //windC
@@ -236,7 +237,7 @@
                 half3 albedo = lerp(_GroundColor,baseColor, IN.positionOS.y);
 
                 //indirect
-                half3 lightingResult = SampleSH(0) * albedo;
+                half3 lightingResult = SampleSH(0) * albedo; //ambient color
 
                 //main direct light
                 lightingResult += ApplySingleDirectLight(mainLight, N, V, albedo, positionOS.y);
