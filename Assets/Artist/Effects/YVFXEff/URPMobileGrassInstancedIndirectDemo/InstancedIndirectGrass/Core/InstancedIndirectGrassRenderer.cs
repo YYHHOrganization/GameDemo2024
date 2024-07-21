@@ -64,7 +64,7 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
         //=====================================================================================================
         //清空可见单元格ID列表。这个列表用于存储经过CPU视锥体裁剪后仍然可见的单元格的ID。
         visibleCellIDList.Clear();//fill in this cell ID list using CPU frustum culling first
-        Camera cam = Camera.main;
+        Camera cam = Camera.main;//todo： 我们项目得改成自己的摄像机
 
         //Do frustum culling using per cell bound
         //https://docs.unity3d.com/ScriptReference/GeometryUtility.CalculateFrustumPlanes.html
@@ -92,7 +92,7 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
             // 将单元格的中心位置从单元格空间转换到世界空间
             centerPosWS.x = Mathf.Lerp(minX, maxX, centerPosWS.x / cellCountX);
             centerPosWS.z = Mathf.Lerp(minZ, maxZ, centerPosWS.z / cellCountZ);
-            // 计算每个单元格在世界空间中的大小
+            // 计算每个单元格在世界空间中的大小 todo: 优化：可以挪到外面
             Vector3 sizeWS = new Vector3(Mathf.Abs(maxX - minX) / cellCountX,0,Mathf.Abs(maxX - minX) / cellCountX);
             // 创建一个边界框，中心位置为单元格的中心位置，大小为单元格的大小
             Bounds cellBound = new Bounds(centerPosWS, sizeWS);
@@ -125,6 +125,7 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
         cullingComputeShader.SetFloat("_MaxDrawDistance", drawDistance);
 
         //dispatch per visible cell
+        //todo:可以用前缀和优化
         dispatchCount = 0;
         for (int i = 0; i < visibleCellIDList.Count; i++)
         {
