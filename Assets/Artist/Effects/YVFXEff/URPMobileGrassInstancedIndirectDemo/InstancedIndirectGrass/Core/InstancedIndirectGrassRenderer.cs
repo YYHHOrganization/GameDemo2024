@@ -7,7 +7,7 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-[ExecuteAlways]
+// [ExecuteAlways]//如果有这个 脚本会在编辑器中运行，以便在编辑器中调整草地实例的数量和绘制距离。是为了在editor模式下调整参数
 public class InstancedIndirectGrassRenderer : MonoBehaviour
 {
     [Header("Settings")]
@@ -58,13 +58,24 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
         //如果草地实例的数量发生变化，或者草地实例的位置发生变化，那么就需要更新这个缓冲区。
         // recreate all buffers if needed
         UpdateAllInstanceTransformBufferIfNeeded();
+        
+        //增加判断，如何allGrassPos为空，直接返回
+        if (allGrassPos.Count == 0)
+            return;
+        // Camera cam = Camera.main;
+        //寻找角色相机，如果不存在，则直接返回
+        if(HCameraLayoutManager.Instance == null)
+            return;
+        Camera cam = HCameraLayoutManager.Instance.playerCamera;
+        if (!cam)
+            return;
 
         //=====================================================================================================
         // rough quick big cell frustum culling in CPU first
         //=====================================================================================================
         //清空可见单元格ID列表。这个列表用于存储经过CPU视锥体裁剪后仍然可见的单元格的ID。
         visibleCellIDList.Clear();//fill in this cell ID list using CPU frustum culling first
-        Camera cam = Camera.main;//todo： 我们项目得改成自己的摄像机
+        
 
         //Do frustum culling using per cell bound
         //https://docs.unity3d.com/ScriptReference/GeometryUtility.CalculateFrustumPlanes.html
@@ -174,17 +185,6 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
         Graphics.DrawMeshInstancedIndirect(GetGrassMeshCache(), 0, instanceMaterial, renderBound, argsBuffer);
     }
 
-    private void OnGUI()
-    {
-        GUI.contentColor = Color.black;
-        GUI.Label(new Rect(200, 0, 400, 60), 
-            $"After CPU cell frustum culling,\n" +
-            $"-Visible cell count = {visibleCellIDList.Count}/{cellCountX * cellCountZ}\n" +
-            $"-Real compute dispatch count = {dispatchCount} (saved by batching = {visibleCellIDList.Count - dispatchCount})");
-
-        shouldBatchDispatch = GUI.Toggle(new Rect(400, 400, 200, 100), shouldBatchDispatch, "shouldBatchDispatch");
-    }
-
     void OnDisable()
     {
         //release all compute buffers
@@ -230,6 +230,7 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
     {
         //always update
         instanceMaterial.SetVector("_PivotPosWS", transform.position);
+        //instanceMaterial.SetVector("_BoundSize", new Vector2(2, 2));
         instanceMaterial.SetVector("_BoundSize", new Vector2(transform.localScale.x, transform.localScale.z));
         //instanceMaterial指的是*InstancedIndirectGrass.shader：这是一个用于渲染草地的着色器。
         //它使用了**GPU Instancing**技术来批量渲染大量的草地，从而提高性能。这个着色器还包含了风的模拟，使得草地能够随风摇摆。
@@ -254,6 +255,11 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
         ///////////////////////////
         if (allInstancesPosWSBuffer != null)
             allInstancesPosWSBuffer.Release();
+        
+        //增加判断，如何allGrassPos为空，直接返回
+        if (allGrassPos.Count == 0)
+            return;
+        
         allInstancesPosWSBuffer = new ComputeBuffer(allGrassPos.Count, sizeof(float)*3); //float3 posWS only, per grass
 
         if (visibleInstancesOnlyPosWSIDBuffer != null)

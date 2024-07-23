@@ -63,7 +63,7 @@ public class HOpenWorldTreasureManager : MonoBehaviour
         
         //开始读取大世界的所有宝箱并生成，把宝箱的类型存储进去
         //InstantiateTreasureWithInfo(treasureLayoutPath);
-        StartCoroutine(InstantiateTreasureWithInfo(treasureLayoutPath));
+        //StartCoroutine(InstantiateTreasureWithInfo(treasureLayoutPath));
     }
     
     Dictionary<string, GameObject> treasureLayouts = new Dictionary<string, GameObject>();
