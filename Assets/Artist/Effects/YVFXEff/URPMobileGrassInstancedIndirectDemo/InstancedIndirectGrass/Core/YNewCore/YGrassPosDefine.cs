@@ -6,8 +6,8 @@ using UnityEngine;
 public class YGrassPosDefine : MonoBehaviour
 {
     [Range(1, 40000000)]
-    public int instanceCount = 1000000;//草地实例的数量
-    public float drawDistance = 125;//草地实例的绘制距离
+    public int instanceCount = 200000;//草地实例的数量
+    public float drawDistance = 20;//草地实例的绘制距离
 
     private int cacheCount = -1;
 
@@ -16,10 +16,10 @@ public class YGrassPosDefine : MonoBehaviour
     {
         UpdatePosIfNeeded();
     }
-    private void Update()
-    {
-        UpdatePosIfNeeded();
-    }
+    // private void Update()
+    // {
+    //     UpdatePosIfNeeded();
+    // }
     
     private void UpdatePosIfNeeded()
     {
@@ -32,7 +32,7 @@ public class YGrassPosDefine : MonoBehaviour
         // 如果有变化，那么就会生成新的草地实例的位置，并将这些位置发送给InstancedIndirectGrassRenderer类的实例。 
         //这里只在这一块内进行渲染
         //same seed to keep grass visual the same
-        UnityEngine.Random.InitState(123);
+        // UnityEngine.Random.InitState(123);
 
         //auto keep density the same
         // float scale = Mathf.Sqrt((instanceCount / 4)) / 2f;

@@ -168,8 +168,12 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
             }
             //============================================================================================
             //调度了ComputeShader。这个调度会对每个单元格中的草地实例进行视锥体裁剪，并将可见的实例的ID写入到visibleInstancesOnlyPosWSIDBuffer缓冲区中
-            cullingComputeShader.Dispatch(0, Mathf.CeilToInt(jobLength / 64f), 1, 1); //disaptch.X division number must match numthreads.x in compute shader (e.g. 64)
-            dispatchCount++;
+            if (jobLength > 0)
+            {
+                cullingComputeShader.Dispatch(0, Mathf.CeilToInt(jobLength / 64f), 1, 1); //disaptch.X division number must match numthreads.x in compute shader (e.g. 64)
+                dispatchCount++;
+            }
+           
         }
 
         //====================================================================================
