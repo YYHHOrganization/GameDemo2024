@@ -51,7 +51,10 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
     {
         instance = this; // assign global ref using this script
     }
-
+    public void ReSetGrass()
+    {
+        instanceCountCache = -1;
+    }
     void LateUpdate()
     {
         //更新所有草地实例的变换缓冲区。

@@ -85,6 +85,42 @@ public class YRogueDungeonManager : MonoBehaviour
         return dungeonCreator.GetRoomBaseList();
     }
 
+    //输入房间类型，返回这个类型的房间
+    public YRouge_RoomBase GetRoomBaseByType(RoomType roomType)
+    {
+        foreach (var room in roomBaseLists)
+        {
+            if (room.RoomType == roomType)
+            {
+                return room;
+            }
+        }
+
+        return null;
+    }
+    
+    //输入房间类型，返回这个房间类型的房间的左下角和右上角的位置
+    public bool GetRoomBasePosByType(RoomType roomType, out Vector3 RoomCenter,out float roomWidth, out float roomLength)
+    {
+        foreach (var room in roomBaseLists)
+        {
+            if (room.RoomType == roomType)
+            {
+                roomWidth = room.roomNode.RoomWidth;
+                roomLength = room.roomNode.RoomLength;
+                RoomCenter = room.transform.position;
+                return true;
+            }
+        }
+
+        roomWidth = -1;
+        roomLength = -1;
+        RoomCenter = Vector3.zero;
+        return false;
+    }
+    
+    
+    
     public void SetRogueBornPlace(Transform transformPosition)
     {
         RogueBornPlace = transformPosition;

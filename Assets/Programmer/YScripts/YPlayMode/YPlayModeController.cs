@@ -233,6 +233,9 @@ public class YPlayModeController : MonoBehaviour
             testCharacterShoot.enabled = false;
         }
         
+        //给角色绑定压弯草地的prefab
+        GameObject grassBendingTrailPrefab = Addressables.LoadAssetAsync<GameObject>("RogueGrassBendingTrailRenderer").WaitForCompletion();
+        GameObject grassBendingTrailGo = Instantiate(grassBendingTrailPrefab, player.transform);
     }
 
     public void LockPlayerInput(bool shouldLock) 
