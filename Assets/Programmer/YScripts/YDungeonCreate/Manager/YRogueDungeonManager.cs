@@ -41,9 +41,8 @@ public class YRogueDungeonManager : MonoBehaviour
         //角色先飞到天上休息下？
         YPlayModeController.Instance.SetRogueCharacterPlaceFarAway();
 
-        
-        
         dungeonCreator.CreateDungeon();
+        
         
         StartCoroutine(EnterNewLevelCoroutine());//等待加载完 ，后面用别的方法吧
     }
@@ -59,6 +58,9 @@ public class YRogueDungeonManager : MonoBehaviour
     IEnumerator EnterNewLevelCoroutine()
     {
         yield return new WaitForSeconds(loadFakeTime*0.8f);
+        
+        YTriggerEvents.RaiseOnEnterRogueNewLevel(true);
+        
         flagGameBegin = true;
         //生成新的关卡
         //将角色设置在新的关卡的起始位置，出生房
@@ -79,7 +81,7 @@ public class YRogueDungeonManager : MonoBehaviour
     
     
     //存储当前所有房间的script
-    public List<YRouge_RoomBase> roomBaseLists;
+    //public List<YRouge_RoomBase> roomBaseLists;
     public List<YRouge_RoomBase> GetRoomBaseList()
     {
         return dungeonCreator.GetRoomBaseList();
@@ -88,7 +90,7 @@ public class YRogueDungeonManager : MonoBehaviour
     //输入房间类型，返回这个类型的房间
     public YRouge_RoomBase GetRoomBaseByType(RoomType roomType)
     {
-        foreach (var room in roomBaseLists)
+        foreach (var room in GetRoomBaseList())
         {
             if (room.RoomType == roomType)
             {
@@ -102,7 +104,7 @@ public class YRogueDungeonManager : MonoBehaviour
     //输入房间类型，返回这个房间类型的房间的左下角和右上角的位置
     public bool GetRoomBasePosByType(RoomType roomType, out Vector3 RoomCenter,out float roomWidth, out float roomLength)
     {
-        foreach (var room in roomBaseLists)
+        foreach (var room in GetRoomBaseList())
         {
             if (room.RoomType == roomType)
             {

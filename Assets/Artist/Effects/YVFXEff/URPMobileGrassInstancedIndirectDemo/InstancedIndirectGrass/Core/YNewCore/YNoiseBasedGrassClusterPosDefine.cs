@@ -21,12 +21,12 @@ public class YNoiseBasedGrassClusterPosDefine : MonoBehaviour
         
         //UpdatePosIfNeeded();
         
-        YTriggerEvents.OnEnterNewLevel += EnterNewLevel;
+        YTriggerEvents.OnEnterRogueNewLevel += EnterNewLevel;
     }
 
     private void OnDestroy()
     {
-        YTriggerEvents.OnEnterNewLevel -= EnterNewLevel;
+        YTriggerEvents.OnEnterRogueNewLevel -= EnterNewLevel;
     }
 
     void EnterNewLevel(object sender, YTriggerEventArgs e)
@@ -47,7 +47,7 @@ public class YNoiseBasedGrassClusterPosDefine : MonoBehaviour
         float Rwidth = 0;
         float Rheight = 0;
         
-        YRogueDungeonManager.Instance.GetRoomBasePosByType(RoomType.GameRoom,out Vector3 RoomCenter,out Rwidth,out Rheight);
+        YRogueDungeonManager.Instance.GetRoomBasePosByType(RoomType.BornRoom,out Vector3 RoomCenter,out Rwidth,out Rheight);
         //将这个东西移动到parentTransform的位置
         
         //在肉鸽房间中初始化草地的位置，后面需要改为在特定肉鸽层中初始化草地的位置,根据房间的宽高来初始化草地的位置
@@ -55,9 +55,9 @@ public class YNoiseBasedGrassClusterPosDefine : MonoBehaviour
         
         //将这个东西移动到parentTransform的位置
        
-        GameObject newGrass = new GameObject("Grass");
+        GameObject newGrass = new GameObject("RogueRoomGrass");
         newGrass.transform.position = originPos;
-        newGrass.transform.localScale = new Vector3(Rwidth, 1, Rheight);
+        newGrass.transform.localScale = new Vector3(Rwidth+0.5f, 1, Rheight+0.5f);
         UpdatePos(newGrass.transform);
     }
     
@@ -93,8 +93,10 @@ public class YNoiseBasedGrassClusterPosDefine : MonoBehaviour
         List<Vector3> positions = new List<Vector3>(instanceCount);
         RogueGenerateGrassFromNoiseMap4(positions,parentTransform);
         Debug.Log("GrassCount￥￥￥￥￥: " + positions.Count);
-        InstancedIndirectGrassRenderer.instance.ReSetGrass();
+
         InstancedIndirectGrassRenderer.instance.allGrassPos = positions;
+        InstancedIndirectGrassRenderer.instance.ReSetGrass();
+        
         cacheCount = positions.Count;
     }
 
@@ -224,8 +226,8 @@ public class YNoiseBasedGrassClusterPosDefine : MonoBehaviour
     {
         float scaleX = parent == null ? transform.localScale.x : parent.localScale.x;
         float scaleZ = parent == null ? transform.localScale.z : parent.localScale.z;
-        float worldWidth = scaleX * 2;
-        float worldHeight = scaleZ * 2;
+        float worldWidth = scaleX;
+        float worldHeight = scaleZ ;
 
         for (float x = 0; x < worldWidth; x += sampleInterval)
         {
@@ -240,8 +242,8 @@ public class YNoiseBasedGrassClusterPosDefine : MonoBehaviour
 
                 if (value > RogueplacementThreshold)
                 {
-                    float worldX = x - scaleX + Random.Range(-0.1f, 0.1f);
-                    float worldZ = z - scaleZ + Random.Range(-0.1f, 0.1f);
+                    float worldX = x - scaleX/2f + Random.Range(-0.1f, 0.1f);
+                    float worldZ = z - scaleZ/2f + Random.Range(-0.1f, 0.1f);
                     Vector3 pos = new Vector3(worldX, 0, worldZ) + (parent == null ? transform.position : parent.position);
                     positions.Add(new Vector3(pos.x, pos.y, pos.z));
                 }
