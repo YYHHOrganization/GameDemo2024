@@ -17,8 +17,9 @@ public class HTimelineTriggerSomething : MonoBehaviour
         animationController.runtimeAnimatorController = null;
         if (director)
         {
-            director.Play();
+            //director.Play();
             //Debug.Log("director is playing");
+            thisPanel.ShowEnterGameButton();
         }
         else
         {
