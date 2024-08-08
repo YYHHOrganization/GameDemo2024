@@ -658,9 +658,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2381927504174926557}
   - component: {fileID: 776000104357845185}
-  - component: {fileID: 1604684218079320444}
-  - component: {fileID: 8547223864732984467}
-  - component: {fileID: 5804438293069095499}
   m_Layer: 0
   m_Name: XingCatcake
   m_TagString: Untagged
@@ -708,67 +705,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.6373464, y: 0.39133134, z: 0.46203902}
   m_Center: {x: 0.03992875, y: 0.16035978, z: -0.101729855}
---- !u!114 &1604684218079320444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828335284221687613}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1223f51b3f6c78546af8f74722fe7a1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  petID: XingCatcake
-  followSpeed: 0
-  mNavMeshAgent: {fileID: 0}
-  curCharacterTrans: {fileID: 0}
-  ChaseTarget: {fileID: 0}
-  animator: {fileID: 0}
-  shootOrigin: {fileID: 2545751183044964781}
-  shouldCheckEnemyCount: 0
-  attackType: 0
-  followTypeInBattle: 0
-  AttackEff: {fileID: 0}
-  AttackEffTrans: {fileID: 5791030200808233866}
-  weapon: {fileID: 0}
-  closeEnoughDistance: 10
-  bat: {fileID: 0}
---- !u!195 &8547223864732984467
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828335284221687613}
-  m_Enabled: 0
-  m_AgentTypeID: -334000983
-  m_Radius: 0.3
-  m_Speed: 6
-  m_Acceleration: 12
-  avoidancePriority: 50
-  m_AngularSpeed: 150
-  m_StoppingDistance: 2
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 0.4
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &5804438293069095499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828335284221687613}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08b3a1243c1020b439c067a129774c18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1829377181514060947
 GameObject:
   m_ObjectHideFlags: 0

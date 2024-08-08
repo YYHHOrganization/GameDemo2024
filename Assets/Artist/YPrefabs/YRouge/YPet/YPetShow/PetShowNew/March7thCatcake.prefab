@@ -3074,10 +3074,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3850678702213185097}
-  - component: {fileID: 4839705037458756450}
   - component: {fileID: 8210634923648162834}
-  - component: {fileID: 2553516970172870261}
-  - component: {fileID: 6791978929964639375}
   m_Layer: 0
   m_Name: March7thCatcake
   m_TagString: Untagged
@@ -3105,32 +3102,6 @@ Transform:
   - {fileID: 1068724368998654023}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4839705037458756450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8752389113970293280}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3e51101dffa22b4aba6064403ac8f04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  petID: March7thCatcake
-  followSpeed: 0
-  mNavMeshAgent: {fileID: 0}
-  curCharacterTrans: {fileID: 0}
-  ChaseTarget: {fileID: 0}
-  animator: {fileID: 0}
-  shootOrigin: {fileID: 2789827031805746576}
-  shouldCheckEnemyCount: 0
-  attackType: 0
-  followTypeInBattle: 0
-  AttackEff: {fileID: 0}
-  AttackEffTrans: {fileID: 0}
-  weapon: {fileID: 1278737181140049232}
-  closeEnoughDistance: 10
 --- !u!65 &8210634923648162834
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3152,40 +3123,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.6373464, y: 0.39133134, z: 0.46203902}
   m_Center: {x: 0.03992875, y: 0.16035978, z: -0.101729855}
---- !u!195 &2553516970172870261
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8752389113970293280}
-  m_Enabled: 0
-  m_AgentTypeID: -334000983
-  m_Radius: 0.3
-  m_Speed: 4
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 2
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 0.4
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &6791978929964639375
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8752389113970293280}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08b3a1243c1020b439c067a129774c18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8756529950154449395
 GameObject:
   m_ObjectHideFlags: 0
