@@ -88,7 +88,6 @@ public class YSpecialMap : MonoBehaviour
     [SerializeField]private GameObject CameraIn2;
     public void OnPlayerEnter()
     {
-        
         //OnPlayerExit+=portalToSomeWhere_ExitPortal.OnPlayerExit;
         //此时让OnPlayerExit监听 portalToSomeWhere_ExitPortal.OnPlayerPortal
         portalToSomeWhere_ExitPortal.OnPlayerPortal += OnPlayerExit;//意思是：
