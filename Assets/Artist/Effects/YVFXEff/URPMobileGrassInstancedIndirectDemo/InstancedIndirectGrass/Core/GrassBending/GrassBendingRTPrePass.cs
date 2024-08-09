@@ -39,7 +39,7 @@ public class GrassBendingRTPrePass : ScriptableRendererFeature
         {
             if (!InstancedIndirectGrassRenderer.instance)
             {
-                Debug.LogWarning("InstancedIndirectGrassRenderer not found, abort GrassBendingRTPrePass's Execute");
+                //Debug.LogWarning("InstancedIndirectGrassRenderer not found, abort GrassBendingRTPrePass's Execute");
                 return;
             }
 

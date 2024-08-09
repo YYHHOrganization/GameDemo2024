@@ -98,22 +98,32 @@ public class YChooseCharacterPanel : BasePanel
         Debug.Log("角色数量"+yPlanningTable.Instance.GetCharacterNum());
         //循环遍历角色列表
         #if BUILD_MODE
-        uiTool.GetOrAddComponentInChilden<Button>("CharacterButton0").gameObject.SetActive(false);
-        uiTool.GetOrAddComponentInChilden<Button>("CharacterButton1").onClick.AddListener(() =>
-        {
-            //第二个变成了随机选择角色
-            int randomIndex = Random.Range(2, yPlanningTable.Instance.GetCharacterNum());
-            SetCharacter(randomIndex);
-        });
+        // uiTool.GetOrAddComponentInChilden<Button>("CharacterButton0").gameObject.SetActive(false);
+        // uiTool.GetOrAddComponentInChilden<Button>("CharacterButton1").onClick.AddListener(() =>
+        // {
+        //     //第二个变成了随机选择角色
+        //     int randomIndex = Random.Range(2, yPlanningTable.Instance.GetCharacterNum());
+        //     SetCharacter(randomIndex);
+        // });
         for (int i = 2; i < yPlanningTable.Instance.GetCharacterNum(); i++)
         {
             //不可以直接传i 因为i会变，因为是引用类型
             int index = i;
             //给每个角色按钮添加点击事件
-            uiTool.GetOrAddComponentInChilden<Button>("CharacterButton"+index).onClick.AddListener(()=>
+            //如果这个Button是隐藏的，那么就不添加点击事件:
+            Button button = uiTool.GetOrAddComponentInChilden<Button>("CharacterButton" + index);
+            if (button!=null)
             {
-                SetCharacter(index);
-            });
+                button.onClick.AddListener(() =>
+                {
+                    SetCharacter(index);
+                });
+            }
+            
+            // uiTool.GetOrAddComponentInChilden<Button>("CharacterButton"+index).onClick.AddListener(()=>
+            // {
+            //     SetCharacter(index);
+            // });
         }
         #else
         for (int i = 0; i < yPlanningTable.Instance.GetCharacterNum(); i++)
@@ -146,7 +156,7 @@ public class YChooseCharacterPanel : BasePanel
         //     });
         // }
         
-        SetCharacter(2);
+        SetCharacter(10);
         // SetCatcake(0);
         SetCatcake("XingCatcake");
         
