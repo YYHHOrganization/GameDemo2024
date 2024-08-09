@@ -262,10 +262,12 @@
 
                 
                 //fog
-                float fogFactor = ComputeFogFactor(OUT.positionCS.z);
-                // Mix the pixel color with fogColor. You can optionaly use MixFogColor to override the fogColor
-                // with a custom one.
-                OUT.color = MixFog(lightingResult, fogFactor);
+                // float fogFactor = ComputeFogFactor(OUT.positionCS.z);
+                // // Mix the pixel color with fogColor. You can optionaly use MixFogColor to override the fogColor
+                // // with a custom one.
+                // OUT.color = MixFog(lightingResult, fogFactor);
+
+                OUT.color = lightingResult;
                 return OUT;
             }
 

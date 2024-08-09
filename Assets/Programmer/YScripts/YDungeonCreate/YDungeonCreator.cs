@@ -15,6 +15,7 @@ public class YDungeonCreator : MonoBehaviour
     public Material HuazhuanFloorMaterial_BlanckWhite;
     public Material HuazhuanFloorMaterial_Hua;
     public Material HuazhuanFloorMaterial_;
+    public Material BornRoomFloorMaterial;
     [Range(0.0f,0.3f)]
     public float roomBottomCornerModifier;
     [Range(0.7f,1.0f)]
@@ -43,12 +44,15 @@ public class YDungeonCreator : MonoBehaviour
     List<Vector3Int> corridorWallVerticalPositions;
     
     public Vector3Int originPosition;
+    
+    LayerMask floorLayerMask;
     // Start is called before the first frame update
     void Start()
     {
         // CreateDungeon();
         //监听是否开始新的一关
         YTriggerEvents.OnEnterNewLevel += EnterNewLevel;
+        floorLayerMask = LayerMask.NameToLayer("RogueFloor");//提前存储节省性能
     }
 
     void EnterNewLevel(object sender, YTriggerEventArgs e)
@@ -259,6 +263,10 @@ public class YDungeonCreator : MonoBehaviour
         {
             return HuazhuanFloorMaterial_;
         }
+        else if(roomMRoomType == RoomType.BornRoom)
+        {
+            return BornRoomFloorMaterial;
+        }
         
         return floorMaterial;
     }
@@ -412,6 +420,7 @@ public class YDungeonCreator : MonoBehaviour
             // AddRoomWallPositionToList(point,  possibleWallVerticalPositions);
             AddRoomWallPositionToList(point, roomWallVerticalPositions[id]);
         }
+        SetFloorLayer(floor);
     }
 
    
@@ -480,6 +489,13 @@ public class YDungeonCreator : MonoBehaviour
             // AddWallPositionToList(point, possibleWallVerticalPositions, possibleDoorVerticalPositions);
             AddCorriWallPositionToList(point, roomWallVerticalPositions, roomDoorVerticalPositions, corridorWallVerticalPositions);
         }
+        SetFloorLayer(floor);
+    }
+    
+    
+    void SetFloorLayer(GameObject floor)
+    {
+        floor.layer = floorLayerMask;
     }
     //房间和走廊原本都被wall包围，但是当二者的wall重叠后，应该是door的位置，wall被door替换，wall的位置就会被door占据
     private void AddWallPositionToList(Vector3 point, List<Vector3Int> wallList, List<Vector3Int> doorList)

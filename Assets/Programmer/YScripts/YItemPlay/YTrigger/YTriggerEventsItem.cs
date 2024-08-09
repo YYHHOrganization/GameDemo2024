@@ -102,13 +102,22 @@ public class YTriggerEvents : MonoBehaviour
         OnShortcutKeyLockView?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
     
-    //是否进入新的一关/重新开始 很多enter new level都没有用这个的逻辑，因为之前就写好了
+    //是否进入新的一关/重新开始 很多enter new level都没有用这个的逻辑，因为之前就写好了(这个是总关卡 不是肉鸽那个层)
     public static event EventHandler<YTriggerEventArgs> OnEnterNewLevel;
 
     public static void RaiseOnEnterNewLevel(bool activated)
     {
         OnEnterNewLevel?.Invoke(null, new YTriggerEventArgs { activated = activated });
     }
+    
+    //是否进入新的肉鸽那个层!和上面那个不同！！！！
+    public static event EventHandler<YTriggerEventArgs> OnEnterRogueNewLevel;
+
+    public static void RaiseOnEnterRogueNewLevel(bool activated)
+    {
+        OnEnterRogueNewLevel?.Invoke(null, new YTriggerEventArgs { activated = activated });
+    }
+
 
     //给抽奖机物品点击确认
     public static event EventHandler<YTriggerGivingItemEventArgs> OnGiveOutItemInBagForSlotMachine;
