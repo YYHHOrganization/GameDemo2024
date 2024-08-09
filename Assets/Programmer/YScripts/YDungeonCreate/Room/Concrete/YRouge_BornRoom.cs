@@ -26,12 +26,22 @@ public class YRouge_BornRoom : YRouge_RoomBase
     void ReadRoomData()
     {
         //在房间类型中先随机选择一个房间类型，然后生成其对应的房间数据
-        int randomIndex = Random.Range(0,SD_BornRoomCSVFile.Class_Dic.Count);
-        
+        var RoomTypeDic = SD_BornRoomCSVFile.Class_Dic;
+        if(RoomTypeDic == null)
+        {
+            //Debug.LogError("房间类型数据为空");
+            return;
+        }
+        int randomIndex = Random.Range(0, RoomTypeDic.Count);
+
         RoomData = SD_BornRoomCSVFile.Class_Dic["6667000"+randomIndex];//66680000
     }
     private void GenerateOtherItems(Class_BornRoomCSVFile RoomCsvFile)
     {
+        if(RoomCsvFile == null)
+        {
+            return;
+        }
         string itemIDs = RoomCsvFile.OtherItemIDField;
         string[] itemIDArray = itemIDs.Split(';');
         string[] itemCounts = RoomCsvFile.OtherItemCountField.Split(';');
