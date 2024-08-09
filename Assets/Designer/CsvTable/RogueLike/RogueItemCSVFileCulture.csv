@@ -47,7 +47,7 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000043,HurtRoomEnemyOne,主动道具：狂猎的钥匙,1,主动道具：使用时可以对全房间敌人造成4点伤害，每4个房间可使用一次,Positive,HurtEveryEnemyInRoom,RoomCount;4;-4,-1,HurtEnemyInRoomIcon,true,huimie,MinghuoDagongShoe,true,5,所属——破坏者：狂猎,false,true
 80000044,UpperEnemyHealthBoundThree,独家秘方：全体新生成敌人血量+3,1,全部敌人的血量上限值+3,Negative,AddEnemyHealth,AddUpperHealth;3,-1,huahuomiaomiaobaoIcon,true,fengrao,UpperEnemyHealthBoundThree,false,5,所属——炼药师：药师,false,false
 80000045,DownEnemyHealthBoundHalf,神选者的根治之法：全体新生成敌人血量减半,1,全部敌人的血量上限减半,Negative,AddEnemyHealth,MultiplyUpperHealth;0.5,-1,huahuomiaomiaobaoIcon,true,xunlie,DownEnemyHealthBoundHalf,false,5,所属——快枪手：本,false,false
-80000046,HealPlayerHealth,主动道具：双武士剑,1,主动道具：在使用时，有80%的概率回复一点生命值，有20%的概率对自身造成一点伤害，每5个房间充能一次,Positive,HeiyuanbaihuaEffect,RoomCount;5;,-1,HeiyuanbaihuaIcon,false,huimie,Heiyuanbaihua,true,5,所属——破坏者：狂猎,false,true
+80000046,HealPlayerHealth,主动道具：神秘草药,1,主动道具：在使用时，有80%的概率回复一点生命值，有20%的概率对自身造成一点伤害，每5个房间充能一次,Positive,HeiyuanbaihuaEffect,RoomCount;5;,-1,HeiyuanbaihuaIcon,false,huimie,Heiyuanbaihua,true,5,所属——破坏者：狂猎,false,true
 80000047,March7thCamera,主动道具：冰冻相机,1,主动道具：在使用时，可以定住所有敌人5s(蜘蛛无效)，每5个房间充能一次,Positive,FrozenRoomEnemy,RoomCount;5;5,-1,March7thCameraIcon,false,sanyueqi,SanyueqiCamera,true,5,所属——记者,false,true
 80000048,RuanMeiQiyi,美味佳肴其一：获取全部【快枪手】的赐福,1,获取全部【快枪手】的赐福,Negative,GetAllBlessWithKind,xunlie,-1,RuanmeiOneIcon,true,ruanmei,RuanmeiOne,true,5,所属：美味佳肴,false,false
 80000049,RuanmeiQier,美味佳肴其二：获取全部【七神】的祝福,1,获取全部【重要】的祝福,Negative,GetAllBlessWithKind,zhongli!wendi,-1,RuanmeiTwoIcon,true,ruanmei,RuanmeiTwo,true,5,所属：美味佳肴,false,false
@@ -67,10 +67,10 @@ RogueItemID,RogueItemName,RogueItemChineseName,RogueItemGetKind,RogueItemDescrip
 80000063,ZhengkaiTianyan,她已睁开天眼：显示全部道具名称,1,显示全部主动道具和被动道具的名称,Negative,SetEveryItemName,true,-1,BishangshuangyanIcon,true,fuxuan,BishangshuangyanFive,true,5,所属：占卜师,false,false
 80000064,ShopItemDiscordCardXingqiong,好心商人赠送的钻石商店打折券,1,钻石商店的商品全部50%折扣,Positive,SetShopItemPriceMultiply,20000012;0.5,-1,DazhequanIcon,false,shajin,ShopItemDiscordCardXingqiong,true,4,所属：好心商人,true,false
 80000065,ShopItemDiscordCardXinyongdian,好心商人赠送的银币商店打折券,1,银币商店的商品全部50%折扣,Positive,SetShopItemPriceMultiply,20000013;0.5,-1,DazhequanIcon,false,shajin,ShopItemDiscordCardXinyongdian,true,4,所属：好心商人,true,false
-80000066,ShopItemDiscordCardYuanshi,好心商人赠送的原石商店打折券,1,交子商店的商品全部50%折扣,Positive,SetShopItemPriceMultiply,20000003;0.5,-1,DazhequanIcon,false,shajin,ShopItemDiscordCardYuanshi,true,4,所属：好心商人,true,false
+80000066,ShopItemDiscordCardYuanshi,好心商人赠送的铜币商店打折券,1,交子商店的商品全部50%折扣,Positive,SetShopItemPriceMultiply,20000003;0.5,-1,DazhequanIcon,false,shajin,ShopItemDiscordCardYuanshi,true,4,所属：好心商人,true,false
 80000067,ShopItemDiscordCardGoldenRubbish,好心商人赠送的金色垃圾商店打折券,1,金色垃圾商店的商品全部50%折扣,Positive,SetShopItemPriceMultiply,20000005;0.5,-1,DazhequanIcon,false,shajin,ShopItemDiscordCardGoldenRubbish,true,4,所属：好心商人,true,false
 80000068,ShopItemDiscordCardRubbish,好心商人赠送的垃圾商店打折券,1,垃圾商店的商品全部50%折扣,Positive,SetShopItemPriceMultiply,20000004;0.5,-1,DazhequanIcon,false,shajin,ShopItemDiscordCardRubbish,true,4,所属：好心商人,true,false
-80000069,ShopItemDiscordCardJingpian,好心商人赠送的晶片商店打折券,1,铜币商店的商品全部50%折扣,Positive,SetShopItemPriceMultiply,20000008;0.5,-1,DazhequanIcon,false,shajin,ShopItemDiscordCardJingpian,true,4,所属：好心商人,true,false
+80000069,ShopItemDiscordCardJingpian,好心商人赠送的翡翠商店打折券,1,铜币商店的商品全部50%折扣,Positive,SetShopItemPriceMultiply,20000008;0.5,-1,DazhequanIcon,false,shajin,ShopItemDiscordCardJingpian,true,4,所属：好心商人,true,false
 80000070,BladeHurtMySelfHalf,破碎的剑其一,1,对自身造成一点伤害,Negative,AddHeartOrShield,Health;-1,-1,RenWeaponIcon,false,ren,BladeHurtMySelfHalf,true,3,所属：武士,false,false
 80000071,BladeHurtMySelfOne,破碎的剑其二,1,对自身造成两点伤害,Negative,AddHeartOrShield,Health;-2,-1,RenWeaponIcon,false,ren,BladeHurtMySelfOne,true,3,所属：武士,false,false
 80000072,BladeAddDamageOne,增伤药其一,1,增加自身的一点伤害值,Negative,AddAttributeValue,RogueBulletDamage;1,-1,RenGuangzhuiIcon,false,ren,BladeAddDamageOne,true,4,所属：武士,false,false
