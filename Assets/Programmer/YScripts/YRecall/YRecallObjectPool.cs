@@ -8,8 +8,18 @@ public class YRecallObjectPool : MonoBehaviour
     public List<GameObject> recallableObjectPool;
     private YRecallSkill recallSkill;
 
+    
+    //是否禁用倒转乾坤
+    bool isRecallSkillDisabled__ = false;
+    
     private void Start()
     {
+        
+        if (isRecallSkillDisabled__ == false)
+        {
+            return;
+        }
+        
         recallableObjectPool = new List<GameObject>();
         recallSkill= gameObject.AddComponent<YRecallSkill>();
         recallSkill.setPool(this);
