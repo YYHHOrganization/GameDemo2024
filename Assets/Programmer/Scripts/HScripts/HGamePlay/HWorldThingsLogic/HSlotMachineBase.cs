@@ -57,10 +57,10 @@ public class HSlotMachineBase : MonoBehaviour
             int num = Random.Range(0, 10000);
             if (num > 5000)
             {
-                HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","这是一场豪赌，朋友！所有，或者一无所有！");
+                HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","这是一场豪赌，朋友！");
             }
             else
-                HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","愿你的血脉永远鼓动，旅途永远坦然，诡计永不败露。");
+                HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg","害怕醒来吗？");
         }
         if (camera)
         {
@@ -118,13 +118,13 @@ public class HSlotMachineBase : MonoBehaviour
             HItemCounter.Instance.AddItem(chooseItemID, chooseItemCount*2);
         }
         //只有0（希儿）和1（布洛妮娅）的话，给出三倍奖励，并给出爱心特效
-        else if(resultsCnt[0]>=1 && resultsCnt[1]>=1 && resultsCnt[2]==0 && resultsCnt[3]==0)
-        {
-            string itemName = yPlanningTable.Instance.worldItems[chooseItemID].chineseName;
-            newContent = new string("只出现了希儿和布洛妮娅！你获得了三倍奖励！获得了" + chooseItemCount * 3 + "个" + itemName + "！");
-            HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg",newContent);
-            HItemCounter.Instance.AddItem(chooseItemID, chooseItemCount*3);
-        }
+        // else if(resultsCnt[0]>=1 && resultsCnt[1]>=1 && resultsCnt[2]==0 && resultsCnt[3]==0)
+        // {
+        //     string itemName = yPlanningTable.Instance.worldItems[chooseItemID].chineseName;
+        //     newContent = new string("只出现了希儿和布洛妮娅！你获得了三倍奖励！获得了" + chooseItemCount * 3 + "个" + itemName + "！");
+        //     HMessageShowMgr.Instance.ShowMessage("SlotMachineSubmitMsg",newContent);
+        //     HItemCounter.Instance.AddItem(chooseItemID, chooseItemCount*3);
+        // }
         //某一种图案出现了三次及以上
         else if(resultsCnt[0]>=3 || resultsCnt[1]>=3 || resultsCnt[2]>=3 || resultsCnt[3]>=3)
         {
