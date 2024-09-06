@@ -42,8 +42,8 @@ public class PlayerWalkState : HPlayerBaseState
 
     public override void UpdateState()
     {
-        _ctx.AppliedMovementX = _ctx.CurrentMovementInput.x;
-        _ctx.AppliedMovementZ = _ctx.CurrentMovementInput.y;
+        _ctx.AppliedMovementX = _ctx.CurrentMovementInput.x * 2;
+        _ctx.AppliedMovementZ = _ctx.CurrentMovementInput.y * 2;
         CheckSwitchStates();
     }
 }

@@ -27,6 +27,7 @@ public class YRecallSkill : MonoBehaviour
     GameObject YRecallLightHandVFX;
     
     LayerMask layerMask = 0;
+    
     public void setPool(YRecallObjectPool yRecallObjectPool)
     {
         recallObjectPool = yRecallObjectPool;
@@ -35,6 +36,7 @@ public class YRecallSkill : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         playerInput = new L2PlayerInput();
         countDownUI = gameObject.AddComponent<YCountDownUI>();
         countDownUI.addCountDownUIlink = "RecallCountDownPanel";

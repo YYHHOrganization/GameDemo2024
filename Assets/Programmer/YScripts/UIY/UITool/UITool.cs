@@ -53,7 +53,7 @@ public class UITool
                 return item.gameObject;
             }
         }
-        Debug.LogError("没有找到名字为"+name+"的子对象");
+        //Debug.LogError("没有找到名字为"+name+"的子对象");
         return null;
     }
     

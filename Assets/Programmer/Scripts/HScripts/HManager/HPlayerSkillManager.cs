@@ -87,14 +87,14 @@ public class HPlayerSkillManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            if (!gachaPanelBeenPushed)
-            {
-                YGameRoot.Instance.Push(new HGachaBasePanel());
-                gachaPanelBeenPushed = true;
-            }
-        }
+        // if (Input.GetKeyDown(KeyCode.F3))
+        // {
+        //     if (!gachaPanelBeenPushed)
+        //     {
+        //         YGameRoot.Instance.Push(new HGachaBasePanel());
+        //         gachaPanelBeenPushed = true;
+        //     }
+        // }
         
     }
     
