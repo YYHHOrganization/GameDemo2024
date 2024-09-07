@@ -32,8 +32,22 @@ public class YRouge_BornRoom : YRouge_RoomBase
             //Debug.LogError("房间类型数据为空");
             return;
         }
+        
+        //获取当前等级 关卡层数 level
+        //如果是第一层，那么就是0 
+        int gameRogueLevel = YRogueDungeonManager.Instance.GetRogueLevel();
+        Debug.Log("当前等级 关卡层数 level = " + gameRogueLevel);
+        // 遍历字典，找到对应的房间类型
+        foreach (var item in RoomTypeDic)
+        {
+            if (item.Value._RoomDifficultyLevel() == gameRogueLevel)
+            {
+                RoomData = item.Value;
+                return;
+            }
+        }
+        //如果没有找到对应的房间类型，那么就随机选择一个
         int randomIndex = Random.Range(0, RoomTypeDic.Count);
-
         RoomData = SD_BornRoomCSVFile.Class_Dic["6667000"+randomIndex];//66680000
     }
     private void GenerateOtherItems(Class_BornRoomCSVFile RoomCsvFile)

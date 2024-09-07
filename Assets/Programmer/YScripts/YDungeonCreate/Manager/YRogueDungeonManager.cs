@@ -65,7 +65,22 @@ public class YRogueDungeonManager : MonoBehaviour
         //生成新的关卡
         //将角色设置在新的关卡的起始位置，出生房
         // YPlayModeController.Instance.SetRogueCharacterPlace();
-        YPlayModeController.Instance.SetRogueCharacterPlace(RogueBornPlace);
+        
+        //rotation应该是朝向教学关的item
+        YPlayModeController.Instance.SetRogueCharacterPlace(RogueBornPlace.transform.position);
+            
+            
+        
+        //如果目前是第一关，并且有教学关的item，让角色面向教学关的位置
+        if (RogueLevel == 0)
+        {
+            YSpecialMapTutorial ySpecialMapTutorial = FindObjectOfType<YSpecialMapTutorial>();
+            if (ySpecialMapTutorial)
+            {
+                YPlayModeController.Instance.playerFaceTo(ySpecialMapTutorial.transform.position);
+            }
+        }
+        
         dungeonCreator.BakeNavMesh();
         yield return new WaitForSeconds(loadFakeTime*0.2f);
         //将加载界面关闭
