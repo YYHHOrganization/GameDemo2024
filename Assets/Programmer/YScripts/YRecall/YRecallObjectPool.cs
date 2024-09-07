@@ -10,7 +10,7 @@ public class YRecallObjectPool : MonoBehaviour
 
     
     //是否禁用倒转乾坤
-    bool isRecallSkillDisabled__ = false;
+    bool isRecallSkillDisabled__ = true;
     
     private void Start()
     {
