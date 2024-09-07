@@ -26,6 +26,7 @@ public class YPortalToSomeWhere :YRogue_TriggerGame
         }
         //传送角色
         YPlayModeController.Instance.SetRogueCharacterPlace(transferPlace);
+        Debug.Log(transferPlace+"传送回相应位置");
         
         //传送后的效果
         //1.传送门ui消失

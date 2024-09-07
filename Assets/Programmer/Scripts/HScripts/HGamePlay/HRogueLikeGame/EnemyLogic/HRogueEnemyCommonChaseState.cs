@@ -67,6 +67,12 @@ public class HRogueEnemyCommonChaseState : HRogueEnemyBaseState
             mPatrolAI.StartCoroutine(mPatrolAI.ShootSpecialBulletWithMuzzle());
             return;
         }
+
+        if (mPatrolAI.mNavMeshAgent == null)
+        {
+            return;
+        }
+        
         mPatrolAI.mNavMeshAgent.enabled = true;
         mPatrolAI.curStateName = "chase";
         

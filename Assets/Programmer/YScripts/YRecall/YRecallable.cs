@@ -157,6 +157,7 @@ public class YRecallable : MonoBehaviour
         foreach (var recallObject in tempRecallObjects)
         {
             // Set the object's position, rotation, velocity, and angular velocity
+            //--更改为直接设置位置和旋转
             rb.position = recallObject.Position;
             rb.rotation = recallObject.Rotation;
             

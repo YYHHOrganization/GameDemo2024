@@ -21,5 +21,10 @@ public class Class_BornRoomCSVFile {
 		string value = OtherItemCountField;
 		return value;
 	}
+	public string RoomDifficultyLevel { get; set; }    //房间难度等级
+	public int _RoomDifficultyLevel (){
+		int value = int.Parse(RoomDifficultyLevel);
+		return value;
+	}
 	}
 	

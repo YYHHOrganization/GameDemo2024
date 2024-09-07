@@ -439,10 +439,20 @@ public class YPlayModeController : MonoBehaviour
         curCharacter.transform.position = GeneratePlace.position;
     }
     
+    //如果目前是第一关，并且有教学关的item，让角色面向教学关的位置
+    public void playerFaceTo(Vector3 toturialEnterPlace)
+    {
+        curCharacter.GetComponent<CharacterController>().enabled = false;
+        // curCharacter.transform.LookAt(toturialEnterPlace);
+        curCharacter.transform.rotation = Quaternion.Euler(0, -90, 0);
+        curCharacter.GetComponent<CharacterController>().enabled = true;
+    }
+    
     public void SetRogueCharacterPlace(Transform transform)
     {
         curCharacter.GetComponent<CharacterController>().enabled = false;
         curCharacter.transform.position = transform.position;
+
         curCharacter.GetComponent<CharacterController>().enabled = true;
         //同时也要传送当前拥有的宠物
         SetRogueCatCakePlace(transform.position);
@@ -481,7 +491,15 @@ public class YPlayModeController : MonoBehaviour
         //同时也要传送当前拥有的宠物
         SetRogueCatCakePlace(pos);
     }
-    
+    //传送角色到指定位置
+    public void SetRogueCharacterPlaceWithNoCatcake(Vector3 pos)
+    {
+        //可以考虑来个黑屏：传送中
+        curCharacter.GetComponent<CharacterController>().enabled = false;
+        curCharacter.transform.position = pos;
+        curCharacter.GetComponent<CharacterController>().enabled = true;
+        
+    }
     //存储原来的范围
     float originalRadius=0.3f;
     CapsuleCollider capsuleCollider;
