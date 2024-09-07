@@ -31,7 +31,7 @@ public class NPCControl : MonoBehaviour
         {
             controller.Move((controller.velocity + g * Time.deltaTime * Vector3.down) * Time.deltaTime);
         }
-
+        
         if (isWait)
         {
             waitTime += Time.deltaTime;
@@ -48,7 +48,7 @@ public class NPCControl : MonoBehaviour
         {
             if ((this.transform.position - currtntOldPos).sqrMagnitude < currentMaxLength * currentMaxLength)
             {
-                controller.SimpleMove(currentMoveDir);
+                //controller.SimpleMove(currentMoveDir);
                 if (brush)
                 {
                     brush.Paint();

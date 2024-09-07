@@ -18,6 +18,11 @@ public class HRGPlayerRutBrush : MonoBehaviour
 
     public void Paint()
     {
+        if (!painter)
+        {
+            painter = FindObjectOfType<RutPainter>();
+        }
+        
         Vector2 newPosXZ = new Vector2(transform.position.x, transform.position.z);
         if (transform.hasChanged && (newPosXZ - oldPosXZ).sqrMagnitude >= stepLength * stepLength)
         {

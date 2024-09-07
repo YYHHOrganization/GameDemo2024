@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class YRogueToturialEnterItem :YRogue_TriggerGame
 {
     protected GameObject getUIHold;
+    private bool hasEnter = false;
     protected void Start()
     {
         base.Start();
@@ -14,16 +17,26 @@ public class YRogueToturialEnterItem :YRogue_TriggerGame
     }
     protected override void StartInteract()
     {
+        if (hasEnter) return;
         if (!shouldAliveAfterGame)
         {
             gameObject.GetComponent<Collider>().enabled = false;
         }
         
         Debug.Log("YRogueTutorialEnterItem");
+        //GameObject tutorialScene = Addressables.LoadAssetAsync<GameObject>("TutorialScenePrefab").WaitForCompletion();
+        //GameObject tutorialSceneInstance = Instantiate(tutorialScene);
         //寻找脚本YSpecialMapTutorial
+        //YSpecialMapTutorial ySpecialMapTutorial = tutorialSceneInstance.gameObject.GetComponent<YSpecialMapTutorial>();
         YSpecialMapTutorial ySpecialMapTutorial = FindObjectOfType<YSpecialMapTutorial>();
         if (ySpecialMapTutorial)
         {
+            hasEnter = true;
+            RutPainter painter = ySpecialMapTutorial.gameObject.GetComponentInChildren<RutPainter>();
+            if (painter)
+            {
+                painter.Initialize();
+            }
             //存储原来的位置  方便后续传送
             Transform playertransform = YPlayModeController.Instance.curCharacter.transform;
             YRogueDungeonManager.Instance.SetTransferPlace(playertransform);

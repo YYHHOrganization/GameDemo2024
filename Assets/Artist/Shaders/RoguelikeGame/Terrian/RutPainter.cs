@@ -28,11 +28,20 @@ public class RutPainter : MonoBehaviour
     private Vector3 playerOldPos;//上次绘制时玩家的位置(经过离散化截断）
     private void Start()
     {
+        
+    }
+    bool isInit = false;
+
+    public void Initialize()
+    {
+        playerTf = YPlayModeController.Instance.curCharacter.transform;
         InitPaintProp();
+        isInit = true;
     }
 
     private void Update()
     {
+        if (!isInit) return;
         //轨迹淡化
         RenderTexture tempRT = RenderTexture.GetTemporary(paintRT.descriptor);
         Graphics.Blit(paintRT, tempRT, fadeMat, 0);
@@ -45,6 +54,7 @@ public class RutPainter : MonoBehaviour
     {
         if (playerTf)
         {
+            Debug.Log("GetPlayerTf~~~~~1!!!!!!");
             playerOldPos = playerTf.position;
 
             //初始化交换纹理
