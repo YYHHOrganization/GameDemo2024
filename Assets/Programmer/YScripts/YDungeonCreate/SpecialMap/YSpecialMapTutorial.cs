@@ -18,7 +18,7 @@ public class YSpecialMapTutorial : MonoBehaviour
     }
     public void playerEnterTutorial()
     {
-        GameObject tutorialPanel = Addressables.InstantiateAsync(addLink).WaitForCompletion();
+        GameObject tutorialPanel = Addressables.LoadAssetAsync<GameObject>(addLink).WaitForCompletion();
         //寻找并挂在Canvas下
         
         tutorialPanelInstance = Instantiate(tutorialPanel, canvas);

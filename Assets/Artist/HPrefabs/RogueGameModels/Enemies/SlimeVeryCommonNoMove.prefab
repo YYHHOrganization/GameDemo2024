@@ -19906,6 +19906,9 @@ GameObject:
   - component: {fileID: 5764838657768145224}
   - component: {fileID: 5447862675269842280}
   - component: {fileID: 7950692997052021284}
+  - component: {fileID: 4417981978966324012}
+  - component: {fileID: 2728979497958102500}
+  - component: {fileID: -6417678382671616124}
   m_Layer: 14
   m_Name: SlimeVeryCommonNoMove
   m_TagString: Enemy
@@ -20051,6 +20054,66 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &4417981978966324012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8849640155963432597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6104f07e646aed540a2c0769cb0e58d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentMoveDir: {x: 0, y: 0, z: 0}
+  currentMaxLength: 0
+  currtntOldPos: {x: 0, y: 0, z: 0}
+  waitTime: 0
+  isWait: 0
+--- !u!114 &2728979497958102500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8849640155963432597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 774e8f530880235489531ceb560790ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  painter: {fileID: 0}
+  brushTex: {fileID: 2800000, guid: e83ebbf68c53f9e49ac3cc2034e7cfab, type: 3}
+  brushRadius: 0.6
+  brushInt: 5
+  stepLength: 0.1
+--- !u!143 &-6417678382671616124
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8849640155963432597}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 0.5
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1001 &242185122054387742
 PrefabInstance:
   m_ObjectHideFlags: 0

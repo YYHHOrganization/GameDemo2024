@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Scene_SandSystem_TessGround
+  m_Shader: {fileID: 4800000, guid: 1661c1f0e10431d4ebae74ce89b93427, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _FlashTex:
+        m_Texture: {fileID: 2800000, guid: 73486e51380fbf34bb475145f8cd9134, type: 3}
+        m_Scale: {x: 100, y: 100}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: bc1c9fe3f0605a74abe1fe731e555048, type: 3}
+        m_Scale: {x: 16, y: 6}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 9e9fe4ee2c78f1640b65ca8174d87d16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RutRTTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _F0: 0
+    - _FlashInt: 30
+    - _FlashOffset: -0.1
+    - _FlashRange_Max: 10
+    - _FlashRange_Min: 1
+    - _FresnelPow: 10
+    - _NormalInt: 2
+    - _Rough: 0.5
+    - _RutHeight: 0.1
+    - _RutNormalInt: -5
+    - _TessPow: 2
+    - _TessStep: 64
+    m_Colors:
+    - _AmbCol: {r: 1, g: 1, b: 1, a: 1}
+    - _BrightCol: {r: 1, g: 1, b: 1, a: 1}
+    - _DarkCol: {r: 0.09999997, g: 0.09999997, b: 0.09999997, a: 1}
+    - _PaintRect: {r: 165.24039, g: -252.85187, b: 229.24039, a: -188.85187}
+    - _SpecularCol: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []
