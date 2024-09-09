@@ -173,6 +173,30 @@ MonoBehaviour:
   passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1
+--- !u!114 &-130310934065844971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a01d188a26328b4b920cdfdfa2d0def, type: 3}
+  m_Name: VolumetricFogRendererFeatureLite
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  renderInSceneView: 1
+  renderPassEvent: 500
+  settings:
+    fogDownsampleLevel: 4
+    fogMaterial: {fileID: 2100000, guid: f2e0e5c42022d3f4ca219877f7a15978, type: 2}
+    depthMaterial: {fileID: 2100000, guid: 1d99b61e891acf84683aee11f0e05a8b, type: 2}
+    compositeMaterial: {fileID: 2100000, guid: 03b06fe23c18b44479459d11dc405c49, type: 2}
+    compositeMaterialColourTextureName: _ColourTexture
+    compositeMaterialFogTextureName: _FogTexture
+    compositeMaterialDepthTextureName: _DepthTexture
+    renderTextureQuality: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,7 +229,8 @@ MonoBehaviour:
   - {fileID: -3048806716413776975}
   - {fileID: 6568219776115967600}
   - {fileID: 8904102468479188345}
-  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b797d61e504ba917b
+  - {fileID: -130310934065844971}
+  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b797d61e504ba917b15eda758e50a31fe
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -242,7 +267,7 @@ MonoBehaviour:
     passOperation: 2
     failOperation: 0
     zFailOperation: 0
-  m_ShadowTransparentReceive: 1
+  m_ShadowTransparentReceive: 0
   m_RenderingMode: 0
   m_DepthPrimingMode: 0
   m_CopyDepthMode: 0
