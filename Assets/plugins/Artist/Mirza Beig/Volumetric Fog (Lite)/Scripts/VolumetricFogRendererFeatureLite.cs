@@ -81,7 +81,7 @@ namespace MirzaBeig.VolumetricFogLite
 
         // Here you can inject one or multiple render passes in the renderer.
         // This method is called when setting up the renderer once per-camera.
-
+        // 添加渲染通道
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             bool enqueuePass = renderingData.cameraData.cameraType == CameraType.Game;
@@ -97,7 +97,7 @@ namespace MirzaBeig.VolumetricFogLite
                 renderer.EnqueuePass(customRenderPass);
             }
         }
-
+        // 释放资源
         protected override void Dispose(bool disposing)
         {
             customRenderPass.Dispose();
@@ -106,18 +106,19 @@ namespace MirzaBeig.VolumetricFogLite
         class CustomRenderPass : ScriptableRenderPass
         {
             private Settings settings;
-
+            // 释放资源
             private RenderTextureDescriptor colourTextureDescriptor;
-
+            // 雾纹理描述符
             private RenderTextureDescriptor fogTextureDescriptor;
+            // 深度纹理描述符
             private RenderTextureDescriptor depthTextureDescriptor;
-
+            // 颜色纹理句柄
             private RTHandle colourTextureHandle;
 
             private RTHandle fogTextureHandle;
             private RTHandle depthTextureHandle;
 
-            public CustomRenderPass(Settings settings)
+            public CustomRenderPass(Settings settings)// 构造函数
             {
                 if (settings == null)
                 {
@@ -170,14 +171,14 @@ namespace MirzaBeig.VolumetricFogLite
             // When empty this render pass will render to the active camera render target.
             // You should never call CommandBuffer.SetRenderTarget. Instead call <c>ConfigureTarget</c> and <c>ConfigureClear</c>.
             // The render pipeline will ensure target setup and clearing happens in a performant manner.
-
+            // 在执行渲染通道之前调用
             public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
             {
 
             }
 
             // Called before Execute().
-
+            // 配置渲染目标
             public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
             {
                 int fogDownsampleLevel = settings.fogDownsampleLevel;
@@ -192,7 +193,7 @@ namespace MirzaBeig.VolumetricFogLite
                 depthTextureDescriptor.height = fogTextureDescriptor.height;
 
                 // Check if the descriptor has changed, and reallocate the RTHandle if necessary.
-
+                // 检查描述符是否已更改，并在必要时重新分配RTHandle
                 RenderingUtils.ReAllocateIfNeeded(ref colourTextureHandle, colourTextureDescriptor);
 
                 RenderingUtils.ReAllocateIfNeeded(ref fogTextureHandle, fogTextureDescriptor);
@@ -203,10 +204,10 @@ namespace MirzaBeig.VolumetricFogLite
             // Use <c>ScriptableRenderContext</c> to issue drawing commands or execute command buffers
             // https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.html
             // You don't have to call ScriptableRenderContext.submit, the render pipeline will call it at specific points in the pipeline.
-
+            // 实现渲染逻辑
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
             {
-                // Get a CommandBuffer from pool.
+                // Get a CommandBuffer from pool.  // 从池中获取CommandBuffer
 
                 CommandBuffer cmd = CommandBufferPool.Get();
 
@@ -214,16 +215,16 @@ namespace MirzaBeig.VolumetricFogLite
                 RTHandle cameraTargetHandle = cameraData.renderer.cameraColorTargetHandle;
 
                 // Save full-res colour screen and set texture in material (for in-shader compositing).
-
+                // 保存全分辨率颜色屏幕并在材质中设置纹理（用于着色器内合成）
                 Blit(cmd, cameraTargetHandle, colourTextureHandle);
                 settings.compositeMaterial.SetTexture(settings.compositeMaterialColourTextureName, colourTextureHandle);
 
                 // Save depth texture and assign to material.
-
+                // 保存深度纹理并分配给材质
                 Blit(cmd, cameraTargetHandle, depthTextureHandle, settings.depthMaterial);
                 settings.compositeMaterial.SetTexture(settings.compositeMaterialDepthTextureName, depthTextureHandle);
 
-                // Render fog.
+                // Render fog.// 渲染雾
 
                 Blit(cmd, cameraTargetHandle, fogTextureHandle, settings.fogMaterial);
 
@@ -238,7 +239,7 @@ namespace MirzaBeig.VolumetricFogLite
 
                 Blit(cmd, fogTextureHandle, cameraTargetHandle, settings.compositeMaterial);
 
-                // Execute the command buffer, then release it back to the pool.
+                // Execute the command buffer, then release it back to the pool.// 执行命令缓冲区，然后将其释放回池中
 
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);

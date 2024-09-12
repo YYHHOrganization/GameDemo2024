@@ -183,8 +183,10 @@ void VolumetricFog_float(
     colour.a *= density;
     
 #ifdef _MAIN_LIGHT_ENABLED
-    
+
+    //将累积的主光源光照效果 mainLightShading 除以光线行进的总步数 raymarchSteps，以得到平均光照效果
     mainLightShading /= raymarchSteps;
+    //将这个平均光照效果乘以主光源的强度 mainLightStrength。
     mainLightShading *= mainLightStrength;
     
     float3 mainLightColour = mainLight.color;    
