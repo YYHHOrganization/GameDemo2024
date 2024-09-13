@@ -204,14 +204,33 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     {
         GameObject frozenIce = Addressables.InstantiateAsync("IceOnEnemy", gameObject.transform).WaitForCompletion();
         
+        //角色的mesh所在的body复制一个，然后在这个复制的物体上面加上冰块的材质，原来的body隐藏
+        MakeFrozenMat();
+        
         yield return new WaitForSeconds(frozenTime);
         enemyIsFrozen = false;
         animator.enabled = true;
         Destroy(frozenIce);
         //Addressables.Release(frozenIce);
     }
-
-
+    GameObject bodyCopy;
+    GameObject bodyOri;
+    void MakeFrozenMat()
+    {
+        bodyOri = Mesh;
+        bodyCopy = Instantiate(bodyOri, bodyOri.transform.parent);
+        bodyCopy.name = "FrozenBody";
+        bodyCopy.transform.position = bodyOri.transform.position;
+        bodyCopy.transform.rotation = bodyOri.transform.rotation;
+        bodyCopy.transform.localScale = bodyOri.transform.localScale;
+        bodyCopy.GetComponent<Renderer>().material = Addressables.LoadAssetAsync<Material>("YFrozenEnemyMat").WaitForCompletion();
+        bodyOri.SetActive(false);
+    }
+    public void ExitFronzenState()
+    {
+        bodyOri.SetActive(true);
+        Destroy(bodyCopy);
+    }
     private bool isMoving = true;
 
     IEnumerator WanderAndStopRandomly()
@@ -521,6 +540,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         
         worldUIManager.ShowElementReactionWorldUIToParent(reaction, transform);
     }
+
+
 }
 
 public enum RogueEnemyTeam

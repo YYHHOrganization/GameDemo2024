@@ -18,6 +18,9 @@ public class HRogueEnemyCommonBeFrozenState : HRogueEnemyBaseState
             return null;
         if (!mPatrolAI.EnemyIsFrozen)
         {
+            //停止冰冻
+            mPatrolAI.ExitFronzenState();
+            
             return typeof(HRogueEnemyCommonChaseState);
         }
         return null;
@@ -32,4 +35,6 @@ public class HRogueEnemyCommonBeFrozenState : HRogueEnemyBaseState
         }
         mPatrolAI.StartCoroutine(mPatrolAI.FrozenEnemyItself());
     }
+    //exit
+    
 }
