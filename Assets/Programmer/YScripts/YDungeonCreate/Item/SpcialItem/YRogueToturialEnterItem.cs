@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -43,12 +44,19 @@ public class YRogueToturialEnterItem :YRogue_TriggerGame
             Debug.Log(playertransform.position+"存储原来的位置");
             
             Transform playerBornPlace = ySpecialMapTutorial.playerBornPlace;
-            //将玩家传送到指定位置
-            //YPlayModeController.Instance.SetRogueCharacterPlace(playerBornPlace.position);
-            YPlayModeController.Instance.SetRogueCharacterPlaceWithNoCatcake(playerBornPlace.position);
-            ySpecialMapTutorial.playerEnterTutorial();
+            
+            DOVirtual.DelayedCall(0.5f, () =>
+            {
+                //将玩家传送到指定位置
+                //YPlayModeController.Instance.SetRogueCharacterPlace(playerBornPlace.position);
+                YPlayModeController.Instance.SetRogueCharacterPlaceWithNoCatcake(playerBornPlace.position);
+                ySpecialMapTutorial.playerEnterTutorial();
+            });
+            // ROGUE_TUTORIAL_SCENE_LOAD
+            HMessageShowMgr.Instance.ShowMessage("ROGUE_TUTORIAL_SCENE_LOAD" );
+            gameObject.SetActive(false);
         }
         
-        gameObject.SetActive(false);
+        
     }
 }

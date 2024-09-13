@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -18,6 +19,8 @@ public class YSpecialMapTutorial : MonoBehaviour
     }
     public void playerEnterTutorial()
     {
+        
+        
         GameObject tutorialPanel = Addressables.LoadAssetAsync<GameObject>(addLink).WaitForCompletion();
         //寻找并挂在Canvas下
         
@@ -26,8 +29,9 @@ public class YSpecialMapTutorial : MonoBehaviour
     }
     public void playerExitTutorial()
     {
-        Destroy(tutorialPanelInstance);
         
+        
+        Destroy(tutorialPanelInstance);
     }
     
     //生成怪物
