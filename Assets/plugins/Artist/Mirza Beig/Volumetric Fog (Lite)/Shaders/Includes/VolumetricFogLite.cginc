@@ -38,7 +38,7 @@ float ignoise(float2 position, int frame)
 }
 
 #define MAX_RAYMARCH_STEPS 128
-
+//定义shader graph自定义节点https://docs.unity3d.com/cn/Packages/com.unity.shadergraph@10.5/manual/Custom-Function-Node.html
 void VolumetricFog_float(
 
         float4 colour,
@@ -75,6 +75,7 @@ void VolumetricFog_float(
 #endif
     // 生成随机噪声
     float random = frac((sin(dot(screenPosition, float2(12.9898, 78.233))) * 43758.55) + _Time.y);
+    //// 生成交错梯度噪声的函数 上面的函数ignoise
     float interleavedGradientNoise = ignoise(screenPosition, random * 9999.0);  
 
     //将 raymarchDistance 限制在 raymarchMaxDepth（shaderGraph中取Screen深度） 和 raymarchDistance 加上一个偏差值之间的最小值。

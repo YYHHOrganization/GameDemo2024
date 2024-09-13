@@ -4,6 +4,7 @@ public class NPCControl : MonoBehaviour
 {
     private CharacterController controller;
     private HRGPlayerRutBrush brush;
+    public bool fixScale = false;
 
     private void Awake()
     {
@@ -11,7 +12,8 @@ public class NPCControl : MonoBehaviour
         brush = this.GetComponent<HRGPlayerRutBrush>();
 
         this.transform.position = new Vector3(Random.Range(-30, 30), 5, Random.Range(-10, 10));
-        this.transform.localScale = Random.Range(0.2f, 2) * Vector3.one;
+        if(!fixScale)
+            this.transform.localScale = Random.Range(0.2f, 2) * Vector3.one;
         brush.brushRadius = this.transform.localScale.x;
 
         waitTime = Random.Range(0, 1);
