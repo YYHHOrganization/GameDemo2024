@@ -81,7 +81,7 @@ public class RutPainter : MonoBehaviour
     }
 
     //绘制方法
-    public void Paint(Transform tfIN, Texture2D brushTex, float brushRadius, float brushInt)
+    public void Paint(Transform tfIN, Texture2D brushTex, float brushRadius, float brushInt, Texture2D brushTexMask)
     {
         Vector4 pos_Offset;
 
@@ -117,6 +117,7 @@ public class RutPainter : MonoBehaviour
         paintMat.SetVector("_BrushPosTS_Offset", pos_Offset);
         paintMat.SetFloat("_BrushRadius", brushRadius / paintSize);
         paintMat.SetFloat("_BrushInt", brushInt);
+        paintMat.SetTexture("_BrushTexMask", brushTexMask);
 
         //轨迹RT
         RenderTexture tempRT = RenderTexture.GetTemporary(paintRT.descriptor);

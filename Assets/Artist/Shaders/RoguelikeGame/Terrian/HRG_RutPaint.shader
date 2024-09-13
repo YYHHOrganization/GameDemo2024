@@ -33,7 +33,7 @@ Shader "Scene/SandSystem/RutPaint"
                 //贴图
                 sampler2D _MainTex;
                 sampler2D _BrushTex;
-
+                sampler2D _BrushTexMask;
                 //形状
                 float4 _BrushPosTS_Offset;
                 float _BrushRadius;
@@ -89,11 +89,14 @@ Shader "Scene/SandSystem/RutPaint"
 
                 //笔刷
                 float4 var_BrushTex = tex2D(_BrushTex, i.uv_Brush);
+                float4 var_BrushTexMask = tex2D(_BrushTexMask, i.uv_Brush);
+                
                 float brushMask = step(0.0, i.uv_Brush.x) * step(i.uv_Brush.x, 1.0) * step(0.0, i.uv_Brush.y) * step(i.uv_Brush.y, 1.0);
 
                 //法线混合
                 float3 nDirTS_OLD = 2.0 * rutParams.xyz - 1.0;
                 float3 nDirTS_Brush = 2.0 * var_BrushTex.xyz - 1.0;
+                nDirTS_Brush *= var_BrushTexMask.a;
                 nDirTS_Brush.xy *= _BrushInt * brushMask;
                 float3 nDirTS_NEW = float3(nDirTS_OLD.xy / nDirTS_OLD.z + nDirTS_Brush.xy / nDirTS_Brush.z, 1.0);
                 nDirTS_NEW = 0.5 * normalize(nDirTS_NEW) + 0.5;
@@ -101,7 +104,7 @@ Shader "Scene/SandSystem/RutPaint"
                 //高度混合
                 float h_OLD = 2.0 * rutParams.a - 1.0;
                 float h_Brush = 2.0 * var_BrushTex.a - 1.0;
-                h_Brush *= _BrushInt * brushMask;
+                h_Brush *= _BrushInt * brushMask * var_BrushTexMask.a;
                 float h_NEW = saturate(0.5 * (h_OLD + h_Brush) + 0.5);
 
                 //边缘遮罩 
