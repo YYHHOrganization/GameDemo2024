@@ -1484,13 +1484,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4303559366630319994}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.009766069, y: -0.013785686, z: -0.21035895, w: 0.97747827}
-  m_LocalPosition: {x: 0.00005, y: -0.000623, z: 0.000512}
-  m_LocalScale: {x: 0.0021256804, y: 0.0030788374, z: 0.0014743905}
+  m_LocalRotation: {x: -0.015827356, y: 0.0021606272, z: -0.107735306, w: 0.99405134}
+  m_LocalPosition: {x: 0.000109999964, y: -0.001014, z: 0.00051700004}
+  m_LocalScale: {x: 0.0022899127, y: 0.0037297714, z: 0.0014743905}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8537021595997548388}
-  m_LocalEulerAnglesHint: {x: -1.426, y: -1.309, z: -24.274}
+  m_LocalEulerAnglesHint: {x: -1.777, y: 0.442, z: -12.378}
 --- !u!33 &8008682592351392011
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1615,8 +1615,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 0}
   brushTex: {fileID: 2800000, guid: e58ceb4f3f361a249bc6f6b27fe8c101, type: 3}
+  brushTexMask: {fileID: 2800000, guid: fb7673e7fc170c347afa1d765b724b03, type: 3}
   brushRadius: 0.2
-  brushInt: 3
+  brushInt: 0.5
   stepLength: 0.006
 --- !u!1 &4427870167429494793
 GameObject:
@@ -1779,13 +1780,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5511510762231797629}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.000000029802312, y: 0.000000059604623, z: 0.23426902, w: 0.97217184}
-  m_LocalPosition: {x: 0.000187, y: -0.000773, z: 0.000475}
+  m_LocalRotation: {x: -0.0046614106, y: -0.016531864, z: 0.14255941, w: 0.9896372}
+  m_LocalPosition: {x: 0.00018700297, y: -0.0007730017, z: 0.00047505865}
   m_LocalScale: {x: 0.002191446, y: 0.0033574076, z: 0.0015154937}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9028866893358887986}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 27.097}
+  m_LocalEulerAnglesHint: {x: -0.259, y: -1.951, z: 16.399}
 --- !u!33 &7328170817245850940
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1910,8 +1911,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 0}
   brushTex: {fileID: 2800000, guid: e58ceb4f3f361a249bc6f6b27fe8c101, type: 3}
+  brushTexMask: {fileID: 2800000, guid: fb7673e7fc170c347afa1d765b724b03, type: 3}
   brushRadius: 0.2
-  brushInt: 3
+  brushInt: 0.5
   stepLength: 0.006
 --- !u!1 &5525477927266778653
 GameObject:
@@ -2944,6 +2946,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 0}
   brushTex: {fileID: 2800000, guid: 553b93920a14035419602f9fd031d530, type: 3}
+  brushTexMask: {fileID: 0}
   brushRadius: 0
   brushInt: 0
   stepLength: 0.006

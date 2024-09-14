@@ -38,6 +38,7 @@ Shader "Scene/SandSystem/RutPaint"
                 float4 _BrushPosTS_Offset;
                 float _BrushRadius;
                 float _BrushInt;
+                float3 _playerDirection;
             CBUFFER_END
 
             //重映射01（把input依据min和max的范围remap到0~1）
@@ -87,17 +88,30 @@ Shader "Scene/SandSystem/RutPaint"
                 //轨迹
                 float4 rutParams = tex2D(_MainTex, i.uv_Main);
 
+                //旋转UV，用于让脚印与玩家前进方向一致
+                float angle = atan2(_playerDirection.x, _playerDirection.z);
+                //angle + 90度
+                angle -= 1.57079632679;
+                float cosAngle = cos(angle);
+                float sinAngle = sin(angle);
+
+                // 创建旋转矩阵
+                float2x2 rotationMatrix = float2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
+
+                // 旋转UV坐标
+                float2 rotatedUV_Brush = mul(rotationMatrix, i.uv_Brush * 2.0 - 1.0) * 0.5 + 0.5;
+                i.uv_Brush = rotatedUV_Brush;
                 //笔刷
                 float4 var_BrushTex = tex2D(_BrushTex, i.uv_Brush);
                 float4 var_BrushTexMask = tex2D(_BrushTexMask, i.uv_Brush);
                 
                 float brushMask = step(0.0, i.uv_Brush.x) * step(i.uv_Brush.x, 1.0) * step(0.0, i.uv_Brush.y) * step(i.uv_Brush.y, 1.0);
-
+                
                 //法线混合
                 float3 nDirTS_OLD = 2.0 * rutParams.xyz - 1.0;
-                float3 nDirTS_Brush = 2.0 * var_BrushTex.xyz - 1.0;
-                nDirTS_Brush *= var_BrushTexMask.a;
-                nDirTS_Brush.xy *= _BrushInt * brushMask;
+                var_BrushTex.z *= var_BrushTexMask.a;
+                float3 nDirTS_Brush = 2.0 * var_BrushTex.xyz - 1.0; //本来法线贴图（0.5，0.5，1）
+                nDirTS_Brush.xy *= _BrushInt * brushMask * var_BrushTexMask.a;
                 float3 nDirTS_NEW = float3(nDirTS_OLD.xy / nDirTS_OLD.z + nDirTS_Brush.xy / nDirTS_Brush.z, 1.0);
                 nDirTS_NEW = 0.5 * normalize(nDirTS_NEW) + 0.5;
 

@@ -118,6 +118,11 @@ public class RutPainter : MonoBehaviour
         paintMat.SetFloat("_BrushRadius", brushRadius / paintSize);
         paintMat.SetFloat("_BrushInt", brushInt);
         paintMat.SetTexture("_BrushTexMask", brushTexMask);
+        Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
+        if (player)
+        {
+            paintMat.SetVector("_playerDirection", player.forward);
+        }
 
         //轨迹RT
         RenderTexture tempRT = RenderTexture.GetTemporary(paintRT.descriptor);
