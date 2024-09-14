@@ -230,7 +230,8 @@ MonoBehaviour:
   - {fileID: 6568219776115967600}
   - {fileID: 8904102468479188345}
   - {fileID: -130310934065844971}
-  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b797d61e504ba917b15eda758e50a31fe
+  - {fileID: 3622606921036715995}
+  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b797d61e504ba917b15eda758e50a31fedbd74321cd154632
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -319,6 +320,29 @@ MonoBehaviour:
   passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1
+--- !u!114 &3622606921036715995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1614fc811f8f184697d9bee70ab9fe5, type: 3}
+  m_Name: DecalRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_Settings:
+    technique: 2
+    maxDrawDistance: 1000
+    decalLayers: 0
+    dBufferSettings:
+      surfaceData: 2
+    screenSpaceSettings:
+      normalBlend: 2
+  m_CopyDepthPS: {fileID: 4800000, guid: d6dae50ee9e1bfa4db75f19f99355220, type: 3}
+  m_DBufferClear: {fileID: 4800000, guid: f056d8bd2a1c7e44e9729144b4c70395, type: 3}
 --- !u!114 &6568219776115967600
 MonoBehaviour:
   m_ObjectHideFlags: 0
