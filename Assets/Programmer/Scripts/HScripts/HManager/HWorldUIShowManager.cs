@@ -11,11 +11,15 @@ public class HWorldUIShowManager : MonoBehaviour
     private GameObject vaporizeUI;
     private string electroChargedPrefabUILink = "ElectroChargedReactionUI";
     private GameObject electroChargedUI;
+    //免疫
+    private string immunePrefabUILink = "ImmuneReactionUI";
+    private GameObject immuneUI;
 
     private void Start()
     {
         vaporizeUI = Addressables.LoadAssetAsync<GameObject>(vaporizePrefabUILink).WaitForCompletion();
         electroChargedUI = Addressables.LoadAssetAsync<GameObject>(electroChargedPrefabUILink).WaitForCompletion();
+        immuneUI = Addressables.LoadAssetAsync<GameObject>(immunePrefabUILink).WaitForCompletion();
     }
 
     public void ShowElementReactionWorldUIToParent(ElementReaction reaction, Transform parent)
@@ -48,6 +52,13 @@ public class HWorldUIShowManager : MonoBehaviour
                     sequence.AppendInterval(1f);
                 }
 
+                break;
+            case ElementReaction.Immune:
+                showUI = Instantiate(immuneUI, parent);
+                showUI.transform.DOLocalMove(new Vector3(0, 2.5f, 0), 0.5f).onComplete = () =>
+                {
+                    Destroy(showUI);
+                };
                 break;
         }
     }

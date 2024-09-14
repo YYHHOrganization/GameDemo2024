@@ -191,12 +191,31 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     public void SetFrozen(float frozenTime)
     {
-        enemyIsFrozen = true;
-        animator.enabled = false;
-        this.frozenTime = frozenTime;
-        stateMachine.JustSwitchState(typeof(HRogueEnemyCommonBeFrozenState));
-    }
 
+        if (stateMachine != null) //boss采用的是行为树不是状态机 所以就没这个
+        {
+            enemyIsFrozen = true;
+            animator.enabled = false;
+            this.frozenTime = frozenTime;
+            stateMachine.JustSwitchState(typeof(HRogueEnemyCommonBeFrozenState));
+        }
+        else
+        {
+            //boss采用的是行为树不是状态机 而且让boss也免疫
+            Immune();
+        }
+        
+    }
+    private void Immune()
+    {
+        if (worldUIManager == null)
+        {
+            worldUIManager = yPlanningTable.Instance.gameObject.GetComponent<HWorldUIShowManager>();
+            Debug.Log("worldUIManager is null,寻找");
+        }
+        ElementReaction reaction = ElementReaction.Immune;
+        worldUIManager.ShowElementReactionWorldUIToParent(reaction, transform);
+    }
     private bool enemyIsFrozen = false;
     public float frozenTime = 5f;
     public bool EnemyIsFrozen => enemyIsFrozen;
