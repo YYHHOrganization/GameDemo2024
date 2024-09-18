@@ -372,7 +372,7 @@ public class HTestCharacterShoot : MonoBehaviour
                                 hitPosition = hit.point;
                                 //draw ray
                                 Debug.DrawRay(ray.origin, ray.direction * 100, Color.red);
-                                Debug.Log(hit.collider.gameObject.name);
+                                //Debug.Log(hit.collider.gameObject.name);
                                 needShootHelp = true; //9根射线有一根打到怪，近似处理，辅助瞄准，needShootHelp=true
                                 continue;
                             }

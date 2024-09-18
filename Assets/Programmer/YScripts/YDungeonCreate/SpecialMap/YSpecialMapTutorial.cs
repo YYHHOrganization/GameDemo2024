@@ -27,6 +27,18 @@ public class YSpecialMapTutorial : MonoBehaviour
         tutorialPanelInstance = Instantiate(tutorialPanel, canvas);
         GenerateMonster();
     }
+
+    public void SummonEnemyForMission(int summonCnt)
+    {
+        GameObject enemy = Addressables.InstantiateAsync("SlimeVeryCommonNoMove").WaitForCompletion();
+        //创建一个新的enemyBornPlace，空物体即可，和enemyBornPlace的位置一样
+        for (int i = 0; i < summonCnt; i++)
+        {
+            GameObject enemyInstance = Instantiate(enemy, enemyBornPlace);
+            enemyInstance.transform.localPosition = Vector3.zero;
+            enemyInstance.gameObject.AddComponent<EnemyDieAndSendMsg>();
+        }
+    }
     public void playerExitTutorial()
     {
         

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-public class HStoryLinearNode : Node {
+public class HStoryLinearNode : Node 
+{
 	
 	[Input] public string inputStory;
 	[TextArea] public string CharacterName; // 角色名称
@@ -18,7 +19,7 @@ public class HStoryLinearNode : Node {
 	public override void OnCreateConnection(NodePort from, NodePort to)
 	{
 		toId = graph.nodes.IndexOf(to.node);
-		toIds.Add(toId);
+		toIds.Add(toId);  //4 5
 	}
 
 	public override void OnRemoveConnection(NodePort port)
