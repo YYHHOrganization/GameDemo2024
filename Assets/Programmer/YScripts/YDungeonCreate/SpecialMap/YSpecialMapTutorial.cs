@@ -32,11 +32,14 @@ public class YSpecialMapTutorial : MonoBehaviour
     {
         GameObject enemy = Addressables.InstantiateAsync("SlimeVeryCommonNoMove").WaitForCompletion();
         //创建一个新的enemyBornPlace，空物体即可，和enemyBornPlace的位置一样
+        //Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
         for (int i = 0; i < summonCnt; i++)
         {
             GameObject enemyInstance = Instantiate(enemy, enemyBornPlace);
             enemyInstance.transform.localPosition = Vector3.zero;
-            enemyInstance.gameObject.AddComponent<EnemyDieAndSendMsg>();
+
+            //enemyInstance.transform.localPosition = Vector3.zero + new Vector3(-0.4f + 0.2f * i, 0, -0.4f + 0.2f * i);
+            //enemyInstance.gameObject.AddComponent<EnemyDieAndSendMsg>();
         }
     }
     public void playerExitTutorial()

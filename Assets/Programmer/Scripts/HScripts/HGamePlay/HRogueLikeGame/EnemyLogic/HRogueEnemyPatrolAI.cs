@@ -407,6 +407,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private void SetEnemyDie()
     {
         Debug.Log("You should really die!!!!");
+        GameAPI.Broadcast(new GameMessage(GameEventType.KillEnemy, enemyID));
         StopAllCoroutines();
         animator.SetBool(isDeadHash, true);
         if (mNavMeshAgent)

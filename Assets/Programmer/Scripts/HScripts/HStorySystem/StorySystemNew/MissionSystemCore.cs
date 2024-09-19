@@ -278,7 +278,7 @@ namespace OurGame.MissionSystem
             /* remove completed missions */
             while (queueToRemove.Count > 0)
             {
-                var mission = queueToRemove.Dequeue();
+                var mission = queueToRemove.Dequeue();  //之所以后面统一移除，是因为在遍历字典过程中不能直接移除元素
                 allMissions.Remove(mission.id);
                 
                 /* inform all componetns that target mission has been removed */
