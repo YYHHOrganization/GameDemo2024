@@ -134,7 +134,7 @@ public class MissonSystemNodeMgr : MonoBehaviour
         {
             //找currentNode对应success的output节点连接的地方
             NodePort successPort = currentNode.GetOutputPort("success");
-            if (successPort.IsConnected)
+            if (successPort!=null && successPort.IsConnected)
             {
                 List<NodePort> connectedPort = successPort.GetConnections();
                 int toId = graph.nodes.IndexOf(connectedPort[0].node);
@@ -142,6 +142,24 @@ public class MissonSystemNodeMgr : MonoBehaviour
                 MissionPrototype<GameMessage> nextMission = GenerateMission(currentNode);
                 if (nextMission == null) return;
                 GameAPI.StartMission(nextMission);
+            }
+            
+            //额外的情况，不是success，有剧情的choose分支
+            NodePort branchPort = currentNode.GetOutputPort("branch1");
+            if (branchPort != null)
+            {
+                SimpleDialogNode simpleDialogNode = currentNode as SimpleDialogNode;
+                int storyEndingId = simpleDialogNode.storyEndingId;
+                NodePort toPort = currentNode.GetOutputPort("branch" + storyEndingId);
+                if (toPort != null)
+                {
+                    List<NodePort> connectedPort = toPort.GetConnections();
+                    int toId = graph.nodes.IndexOf(connectedPort[0].node);
+                    currentNode = graph.nodes[toId];
+                    MissionPrototype<GameMessage> nextMission = GenerateMission(currentNode);
+                    if (nextMission == null) return;
+                    GameAPI.StartMission(nextMission);
+                }
             }
         }
         else

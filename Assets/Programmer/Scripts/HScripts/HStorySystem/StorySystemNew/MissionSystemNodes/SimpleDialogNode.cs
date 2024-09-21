@@ -7,8 +7,14 @@ using XNode;
 public class SimpleDialogNode : Node 
 {
 	[Input] public bool forwardMission;
-	[Output] public bool success; //成功成功的情况
-	[Output] public bool fail; //任务失败的情况
+	// [Output] public bool success; //成功成功的情况
+	// [Output] public bool fail; //任务失败的情况
+	[Output] public bool branch1;
+	[Output] public bool branch2;
+	[Output] public bool branch3;
+	[Output] public bool branch4;
+	[Output] public bool branch5;
+	
 	public bool isStartMission = false;
 	public MissionRewardType rewardType = MissionRewardType.Treasure;
 	public GameEventType gameEventType = GameEventType.CompleteDialogue;
@@ -16,6 +22,8 @@ public class SimpleDialogNode : Node
 	public HashSet<int> toIds = new HashSet<int>(); //跳转节点的ID
 	public NodeGraph m_childGraph;
 	public string taskName;
+	
+	[HideInInspector] public int storyEndingId;
 	
 	// Use this for initialization
 	protected override void Init() {
@@ -32,8 +40,8 @@ public class SimpleDialogNode : Node
 	{
 		//首先开启对话系统
 		HDialogSystemMgr dialogSystemMgr = yPlanningTable.Instance.gameObject.GetComponent<HDialogSystemMgr>();
-		dialogSystemMgr.SetUpAndStartDialog();
-		MissionRequire<GameMessage> missionRequire = new CompleteDialogRequire(gameEventType, "testDialog09");
+		dialogSystemMgr.SetUpAndStartDialogWithGraph(m_childGraph,taskName, this);
+		MissionRequire<GameMessage> missionRequire = new CompleteDialogRequire(gameEventType, taskName);
 		var requires = new MissionRequire<GameMessage>[] { missionRequire };
 		MissionReward reward = new TriggerMissionExample.RewardNull();
 		var rewards = new MissionReward[] { reward };

@@ -47,4 +47,9 @@ public class HStoryChoiseNode : Node {
 
 		return "";
 	}
+	
+	public int GetNodeId()
+	{
+		return graph.nodes.IndexOf(this);
+	}
 }

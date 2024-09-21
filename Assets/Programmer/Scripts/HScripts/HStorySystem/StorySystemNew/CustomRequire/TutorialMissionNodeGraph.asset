@@ -78,6 +78,53 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   success: 0
+--- !u!114 &-7004039327182107173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d24694896950643ad78b8cf46a7c84, type: 3}
+  m_Name: Useful Mission Func
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -440, y: 216}
+  ports:
+    keys:
+    - forwardMission
+    - success
+    values:
+    - _fieldName: forwardMission
+      _node: {fileID: -7004039327182107173}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: branch2
+        node: {fileID: 8503826889937777307}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: success
+      _node: {fileID: -7004039327182107173}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: forwardMission
+        node: {fileID: 7129979216480578526}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  forwardMission: 0
+  success: 0
+  funcEnum: 0
+  args1: 3
 --- !u!114 &-5688740955688692291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,6 +332,68 @@ MonoBehaviour:
   - {fileID: 8503826889937777307}
   - {fileID: -8777900565137316592}
   - {fileID: 8289618474343431562}
+  - {fileID: -7004039327182107173}
+  - {fileID: 7129979216480578526}
+--- !u!114 &7129979216480578526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96a8fc1579d13af4eb38447c6928d472, type: 3}
+  m_Name: Simple Misson
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -152, y: 168}
+  ports:
+    keys:
+    - forwardMission
+    - success
+    - fail
+    values:
+    - _fieldName: forwardMission
+      _node: {fileID: 7129979216480578526}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: success
+        node: {fileID: -7004039327182107173}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: success
+      _node: {fileID: 7129979216480578526}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: fail
+      _node: {fileID: 7129979216480578526}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  forwardMission: 0
+  success: 0
+  fail: 0
+  rewardType: 0
+  messageType: 0
+  gameEventType: 5
+  count: -1
+  isStartMission: 0
+  missionName: "\u5230\u8FBE\u5149\u5708\u6240\u5728\u7684\u4F4D\u7F6E"
+  args: 225.6;3.03;-225.03
 --- !u!114 &8289618474343431562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,7 +418,7 @@ MonoBehaviour:
       _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections:
-      - fieldName: success
+      - fieldName: branch1
         node: {fileID: 8503826889937777307}
         reroutePoints: []
       _direction: 0
@@ -392,12 +501,15 @@ MonoBehaviour:
   m_Name: Simple Dialog
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -824, y: -184}
+  position: {x: -856, y: -200}
   ports:
     keys:
     - forwardMission
-    - success
-    - fail
+    - branch1
+    - branch2
+    - branch3
+    - branch4
+    - branch5
     values:
     - _fieldName: forwardMission
       _node: {fileID: 8503826889937777307}
@@ -411,7 +523,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: success
+    - _fieldName: branch1
       _node: {fileID: 8503826889937777307}
       _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
@@ -423,7 +535,37 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: fail
+    - _fieldName: branch2
+      _node: {fileID: 8503826889937777307}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: forwardMission
+        node: {fileID: -7004039327182107173}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: branch3
+      _node: {fileID: 8503826889937777307}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: branch4
+      _node: {fileID: 8503826889937777307}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: branch5
       _node: {fileID: 8503826889937777307}
       _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
@@ -433,10 +575,14 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   forwardMission: 0
-  success: 0
-  fail: 0
+  branch1: 0
+  branch2: 0
+  branch3: 0
+  branch4: 0
+  branch5: 0
   isStartMission: 1
   rewardType: 0
   gameEventType: 3
   m_childGraph: {fileID: 11400000, guid: b011e2588e86e0e48aa76b75db155b79, type: 2}
   taskName: "\u548C\u4EBA\u7269\u5BF9\u8BDD"
+  storyEndingId: 0

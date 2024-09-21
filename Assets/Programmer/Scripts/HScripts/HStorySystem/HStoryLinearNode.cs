@@ -15,6 +15,7 @@ public class HStoryLinearNode : Node
 	[Input] public bool isEnd; // 是否是结束节点
 
 	[Output] public string result; // 输出连接
+	public int storyEndingId;
 
 	public override void OnCreateConnection(NodePort from, NodePort to)
 	{

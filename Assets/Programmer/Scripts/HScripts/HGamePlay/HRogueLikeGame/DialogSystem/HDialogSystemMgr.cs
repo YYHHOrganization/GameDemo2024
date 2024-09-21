@@ -5,6 +5,7 @@ using Cinemachine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using XNode;
 
 public class HDialogSystemMgr : MonoBehaviour
 {
@@ -28,7 +29,12 @@ public class HDialogSystemMgr : MonoBehaviour
     public GameObject optionButton;
     public Transform buttonGroup; //选项按钮的父节点
     private GameObject triggerToDialog; //开启对话的trigger
+    private string currentDialogTaskName; //当前对话任务的名字
     
+    public NodeGraph curGraph;
+    private Node firstMissionNode;
+    public Node currentNode;
+    bool isReadFromGraph = false;
     private void Awake()
     {
         dialogIndex = 0;
@@ -45,6 +51,79 @@ public class HDialogSystemMgr : MonoBehaviour
         ReadText(dialogDataFile);
         ShowDialogRow();
         LockPlayerInput();
+    }
+
+    private Node parentDialogNode;
+    public void SetUpAndStartDialogWithGraph(NodeGraph graph,string dialogTaskName, Node outputNode)
+    {
+        isReadFromGraph = true;
+        parentDialogNode = outputNode;
+        currentDialogTaskName = dialogTaskName;
+        dialogIndex = 0;
+        panel.gameObject.SetActive(true);
+        ReadGraphAndStartDialog(graph);
+        //ShowDialogRow();
+        LockPlayerInput();
+    }
+
+    /// <summary>
+    /// 入口
+    /// </summary>
+    /// <param name="graph"></param>
+    private void ReadGraphAndStartDialog(NodeGraph graph)
+    {
+        curGraph = graph;
+        if (firstMissionNode==null)
+        {
+            //firstMissionNode = graph.nodes.Find(node => node is SimpleMissonNode && (node as SimpleMissonNode).isStartMission);
+            firstMissionNode = graph.nodes.Find(node=>node is MissionStartNode);
+            NodePort successPort = firstMissionNode.GetOutputPort("success");
+            List<NodePort> connectedPort = successPort.GetConnections();
+            int toId = graph.nodes.IndexOf(connectedPort[0].node);
+            currentNode = graph.nodes[toId];
+            firstMissionNode = currentNode;
+        }
+        ShowDialogFromGraph();
+    }
+
+    /// <summary>
+    /// 展示当前对话节点对应的内容（第一次也会进）
+    /// </summary>
+    private void ShowDialogFromGraph()
+    {
+        //拿出当前节点的对话
+        HStoryLinearNode storyLinearNode = currentNode as HStoryLinearNode;
+        HStoryChoiseNode storyChoiseNode = currentNode as HStoryChoiseNode;
+        if (storyLinearNode != null)
+        {
+            if (storyLinearNode.isEnd)
+            {
+                isReadFromGraph = false;
+                int storyEndingId = storyLinearNode.storyEndingId;
+                SimpleDialogNode dialogNode = parentDialogNode as SimpleDialogNode;
+                if (dialogNode != null)
+                {
+                    dialogNode.storyEndingId = storyEndingId;
+                }
+                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, currentDialogTaskName));
+                
+                panel.gameObject.SetActive(false);
+                YPlayModeController.Instance.LockPlayerInput(false);
+                YTriggerEvents.RaiseOnMouseLeftShoot(true);
+                YPlayModeController.Instance.LockEveryInputKey = false;
+                YTriggerEvents.RaiseOnMouseLockStateChanged(true);
+                return;
+            }
+            UpdateText(storyLinearNode.CharacterName, storyLinearNode.Title, storyLinearNode.Content);
+            //UpdateCinemachine(storyLinearNode.cinemachine);
+            nextButton.gameObject.SetActive(true);
+        }
+        else if(storyChoiseNode != null)
+        {
+            nextButton.gameObject.SetActive(false);
+            
+        }
+        
     }
 
     private void LockPlayerInput()
@@ -151,8 +230,16 @@ public class HDialogSystemMgr : MonoBehaviour
         return content;
     }
 
+    /// <summary>
+    /// 点击nextButton会调用这个方法
+    /// </summary>
     public void ShowDialogRow()
     {
+        if (isReadFromGraph)
+        {
+            UpdateToNextNodeFromGraph();
+            return;
+        }
         for (int i = 0;i < dialogRows.Length; i++)
         {
             string[] cells = dialogRows[i].Split(',');
@@ -176,7 +263,7 @@ public class HDialogSystemMgr : MonoBehaviour
                 panel.gameObject.SetActive(false);
                 //triggerToDialog.gameObject.GetComponent<TriggerToDialog>().Reset(CheckFinalLine());
                 //gameObject.SetActive(false);
-                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, "testDialog09"));
+                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, "testDialo g09"));
                 YPlayModeController.Instance.LockPlayerInput(false);
                 YTriggerEvents.RaiseOnMouseLeftShoot(true);
                 YPlayModeController.Instance.LockEveryInputKey = false;
@@ -185,6 +272,25 @@ public class HDialogSystemMgr : MonoBehaviour
                 {
                     triggerToDialog.gameObject.GetComponent<HTriggerDialogSystem>().SetInteracted(true);
                 }
+            }
+        }
+    }
+
+    private void UpdateToNextNodeFromGraph()
+    {
+        NodePort resultPort = currentNode.GetOutputPort("result");
+        if (resultPort.IsConnected)
+        {
+            List<NodePort> connectedPorts = resultPort.GetConnections();
+            int toId = curGraph.nodes.IndexOf(connectedPorts[0].node);
+            currentNode = curGraph.nodes[toId];
+            if(currentNode is HStoryLinearNode)
+            {
+                ShowDialogFromGraph();
+            }
+            else if (currentNode is HStoryChoiseNode)
+            {
+                GenerateOptionButtonFromGraph(connectedPorts);
             }
         }
     }
@@ -207,7 +313,7 @@ public class HDialogSystemMgr : MonoBehaviour
     {
         ShowDialogRow();
     }
-
+    
     public void GenerateOptionButton(int index)
     {
         string[] cells = dialogRows[index].Split(',');
@@ -228,6 +334,36 @@ public class HDialogSystemMgr : MonoBehaviour
             GenerateOptionButton(index + 1);
         }
         
+    }
+    
+    public void GenerateOptionButtonFromGraph(List<NodePort> connectedPorts)
+    {
+        for (int i = 0; i < connectedPorts.Count; i++)
+        {
+            GameObject button = Instantiate(optionButton, buttonGroup);
+            HStoryChoiseNode storyChoiseNode = connectedPorts[i].node as HStoryChoiseNode;
+            button.GetComponentInChildren<TMP_Text>().text = storyChoiseNode.choiseText;
+            button.GetComponent<Button>().onClick.AddListener
+                (delegate
+                {
+                    OnOptionClickFromGraph(storyChoiseNode.GetNodeId());
+                    if (storyChoiseNode.effect != "")
+                    {
+                        string[] effect = storyChoiseNode.effect.Split((';'));
+                        ShowOptionEffects(effect[0], effect[1]);
+                    }
+                });
+        }
+    }
+
+    private void OnOptionClickFromGraph(int getNodeId)
+    {
+        currentNode = curGraph.nodes[getNodeId];
+        for (int i = 0; i < buttonGroup.childCount; i++)
+        {
+            Destroy(buttonGroup.GetChild(i).gameObject);
+        }
+        UpdateToNextNodeFromGraph();
     }
 
     private void ShowOptionEffects(string funcName, string funcParams)
