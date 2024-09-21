@@ -36,12 +36,13 @@ public class YPatrolAI : MonoBehaviour
     
     // public Action OnDie;
     public Action<GameObject> OnDie;
-    
+    protected HWorldUIShowManager worldUIManager;
     private void Awake()
     {
         InitStateMachine();
         animator = gameObject.GetComponentInChildren<Animator>();
         mNavMeshAgent = GetComponent<NavMeshAgent>();
+        worldUIManager = yPlanningTable.Instance.gameObject.GetComponent<HWorldUIShowManager>();
     }
     private void Start()
     {
@@ -85,6 +86,25 @@ public class YPatrolAI : MonoBehaviour
         // OnDie?.Invoke();
         OnDie?.Invoke(gameObject);
         Destroy(gameObject, 5f);
+    }
+
+    public void SetFrozen(float frozenTime)
+    {
+        Immune();
+//        throw new NotImplementedException();
+        
+       
+    }
+
+    private void Immune()
+    {
+        if (worldUIManager == null)
+        {
+            worldUIManager = yPlanningTable.Instance.gameObject.GetComponent<HWorldUIShowManager>();
+            Debug.Log("worldUIManager is null,я╟ур");
+        }
+        ElementReaction reaction = ElementReaction.Immune;
+        worldUIManager.ShowElementReactionWorldUIToParent(reaction, transform);
     }
 }
 public enum Team

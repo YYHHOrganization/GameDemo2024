@@ -14,7 +14,7 @@ public class SimpleDialogNode : Node
 	public GameEventType gameEventType = GameEventType.CompleteDialogue;
 	private int toId; //跳转节点的ID
 	public HashSet<int> toIds = new HashSet<int>(); //跳转节点的ID
-	public string filename;
+	public NodeGraph m_childGraph;
 	public string taskName;
 	
 	// Use this for initialization

@@ -47,6 +47,7 @@ public enum ElementReaction
     Melt, //融化
     Vaporize, //蒸发
     Crystallize, //结晶
+    Immune, //免疫
 }
 
 public class RogueCharacterBaseAttribute

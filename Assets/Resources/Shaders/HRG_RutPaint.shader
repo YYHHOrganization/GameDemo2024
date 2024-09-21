@@ -16,7 +16,7 @@ Shader "Scene/SandSystem/RutPaint"
     {
         Tags
         {
-            "RenderPipeline" = "UniversalRenderPipeline"
+            "RenderPipeline" = "UniversalPipeline"
             "RenderType" = "Opaque"
             "Queue" = "Geometry"
         }

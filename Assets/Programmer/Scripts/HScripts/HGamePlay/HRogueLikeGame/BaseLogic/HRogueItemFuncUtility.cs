@@ -122,13 +122,34 @@ public class HRogueItemFuncUtility : MonoBehaviour
             case "SummonSth":
                 SummonSth(funcParams);
                 break;
+            case "PikaChongdianCharge":
+                PikaChongdianCharge(funcParams);
+                break;
             default:
                 System.Reflection.MethodInfo method = this.GetType().GetMethod(funcName);
                 method.Invoke(this, new object[] {funcParams});
                 break;
         }
     }
-
+    private void PikaChongdianCharge(string funcParams)
+    {
+        //string[] paramList = funcParams.Split(';');
+        //string kind = paramList[0];
+        //string type = paramList[1];
+        //int number = int.Parse(paramList[2]);
+        
+        int maxNumber = 20;
+        //enterNewRoomPositiveItemCounter中的道具的值计数器设置为20 （上限）
+        for(int i = 0; i < enterNewRoomPositiveItemCounter.Count; i++)
+        {
+            enterNewRoomPositiveItemCounter[enterNewRoomPositiveItemCounter.Keys.ElementAt(i)] = maxNumber;
+        }
+        //更新UI
+        HRoguePlayerAttributeAndItemManager.Instance.RefleshPositiveItemUI(maxNumber);
+        
+        //如果有主动道具，给主动道具充满能
+        // Debug.Log("PikaChongdianCharge%%%%%%%%%%%%%%%%%");
+    }
     private void SummonSth(string funcParams)
     {
         string[] paramList = funcParams.Split(';');
@@ -908,6 +929,11 @@ public class HRogueItemFuncUtility : MonoBehaviour
                 if (enemy.GetComponent<HRogueEnemyPatrolAI>())
                 {
                     enemy.GetComponent<HRogueEnemyPatrolAI>().SetFrozen(frozenTime);
+                }
+                else if (enemy.GetComponent<YPatrolAI>())
+                {
+                    
+                    enemy.GetComponent<YPatrolAI>().SetFrozen(frozenTime);
                 }
             }
         }
