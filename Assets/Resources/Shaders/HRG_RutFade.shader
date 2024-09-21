@@ -10,7 +10,7 @@ Shader "Scene/SandSystem/RutFade"
     {
         Tags
         {
-            "RenderPipeline" = "UniversalRenderPipeline"
+            "RenderPipeline" = "UniversalPipeline"
             "RenderType" = "Opaque"
             "Queue" = "Geometry"
         }
