@@ -176,7 +176,7 @@ public class HDialogSystemMgr : MonoBehaviour
                 panel.gameObject.SetActive(false);
                 //triggerToDialog.gameObject.GetComponent<TriggerToDialog>().Reset(CheckFinalLine());
                 //gameObject.SetActive(false);
-                
+                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, "testDialog09"));
                 YPlayModeController.Instance.LockPlayerInput(false);
                 YTriggerEvents.RaiseOnMouseLeftShoot(true);
                 YPlayModeController.Instance.LockEveryInputKey = false;

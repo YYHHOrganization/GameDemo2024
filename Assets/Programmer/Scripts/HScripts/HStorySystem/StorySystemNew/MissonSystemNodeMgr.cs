@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using DG.Tweening;
 using OurGame.MissionSystem;
 using UnityEngine;
@@ -16,8 +17,13 @@ public class MissonSystemNodeMgr : MonoBehaviour
     {
         if (firstMissionNode==null)
         {
-            firstMissionNode = graph.nodes.Find(node => node is SimpleMissonNode && (node as SimpleMissonNode).isStartMission);
-            currentNode = firstMissionNode;
+            //firstMissionNode = graph.nodes.Find(node => node is SimpleMissonNode && (node as SimpleMissonNode).isStartMission);
+            firstMissionNode = graph.nodes.Find(node=>node is MissionStartNode);
+            NodePort successPort = firstMissionNode.GetOutputPort("success");
+            List<NodePort> connectedPort = successPort.GetConnections();
+            int toId = graph.nodes.IndexOf(connectedPort[0].node);
+            currentNode = graph.nodes[toId];
+            firstMissionNode = currentNode;
         }
     }
     
@@ -34,9 +40,15 @@ public class MissonSystemNodeMgr : MonoBehaviour
     {
         SimpleMissonNode simpleMissonNode = firstMissionNode as SimpleMissonNode;
         UsefulMissionFuncNode funcNode = firstMissionNode as UsefulMissionFuncNode;
-        
-        if (simpleMissonNode != null)
+        SimpleDialogNode simpleDialogNode = firstMissionNode as SimpleDialogNode;
+        if (simpleDialogNode != null)
         {
+            return simpleDialogNode.GenerateMission();
+        }
+        else if (simpleMissonNode != null)
+        {
+            //todo:直接调用simpleNode里面的方法生成任务
+            //simpleMissonNode.GenerateMission();
             string args = simpleMissonNode.args;
             GameEventType gameEventType = simpleMissonNode.gameEventType;
             int count = simpleMissonNode.count;
@@ -59,6 +71,9 @@ public class MissonSystemNodeMgr : MonoBehaviour
                     trigger.gameObject.AddComponent<TriggerAndSendMsg>();
                     missionRequire = new GotoSomewhereRequire(gameEventType, "true");
                     break;
+                case GameEventType.CompleteDialogue:  //完成对话对应的任务
+                    missionRequire = new KillEnemyRequire(gameEventType, count, args);
+                    break;
                 default:
                     missionRequire = new KillEnemyRequire(gameEventType, count, args);
                     break;
@@ -66,13 +81,17 @@ public class MissonSystemNodeMgr : MonoBehaviour
             
             var requires = new MissionRequire<GameMessage>[] { missionRequire };
             MissionReward reward;
-            if(simpleMissonNode.rewardType == SimpleMissonNode.RewardType.Treasure)
+            switch (simpleMissonNode.rewardType)
             {
-                reward = new TriggerMissionExample.RewardXingqiong();
-            }
-            else
-            {
-                reward = new TriggerMissionExample.RewardXingqiong();
+                case MissionRewardType.Treasure:
+                    reward = new TriggerMissionExample.RewardXingqiong();
+                    break;
+                case MissionRewardType.None:
+                    reward = new TriggerMissionExample.RewardNull();
+                    break;
+                default:
+                    reward = new TriggerMissionExample.RewardNull();
+                    break;
             }
             var rewards = new MissionReward[] { reward };
             string missionName = simpleMissonNode.missionName;
@@ -117,8 +136,8 @@ public class MissonSystemNodeMgr : MonoBehaviour
             NodePort successPort = currentNode.GetOutputPort("success");
             if (successPort.IsConnected)
             {
-                NodePort connectedPort = successPort.Connection;
-                int toId = graph.nodes.IndexOf(connectedPort.node);
+                List<NodePort> connectedPort = successPort.GetConnections();
+                int toId = graph.nodes.IndexOf(connectedPort[0].node);
                 currentNode = graph.nodes[toId];
                 MissionPrototype<GameMessage> nextMission = GenerateMission(currentNode);
                 if (nextMission == null) return;

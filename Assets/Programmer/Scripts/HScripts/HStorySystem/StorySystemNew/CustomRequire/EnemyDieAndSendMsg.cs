@@ -7,7 +7,7 @@ public class EnemyDieAndSendMsg : MonoBehaviour
 {
     private void OnDestroy()
     {
-        Debug.Log("KILL !!!");
+        //Debug.Log("KILL !!!");
         GameAPI.Broadcast(new GameMessage(GameEventType.KillEnemy));
     }
 }

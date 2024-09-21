@@ -14,7 +14,7 @@ public class SimpleMissonNode : Node
 	[Output] public bool success; //成功成功的情况
 	[Output] public bool fail; //任务失败的情况
 	
-	public RewardType rewardType = RewardType.Treasure;
+	public MissionRewardType rewardType = MissionRewardType.Treasure;
 	public MissionMessageType messageType = MissionMessageType.GameMessage;
 	public GameEventType gameEventType = GameEventType.KillEnemy;
 	public int count = -1;
@@ -22,8 +22,6 @@ public class SimpleMissonNode : Node
 	public bool isStartMission = false;
 	private int toId; //跳转节点的ID
 	public HashSet<int> toIds = new HashSet<int>(); //跳转节点的ID
-	public enum RewardType { Treasure}
-	public enum MissionMessageType {GameMessage}
 
 	public string missionName;
 
@@ -61,4 +59,5 @@ public class SimpleMissonNode : Node
 	public override object GetValue(NodePort port) {
 		return null; // Replace this
 	}
+	
 }
