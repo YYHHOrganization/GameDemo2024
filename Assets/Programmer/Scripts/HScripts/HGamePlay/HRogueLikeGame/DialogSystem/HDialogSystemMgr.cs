@@ -144,6 +144,7 @@ public class HDialogSystemMgr : MonoBehaviour
         int randomIndex = Random.Range(0, files.Length);
         //test
         //randomIndex = 2;
+        //randomIndex = 3;
         string file = files[randomIndex];
         //读取这个文件
         string content = System.IO.File.ReadAllText(file);
@@ -175,7 +176,7 @@ public class HDialogSystemMgr : MonoBehaviour
                 panel.gameObject.SetActive(false);
                 //triggerToDialog.gameObject.GetComponent<TriggerToDialog>().Reset(CheckFinalLine());
                 //gameObject.SetActive(false);
-                
+                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, "testDialog09"));
                 YPlayModeController.Instance.LockPlayerInput(false);
                 YTriggerEvents.RaiseOnMouseLeftShoot(true);
                 YPlayModeController.Instance.LockEveryInputKey = false;

@@ -1,0 +1,397 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6223229948722695114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5280185deac2c8a4a8a5cba6504560d8, type: 3}
+  m_Name: H Story Choise
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -200, y: -280}
+  ports:
+    keys:
+    - inputStory
+    - result
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: -6223229948722695114}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: -3870300909148626017}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: -6223229948722695114}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputStory
+        node: {fileID: 4093905128519958357}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  choiseText: "\u4F60\u73A9\u539F\u795E\u5417"
+  effect: 
+  result: 
+--- !u!114 &-3870300909148626017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0421c459b26f747ad5480a1bd91fb6, type: 3}
+  m_Name: H Story Linear
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -568, y: -264}
+  ports:
+    keys:
+    - inputStory
+    - isEnd
+    - result
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: -3870300909148626017}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: isEnd
+      _node: {fileID: -3870300909148626017}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: -3870300909148626017}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputStory
+        node: {fileID: -6223229948722695114}
+        reroutePoints: []
+      - fieldName: inputStory
+        node: {fileID: 5111835076183717595}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  CharacterName: "\u80D6\u80D6"
+  Title: "\u6E38\u620F\u9886\u57DF\u5927\u795E"
+  Content: "\u4F60\u597D"
+  isEnd: 0
+  result: 
+--- !u!114 &-2497929574730437448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b95d20d1af12aa54fae072d03b5b29be, type: 3}
+  m_Name: H Story Output
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1096, y: 200}
+  ports:
+    keys:
+    - inputStory
+    - fileName
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: -2497929574730437448}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: -2385254702616112442}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: fileName
+      _node: {fileID: -2497929574730437448}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  fileName: story09181332
+--- !u!114 &-2385254702616112442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0421c459b26f747ad5480a1bd91fb6, type: 3}
+  m_Name: H Story Linear
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 707.17, y: 111.751}
+  ports:
+    keys:
+    - inputStory
+    - isEnd
+    - result
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: -2385254702616112442}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: 4093905128519958357}
+        reroutePoints: []
+      - fieldName: result
+        node: {fileID: -207262620106522671}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: isEnd
+      _node: {fileID: -2385254702616112442}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: -2385254702616112442}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputStory
+        node: {fileID: -2497929574730437448}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  CharacterName: 
+  Title: 
+  Content: 
+  isEnd: 1
+  result: 
+--- !u!114 &-207262620106522671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0421c459b26f747ad5480a1bd91fb6, type: 3}
+  m_Name: H Story Linear
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 120, y: 200}
+  ports:
+    keys:
+    - inputStory
+    - isEnd
+    - result
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: -207262620106522671}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: 5111835076183717595}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: isEnd
+      _node: {fileID: -207262620106522671}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: -207262620106522671}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputStory
+        node: {fileID: -2385254702616112442}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  CharacterName: "\u8001\u5A46"
+  Title: "\u6E38\u620F\u9886\u57DF\u5927\u795E1"
+  Content: "\u73A9\u661F\u7A79\u94C1\u9053"
+  isEnd: 0
+  result: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4925cdb9523dfab4caf7a01df72d30f1, type: 3}
+  m_Name: Story1328
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -3870300909148626017}
+  - {fileID: -6223229948722695114}
+  - {fileID: 5111835076183717595}
+  - {fileID: 4093905128519958357}
+  - {fileID: -207262620106522671}
+  - {fileID: -2385254702616112442}
+  - {fileID: -2497929574730437448}
+--- !u!114 &4093905128519958357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0421c459b26f747ad5480a1bd91fb6, type: 3}
+  m_Name: H Story Linear
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 136, y: -168}
+  ports:
+    keys:
+    - inputStory
+    - isEnd
+    - result
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: 4093905128519958357}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: -6223229948722695114}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: isEnd
+      _node: {fileID: 4093905128519958357}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: 4093905128519958357}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputStory
+        node: {fileID: -2385254702616112442}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  CharacterName: "\u8001\u5A46"
+  Title: "\u6E38\u620F\u9886\u57DF\u5927\u795E"
+  Content: "\u73A9\u539F\u795E"
+  isEnd: 0
+  result: 
+--- !u!114 &5111835076183717595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5280185deac2c8a4a8a5cba6504560d8, type: 3}
+  m_Name: H Story Choise
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -216, y: 152}
+  ports:
+    keys:
+    - inputStory
+    - result
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: 5111835076183717595}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: -3870300909148626017}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: 5111835076183717595}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputStory
+        node: {fileID: -207262620106522671}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  choiseText: "\u4F60\u73A9\u661F\u7A79\u94C1\u9053\u5417"
+  effect: 
+  result: 
