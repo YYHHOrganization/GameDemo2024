@@ -225,6 +225,7 @@ public class YPlayModeController : MonoBehaviour
             gameRoot.AddComponent<HRogueDamageCalculator>();
             //添加一个WorldUIManager在Root上
             gameRoot.AddComponent<HWorldUIShowManager>();
+            gameRoot.AddComponent<RogueGameNpcMgr>();
         }
         else
         {

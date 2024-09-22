@@ -11,3 +11,11 @@ public enum GameEventType
     GotoSomewhere,
     // more behaviors...
 }
+
+public enum MissionSystemDialogAnimation
+{
+    Idle,
+    Walk,
+    Run,
+    Jump,
+}
