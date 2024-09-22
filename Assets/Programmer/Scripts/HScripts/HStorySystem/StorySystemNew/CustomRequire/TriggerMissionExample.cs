@@ -58,6 +58,7 @@ public class TriggerMissionExample : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             if (isTriggered) return;
+            isTriggered = true;
             // 触发任务系统
             GameAPI.MissionManager.AddComponent(new MissionLogger());
             GameAPI.MissionManager.AddComponent(new MissionTracker());
@@ -66,7 +67,7 @@ public class TriggerMissionExample : MonoBehaviour
             nodeMgr.graph = graph;
             nodeMgr.StartFirstMission();
             //GameAPI.StartMission(CreateExampleProto());
-            isTriggered = true;
+            
             //HMessageShowMgr.Instance.ShowMessage("LEVEL_IN_MSG_0", "任务开始, 杀死3只小小宝！");
             //SummonEnemyForMission();
         }
