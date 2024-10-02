@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a01d188a26328b4b920cdfdfa2d0def, type: 3}
   m_Name: VolumetricFogRendererFeatureLite
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   renderInSceneView: 0
   renderPassEvent: 450
   settings:
@@ -231,7 +231,8 @@ MonoBehaviour:
   - {fileID: 8904102468479188345}
   - {fileID: -130310934065844971}
   - {fileID: 3622606921036715995}
-  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b797d61e504ba917b15eda758e50a31fedbd74321cd154632
+  - {fileID: 2232420995380985421}
+  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b797d61e504ba917b15eda758e50a31fedbd74321cd1546324dbece421127fb1e
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -300,6 +301,30 @@ MonoBehaviour:
   m_Name: RadialBlur
   m_EditorClassIdentifier: 
   m_Active: 1
+--- !u!114 &2232420995380985421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2a13e349ebf3314980d7c40e5014035, type: 3}
+  m_Name: MobileSSPRRenderFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    ShouldRenderSSPR: 1
+    FadeOutScreenBorderWidthVerticle: 0.25
+    FadeOutScreenBorderWidthHorizontal: 0.35
+    TintColor: {r: 1, g: 1, b: 1, a: 1}
+    cs: {fileID: 7200000, guid: 7bb495a2c7b41f944a59de32c6a2efbe, type: 3}
+    RT_height: 512
+    UseHDR: 1
+    ShouldRemoveFlickerFinalControl: 1
+    HorizontalReflectionPlaneHeightWS: 0.01
+    EnablePerPlatformAutoSafeGuard: 1
 --- !u!114 &2874556437880976475
 MonoBehaviour:
   m_ObjectHideFlags: 0

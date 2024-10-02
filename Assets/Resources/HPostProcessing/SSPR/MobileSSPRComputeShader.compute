@@ -1,0 +1,203 @@
+//this is Mobile + Non-Mobile separated implementations of "Screen Space Planar Reflections in Ghost Recon Wildlands" using a single URP RendererFeature
+//http://remi-genin.fr/blog/screen-space-plane-indexed-reflection-in-ghost-recon-wildlands/
+
+//*we don't sample fallback reflection probe here, we sample it inside user's shader (e.g. water plane shader)
+//because Lighting data provided by URP (e.g. reflection probe) is only correct when rendering using normal drawing method, but not correct in compute shader
+
+//NUMTHREAD_X * NUMTHREAD_Y must be multiple of 64 and <= 256 to balance between performance and mobile support, so we use 8*8
+#define NUMTHREAD_X 8
+#define NUMTHREAD_Y 8
+
+#define MAX_UINT 4294967295
+
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+//common uniform input from MobileSSPRRendererFeature.cs
+float2 _RTSize;
+float _HorizontalPlaneHeightWS;
+float3 _CameraDirection;
+float _FadeOutScreenBorderWidthVerticle;
+float _FadeOutScreenBorderWidthHorizontal; //compute shader can't declare half type input, so use float
+float4 _FinalTintColor;
+
+//we found that on metal, UNITY_MATRIX_VP is not correct, so we will pass our own VP matrix to compute shader
+//but UNITY_MATRIX_I_VP is correct, not sure why.
+float4x4 _VPMatrix;
+
+//common texture input from MobileSSPRRendererFeature.cs
+RWTexture2D<half4> ColorRT;
+Texture2D<half4> _CameraOpaqueTexture;
+Texture2D<float> _CameraDepthTexture;
+
+//common SamplerState settings
+SamplerState PointClampSampler;
+SamplerState LinearClampSampler;
+
+//Non-Mobile path will use this RT: single 32bits RInt RT, split first 16bits for GetReflectionColorFromID's y, last 16bits for GetReflectionColorFromID's x
+//y put in first 16 bits because we want to sort by InterlockedMin(), allowing only "closer to reflection plane candidate" to write to HashRT
+RWTexture2D<uint> HashRT;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// shared functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+float3 ConvertScreenIDToPosWS(uint3 id)
+{
+    /*
+     * note：记住这个转换方式，在Compute Shader中后面也可以继续使用
+     * 看下面的代码，我的理解是深度图采样得到的深度是裁剪空间的
+     * 通过把裁剪空间的深度和屏幕uv坐标，通过逆矩阵的方式，转换到世界坐标，这样就可以得到世界坐标了
+     **/
+    //input id is compute function's input SV_DispatchThreadID
+    float2 screenUV = float2(id.x / (_RTSize.x), id.y / (_RTSize.y)); //[0,RTSize-1] -> screen [0,1] uv
+    float inputPixelRawDepth = _CameraDepthTexture.SampleLevel(PointClampSampler, screenUV, 0);//get rawDepth(posCS.z) in _CameraDepthTexture,这个根据前面的学习应该是裁剪空间的，最后一个参数0表示不使用mip
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //convert screenUV & _CameraDepthTexture's rawDepth(posCS.z) to posWS
+    //https://github.com/Steven-Cannavan/URP_ScreenSpacePlanarReflections/blob/master/Assets/Shaders/ReflectionShader.compute#L75
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    float4 posCS = float4(screenUV * 2.0 - 1.0, inputPixelRawDepth, 1.0); //reconstruct posCS using screen [0,1] uv & rawDepth
+    #if UNITY_UV_STARTS_AT_TOP
+        posCS.y = -posCS.y;
+    #endif
+    float4 posHWS = mul(UNITY_MATRIX_I_VP, posCS); //posCS -> posHWS
+    float3 posWS = posHWS.xyz / posHWS.w; //posHWS -> posWS
+    return posWS;
+}
+
+float3 MirrorPosWS(float3 inputPosWS)
+{
+    float3 reflectedPosWS = inputPosWS;
+    reflectedPosWS.y -= _HorizontalPlaneHeightWS;  // y - h 
+    reflectedPosWS.y *= -1;//actual reflect action // h - y
+    reflectedPosWS.y += _HorizontalPlaneHeightWS; // 2h - y
+
+    return reflectedPosWS;
+}
+
+float2 ConvertReflectedPosWSToScreenUV(float3 reflectedPosWS)
+{
+    //todo:现在只是单纯的转换，会有一些视觉上的issue，需要做stretch等操作
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //find reflected posWS's new screenUV
+    //https://github.com/Steven-Cannavan/URP_ScreenSpacePlanarReflections/blob/master/Assets/Shaders/ReflectionShader.compute#L87
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    float4 reflectedPosCS = mul(_VPMatrix, float4(reflectedPosWS, 1));//posWS -> posCS
+    float2 reflectedPosNDCxy = reflectedPosCS.xy / reflectedPosCS.w;//posCS -> posNDC
+    float2 reflectedScreenUV = reflectedPosNDCxy * 0.5 + 0.5; //posNDC -> screen [0,1] uv, don't saturate() to allow  out of bound access early exit
+    #if UNITY_UV_STARTS_AT_TOP
+        reflectedScreenUV.y = 1.0 - reflectedScreenUV.y;
+    #endif
+    return reflectedScreenUV;
+}
+
+half ConvertOpaqueColorRTScreenUVToFadeAlphaParam(float2 screenUV, float reflectedPosWSy)
+{
+    //fadeout  using vertical uv.y (only fadeout if reaching _CameraOpaqueTexture's uv border top)
+    half fadeoutAlpha = smoothstep(1, 1-_FadeOutScreenBorderWidthVerticle, screenUV.y);
+    //fadeout using horizontal uv.x
+    //TODO: better fadeout
+    fadeoutAlpha *= smoothstep(1, 1 - _FadeOutScreenBorderWidthHorizontal * -(reflectedPosWSy-_HorizontalPlaneHeightWS), abs(screenUV.x * 2 - 1));
+    return fadeoutAlpha;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// kernel: NonMobilePathClear
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma kernel NonMobilePathClear
+
+[numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+void NonMobilePathClear(uint3 id : SV_DispatchThreadID)
+{
+    HashRT[id.xy] = MAX_UINT; //max value as clear, because we want to sort by InterlockedMin()
+    ColorRT[uint2(id.xy)] = half4(0, 0, 0, 0);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// kernel: NonMobilePathRenderHashRT
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma kernel NonMobilePathRenderHashRT
+[numthreads(NUMTHREAD_X,NUMTHREAD_Y,1)]
+void NonMobilePathRenderHashRT(uint3 id : SV_DispatchThreadID)
+{
+    //step 1: convertScreenIdToWorldPos
+    float3 posWS = ConvertScreenIDToPosWS(id);  //使用逆矩阵的方式，将屏幕坐标转换到世界坐标，应该结果比较准确
+    
+    //step 2: 计算反射的位置
+    //if posWS is already under reflection plane (e.g. under water plane), 
+    //it will never be a correct color to reflect anyway, early exit to prevent wrong result write to Color RT
+    if(posWS.y <= _HorizontalPlaneHeightWS)  
+        return;
+    float3 reflectedPosWS = MirrorPosWS(posWS);
+
+    //step 3: convert reflectedPosWS to screenUV
+    float2 reflectedScreenUV = ConvertReflectedPosWSToScreenUV(reflectedPosWS);
+    //early exit if not valid uv anymore, to avoid out of bound access
+    float2 earlyExitTest = abs(reflectedScreenUV - 0.5);
+    if (earlyExitTest.x >= 0.5 || earlyExitTest.y >= 0.5)
+        return;
+    uint2 reflectedScreenID = reflectedScreenUV * _RTSize;//from screen uv[0,1] to [0,RTSize-1]
+
+    //step 4：为了防止出现Z-fighting，我们使用InterlockedMin()来保证只有最近的反射点才会写入
+    //note：这里见笔记
+    float2 screenUV = id.xy / _RTSize;
+    half fadeoutAlpha = ConvertOpaqueColorRTScreenUVToFadeAlphaParam(screenUV, reflectedPosWS.y);
+    uint fadeoutAlphaInt = fadeoutAlpha * 255;//8 bit
+    uint hash = id.y << 20 | id.x << 8 | fadeoutAlphaInt; //pack 3 uint into 1
+
+    #if SHADER_API_METAL
+    //do nothing because metal will never use this kernel (NonMobile kernel)
+    #else
+    InterlockedMin(HashRT[reflectedScreenID],hash); //correct sorting method, sort by id.y
+    #endif
+    //HashRT[reflectedScreenID] = hash; //no sorting method, don't use it, it will produce random flickering because of unknown order write(random order)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// kernel NonMobilePathResolveColorRT
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma kernel NonMobilePathResolveColorRT
+
+[numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+void NonMobilePathResolveColorRT(uint3 id : SV_DispatchThreadID)
+{
+    /*
+    //ref code
+    //http://remi-genin.fr/blog/screen-space-plane-indexed-reflection-in-ghost-recon-wildlands/#hash-resolve-jump
+    
+    float4 PS_ResolveHash(float2 ScreenUV) : SV_Target0
+    {
+        uint Hash = ProjectionHashTex[ScreenUV * FrameSize].x;
+        uint x = Hash & 0xFFFF; uint y = Hash >> 16;
+
+        if(Hash != 0)
+        {
+            float4 SrcColor = MainColorTex[uint2(x, y)];
+            return SrcColor;
+        }
+        else
+            return 0;
+    }
+    */
+    uint packedData = HashRT[id.xy];	
+    if (packedData == (uint)MAX_UINT) //MAX_UINT == max uint
+    {
+        //if this location is not having any reflection data (still containing clear value, still 0 reflection write), early exit to prevent wrong RT write
+        ColorRT[id.xy] = 0;
+        return;
+    }
+    //ghost-recon-wildlands method use 16bit y, 16bit x encode
+    //but in our implementation, 16bit is overkill because we don't need a RT that is 65536*65536
+    //instead we save 8 bits for fadeout alpha info, result in:
+    //-first 12 bits for id.y (0~4095)
+    //-then  12 bits for id.x (0~4095)
+    //-last  8  bits for alpha (0~255)
+    uint2 sampleID = uint2((packedData >> 8) & 0xFFF, packedData >> 20); //decode from single 32bit uint, to 3 separated uint (12bit y & 12bit x & 8bit alpha)
+    uint alphaAsInt = packedData & 0xFF;
+    half alphaAsFloatingPoint = alphaAsInt / 255.0;
+
+    float2 sampleUV = sampleID.xy / _RTSize;
+    half3 sampledColor = _CameraOpaqueTexture.SampleLevel(LinearClampSampler, sampleUV, 0);
+
+    half4 finalColor = half4(sampledColor, alphaAsFloatingPoint) * _FinalTintColor;
+    finalColor.a = saturate(finalColor.a);
+    ColorRT[id.xy] = finalColor;
+}
