@@ -23,6 +23,8 @@ float4 _FinalTintColor;
 //we found that on metal, UNITY_MATRIX_VP is not correct, so we will pass our own VP matrix to compute shader
 //but UNITY_MATRIX_I_VP is correct, not sure why.
 float4x4 _VPMatrix;
+float _ScreenLRStretchIntensity;
+float _ScreenLRStretchThreshold;
 
 //common texture input from MobileSSPRRendererFeature.cs
 RWTexture2D<half4> ColorRT;
@@ -83,6 +85,28 @@ float2 ConvertReflectedPosWSToScreenUV(float3 reflectedPosWS)
     float4 reflectedPosCS = mul(_VPMatrix, float4(reflectedPosWS, 1));//posWS -> posCS
     float2 reflectedPosNDCxy = reflectedPosCS.xy / reflectedPosCS.w;//posCS -> posNDC
     float2 reflectedScreenUV = reflectedPosNDCxy * 0.5 + 0.5; //posNDC -> screen [0,1] uv, don't saturate() to allow  out of bound access early exit
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //fix left right missing geometry 
+    //ref: http://remi-genin.fr/blog/screen-space-plane-indexed-reflection-in-ghost-recon-wildlands/#filling-the-gaps-jump
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //sample code from http://remi-genin.fr/blog/screen-space-plane-indexed-reflection-in-ghost-recon-wildlands/#filling-the-gaps-jump
+    /*
+    float HeightStretch = (PosWS.z - WaterHeight);
+    float AngleStretch = saturate(- CameraDirection.z);
+    float ScreenStretch = saturate(abs(ReflPosUV.x * 2 - 1) - Threshold);
+
+    ReflPosUV.x *= 1 + HeightStretch * AngleStretch * ScreenStretch * Intensity;
+    */
+    float Threshold = _ScreenLRStretchThreshold;
+    float Intensity = _ScreenLRStretchIntensity;
+    float HeightStretch = (abs(reflectedPosWS.y - _HorizontalPlaneHeightWS));
+    float AngleStretch = (-_CameraDirection.y);
+    float ScreenStretch = saturate(abs(reflectedScreenUV.x * 2 - 1) - Threshold);
+    
+    reflectedScreenUV.x = reflectedScreenUV.x * 2 - 1;
+    reflectedScreenUV.x *= 1 + HeightStretch * AngleStretch * ScreenStretch * Intensity;
+    reflectedScreenUV.x = saturate(reflectedScreenUV.x * 0.5 + 0.5);
+
     #if UNITY_UV_STARTS_AT_TOP
         reflectedScreenUV.y = 1.0 - reflectedScreenUV.y;
     #endif
@@ -201,3 +225,43 @@ void NonMobilePathResolveColorRT(uint3 id : SV_DispatchThreadID)
     finalColor.a = saturate(finalColor.a);
     ColorRT[id.xy] = finalColor;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// kernel FillHoles
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma kernel FillHoles
+
+[numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+void FillHoles(uint3 id : SV_DispatchThreadID)
+{
+    //我的理解这个kernel的核心思路是试图依据周围像素把那些黑色的像素点填充上，这样就不会出现黑色的洞了
+    //fill holes inside each 2*2
+    id.xy *= 2;
+
+    //cache read
+    half4 center = ColorRT[id.xy + uint2(0, 0)];
+    half4 right = ColorRT[id.xy + uint2(0, 1)];
+    half4 bottom = ColorRT[id.xy + uint2(1, 0)];
+    half4 bottomRight = ColorRT[id.xy + uint2(1, 1)];
+
+    //find best inside 2*2
+    //通过比较透明度（alpha 值），检查右侧、底部和右下角的像素。如果其中某个像素的 alpha 值大于 best 的 alpha 值加上 0.5，那么更新 best 为该像素。这一步的目的是找到最适合用于填补当前空洞的颜色。
+    half4 best = center;
+    best = right.a > best.a + 0.5 ? right : best;
+    best = bottom.a > best.a + 0.5 ? bottom : best;
+    best = bottomRight.a > best.a + 0.5 ? bottomRight : best;
+
+    //write better rgba
+    //最后，将计算出的最佳颜色值写入 ColorRT 的相应位置。如果 best 的 alpha 值比当前像素的 alpha 值大 0.5，则用 best 来替换当前像素，否则保留原来的像素。这确保了只有当新候选显著优于现有像素时才会进行更新。
+    ColorRT[id.xy + uint2(0, 0)] = best.a > center.a + 0.5 ? best : center;
+    ColorRT[id.xy + uint2(0, 1)] = best.a > right.a + 0.5 ? best : right;
+    ColorRT[id.xy + uint2(1, 0)] = best.a > bottom.a + 0.5 ? best : bottom;
+    ColorRT[id.xy + uint2(1, 1)] = best.a > bottomRight.a + 0.5 ? best : bottomRight;
+}
+
+// //kernel gaussian blur result
+// #pragma kernel GaussianBlur
+// void GaussianBlur(uint3 id : SV_DispatchThreadID)
+// {
+//     
+// }

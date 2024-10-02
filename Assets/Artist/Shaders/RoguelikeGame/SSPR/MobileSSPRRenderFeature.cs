@@ -15,6 +15,10 @@ public class MobileSSPRRenderFeature : ScriptableRendererFeature
         public float FadeOutScreenBorderWidthVerticle = 0.25f;
         [Range(0.01f, 1f)]
         public float FadeOutScreenBorderWidthHorizontal = 0.35f;
+        [Range(0,8f)]
+        public float ScreenLRStretchIntensity = 4;
+        [Range(-1f,1f)]
+        public float ScreenLRStretchThreshold = 0.7f;
         [ColorUsage(true,true)]
         public Color TintColor = Color.white;
 
@@ -26,6 +30,8 @@ public class MobileSSPRRenderFeature : ScriptableRendererFeature
         public int RT_height = 512;
         [Tooltip("是否启用HDR")]
         public bool UseHDR = true;
+        [Tooltip("can set to false for better performance, if visual quality lost is acceptable")]
+        public bool ApplyFillHoleFix = true;
         [Tooltip("can set to false for better performance, if flickering is acceptable")]
         public bool ShouldRemoveFlickerFinalControl = true;
         public float HorizontalReflectionPlaneHeightWS = 0.01f; //default higher than ground a bit, to avoid ZFighting if user placed a ground plane at y=0
@@ -156,7 +162,8 @@ public class MobileSSPRRenderFeature : ScriptableRendererFeature
                 cb.SetComputeFloatParam(cs, Shader.PropertyToID("_FadeOutScreenBorderWidthVerticle"), settings.FadeOutScreenBorderWidthVerticle);
                 cb.SetComputeFloatParam(cs, Shader.PropertyToID("_FadeOutScreenBorderWidthHorizontal"), settings.FadeOutScreenBorderWidthHorizontal);
                 cb.SetComputeVectorParam(cs, Shader.PropertyToID("_FinalTintColor"), settings.TintColor);
-                
+                cb.SetComputeFloatParam(cs, Shader.PropertyToID("_ScreenLRStretchIntensity"), settings.ScreenLRStretchIntensity);
+                cb.SetComputeFloatParam(cs, Shader.PropertyToID("_ScreenLRStretchThreshold"), settings.ScreenLRStretchThreshold);
                 //we found that on metal, UNITY_MATRIX_VP is not correct, so we will pass our own VP matrix to compute shader
                 Camera camera = renderingData.cameraData.camera;
                 //camera涉及的那两个矩阵都是列主序的，跟之前图形学学习的知识保持一致
@@ -194,6 +201,16 @@ public class MobileSSPRRenderFeature : ScriptableRendererFeature
                     cb.SetComputeTextureParam(cs, kernel_NonMobilePathResolveColorRT, "HashRT", _SSPR_PackedDataRT_rti);
                     cb.DispatchCompute(cs, kernel_NonMobilePathResolveColorRT, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
                 }
+                
+                //optional shared pass to improve result only: fill RT hole
+                if(settings.ApplyFillHoleFix)
+                {
+                    int kernel_FillHoles = cs.FindKernel("FillHoles");
+                    cb.SetComputeTextureParam(cs, kernel_FillHoles, "ColorRT", _SSPR_ColorRT_rti);
+                    cb.SetComputeTextureParam(cs, kernel_FillHoles, "PackedDataRT", _SSPR_PackedDataRT_rti);
+                    cb.DispatchCompute(cs, kernel_FillHoles, Mathf.CeilToInt(dispatchThreadGroupXCount / 2f), Mathf.CeilToInt(dispatchThreadGroupYCount / 2f), dispatchThreadGroupZCount);
+                }
+
                 
                 //send out to global, for user's shader to sample reflection result RT (_MobileSSPR_ColorRT)
                 //where _MobileSSPR_ColorRT's rgb is reflection color, a is reflection usage 0~1 for user's shader to lerp with fallback reflection probe's rgb
