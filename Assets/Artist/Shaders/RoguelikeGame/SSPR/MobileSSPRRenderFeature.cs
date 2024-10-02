@@ -25,7 +25,7 @@ public class MobileSSPRRenderFeature : ScriptableRendererFeature
         public ComputeShader cs;
         //////////////////////////////////////////////////////////////////////////////////
         [Header("Performance Settings")]
-        [Range(128, 1024)]
+        [Range(128, 2048)]
         [Tooltip("视觉效果可以接受的话，可以适当降低这个值，以提高性能")]
         public int RT_height = 512;
         [Tooltip("是否启用HDR")]
