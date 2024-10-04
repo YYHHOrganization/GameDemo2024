@@ -156,7 +156,7 @@ void NonMobilePathRenderHashRT(uint3 id : SV_DispatchThreadID)
     float2 reflectedScreenUV = ConvertReflectedPosWSToScreenUV(reflectedPosWS);
     //early exit if not valid uv anymore, to avoid out of bound access
     float2 earlyExitTest = abs(reflectedScreenUV - 0.5);
-    if (earlyExitTest.x >= 0.495 || earlyExitTest.y >= 0.495)  //注：原参考程序这里是0.5，但是如果是0.5的话，边缘会clamp到一起，效果很差，改成0.495之后会好一些
+    if (earlyExitTest.x >= 0.5 || earlyExitTest.y >= 0.5)  //注：原参考程序这里是0.5，但是如果是0.5的话，边缘会clamp到一起，效果很差，改成0.495之后会好一些
         return;
     uint2 reflectedScreenID = reflectedScreenUV * _RTSize;//from screen uv[0,1] to [0,RTSize-1]
 

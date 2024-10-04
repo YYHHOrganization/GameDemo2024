@@ -15,6 +15,7 @@ Shader "MobileSSPR/ExampleShader"
         _UV_MoveSpeed("_UV_MoveSpeed (xy only)(for things like water flow)", Vector) = (0,0,0,0)
 
         [NoScaleOffset]_ReflectionAreaTex("_ReflectionArea", 2D) = "white" {}
+        _LerpBaseAndReflection("LerpBaseAndReflection", range(0,1)) = 0.5
     }
 
     SubShader
@@ -65,6 +66,7 @@ Shader "MobileSSPR/ExampleShader"
             half _SSPR_NoiseIntensity;
             float2 _UV_MoveSpeed;
             half _Roughness;
+            half _LerpBaseAndReflection;
             CBUFFER_END
 
             Varyings vert(Attributes IN)
@@ -105,7 +107,7 @@ Shader "MobileSSPR/ExampleShader"
                 //decide show reflection area
                 half reflectionArea = SAMPLE_TEXTURE2D(_ReflectionAreaTex,sampler_ReflectionAreaTex, IN.uv);
 
-                half3 finalRGB = lerp(baseColor,resultReflection,reflectionArea);
+                half3 finalRGB = lerp(baseColor,resultReflection,_LerpBaseAndReflection);
 
                 return half4(finalRGB,1);
             }

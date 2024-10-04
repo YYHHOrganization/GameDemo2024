@@ -376,7 +376,7 @@ public class YDungeonCreator : MonoBehaviour
         GameObject roomparent = room.roomScript.gameObject;
         floor.transform.parent = roomparent.transform;
         Vector3 meshCenterPos = new Vector3((bottomLeftCorner.x + topRightCorner.x) / 2, 0, (bottomLeftCorner.y + topRightCorner.y) / 2) + originPosition;
-        floor.transform.RotateAround( meshCenterPos, Vector3.right, 180);
+        //floor.transform.RotateAround( meshCenterPos, Vector3.right, 180);
         
         //根据不同房间类型，替换不同房间地板材质
         Material floorMat = GetFloorMatFromRoomType(room.mRoomType);

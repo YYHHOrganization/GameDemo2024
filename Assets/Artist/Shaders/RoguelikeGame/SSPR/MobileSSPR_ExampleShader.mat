@@ -24,11 +24,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 9644eb6aca67672449e2bcbb0eab8e84, type: 3}
+        m_Texture: {fileID: 2800000, guid: 317222793b8998b4a966feb45b55e8af, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ReflectionAreaTex:
-        m_Texture: {fileID: 2800000, guid: cdbae67750a30be408e34e321c04127a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6b9c9c00616e9434594ae698ac43c459, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SSPR_UVNoiseTex:
@@ -37,6 +37,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _LerpBaseAndReflection: 0.3
     - _Roughness: 0.33
     - _SSPR_NoiseIntensity: 0.0425
     m_Colors:
