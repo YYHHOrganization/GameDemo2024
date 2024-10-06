@@ -126,7 +126,7 @@ public class MobileSSPRRenderFeature : ScriptableRendererFeature
                 shouldUseHDRColorRT = false;
             }
             rtd.colorFormat = shouldUseHDRColorRT ? RenderTextureFormat.ARGBHalf : RenderTextureFormat.ARGB32; //we need alpha! (usually LDR is enough, ignore HDR is acceptable for reflection)
-            cmd.GetTemporaryRT(_SSPR_ColorRT_pid, rtd);
+            cmd.GetTemporaryRT(_SSPR_ColorRT_pid, rtd); 
             //PackedData RT
             //以下这个if和else见SSPR的说明文档
             if (ShouldUseSinglePassUnsafeAllowFlickeringDirectResolve())  //理论上，针对移动端，以及一些不支持RInt的平台，或者用户选择不去除闪烁的情况下，我们会使用这个RT

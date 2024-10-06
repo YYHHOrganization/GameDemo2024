@@ -36,5 +36,10 @@ public class Class_RogueGameNPCConfig {
 		string value = NPCAddressable;
 		return value;
 	}
+	public string NPCDesc { get; set; }    //NPC的介绍（放在头顶）
+	  public string _NPCDesc (){
+		string value = NPCDesc;
+		return value;
+	}
 	}
 	

@@ -44,7 +44,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   inputStory: 
-  choiseText: "\u4E0D\u7528\uFF01"
+  choiseText: "\u4E0D\u7528\uFF0C\u6211\u662F\u6E38\u620F\u9886\u57DF\u5927\u795E\u3002"
   effect: 
   result: 
 --- !u!114 &-7524548122014202393
@@ -101,9 +101,9 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   inputStory: 
-  CharacterName: "\u7EDD\u533A\u96F6"
-  Title: "\u65B0\u827E\u5229\u90FD\u7684\u795E\u79D8\u529B\u91CF"
-  Content: "\u597D\u4E86\u6211\u77E5\u9053\u4E86\uFF0C\u4F60\u4E0D\u7528\u518D\u8BF4\u4E86"
+  CharacterName: "\u300C\u542F\u660E\u661F\u300D"
+  Title: "\u638C\u7BA1\u65B0\u624B\u5F15\u5BFC\u7684\u4EBA"
+  Content: "\u795D\u4F60\u73A9\u7684\u5F00\u5FC3\uFF01"
   isEnd: 0
   result: 
   storyEndingId: 0
@@ -162,13 +162,13 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   inputStory: 
-  CharacterName: "\u738B\u4E0B\u4E00\u6876"
-  Title: "\u661F\u7A79\u94C1\u9053\uFF1F"
-  Content: "\u5728\u8FD9\u4E2A\u540D\u4E3A\u63D0\u74E6\u7279\u7684\u4E16\u754C\u91CC\uFF0C\u4F60\u5C06\u626E\u6F14\u4E00\u540D\u65C5\u884C\u8005\uFF0C\u5BFB\u627E\u4F60\u7684\u8840\u4EB2\uFF0C\u5E76\u9010\u6B65\u53D1\u6398\u201C\u63D0\u74E6\u7279\u201D\u7684\u771F\u76F8\u3002"
+  CharacterName: "\u300C\u542F\u660E\u661F\u300D"
+  Title: "\u638C\u7BA1\u65B0\u624B\u5F15\u5BFC\u7684\u4EBA"
+  Content: "\u55EF\u55EF\uFF0C\u5F80\u524D\u8D70\u4E0D\u8FDC\u5C31\u53EF\u4EE5\u79BB\u5F00\u65B0\u624B\u6307\u5F15\u5566~"
   isEnd: 0
   result: 
   storyEndingId: 0
-  dialogAnimation: 1
+  dialogAnimation: 0
 --- !u!114 &-2462027399089120494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Name: H Story Linear
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -200, y: -344}
+  position: {x: -184, y: -376}
   ports:
     keys:
     - inputStory
@@ -195,7 +195,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
       connections:
       - fieldName: result
-        node: {fileID: 6201253205076331059}
+        node: {fileID: 8519363934777736568}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -226,9 +226,9 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   inputStory: 
-  CharacterName: "\u738B\u4E0B\u4E00\u6876"
-  Title: "\u661F\u7A79\u94C1\u9053\uFF1F"
-  Content: "\u4F60\u8981\u8FDB\u5165\u6253\u602A\u8BAD\u7EC3\u4E48\uFF1F"
+  CharacterName: "\u300C\u542F\u660E\u661F\u300D"
+  Title: "\u638C\u7BA1\u65B0\u624B\u5F15\u5BFC\u7684\u4EBA"
+  Content: "\u4F60\u8981\u8FDB\u5165\u65B0\u624B\u5F15\u5BFC\u4E48\uFF1F"
   isEnd: 0
   result: 
   storyEndingId: 0
@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Name: H Story Linear
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -744, y: -344}
+  position: {x: -1432, y: -392}
   ports:
     keys:
     - result
@@ -326,13 +326,13 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   inputStory: 
-  CharacterName: "\u738B\u4E0B\u4E00\u6876"
-  Title: "\u661F\u7A79\u94C1\u9053\u5783\u573E\u6876"
-  Content: "\u539F\u795E\uFF0C\u542F\u52A8\uFF01"
+  CharacterName: "\u300C\u542F\u660E\u661F\u300D"
+  Title: ???
+  Content: "\u8FD9\u4F4D\u670B\u53CB\u8BF7\u7559\u6B65\uFF01"
   isEnd: 0
   result: 0
   storyEndingId: 0
-  dialogAnimation: 1
+  dialogAnimation: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,6 +358,8 @@ MonoBehaviour:
   - {fileID: 8707408300060434578}
   - {fileID: 1613491224712242561}
   - {fileID: 7807591531810070435}
+  - {fileID: 4908376929436298619}
+  - {fileID: 8519363934777736568}
 --- !u!114 &1613491224712242561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -371,7 +373,7 @@ MonoBehaviour:
   m_Name: Mission Start
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -996.63544, y: -191.8605}
+  position: {x: -1688, y: -232}
   ports:
     keys:
     - success
@@ -443,13 +445,13 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   inputStory: 
-  CharacterName: "\u738B\u4E0B\u4E00\u6876"
-  Title: "\u661F\u7A79\u94C1\u9053\uFF1F"
-  Content: "\u597D\u5427\uFF0C\u90A3\u6211\u5C31\u4E0D\u7EE7\u7EED\u8BF4\u4E86\uFF0C\u6253\u4F60\u7684\u5C0F\u5C0F\u5B9D\u5427"
+  CharacterName: "\u300C\u542F\u660E\u661F\u300D"
+  Title: "\u638C\u7BA1\u65B0\u624B\u5F15\u5BFC\u7684\u4EBA"
+  Content: "\u597D\uFF01\u6211\u4EEC\u5148\u4ECE\u6253\u4E00\u4E9B\u7B80\u5355\u7684\u602A\u5F00\u59CB~"
   isEnd: 0
   result: 
   storyEndingId: 0
-  dialogAnimation: 3
+  dialogAnimation: 0
 --- !u!114 &4543860859993595246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,6 +492,67 @@ MonoBehaviour:
       _dynamic: 0
   inputs: []
   result: 
+--- !u!114 &4908376929436298619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0421c459b26f747ad5480a1bd91fb6, type: 3}
+  m_Name: H Story Linear
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -872, y: -392}
+  ports:
+    keys:
+    - inputStory
+    - result
+    - isEnd
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: 4908376929436298619}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: 6201253205076331059}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: 4908376929436298619}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputStory
+        node: {fileID: 8519363934777736568}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: isEnd
+      _node: {fileID: 4908376929436298619}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  CharacterName: "\u300C\u542F\u660E\u661F\u300D"
+  Title: ???
+  Content: "\u4E5F\u8BB8\u6211\u957F\u5F97\u50CF\u4E00\u4F4D\u4F60\u8BA4\u8BC6\u7684\u4EBA\uFF0C\u4F46\u8BF7\u522B\u5728\u610F\uFF0C\u6BD5\u7ADF\u8FD9\u4E2A\u6E38\u620F\u7F3A\u7F8E\u672F\u5F00\u53D1\u3002"
+  isEnd: 0
+  result: 
+  storyEndingId: 0
+  dialogAnimation: 0
 --- !u!114 &6201253205076331059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -503,7 +566,7 @@ MonoBehaviour:
   m_Name: H Story Linear
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -472, y: -344}
+  position: {x: -1160, y: -392}
   ports:
     keys:
     - inputStory
@@ -528,7 +591,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
       connections:
       - fieldName: inputStory
-        node: {fileID: -2462027399089120494}
+        node: {fileID: 4908376929436298619}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -544,13 +607,13 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   inputStory: 
-  CharacterName: "\u7EDD\u533A\u96F6"
-  Title: "\u65B0\u827E\u5229\u90FD\u7684\u795E\u79D8\u529B\u91CF"
-  Content: "\u661F\u7A79\u94C1\u9053\uFF0C\u542F\u52A8\uFF01"
+  CharacterName: "\u300C\u542F\u660E\u661F\u300D"
+  Title: ???
+  Content: "\u6211\u53EB\u300C\u542F\u660E\u661F\u300D\uFF0C\u662F\u4E3A\u65B0\u4EBA\u63D0\u4F9B\u65B0\u624B\u5F15\u5BFC\u7684\u5E38\u9A7B\u5609\u5BBE\u3002"
   isEnd: 0
   result: 
   storyEndingId: 0
-  dialogAnimation: 2
+  dialogAnimation: 0
 --- !u!114 &7785943783089137326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -595,7 +658,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   inputStory: 
-  choiseText: "\u53EF\u4EE5\u7684\uFF0C\u5C1D\u8BD5\u4E00\u4E0B"
+  choiseText: "\u53EF\u4EE5\u7684\uFF0C\u5C1D\u8BD5\u4E00\u4E0B\uFF01"
   effect: 
   result: 
 --- !u!114 &7807591531810070435
@@ -655,6 +718,67 @@ MonoBehaviour:
   isEnd: 1
   result: 
   storyEndingId: 1
+  dialogAnimation: 0
+--- !u!114 &8519363934777736568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0421c459b26f747ad5480a1bd91fb6, type: 3}
+  m_Name: H Story Linear
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -520, y: -392}
+  ports:
+    keys:
+    - inputStory
+    - result
+    - isEnd
+    values:
+    - _fieldName: inputStory
+      _node: {fileID: 8519363934777736568}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: 4908376929436298619}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: 8519363934777736568}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputStory
+        node: {fileID: -2462027399089120494}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: isEnd
+      _node: {fileID: 8519363934777736568}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputStory: 
+  CharacterName: "\u300C\u542F\u660E\u661F\u300D"
+  Title: "\u638C\u7BA1\u65B0\u624B\u5F15\u5BFC\u7684\u4EBA"
+  Content: "\u90A3\u4E48\u8FDB\u5165\u6B63\u9898\uFF0C\u5728\u6B63\u5F0F\u5F00\u59CB\u6E38\u620F\u524D\u4F60\u53EF\u80FD\u9700\u8981\u719F\u6089\u4E00\u4E0B\u64CD\u4F5C\u3002"
+  isEnd: 0
+  result: 
+  storyEndingId: 0
   dialogAnimation: 0
 --- !u!114 &8707408300060434578
 MonoBehaviour:

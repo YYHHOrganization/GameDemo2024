@@ -57,15 +57,18 @@ public class HDialogSystemMgr : MonoBehaviour
     private string npcId;
     private NPCDialogMgr dialogMgr;
 
-    private void SetNPCAttribute()
+    private void SetOrGetNPCAttribute()
     {
         //为NPC添加脚本
         GameObject npc = yPlanningTable.Instance.GetComponent<RogueGameNpcMgr>().GetNpcByID(npcId);
-        if (npc != null)
+        dialogMgr = npc.GetComponent<NPCDialogMgr>();
+        if (npc != null && dialogMgr == null)
         {
             dialogMgr = npc.AddComponent<NPCDialogMgr>();
-            dialogMgr.SetNpcBaseInfo(SD_RogueGameNPCConfig.Class_Dic[npcId].NPCName, npcId);
+            dialogMgr.SetNpcBaseInfo(SD_RogueGameNPCConfig.Class_Dic[npcId].NPCName, npcId, SD_RogueGameNPCConfig.Class_Dic[npcId].NPCDesc);
         }
+        dialogMgr.PrepareForMission();
+        
     }
     public void SetUpAndStartDialogWithGraph(NodeGraph graph,string dialogTaskName, string npcId, Node outputNode)
     {
@@ -75,7 +78,7 @@ public class HDialogSystemMgr : MonoBehaviour
         this.npcId = npcId;
         dialogIndex = 0;
         panel.gameObject.SetActive(true);
-        SetNPCAttribute();
+        SetOrGetNPCAttribute();
         ReadGraphAndStartDialog(graph);
         //ShowDialogRow();
         LockPlayerInput();
@@ -101,6 +104,14 @@ public class HDialogSystemMgr : MonoBehaviour
         ShowDialogFromGraph();
     }
 
+    private void EndDialog()
+    {
+        if (dialogMgr)
+        {
+            dialogMgr.HideUI();
+        }
+    }
+
     /// <summary>
     /// 展示当前对话节点对应的内容（第一次也会进）
     /// </summary>
@@ -121,6 +132,7 @@ public class HDialogSystemMgr : MonoBehaviour
                     dialogNode.storyEndingId = storyEndingId;
                 }
                 panel.gameObject.SetActive(false);
+                EndDialog();
                 YPlayModeController.Instance.LockPlayerInput(false);
                 YTriggerEvents.RaiseOnMouseLeftShoot(true);
                 YPlayModeController.Instance.LockEveryInputKey = false;

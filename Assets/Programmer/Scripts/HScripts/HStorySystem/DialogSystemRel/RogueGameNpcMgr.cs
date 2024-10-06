@@ -21,6 +21,8 @@ public class RogueGameNpcMgr : MonoBehaviour
                 Vector3 pos = new Vector3(float.Parse(posStr[0]), float.Parse(posStr[1]), float.Parse(posStr[2]));
                 GameObject npcObj = Instantiate(npcPrefab, pos, Quaternion.identity);
                 npcDict.Add(npc.Key, npcObj);
+                NPCDialogMgr dialogMgr = npcObj.AddComponent<NPCDialogMgr>();
+                dialogMgr.SetNpcBaseInfo(npc.Value.NPCName, npc.Key, npc.Value.NPCDesc);
             }
         }
     }
