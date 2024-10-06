@@ -35,7 +35,7 @@ public class MobileSSPRRenderFeature : ScriptableRendererFeature
         [Tooltip("can set to false for better performance, if flickering is acceptable")]
         public bool ShouldRemoveFlickerFinalControl = true;
         public float HorizontalReflectionPlaneHeightWS = 0.01f; //default higher than ground a bit, to avoid ZFighting if user placed a ground plane at y=0
-        
+        public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
         //////////////////////////////////////////////////////////////////////////////////
         [Header("Danger Zone")]
         [Tooltip("You should always turn this on, unless you want to debug")]
@@ -253,7 +253,7 @@ public class MobileSSPRRenderFeature : ScriptableRendererFeature
         m_ScriptablePass = new CustomSSPRPass(settings);
 
         // Configures where the render pass should be injected.
-        m_ScriptablePass.renderPassEvent = RenderPassEvent.AfterRenderingTransparents;//we must wait until _CameraOpaqueTexture & _CameraDepthTexture is usable
+        m_ScriptablePass.renderPassEvent = settings.renderPassEvent;//we must wait until _CameraOpaqueTexture & _CameraDepthTexture is usable
     }
 
     // Here you can inject one or multiple render passes in the renderer.
