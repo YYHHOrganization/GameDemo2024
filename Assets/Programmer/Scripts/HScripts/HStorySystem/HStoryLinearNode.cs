@@ -16,6 +16,7 @@ public class HStoryLinearNode : Node
 
 	[Output] public string result; // 输出连接
 	public int storyEndingId;
+	public MissionSystemDialogAnimation dialogAnimation;
 
 	public override void OnCreateConnection(NodePort from, NodePort to)
 	{

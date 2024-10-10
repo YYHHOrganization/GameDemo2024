@@ -53,20 +53,25 @@ public class TriggerMissionExample : MonoBehaviour
         }
     }
     
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
             if (isTriggered) return;
-            // 触发任务系统
-            GameAPI.MissionManager.AddComponent(new MissionLogger());
-            GameAPI.MissionManager.AddComponent(new MissionTracker());
-            MissonSystemNodeMgr nodeMgr = gameObject.AddComponent<MissonSystemNodeMgr>();
-            GameAPI.nodeMgr = nodeMgr;
-            nodeMgr.graph = graph;
-            nodeMgr.StartFirstMission();
+            if (Input.GetKey(KeyCode.F))
+            {
+                isTriggered = true;
+                // 触发任务系统
+                GameAPI.MissionManager.AddComponent(new MissionLogger());
+                GameAPI.MissionManager.AddComponent(new MissionTracker());
+                GameAPI.MissionManager.AddComponent(new UIUpdater());
+                MissonSystemNodeMgr nodeMgr = gameObject.AddComponent<MissonSystemNodeMgr>();
+                GameAPI.nodeMgr = nodeMgr;
+                nodeMgr.graph = graph;
+                nodeMgr.StartFirstMission();
+            }
             //GameAPI.StartMission(CreateExampleProto());
-            isTriggered = true;
+            
             //HMessageShowMgr.Instance.ShowMessage("LEVEL_IN_MSG_0", "任务开始, 杀死3只小小宝！");
             //SummonEnemyForMission();
         }

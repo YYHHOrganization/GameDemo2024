@@ -54,13 +54,31 @@ public class HDialogSystemMgr : MonoBehaviour
     }
 
     private Node parentDialogNode;
-    public void SetUpAndStartDialogWithGraph(NodeGraph graph,string dialogTaskName, Node outputNode)
+    private string npcId;
+    private NPCDialogMgr dialogMgr;
+
+    private void SetOrGetNPCAttribute()
+    {
+        //为NPC添加脚本
+        GameObject npc = yPlanningTable.Instance.GetComponent<RogueGameNpcMgr>().GetNpcByID(npcId);
+        dialogMgr = npc.GetComponent<NPCDialogMgr>();
+        if (npc != null && dialogMgr == null)
+        {
+            dialogMgr = npc.AddComponent<NPCDialogMgr>();
+            dialogMgr.SetNpcBaseInfo(SD_RogueGameNPCConfig.Class_Dic[npcId].NPCName, npcId, SD_RogueGameNPCConfig.Class_Dic[npcId].NPCDesc);
+        }
+        dialogMgr.PrepareForMission();
+        
+    }
+    public void SetUpAndStartDialogWithGraph(NodeGraph graph,string dialogTaskName, string npcId, Node outputNode)
     {
         isReadFromGraph = true;
         parentDialogNode = outputNode;
         currentDialogTaskName = dialogTaskName;
+        this.npcId = npcId;
         dialogIndex = 0;
         panel.gameObject.SetActive(true);
+        SetOrGetNPCAttribute();
         ReadGraphAndStartDialog(graph);
         //ShowDialogRow();
         LockPlayerInput();
@@ -86,6 +104,14 @@ public class HDialogSystemMgr : MonoBehaviour
         ShowDialogFromGraph();
     }
 
+    private void EndDialog()
+    {
+        if (dialogMgr)
+        {
+            dialogMgr.HideUI();
+        }
+    }
+
     /// <summary>
     /// 展示当前对话节点对应的内容（第一次也会进）
     /// </summary>
@@ -105,16 +131,18 @@ public class HDialogSystemMgr : MonoBehaviour
                 {
                     dialogNode.storyEndingId = storyEndingId;
                 }
-                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, currentDialogTaskName));
-                
                 panel.gameObject.SetActive(false);
+                EndDialog();
                 YPlayModeController.Instance.LockPlayerInput(false);
                 YTriggerEvents.RaiseOnMouseLeftShoot(true);
                 YPlayModeController.Instance.LockEveryInputKey = false;
                 YTriggerEvents.RaiseOnMouseLockStateChanged(true);
+                
+                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, currentDialogTaskName));
                 return;
             }
             UpdateText(storyLinearNode.CharacterName, storyLinearNode.Title, storyLinearNode.Content);
+            UpdateNPCAnimation(storyLinearNode.dialogAnimation.ToString());
             //UpdateCinemachine(storyLinearNode.cinemachine);
             nextButton.gameObject.SetActive(true);
         }
@@ -124,6 +152,11 @@ public class HDialogSystemMgr : MonoBehaviour
             
         }
         
+    }
+
+    private void UpdateNPCAnimation(string animName)
+    {
+        dialogMgr.ChangeNPCAnimation(animName);
     }
 
     private void LockPlayerInput()

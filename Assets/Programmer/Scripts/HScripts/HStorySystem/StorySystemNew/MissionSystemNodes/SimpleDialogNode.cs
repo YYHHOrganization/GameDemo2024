@@ -24,8 +24,8 @@ public class SimpleDialogNode : Node
 	public string taskName;
 	
 	[HideInInspector] public int storyEndingId;
+	public string NpcID;
 	
-	// Use this for initialization
 	protected override void Init() {
 		base.Init();
 		
@@ -40,7 +40,7 @@ public class SimpleDialogNode : Node
 	{
 		//首先开启对话系统
 		HDialogSystemMgr dialogSystemMgr = yPlanningTable.Instance.gameObject.GetComponent<HDialogSystemMgr>();
-		dialogSystemMgr.SetUpAndStartDialogWithGraph(m_childGraph,taskName, this);
+		dialogSystemMgr.SetUpAndStartDialogWithGraph(m_childGraph,taskName, NpcID, this);
 		MissionRequire<GameMessage> missionRequire = new CompleteDialogRequire(gameEventType, taskName);
 		var requires = new MissionRequire<GameMessage>[] { missionRequire };
 		MissionReward reward = new TriggerMissionExample.RewardNull();
