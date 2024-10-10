@@ -9,6 +9,7 @@ public enum GameEventType
     CompleteDialogue,
     KillEnemy,
     GotoSomewhere,
+    BreakItem,
     // more behaviors...
 }
 
