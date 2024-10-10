@@ -131,6 +131,17 @@ public class HRogueItemFuncUtility : MonoBehaviour
                 break;
         }
     }
+
+    private float nowTimeScale = 1.0f;
+    public void SetTimeScaleTime(float value)
+    {
+        nowTimeScale = value;
+        Time.timeScale = value;
+    }
+    public void ResetTimeScale()
+    {
+        Time.timeScale = nowTimeScale;
+    }
     private void PikaChongdianCharge(string funcParams)
     {
         //string[] paramList = funcParams.Split(';');

@@ -77,6 +77,7 @@ public class YFractureExplosionObject : MonoBehaviour
         if (isBroken == false)
         {
             Explode(hitVector3);
+            HLoadScriptManager.Instance.BroadcastMessage("QiaoguanziGame", new GameMessage(GameEventType.BreakItem));
             
             //有概率生成道具 比如心啥的
             if (brokenAndGenerateItem)

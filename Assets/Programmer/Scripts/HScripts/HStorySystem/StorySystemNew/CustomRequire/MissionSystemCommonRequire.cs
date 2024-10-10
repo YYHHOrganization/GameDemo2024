@@ -103,6 +103,40 @@ public class CompleteDialogRequire : MissionRequire<GameMessage>
         message.type == type && message.args?.ToString() == args;
 }
 
+public class BrokenSomethingRequire : MissionRequire<GameMessage>
+{
+    [SerializeField] private GameEventType type;
+    [SerializeField] private string args;
+    [SerializeField] private int count;
+
+    public class Handle : MissionRequireHandle<GameMessage>
+    {
+        private readonly BrokenSomethingRequire require;
+        private int count;
+        
+        public Handle(BrokenSomethingRequire exampleRequire) : base(exampleRequire)
+        {
+            require = exampleRequire;
+        }
+        
+        protected override bool UseMessage(GameMessage message)
+        {
+            return ++count >= require.count;
+        }
+        
+        public override string ToString() =>
+            $"{count}/{require.count}";
+    }
+    public BrokenSomethingRequire(GameEventType type, int count, string args = null)
+    {
+        this.type = type;
+        this.args = args;
+        this.count = count;
+    }
+    
+    public override bool CheckMessage(GameMessage message) =>
+        message.type == type && message.args?.ToString() == args;
+}
 
 
 public static class GameAPI
