@@ -53,6 +53,8 @@ public class TriggerMissionExample : MonoBehaviour
         }
     }
     
+    private MissionManager<GameMessage> missionManager;
+    
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -62,13 +64,20 @@ public class TriggerMissionExample : MonoBehaviour
             {
                 isTriggered = true;
                 // 触发任务系统
-                GameAPI.MissionManager.AddComponent(new MissionLogger());
-                GameAPI.MissionManager.AddComponent(new MissionTracker());
-                GameAPI.MissionManager.AddComponent(new UIUpdater());
+                missionManager = new MissionManager<GameMessage>();
+                missionManager.AddComponent(new MissionLogger());
+                missionManager.AddComponent(new MissionTracker("MissionExample"));
+                missionManager.AddComponent(new UIUpdater());
+                HLoadScriptManager.Instance.AddOrReplaceMissionManager("MissionExample", missionManager);
+                // GameAPI.MissionManager.AddComponent(new MissionLogger());
+                // GameAPI.MissionManager.AddComponent(new MissionTracker());
+                // GameAPI.MissionManager.AddComponent(new UIUpdater());
                 MissonSystemNodeMgr nodeMgr = gameObject.AddComponent<MissonSystemNodeMgr>();
-                GameAPI.nodeMgr = nodeMgr;
+                nodeMgr.MissionManager = missionManager;
+                //GameAPI.nodeMgr = nodeMgr;
                 nodeMgr.graph = graph;
                 nodeMgr.StartFirstMission();
+                HLoadScriptManager.Instance.AddOrReplaceNodeMgr("MissionExample", nodeMgr);
             }
             //GameAPI.StartMission(CreateExampleProto());
             

@@ -1,0 +1,301 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7804554358605912261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d24694896950643ad78b8cf46a7c84, type: 3}
+  m_Name: Useful Mission Func
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -56, y: -136}
+  ports:
+    keys:
+    - forwardMission
+    - success
+    values:
+    - _fieldName: forwardMission
+      _node: {fileID: -7804554358605912261}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: branch2
+        node: {fileID: 5257555496326987102}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: success
+      _node: {fileID: -7804554358605912261}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  forwardMission: 0
+  success: 0
+  funcEnum: 0
+  args1: 2
+--- !u!114 &-7370415860539700000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d24694896950643ad78b8cf46a7c84, type: 3}
+  m_Name: Useful Mission Func
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -40, y: -312}
+  ports:
+    keys:
+    - forwardMission
+    - success
+    values:
+    - _fieldName: forwardMission
+      _node: {fileID: -7370415860539700000}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: branch1
+        node: {fileID: 5257555496326987102}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: success
+      _node: {fileID: -7370415860539700000}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: forwardMission
+        node: {fileID: -1682826300635306165}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  forwardMission: 0
+  success: 0
+  funcEnum: 0
+  args1: 2
+--- !u!114 &-1805217133170850079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81945dad12bdae548b8921343c41af20, type: 3}
+  m_Name: Mission Start
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -676.703, y: -195.127}
+  ports:
+    keys:
+    - success
+    values:
+    - _fieldName: success
+      _node: {fileID: -1805217133170850079}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: forwardMission
+        node: {fileID: 5257555496326987102}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  success: 0
+--- !u!114 &-1682826300635306165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96a8fc1579d13af4eb38447c6928d472, type: 3}
+  m_Name: Simple Misson
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 248, y: -328}
+  ports:
+    keys:
+    - forwardMission
+    - success
+    - fail
+    values:
+    - _fieldName: forwardMission
+      _node: {fileID: -1682826300635306165}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: success
+        node: {fileID: -7370415860539700000}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: success
+      _node: {fileID: -1682826300635306165}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: fail
+      _node: {fileID: -1682826300635306165}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  forwardMission: 0
+  success: 0
+  fail: 0
+  rewardType: 0
+  messageType: 0
+  gameEventType: 4
+  count: 30
+  isStartMission: 0
+  missionName: "\u5E2E\u5BCC\u54E5\u674030\u53EA\u602A"
+  args: any
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4925cdb9523dfab4caf7a01df72d30f1, type: 3}
+  m_Name: ShajinMissionGraph
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -1805217133170850079}
+  - {fileID: 5257555496326987102}
+  - {fileID: -7370415860539700000}
+  - {fileID: -7804554358605912261}
+  - {fileID: -1682826300635306165}
+--- !u!114 &5257555496326987102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffd109ce8ef0f5741824c4589eef0beb, type: 3}
+  m_Name: Simple Dialog
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -344, y: -264}
+  ports:
+    keys:
+    - forwardMission
+    - branch1
+    - branch2
+    - branch3
+    - branch4
+    - branch5
+    values:
+    - _fieldName: forwardMission
+      _node: {fileID: 5257555496326987102}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: success
+        node: {fileID: -1805217133170850079}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: branch1
+      _node: {fileID: 5257555496326987102}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: forwardMission
+        node: {fileID: -7370415860539700000}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: branch2
+      _node: {fileID: 5257555496326987102}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: forwardMission
+        node: {fileID: -7804554358605912261}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: branch3
+      _node: {fileID: 5257555496326987102}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: branch4
+      _node: {fileID: 5257555496326987102}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: branch5
+      _node: {fileID: 5257555496326987102}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  forwardMission: 0
+  branch1: 0
+  branch2: 0
+  branch3: 0
+  branch4: 0
+  branch5: 0
+  isStartMission: 0
+  rewardType: 0
+  gameEventType: 3
+  m_childGraph: {fileID: 11400000, guid: 96487a93a50cb18419bf57d3952ca947, type: 2}
+  taskName: "\u548C\u5BCC\u54E5\u5BF9\u8BDD"
+  storyEndingId: 1
+  NpcID: 10002

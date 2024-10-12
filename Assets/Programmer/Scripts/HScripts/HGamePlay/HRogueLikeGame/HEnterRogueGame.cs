@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class HEnterRogueGame : MonoBehaviour
@@ -38,14 +39,19 @@ public class HEnterRogueGame : MonoBehaviour
         YGameRoot.Instance.Push(new YChooseCharacterPanel());
     }
 
+    private bool canInteractive = true;
+
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            if (!canInteractive) return;
             panel.gameObject.SetActive(true);
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 HMessageShowMgr.Instance.ShowMessageWithActions("CONFIRM_ENTER_ROGUE_WITH_PORTAL", TriggerPanelToRogueGame, null,null);
+                canInteractive = false;
+                DOVirtual.DelayedCall(2f, () => { canInteractive = true; });
             }
         }
     }

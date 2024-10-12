@@ -75,6 +75,7 @@ public class HDialogSystemMgr : MonoBehaviour
         isReadFromGraph = true;
         parentDialogNode = outputNode;
         currentDialogTaskName = dialogTaskName;
+        firstMissionNode = null;  //每次重置一下对话
         this.npcId = npcId;
         dialogIndex = 0;
         panel.gameObject.SetActive(true);
@@ -138,7 +139,8 @@ public class HDialogSystemMgr : MonoBehaviour
                 YPlayModeController.Instance.LockEveryInputKey = false;
                 YTriggerEvents.RaiseOnMouseLockStateChanged(true);
                 
-                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, currentDialogTaskName));
+                //GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, currentDialogTaskName));
+                HLoadScriptManager.Instance.BroadcastMessageToAll(new GameMessage(GameEventType.CompleteDialogue, currentDialogTaskName));
                 return;
             }
             UpdateText(storyLinearNode.CharacterName, storyLinearNode.Title, storyLinearNode.Content);
@@ -296,7 +298,8 @@ public class HDialogSystemMgr : MonoBehaviour
                 panel.gameObject.SetActive(false);
                 //triggerToDialog.gameObject.GetComponent<TriggerToDialog>().Reset(CheckFinalLine());
                 //gameObject.SetActive(false);
-                GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, "testDialo g09"));
+                //GameAPI.Broadcast(new GameMessage(GameEventType.CompleteDialogue, "testDialo g09"));
+                HLoadScriptManager.Instance.BroadcastMessageToAll(new GameMessage(GameEventType.CompleteDialogue, "testDialo g09"));
                 YPlayModeController.Instance.LockPlayerInput(false);
                 YTriggerEvents.RaiseOnMouseLeftShoot(true);
                 YPlayModeController.Instance.LockEveryInputKey = false;
@@ -371,6 +374,7 @@ public class HDialogSystemMgr : MonoBehaviour
     
     public void GenerateOptionButtonFromGraph(List<NodePort> connectedPorts)
     {
+        nextButton.gameObject.SetActive(false);
         for (int i = 0; i < connectedPorts.Count; i++)
         {
             GameObject button = Instantiate(optionButton, buttonGroup);

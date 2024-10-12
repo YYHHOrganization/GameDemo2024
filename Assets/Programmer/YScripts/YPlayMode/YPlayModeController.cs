@@ -222,6 +222,11 @@ public class YPlayModeController : MonoBehaviour
 
         // testCharacterShoot.thirdAimCamera.gameObject.SetActive(false);
         thirdAimCamera.gameObject.SetActive(false);
+        if (yPlanningTable.Instance.gameObject.GetComponent<RogueGameNpcMgr>() == null)
+        {
+            yPlanningTable.Instance.gameObject.AddComponent<RogueGameNpcMgr>();
+        }
+        
         //如果当前关卡是第3个关卡
         if (curLevelID == 2 || curLevelID == 3) 
         {
@@ -258,7 +263,6 @@ public class YPlayModeController : MonoBehaviour
             gameRoot.AddComponent<HRogueDamageCalculator>();
             //添加一个WorldUIManager在Root上
             gameRoot.AddComponent<HWorldUIShowManager>();
-            gameRoot.AddComponent<RogueGameNpcMgr>();
         }
         else
         {

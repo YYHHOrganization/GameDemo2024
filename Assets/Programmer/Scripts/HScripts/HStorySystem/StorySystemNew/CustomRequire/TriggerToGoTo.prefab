@@ -24554,6 +24554,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8639172354984633639}
+  - component: {fileID: 2630830130224189355}
   - component: {fileID: 5476704085486240841}
   - component: {fileID: 29836615223074761}
   - component: {fileID: 2049327339061470985}
@@ -24585,6 +24586,18 @@ Transform:
   - {fileID: 6988997774604119329}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2630830130224189355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062265120179817596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73368aacb76c17745b0996587a7338d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!198 &5476704085486240841
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -24593,7 +24606,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5062265120179817596}
   serializedVersion: 8
-  lengthInSec: 1
+  lengthInSec: 50
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -24668,7 +24681,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 3
+      scalar: 50
       minScalar: 0.7
       maxCurve:
         serializedVersion: 2
@@ -29471,8 +29484,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 17.721598, y: 17.721598, z: 17.721598}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 12.404416, y: 17.721598, z: 10.682347}
+  m_Center: {x: 0.70280075, y: 0, z: 0.024433136}
 --- !u!1 &8142633491853868094
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ public class MissonSystemNodeMgr : MonoBehaviour
     public NodeGraph graph;
     private Node firstMissionNode;
     public Node currentNode;
-
+    public MissionManager<GameMessage> MissionManager = new MissionManager<GameMessage>();
     private void FindFirstMisson()
     {
         if (firstMissionNode==null)
@@ -32,7 +32,7 @@ public class MissonSystemNodeMgr : MonoBehaviour
         YSpecialMapTutorial ySpecialMapTutorial = FindObjectOfType<YSpecialMapTutorial>();
         if (ySpecialMapTutorial)
         {
-            ySpecialMapTutorial.SummonEnemyForMission(count);
+            ySpecialMapTutorial.SummonEnemyForMission(count + 3);
         }
     }
 
@@ -57,7 +57,10 @@ public class MissonSystemNodeMgr : MonoBehaviour
             {
                 case GameEventType.KillEnemy:
                     missionRequire = new KillEnemyRequire(gameEventType, count, args);
-                    SummonEnemyForMission(count);
+                    if (HLoadScriptManager.Instance.isInTutorial)
+                    {
+                        SummonEnemyForMission(count);
+                    }
                     break;
                 case GameEventType.GotoSomewhere:
                     // 在args对应的位置(类似于225.6;3.03;-225.03，需要解析)生成一个Trigger，挂载一个脚本，OnTriggerEnter的时候触发新任务
@@ -124,7 +127,8 @@ public class MissonSystemNodeMgr : MonoBehaviour
         {
             MissionPrototype<GameMessage> firstMission = GenerateMission(firstMissionNode);
             if (firstMission == null) return;
-            GameAPI.StartMission(firstMission);
+            //GameAPI.StartMission(firstMission);
+            MissionManager.StartMission(firstMission);
         }
     }
 
@@ -141,7 +145,8 @@ public class MissonSystemNodeMgr : MonoBehaviour
                 currentNode = graph.nodes[toId];
                 MissionPrototype<GameMessage> nextMission = GenerateMission(currentNode);
                 if (nextMission == null) return;
-                GameAPI.StartMission(nextMission);
+                //GameAPI.StartMission(nextMission);
+                MissionManager.StartMission(nextMission);
             }
             
             //额外的情况，不是success，有剧情的choose分支
@@ -158,7 +163,8 @@ public class MissonSystemNodeMgr : MonoBehaviour
                     currentNode = graph.nodes[toId];
                     MissionPrototype<GameMessage> nextMission = GenerateMission(currentNode);
                     if (nextMission == null) return;
-                    GameAPI.StartMission(nextMission);
+                    //GameAPI.StartMission(nextMission);
+                    MissionManager.StartMission(nextMission);
                 }
             }
         }
