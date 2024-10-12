@@ -119,6 +119,9 @@ public class YRecallSkill : MonoBehaviour
         beginDetect = true;
 
         //然后如果点击的话，那个玩意就回溯
+        
+        //UI上显示“等待鼠标点击选择”
+        countDownUI.showChooseRecalllUI(true);
     }
     // 如果射线与物体相交
     YRecallable preRecallable=null;
@@ -314,6 +317,9 @@ public class YRecallSkill : MonoBehaviour
             (feature, false);
         
         isRecalling = false;
+        
+        //UI上显示“等待鼠标点击选择”的UI消失
+        countDownUI.showChooseRecalllUI(false);
         
     }
 

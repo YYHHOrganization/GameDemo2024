@@ -48,8 +48,8 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     private string chaseBulletPrefabLink;
     private GameObject chaseBulletPrefab;
 
-    private float wanderMaxStopTime = 2f;
-    private float wanderMaxMoveTime = 10f;
+    protected float wanderMaxStopTime = 2f;
+    protected float wanderMaxMoveTime = 10f;
     public float jumpStopMaxInterval = 2f;
     public float maxJumpHeight = 2f;
     
@@ -67,10 +67,10 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
 
     # endregion
 
-    private int isWalkingHash;
-    private int isAttackingHash;
-    private int isDeadHash;
-    private int isGetHitHash;
+    protected  int isWalkingHash;
+    protected  int isAttackingHash;
+    protected  int isDeadHash;
+    protected  int isGetHitHash;
     public int IsAttackingHash => isAttackingHash;
     private Transform shootOrigin;
     protected int maxHealth;
@@ -135,13 +135,14 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     }
     
 
-    private void InitStateMachine()
+    protected virtual void InitStateMachine()
     {
         var states = new Dictionary<Type, HRogueEnemyBaseState>
         {
             { typeof(HRogueEnemyCommonWanderState), new HRogueEnemyCommonWanderState(this) },
             { typeof(HRogueEnemyCommonChaseState), new HRogueEnemyCommonChaseState(this)},
             {typeof(HRogueEnemyCommonBeFrozenState), new HRogueEnemyCommonBeFrozenState(this)}
+            
 
         };
         GetComponent<HRogueEnemyCommonStateMachine>().SetStates(states);
@@ -187,6 +188,11 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
     {
         // 不走Nev Mesh系统，直接随机游走，这里可以配置怪物的移动速度，移动范围等，当然会和场景碰撞箱自动做碰撞检测
         StartCoroutine(WanderAndStopRandomly());
+    }
+
+    public virtual void Fly()
+    {
+        //怪物起飞
     }
 
     public void SetFrozen(float frozenTime)
@@ -250,7 +256,7 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         bodyOri.SetActive(true);
         Destroy(bodyCopy);
     }
-    private bool isMoving = true;
+    protected bool isMoving = true;
 
     IEnumerator WanderAndStopRandomly()
     {
@@ -445,15 +451,22 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         HRogueCameraManager.Instance.ShakeCamera(15f, 0.1f);
         DisintegrateDissolveVFX.SetActive(true);
         DieExplosionEff.SetActive(true);
-        transform.DOScale(0.01f, 0.8f).SetEase(Ease.InExpo).onComplete = () =>
-        {
-            Destroy(this.gameObject, 1f);
-        };
+
+        DieShowEff();
+        
         
         // OnDie?.Invoke();
         OnDie?.Invoke(gameObject);
     }
-    
+
+    protected virtual void DieShowEff()
+    {
+        transform.DOScale(0.01f, 0.8f).SetEase(Ease.InExpo).onComplete = () =>
+        {
+            Destroy(this.gameObject, 1f);
+        };
+    }
+
     //这里往后来写一些射击子弹的逻辑
     public IEnumerator ShootCircle()
     {
