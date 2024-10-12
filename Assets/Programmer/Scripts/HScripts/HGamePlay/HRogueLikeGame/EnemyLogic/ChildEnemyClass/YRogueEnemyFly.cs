@@ -72,4 +72,15 @@ public class YRogueEnemyFly : HRogueEnemyPatrolAI
         }
     }
 
+    protected override void DieShowEff()
+    {
+        transform.DOScale(0.01f, 1f).SetEase(Ease.InExpo).onComplete = () =>
+        {
+            Destroy(this.gameObject, 1f);
+        };
+        //往相反方向飞出去
+        //开启重力
+        GetComponent<Rigidbody>().useGravity = true;
+        
+    }
 }

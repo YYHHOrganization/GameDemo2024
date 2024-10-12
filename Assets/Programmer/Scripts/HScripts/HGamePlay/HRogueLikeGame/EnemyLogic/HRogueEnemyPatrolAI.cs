@@ -449,15 +449,22 @@ public class HRogueEnemyPatrolAI : MonoBehaviour
         HRogueCameraManager.Instance.ShakeCamera(15f, 0.1f);
         DisintegrateDissolveVFX.SetActive(true);
         DieExplosionEff.SetActive(true);
-        transform.DOScale(0.01f, 0.8f).SetEase(Ease.InExpo).onComplete = () =>
-        {
-            Destroy(this.gameObject, 1f);
-        };
+
+        DieShowEff();
+        
         
         // OnDie?.Invoke();
         OnDie?.Invoke(gameObject);
     }
-    
+
+    protected virtual void DieShowEff()
+    {
+        transform.DOScale(0.01f, 0.8f).SetEase(Ease.InExpo).onComplete = () =>
+        {
+            Destroy(this.gameObject, 1f);
+        };
+    }
+
     //这里往后来写一些射击子弹的逻辑
     public IEnumerator ShootCircle()
     {
