@@ -27,6 +27,7 @@ public class YObjectPool : YSingleTemplate<YObjectPool>
         CreateSubPool("33300004");
         CreateSubPool("33300005");
         CreateSubPool("33310000");
+        CreateSubPool("33310003");//这个是篮球
     }
 
     //取对象

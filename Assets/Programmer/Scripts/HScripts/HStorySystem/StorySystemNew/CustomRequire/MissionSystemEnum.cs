@@ -10,6 +10,7 @@ public enum GameEventType
     KillEnemy,
     GotoSomewhere,
     BreakItem,
+    ShowTutorial,
     // more behaviors...
 }
 

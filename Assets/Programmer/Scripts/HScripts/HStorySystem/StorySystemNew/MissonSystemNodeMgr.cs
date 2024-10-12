@@ -77,6 +77,10 @@ public class MissonSystemNodeMgr : MonoBehaviour
                 case GameEventType.CompleteDialogue:  //完成对话对应的任务
                     missionRequire = new KillEnemyRequire(gameEventType, count, args);
                     break;
+                case GameEventType.ShowTutorial:
+                    missionRequire = new ReadTutorialRequire(gameEventType, args);
+                    HMessageShowMgr.Instance.ShowMessage(args);
+                    break;
                 default:
                     missionRequire = new KillEnemyRequire(gameEventType, count, args);
                     break;
@@ -113,6 +117,15 @@ public class MissonSystemNodeMgr : MonoBehaviour
                     {
                         GetToNextMission(true);
                     });
+                    break;
+                case UsefulMissionFuncNode.MissionSystemFuncEnum.ShowMessage:
+                    int a1 = (int)funcNode.args1;  //2;TutorialName
+                    string tutorialName = funcNode.args2;
+                    if (a1 == 2 )
+                    {
+                        HMessageShowMgr.Instance.ShowMessage(tutorialName);
+                    }
+                    GetToNextMission(true);
                     break;
             }
         }

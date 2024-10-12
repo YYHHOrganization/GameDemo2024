@@ -16,6 +16,9 @@ public class YCountDownUI : MonoBehaviour
     
     public float skillLastTime;  //技能的持续时间
     Coroutine countDownCoroutine;
+    
+    GameObject chooseRecallUI;
+    GameObject stopRecallUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,11 +29,28 @@ public class YCountDownUI : MonoBehaviour
         
         countDownText = countDownUI.GetComponentInChildren<TMP_Text>();
         countDownImage = countDownUI.transform.Find("skillIcon").GetComponent<Image>();
+        stopRecallUI = countDownUI.transform.Find("StopRecallUI").gameObject;
+        stopRecallUI.SetActive(false);
+        
         SetCountDownTickUI(false);
+        
+        chooseRecallUI = countDownUI.transform.Find("ChooseRecallUI").gameObject;
+        chooseRecallUI.SetActive(false);
     }
+    
+    public void showChooseRecalllUI(bool isshow)
+    {
+        chooseRecallUI.SetActive(isshow);
+    }
+    
     
     void SetCountDownTickUI(bool isShow)
     {
+        if (isShow == true)
+        {
+            showChooseRecalllUI(false);
+        }
+        stopRecallUI.SetActive(isShow);
         countDownText.gameObject.SetActive(isShow);
         countDownImage.gameObject.SetActive(isShow);
     }

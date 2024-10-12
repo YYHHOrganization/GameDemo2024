@@ -35,6 +35,39 @@ public class GotoSomewhereRequire : MissionRequire<GameMessage>
         message.type == type && message.args?.ToString() == args;
 }
 
+public class ReadTutorialRequire : MissionRequire<GameMessage>
+{
+    [SerializeField] private GameEventType type;
+    [SerializeField] private string args;
+    public class Handle : MissionRequireHandle<GameMessage>
+    {
+        private readonly ReadTutorialRequire require;
+        public bool isArrived;
+        
+        public Handle(ReadTutorialRequire exampleRequire) : base(exampleRequire)
+        {
+            require = exampleRequire;
+        }
+        
+        protected override bool UseMessage(GameMessage message)
+        {
+            return true; //说明已经到达目的地了，return true即可
+        }
+
+        public override string ToString() =>
+            isArrived.ToString();
+    }
+    
+    public ReadTutorialRequire(GameEventType type, string args)
+    {
+        this.type = type;
+        this.args = args;
+    }
+    
+    public override bool CheckMessage(GameMessage message) =>
+        message.type == type && message.args?.ToString() == args;
+}
+
 public class KillEnemyRequire : MissionRequire<GameMessage>
 {
     [SerializeField] private GameEventType type;

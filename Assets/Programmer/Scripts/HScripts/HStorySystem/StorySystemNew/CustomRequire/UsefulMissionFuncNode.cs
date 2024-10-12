@@ -12,9 +12,11 @@ public class UsefulMissionFuncNode : Node {
 	public enum MissionSystemFuncEnum
 	{
 		DelayCall,
+		ShowMessage,
 	}
 
 	public float args1 = 0;
+	public string args2 = "";
 	
 	protected override void Init() {
 		base.Init();
