@@ -129,11 +129,24 @@ public class HEnemyBulletMoveBomb : HEnemyBulletMoveBase
                     return;//这里不需要传递伤害，因为敌人已经死了，特指蜘蛛怪
                     //todo:写一个伤害的函数
                 }
+                
+                // 检查是否是YRogueEnemyFly类型，继承于HRogueEnemyPatrolAI
+                YRogueEnemyFly flyingEnemy = co.gameObject.GetComponentInParent<YRogueEnemyFly>();
+    
+                if (flyingEnemy != null) // 如果是飞行敌人
+                {
+                    // 额外造成-100的死亡伤害 相当于如果是飞行敌人 直接死掉
+                    flyingEnemy.ChangeHealth(-100); 
+                    return;
+                }
+                
                 HRogueEnemyPatrolAI enemyPatrolAI = co.gameObject.GetComponentInParent<HRogueEnemyPatrolAI>();
                 if (enemyPatrolAI == null)
                 {
                     enemyPatrolAI = co.gameObject.GetComponent<HRogueEnemyPatrolAI>();
                 }
+                //如果是飞行的物体，那么会额外造成死亡的伤害比如-100， YRogueEnemyFly继承于HRogueEnemyPatrolAI
+                
                 if (enemyPatrolAI != null)
                 {
                     enemyPatrolAI.ChangeHealth(-bulletDamage);
