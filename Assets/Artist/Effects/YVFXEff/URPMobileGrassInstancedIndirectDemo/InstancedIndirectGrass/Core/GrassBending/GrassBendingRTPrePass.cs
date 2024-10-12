@@ -98,6 +98,7 @@ public class GrassBendingRTPrePass : ScriptableRendererFeature
 
         // Configures where the render pass should be injected.
         m_ScriptablePass.renderPassEvent = RenderPassEvent.AfterRenderingPrePasses; //don't do RT switch when rendering _CameraColorTexture, so use AfterRenderingPrePasses
+        //m_ScriptablePass.renderPassEvent = RenderPassEvent.AfterRenderingSkybox; //use AfterRenderingSkybox to make sure the RT is ready before rendering grass
     }
 
     // Here you can inject one or multiple render passes in the renderer.
