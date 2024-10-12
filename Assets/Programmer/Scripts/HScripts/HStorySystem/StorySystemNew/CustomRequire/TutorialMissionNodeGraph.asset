@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Name: Simple Misson
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 1848, y: -216}
+  position: {x: 2456, y: -120}
   ports:
     keys:
     - forwardMission
@@ -204,7 +204,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
       connections:
       - fieldName: success
-        node: {fileID: 1769937547920546587}
+        node: {fileID: -3148811492343972691}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -364,6 +364,54 @@ MonoBehaviour:
   isStartMission: 0
   missionName: "\u5230\u8FBE\u5149\u5708\u6240\u5728\u7684\u4F4D\u7F6E"
   args: 209.49;1.45;-225.03
+--- !u!114 &-3148811492343972691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d24694896950643ad78b8cf46a7c84, type: 3}
+  m_Name: Useful Mission Func
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 2104, y: -8}
+  ports:
+    keys:
+    - forwardMission
+    - success
+    values:
+    - _fieldName: forwardMission
+      _node: {fileID: -3148811492343972691}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: success
+        node: {fileID: 1769937547920546587}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: success
+      _node: {fileID: -3148811492343972691}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: forwardMission
+        node: {fileID: -5705885208515549484}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  forwardMission: 0
+  success: 0
+  funcEnum: 2
+  args1: 0
+  args2: YBasketballHoopTestRecall
 --- !u!114 &-1972300816167024181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -453,6 +501,7 @@ MonoBehaviour:
   - {fileID: -6576368258937525413}
   - {fileID: -5705885208515549484}
   - {fileID: 1769937547920546587}
+  - {fileID: -3148811492343972691}
 --- !u!114 &1769937547920546587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,7 +515,7 @@ MonoBehaviour:
   m_Name: Useful Mission Func
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 1576, y: -152}
+  position: {x: 1576, y: -184}
   ports:
     keys:
     - forwardMission
@@ -490,7 +539,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
       connections:
       - fieldName: forwardMission
-        node: {fileID: -5705885208515549484}
+        node: {fileID: -3148811492343972691}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -757,5 +806,5 @@ MonoBehaviour:
   gameEventType: 3
   m_childGraph: {fileID: 11400000, guid: b011e2588e86e0e48aa76b75db155b79, type: 2}
   taskName: "\u548C\u4EBA\u7269\u5BF9\u8BDD"
-  storyEndingId: 2
+  storyEndingId: 1
   NpcID: 10001
