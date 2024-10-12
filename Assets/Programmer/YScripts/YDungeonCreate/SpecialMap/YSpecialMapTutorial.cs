@@ -34,13 +34,13 @@ public class YSpecialMapTutorial : MonoBehaviour
     {
         //创建一个新的enemyBornPlace，空物体即可，和enemyBornPlace的位置一样
         //Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
-        GameObject enemyInstance = Instantiate(enemy, enemyBornPlace);
+        GameObject enemyInstance = Instantiate(enemy, enemyBornPlace.position, Quaternion.identity, enemyBornPlace);
         enemyInstance.transform.localPosition = new Vector3(0, 5, 0);
         for (int i = 0; i < summonCnt - 1; i++)
         {
             DOVirtual.DelayedCall(3f, () =>
             {
-                GameObject enemyInstance2 = Instantiate(enemy, enemyBornPlace);
+                GameObject enemyInstance2 = Instantiate(enemy, enemyBornPlace.position, Quaternion.identity, enemyBornPlace);
                 enemyInstance2.transform.localPosition = new Vector3(0, 5, 0);
             });
 
