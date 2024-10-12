@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
@@ -67,11 +68,35 @@ public class YLoadPanel : BasePanel
         enterGameButton.gameObject.SetActive(true);
         enterGameButton.onClick.AddListener(()=>
         {
-            Pop();
-            panelManager.Push(new StartPanel());
-            Debug.Log("点击了开始游戏按钮");
-            GameObject.Destroy(loadGamePlace, 1f);
+            HMessageShowMgr.Instance.ShowMessageWithActions("CONFIRM_MIHOYO_GAME", ConfirmMihoyo, CancelMihoyo, CancelMihoyo);
         });
+    }
+
+    private void ConfirmMihoyo()
+    {
+        yPlanningTable.Instance.isMihoyo = true;
+        StartRealGameWithOption();
+    }
+    
+    private void CancelMihoyo()
+    {
+        yPlanningTable.Instance.isMihoyo = false;
+        StartRealGameWithOption();
+    }
+
+    private void StartRealGameWithOption()
+    {
+        // Pop();
+        // panelManager.Push(new StartPanel());
+        // Debug.Log("点击了开始游戏按钮");
+        // GameObject.Destroy(loadGamePlace, 1f);  //以上四行是原来的流程
+        
+        Pop();
+        YLevelManager.JustSetCurrentLevelIndex(0);
+        yPlanningTable.Instance.EnterNewLevel(0);
+        //Push(new YLevelPanel(0));//游玩模式 //这是现在的流程
+        YPlayModeController.Instance.StartGameAndSet(10,""); //暂时先写死，是我们的主角在场景里
+        GameObject.Destroy(loadGamePlace, 1f);  
     }
     
     void Loadend(object sender, YTriggerEventArgs e)

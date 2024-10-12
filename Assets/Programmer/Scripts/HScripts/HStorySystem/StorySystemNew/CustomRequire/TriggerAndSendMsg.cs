@@ -11,7 +11,8 @@ public class TriggerAndSendMsg : MonoBehaviour
         if(hasEntered) return;
         if (other.CompareTag("Player"))
         {
-            GameAPI.Broadcast(new GameMessage(GameEventType.GotoSomewhere, "true"));
+            //GameAPI.Broadcast(new GameMessage(GameEventType.GotoSomewhere, "true"));
+            HLoadScriptManager.Instance.BroadcastMessageToAll(new GameMessage(GameEventType.GotoSomewhere, "true"));
             hasEntered = true;
             Destroy(this.gameObject, 3f);
         }

@@ -68,6 +68,39 @@ public class YPlayModeController : MonoBehaviour
     public GameObject curCharacter;
     private GameObject FreeLookCamera;
     GameObject PlayerCamera;
+    
+    public void ClearPlayerRelativeAssets()
+    {
+        //清除玩家的相关资源, 比如已经在场景当中的player
+        if (curCharacter)
+        {
+            Destroy(curCharacter);
+        }
+        if (FreeLookCamera)
+        {
+            Destroy(FreeLookCamera);
+        }
+        if (PlayerCamera)
+        {
+            Destroy(PlayerCamera);
+        }
+        if (CameraLayoutManager)
+        {
+            Destroy(CameraLayoutManager.gameObject);
+        }
+        // if (PuppetCamera)
+        // {
+        //     Destroy(PuppetCamera);
+        // }
+        if (catCakeList.Count > 0)
+        {
+            foreach (var catCake in catCakeList)
+            {
+                Destroy(catCake);
+            }
+            catCakeList.Clear();
+        }
+    }
 
     private bool lockEveryInputKey = false;
     public bool LockEveryInputKey
@@ -189,6 +222,11 @@ public class YPlayModeController : MonoBehaviour
 
         // testCharacterShoot.thirdAimCamera.gameObject.SetActive(false);
         thirdAimCamera.gameObject.SetActive(false);
+        if (yPlanningTable.Instance.gameObject.GetComponent<RogueGameNpcMgr>() == null)
+        {
+            yPlanningTable.Instance.gameObject.AddComponent<RogueGameNpcMgr>();
+        }
+        
         //如果当前关卡是第3个关卡
         if (curLevelID == 2 || curLevelID == 3) 
         {
@@ -225,7 +263,6 @@ public class YPlayModeController : MonoBehaviour
             gameRoot.AddComponent<HRogueDamageCalculator>();
             //添加一个WorldUIManager在Root上
             gameRoot.AddComponent<HWorldUIShowManager>();
-            gameRoot.AddComponent<RogueGameNpcMgr>();
         }
         else
         {
@@ -241,6 +278,7 @@ public class YPlayModeController : MonoBehaviour
 
     public void LockPlayerInput(bool shouldLock) 
     {
+        if(!playerStateMachine) return;
         //YTriggerEvents.RaiseOnMouseLockStateChanged(!shouldLock);//视角lock 鼠标应该出现
         
         //curCharacter.GetComponent<HPlayerStateMachine>().SetInputActionDisableOrEnable(shouldLock);

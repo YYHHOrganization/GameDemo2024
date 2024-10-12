@@ -58,6 +58,7 @@ public class NPCDialogMgr : MonoBehaviour
         if (missionShowUI)
         {
             missionShowUI.gameObject.SetActive(false);
+            //missionShowUI.transform.parent.parent.gameObject.SetActive(false);
         }
         isDialogFinish = true;
     }

@@ -133,9 +133,9 @@ public static class YLevelManager
     
     public static void LoadAndBeginLevel()
     {
-        #if BUILD_MODE
-            currentLevelIndex = 3;
-        #endif
+        // #if BUILD_MODE
+        //     currentLevelIndex = 3;
+        // #endif
         string levelName = levelnames[currentLevelIndex];
         int levelID = currentLevelIndex;
         //如果点击新的关卡
@@ -155,6 +155,11 @@ public static class YLevelManager
     {
         currentLevelIndex = index;
         mpanel.SetCurLevel(index);
+    }
+    
+    public static void JustSetCurrentLevelIndex(int index)
+    {
+        currentLevelIndex = index;
     }
 
     public static int GetCurrentLevelIndex()

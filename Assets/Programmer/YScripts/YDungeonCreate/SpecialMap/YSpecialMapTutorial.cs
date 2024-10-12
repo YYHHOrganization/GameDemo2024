@@ -20,7 +20,7 @@ public class YSpecialMapTutorial : MonoBehaviour
     public void playerEnterTutorial()
     {
         
-        
+        HLoadScriptManager.Instance.isInTutorial = true;
         GameObject tutorialPanel = Addressables.LoadAssetAsync<GameObject>(addLink).WaitForCompletion();
         //寻找并挂在Canvas下
         
@@ -49,6 +49,7 @@ public class YSpecialMapTutorial : MonoBehaviour
     }
     public void playerExitTutorial()
     {
+        HLoadScriptManager.Instance.isInTutorial = false;
         Destroy(tutorialPanelInstance);
     }
     
