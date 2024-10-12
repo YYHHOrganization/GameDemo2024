@@ -32,7 +32,7 @@ public class MissonSystemNodeMgr : MonoBehaviour
         YSpecialMapTutorial ySpecialMapTutorial = FindObjectOfType<YSpecialMapTutorial>();
         if (ySpecialMapTutorial)
         {
-            ySpecialMapTutorial.SummonEnemyForMission(count + 3);
+            ySpecialMapTutorial.SummonEnemyForMission(count + 5);
         }
     }
 

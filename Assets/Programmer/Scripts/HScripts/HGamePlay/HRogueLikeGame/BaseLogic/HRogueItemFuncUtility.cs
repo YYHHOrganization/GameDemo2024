@@ -140,6 +140,7 @@ public class HRogueItemFuncUtility : MonoBehaviour
     }
     public void ResetTimeScale()
     {
+        if (nowTimeScale < 1) nowTimeScale = 1;
         Time.timeScale = nowTimeScale;
     }
     private void PikaChongdianCharge(string funcParams)
