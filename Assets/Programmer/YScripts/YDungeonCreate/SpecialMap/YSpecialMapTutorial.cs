@@ -12,10 +12,12 @@ public class YSpecialMapTutorial : MonoBehaviour
     private string addLink = "TutorialPanelMoveHit";
     Transform canvas;
     GameObject tutorialPanelInstance;
+    private GameObject enemy;
     private void Awake()
     {
         canvas = GameObject.Find("Canvas").transform;
         portalToSomeWhere_ExitPortal.OnPlayerPortal += playerExitTutorial;
+        enemy = Addressables.InstantiateAsync("SlimeVeryCommonNoMove").WaitForCompletion();
     }
     public void playerEnterTutorial()
     {
@@ -30,7 +32,6 @@ public class YSpecialMapTutorial : MonoBehaviour
 
     public void SummonEnemyForMission(int summonCnt)
     {
-        GameObject enemy = Addressables.InstantiateAsync("SlimeVeryCommonNoMove").WaitForCompletion();
         //创建一个新的enemyBornPlace，空物体即可，和enemyBornPlace的位置一样
         //Transform player = HRoguePlayerAttributeAndItemManager.Instance.GetPlayer().transform;
         GameObject enemyInstance = Instantiate(enemy, enemyBornPlace);

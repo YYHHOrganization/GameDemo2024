@@ -20,6 +20,6 @@ public class ChangeTimeScaleItem : HRogueItemBase
         DOVirtual.DelayedCall(duration, () =>
         {
             HRogueItemFuncUtility.Instance.ResetTimeScale();
-        });
+        }).SetUpdate(true);
     }
 }
