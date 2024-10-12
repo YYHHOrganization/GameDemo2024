@@ -17,7 +17,7 @@ public class YSpecialMapTutorial : MonoBehaviour
     {
         canvas = GameObject.Find("Canvas").transform;
         portalToSomeWhere_ExitPortal.OnPlayerPortal += playerExitTutorial;
-        enemy = Addressables.InstantiateAsync("SlimeVeryCommonNoMove").WaitForCompletion();
+        enemy = Addressables.LoadAssetAsync<GameObject>("SlimeVeryCommonNoMove").WaitForCompletion();
     }
     public void playerEnterTutorial()
     {

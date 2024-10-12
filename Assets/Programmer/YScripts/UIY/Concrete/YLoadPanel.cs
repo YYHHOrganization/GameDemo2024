@@ -68,6 +68,8 @@ public class YLoadPanel : BasePanel
         enterGameButton.gameObject.SetActive(true);
         enterGameButton.onClick.AddListener(()=>
         {
+            if (isInGame) return;
+            isInGame = true;
             HMessageShowMgr.Instance.ShowMessageWithActions("CONFIRM_MIHOYO_GAME", ConfirmMihoyo, CancelMihoyo, CancelMihoyo);
         });
     }
@@ -84,13 +86,13 @@ public class YLoadPanel : BasePanel
         StartRealGameWithOption();
     }
 
+    private bool isInGame = false;
     private void StartRealGameWithOption()
     {
         // Pop();
         // panelManager.Push(new StartPanel());
         // Debug.Log("点击了开始游戏按钮");
         // GameObject.Destroy(loadGamePlace, 1f);  //以上四行是原来的流程
-        
         Pop();
         YLevelManager.JustSetCurrentLevelIndex(0);
         yPlanningTable.Instance.EnterNewLevel(0);
