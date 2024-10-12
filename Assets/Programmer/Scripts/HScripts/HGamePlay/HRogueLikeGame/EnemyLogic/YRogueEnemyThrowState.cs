@@ -18,6 +18,12 @@ public class YRogueEnemyThrowState : HRogueEnemyBaseState
     {
         if (mPatrolAI.isDead)
             return null;
+        if(mPatrolAI.mTarget != null)
+        {
+            mPatrolAI.transform.LookAt(mPatrolAI.mTarget);
+        }
+        
+        
         // if(mPatrolAI.mNavMeshAgent == null || mPatrolAI.mNavMeshAgent.enabled == false)
         //     return null;
         // mPatrolAI.mNavMeshAgent.destination = mPatrolAI.mTarget.position;
@@ -58,6 +64,11 @@ public class YRogueEnemyThrowState : HRogueEnemyBaseState
     //enter
     public override void OnStateEnter()
     {
+        //怪物面向角色
+        if(mPatrolAI.mTarget != null)
+        {
+            mPatrolAI.transform.LookAt(mPatrolAI.mTarget);
+        }
         
         // return;
         if (mPatrolAI.chaseType == RogueEnemyChaseType.DontMove)

@@ -21,7 +21,7 @@ public class Class_BattleRoomCSVFile {
 		string value = EnemyIDField;
 		return value;
 	}
-	public string EnemyCountField { get; set; }    //怪物个数/对应前面那个/0.4;9.15的意思是这种怪可能会出现从0-4的个数
+	public string EnemyCountField { get; set; }    //怪物个数/对应前面那个/0.4;9.15的意思是这种怪可能会出现从0-4的个数;绝对不可以全都是从0开始否则可能真的都没有怪 会有bug
 	  public string _EnemyCountField (){
 		string value = EnemyCountField;
 		return value;
@@ -31,7 +31,7 @@ public class Class_BattleRoomCSVFile {
 		string value = DropItemIDField;
 		return value;
 	}
-	public string DropItemIDProbabilityField { get; set; }    //有概率掉落的道具，也可能不掉
+	public string DropItemIDProbabilityField { get; set; }    //有概率掉落道具的概率，也可能不掉
 	  public string _DropItemIDProbabilityField (){
 		string value = DropItemIDProbabilityField;
 		return value;
