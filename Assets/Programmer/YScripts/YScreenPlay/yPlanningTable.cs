@@ -78,6 +78,7 @@ public class yPlanningTable : MonoBehaviour
     public List<List<int>> postEffectShouldLerp = new List<List<int>>();
     //存储特效的结构体
     public bool isCultural = false;
+    public bool isMihoyo = false;
     public struct PostEffectStruct
     {
         public string effectName;

@@ -43,7 +43,8 @@ public class YRecallSkill : MonoBehaviour
         countDownUI.skillLastTime = duration ;
 
         GameObject YRecallLightHandVFXGO = Addressables.InstantiateAsync(YRecallLightHandVFXAddLink).WaitForCompletion();
-        YRecallLightHandVFX = Instantiate(YRecallLightHandVFXGO);
+        YRecallLightHandVFX = YRecallLightHandVFXGO;
+        YRecallLightHandVFX.transform.position += new Vector3(0, -100, 0);
         
         YTriggerEvents.OnLoadEndAndBeginPlay += LoadEndAndBeginPlay;
         //playerInput.CharacterControls.Skill2.started +=context =>  BeginRecallSkill();

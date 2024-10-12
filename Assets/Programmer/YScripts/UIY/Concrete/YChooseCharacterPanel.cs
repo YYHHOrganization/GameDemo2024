@@ -40,7 +40,20 @@ public class YChooseCharacterPanel : BasePanel
     }
     GameObject CharacterScrollView;
     GameObject CatcakeScrollView;
-    
+
+    private void ShowCharactersWithMihoyoOptions()
+    {
+        if (yPlanningTable.Instance.isMihoyo)
+        {
+            Transform content = CharacterScrollView.transform.Find("Viewport/Content");
+            //把CharacterScrollView下面所有的子物体都SetActiveTrue
+            for (int i = 0; i < content.transform.childCount; i++)
+            {
+                if(content.transform.GetChild(i).gameObject.activeSelf==false && content.transform.GetChild(i).gameObject.name.Contains("CharacterButton"))
+                    content.transform.GetChild(i).gameObject.SetActive(true);
+            }
+        }
+    }
     
     public override void OnEnter()
     {
@@ -50,6 +63,8 @@ public class YChooseCharacterPanel : BasePanel
         
         CharacterScrollView = uiTool.GetOrAddComponentInChilden<Transform>("CharacterScrollView").gameObject;
         CatcakeScrollView = uiTool.GetOrAddComponentInChilden<Transform>("CatcakeScrollView").gameObject;
+
+        ShowCharactersWithMihoyoOptions();
         
         uiTool.GetOrAddComponentInChilden<Button>("SelectCharacterButton").onClick.AddListener(() =>
         {

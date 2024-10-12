@@ -241,6 +241,7 @@ public class YPlayModeController : MonoBehaviour
 
     public void LockPlayerInput(bool shouldLock) 
     {
+        if(!playerStateMachine) return;
         //YTriggerEvents.RaiseOnMouseLockStateChanged(!shouldLock);//视角lock 鼠标应该出现
         
         //curCharacter.GetComponent<HPlayerStateMachine>().SetInputActionDisableOrEnable(shouldLock);
