@@ -127,6 +127,11 @@ public class MissonSystemNodeMgr : MonoBehaviour
                     }
                     GetToNextMission(true);
                     break;
+                case UsefulMissionFuncNode.MissionSystemFuncEnum.GenerateAddressableLink:
+                    int GenerateAddressableLink_a1 = (int)funcNode.args1;  //2;TutorialName
+                    string GenerateAddressableLink = funcNode.args2;
+                    GameObject prefabFromAddressable = Addressables.InstantiateAsync(GenerateAddressableLink).WaitForCompletion();
+                    break;
             }
         }
 

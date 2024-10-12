@@ -13,6 +13,7 @@ public class UsefulMissionFuncNode : Node {
 	{
 		DelayCall,
 		ShowMessage,
+		GenerateAddressableLink,
 	}
 
 	public float args1 = 0;
