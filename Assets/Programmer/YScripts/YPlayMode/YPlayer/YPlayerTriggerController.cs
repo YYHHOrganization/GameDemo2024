@@ -14,7 +14,11 @@ public class YPlayerTriggerController : MonoBehaviour
             //然后应该开启点击F键可以交互的事件
             //然后监听是否点击F  如果点击了F  就应该调用交互事件 这里要传入other 获取他上面的东西
 
-            other.GetComponent<YTriggerTagUnit>().OnEnterField(true);
+            if (other.GetComponent<YTriggerTagUnit>())
+            {
+                other.GetComponent<YTriggerTagUnit>().OnEnterField(true);
+            }
+            
             
 
             //为了测试我们直接假设点击了F键

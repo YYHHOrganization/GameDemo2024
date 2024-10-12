@@ -23,9 +23,16 @@ public class HEnterRogueGame : MonoBehaviour
         }
     }
 
+    private void ClearPlayerRelativeAssets()
+    {
+        //清除玩家的相关资源, 比如已经在场景当中的player
+        YPlayModeController.Instance.ClearPlayerRelativeAssets();
+    }
+
     private void TriggerPanelToRogueGame()
     {
         //打开选择角色的界面
+        ClearPlayerRelativeAssets();
         YLevelManager.JustSetCurrentLevelIndex(3);
         yPlanningTable.Instance.EnterNewLevel(3);
         YGameRoot.Instance.Push(new YChooseCharacterPanel());

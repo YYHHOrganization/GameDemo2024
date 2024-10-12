@@ -39,14 +39,14 @@ public class QiaoguanziGameLogic : MonoBehaviour
         var requires = new MissionRequire<GameMessage>[] { missionRequire };
         var reward = new TriggerMissionExample.RewardXingqiong();
         var rewards = new MissionReward[] { reward };
-        var missionProto = new MissionPrototype<GameMessage>("限时敲罐子", requires, rewards);
+        var missionProto = new MissionPrototype<GameMessage>("限时敲罐子:15s", requires, rewards);
         return missionProto;
     }
 
     private void MissionFailed()
     {
         HMessageShowMgr.Instance.ShowMessage("LEVEL_IN_MSG_0", "任务失败");
-        MissionManager.RemoveMission("限时敲罐子");
+        MissionManager.RemoveMission("限时敲罐子:15s");
     }
 
     private void StartMission()
@@ -57,7 +57,8 @@ public class QiaoguanziGameLogic : MonoBehaviour
         HLoadScriptManager.Instance.AddOrReplaceMissionManager("QiaoguanziGame", MissionManager);
         MissionManager.AddComponent(new MissionLogger());
         MissionManager.StartMission(missionProto);
-        HMessageShowMgr.Instance.ShowTickMessage("限时敲罐子任务开始，15s内敲碎10个罐子", 15,MissionFailed);
+        //HMessageShowMgr.Instance.ShowTickMessage("限时敲罐子任务开始，15s内敲碎10个罐子", 15,MissionFailed);
+        HMessageShowMgr.Instance.ShowMessage("QIAOGUANZI_GAME_TICK");
     }
     
     private void Start()

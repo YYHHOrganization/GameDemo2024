@@ -68,6 +68,39 @@ public class YPlayModeController : MonoBehaviour
     public GameObject curCharacter;
     private GameObject FreeLookCamera;
     GameObject PlayerCamera;
+    
+    public void ClearPlayerRelativeAssets()
+    {
+        //清除玩家的相关资源, 比如已经在场景当中的player
+        if (curCharacter)
+        {
+            Destroy(curCharacter);
+        }
+        if (FreeLookCamera)
+        {
+            Destroy(FreeLookCamera);
+        }
+        if (PlayerCamera)
+        {
+            Destroy(PlayerCamera);
+        }
+        if (CameraLayoutManager)
+        {
+            Destroy(CameraLayoutManager.gameObject);
+        }
+        // if (PuppetCamera)
+        // {
+        //     Destroy(PuppetCamera);
+        // }
+        if (catCakeList.Count > 0)
+        {
+            foreach (var catCake in catCakeList)
+            {
+                Destroy(catCake);
+            }
+            catCakeList.Clear();
+        }
+    }
 
     private bool lockEveryInputKey = false;
     public bool LockEveryInputKey
