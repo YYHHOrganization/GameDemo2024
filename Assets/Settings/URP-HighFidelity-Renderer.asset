@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a01d188a26328b4b920cdfdfa2d0def, type: 3}
   m_Name: VolumetricFogRendererFeatureLite
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   renderInSceneView: 0
   renderPassEvent: 450
   settings:
@@ -232,7 +232,8 @@ MonoBehaviour:
   - {fileID: -130310934065844971}
   - {fileID: 3622606921036715995}
   - {fileID: 2232420995380985421}
-  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b797d61e504ba917b15eda758e50a31fedbd74321cd1546324dbece421127fb1e
+  - {fileID: 4117110450909271500}
+  m_RendererFeatureMap: adc0de57c6d2eee5353beb695ce51cf5ff3d7788d2b9fa0e5b34b5a6d979e427aef770300fc269078e5e2d67d72bdc94abb050b0f2cd70e554bc367af68268fcb3387cb69a5a01e79d9b569fde793fe06d5bc2b2f7740d78aaf770dadbcc9cb7b1eb54d77176b0d5708616221601275b797d61e504ba917b15eda758e50a31fedbd74321cd1546324dbece421127fb1eccd57e4724ea2239
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -372,6 +373,48 @@ MonoBehaviour:
       normalBlend: 2
   m_CopyDepthPS: {fileID: 4800000, guid: d6dae50ee9e1bfa4db75f19f99355220, type: 3}
   m_DBufferClear: {fileID: 4800000, guid: f056d8bd2a1c7e44e9729144b4c70395, type: 3}
+--- !u!114 &4117110450909271500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
+  m_Name: Propass
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    passTag: Propass
+    Event: 450
+    filterSettings:
+      RenderQueueType: 1
+      LayerMask:
+        serializedVersion: 2
+        m_Bits: 8
+      PassNames: []
+    overrideMaterial: {fileID: 0}
+    overrideMaterialPassIndex: 0
+    overrideShader: {fileID: 4800000, guid: f6d1e27ac7126594e8a7cff4bbc8c6e3, type: 3}
+    overrideShaderPassIndex: 0
+    overrideMode: 2
+    overrideDepthState: 0
+    depthCompareFunction: 4
+    enableWrite: 1
+    stencilSettings:
+      overrideStencilState: 0
+      stencilReference: 0
+      stencilCompareFunction: 8
+      passOperation: 0
+      failOperation: 0
+      zFailOperation: 0
+    cameraSettings:
+      overrideCamera: 0
+      restoreCamera: 1
+      offset: {x: 0, y: 0, z: 0, w: 0}
+      cameraFieldOfView: 60
 --- !u!114 &6568219776115967600
 MonoBehaviour:
   m_ObjectHideFlags: 0
