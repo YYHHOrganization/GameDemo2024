@@ -72,6 +72,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GlitchNoise:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 531da0e7ab17d3842a2394cd3b040975, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -114,7 +118,7 @@ Material:
     - _Alpha: 0.28
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Blend: 0
+    - _Blend: 1
     - _BlendModePreserveSpecular: 1
     - _BlendOp: 0
     - _BumpScale: 1
@@ -123,7 +127,7 @@ Material:
     - _CelShadeSoftness: 0.05
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Cull: 0
+    - _Cull: 2
     - _Cutoff: 0.5
     - _Cutoff1: 0.5
     - _DetailAlbedoMapScale: 1
@@ -134,7 +138,10 @@ Material:
     - _ENABLE_ALPHA_TEST: 0
     - _EmissionMulByBaseColor: 0
     - _EnvironmentReflections: 1
+    - _FresnelPower: 3.7
     - _Genshin: 1
+    - _GlitchIntensity: 24.94
+    - _GlitchSpeed: 0.5
     - _GlossMapScale: 1
     - _Glossiness: 1
     - _GlossyReflections: 1
@@ -147,6 +154,7 @@ Material:
     - _OcclusionRemapEnd: 1
     - _OcclusionRemapStart: 0
     - _OcclusionStrength: 1
+    - _Offset: -1.82
     - _OutlineWidth: 0.4
     - _OutlineZOffset: 0.0001
     - _OutlineZOffsetMaskRemapEnd: 1
@@ -165,6 +173,7 @@ Material:
     - _SrcBlend: 5
     - _SrcBlendAlpha: 1
     - _Surface: 1
+    - _TimeMultiplier: 1.6
     - _Transparent: 0
     - _UVSec: 0
     - _UseAlphaClipping: 0
@@ -174,10 +183,11 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 0.48584902, g: 0.5039955, b: 1, a: 0.77254903}
-    - _BaseColor1: {r: 0, g: 0.4592228, b: 1, a: 0.50980395}
+    - _BaseColor1: {r: 0, g: 0.22092915, b: 2.0942407, a: 0.87058824}
     - _Color: {r: 0.48584896, g: 0.5039954, b: 1, a: 0.77254903}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionMapChannelMask: {r: 1, g: 1, b: 1, a: 0}
+    - _FresnelColor: {r: 0.20174558, g: 5.9933043, b: 5.723606, a: 1}
     - _HBarColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
     - _IndirectLightMinColor: {r: 0.09999997, g: 0.09999997, b: 0.09999997, a: 1}
     - _LineColor: {r: 1, g: 1, b: 0, a: 1}
