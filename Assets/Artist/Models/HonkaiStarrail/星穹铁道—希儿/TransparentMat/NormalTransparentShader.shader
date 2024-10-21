@@ -42,6 +42,7 @@ Shader "Transparent/TestSeele"
             "IgnoreProjector" = "True"
             "UniversalMaterialType" = "Unlit"
             "RenderPipeline" = "UniversalPipeline"
+            "Queue" = "Transparent"
         }
         LOD 100
 

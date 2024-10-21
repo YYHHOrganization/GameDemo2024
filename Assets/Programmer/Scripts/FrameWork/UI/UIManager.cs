@@ -215,5 +215,40 @@ namespace OurGameFramework
         {
             _backgroundMask.alpha = enable ? 1 : 0;
         }
+        
+        public AsyncOperationHandle Preload(UIType type)
+        {
+            if (!_viewControllers.TryGetValue(type, out var controller))
+            {
+                Debug.LogErrorFormat("未配置uiType:{0}， 请检查UIConfig.cs！", type.ToString());
+                return default;
+            }
+            return controller.Load();
+        }
+
+        public AsyncOperationHandle InitUIConfig()
+        {
+            // 初始化需要加载所有UI的配置
+            return UIConfig.GetAllConfigs((list) =>
+            {
+                foreach (var cfg in list)
+                {
+                    if (_viewControllers.ContainsKey(cfg.uiType))
+                    {
+                        Debug.LogErrorFormat("存在相同的uiType:{0}， 请检查UIConfig是否重复！", cfg.uiType.ToString());
+                        continue;
+                    }
+
+                    _viewControllers.Add(cfg.uiType, new UIViewController
+                    {
+                        uiPath = cfg.path,
+                        uiType = cfg.uiType,
+                        uiLayer = _layers[cfg.uiLayer],
+                        uiViewType = cfg.viewType,
+                        isWindow = cfg.isWindow,
+                    });
+                }
+            });
+        }
     }
 }
