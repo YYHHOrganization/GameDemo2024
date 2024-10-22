@@ -6,6 +6,7 @@ namespace OurGameFramework
         UILoginView,
         UIMessageBoxView,
         UITestView,
-        Max,
+		New_YLoadPanel,
+		Max,
     }
 }

@@ -225,6 +225,32 @@ namespace OurGameFramework
             }
             return controller.Load();
         }
+        
+        public void Open(UIType type, object userData = null, Action callback = null)
+        {
+            if (!_viewControllers.ContainsKey(type))
+            {
+                Debug.LogErrorFormat("未配置uiType:{0}， 请检查UIConfig.cs！", type.ToString());
+                return;
+            }
+
+            _openViews.Add(type);
+            _viewControllers[type].Open(userData, callback);
+        }
+        
+        /// <summary>
+        /// UI建议都用事件进行交互，最好不使用该接口
+        /// </summary>
+        public T GetView<T>(UIType type) where T : UIView
+        {
+            if (!_viewControllers.ContainsKey(type))
+            {
+                Debug.LogErrorFormat("未配置uiType:{0}， 请检查UIConfig.cs！", type.ToString());
+                return null;
+            }
+
+            return _viewControllers[type].uiView as T;
+        }
 
         public AsyncOperationHandle InitUIConfig()
         {

@@ -75,14 +75,66 @@ namespace OurGameFramework
                 if (isOpen)
                 {
                     //Debug.Log("now isOpen!");
-                    //Open(userData, callback, true);
+                    Open(userData, callback, true);
                 }
                 else
                 {
                     //Debug.Log("now is not open!close!");
-                    //Close(callback);
+                    Close(callback);
                 }
             });
+        }
+        
+        private void TrueOpen(object userData = null, Action callback = null)
+        {
+            uiLayer.OpenUI(this);
+            SetVisible(true);
+            // 刷新一下显示
+            AddTopViewNum(0);
+            uiView.OnOpen(userData);
+            uiView.OnResume();
+            callback?.Invoke();
+        }
+        
+        public void Open(object userData = null, Action callback = null, bool isFirstOpen = false)
+        {
+            isOpen = true;
+            if (isLoading) return;
+
+            if (uiView == null)
+            {
+                Load(userData, callback);
+            }
+            else
+            {
+                if (!isFirstOpen && isOpen && order > 0)
+                {
+                    TrueClose();  //这个逻辑主要指的是，如果已经打开了这个界面，再次打开的时候，先关闭再打开
+                }
+                TrueOpen(userData, callback);
+                if (uiViewAnim != null)
+                {
+                    uiViewAnim.Open();
+                }
+            }
+        }
+        
+        public void Close(Action callback = null)
+        {
+            isOpen = false;
+            if (isLoading) return;
+
+            if (uiView != null)
+            {
+                if (uiViewAnim != null)
+                {
+                    uiViewAnim.Close(() => { TrueClose(callback); });
+                }
+                else
+                {
+                    TrueClose(callback);
+                }
+            }
         }
         
         private void TrueClose(Action callback = null)

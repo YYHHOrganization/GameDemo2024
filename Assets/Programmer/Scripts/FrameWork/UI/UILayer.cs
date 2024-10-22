@@ -80,6 +80,33 @@ namespace OurGameFramework
             }
         }
         
+        public void OpenUI(UIViewController openedUI)
+        {
+            if (openedUI.order == 0)
+            {
+                openedUI.order = PushOrder(openedUI);  //分配一个order
+            }
+
+            foreach (var viewController in openedViews)
+            {
+                if (viewController != openedUI
+                    && viewController.isOpen
+                    && viewController.order < openedUI.order
+                    && viewController.uiView != null)
+                {
+                    if (!viewController.isPause)
+                    {
+                        viewController.isPause = true;
+                        viewController.uiView.OnPause();
+                    }
+                    if (!openedUI.isWindow)
+                    {
+                        viewController.AddTopViewNum(1); //不是window的话，由于新开了一个界面，因此下面的所有界面都要记录增加了一个遮挡数量
+                    }
+                }
+            }
+        }
+        
         public void CloseUI(UIViewController closedUI)
         {
             int order = closedUI.order;
