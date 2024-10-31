@@ -44,6 +44,30 @@ namespace OurGameFramework
         private IEnumerator CorLoading()
         {
             yield return StartCoroutine(_loadingData.loadingFunc(RefreshLoading));
+            if (_loadingData != null && _loadingData.isCleanupAsset)
+            {
+                yield return ResourceManager.Instance.CleanupAsync();
+                yield return Resources.UnloadUnusedAssets();
+            }
+
+            Pool.ReleaseAll();
+            yield return null;
+
+            GC.Collect();
+            yield return null;
+            
+            Exit();
+
+            _cor = null;
+        }
+        
+        private void Exit()
+        {
+            // 关闭UI
+            UIManager.Instance.Close(UIType.UILoadingView);
+
+            ObjectPool<LoadingData>.Release(_loadingData);
+            _loadingData = null;
         }
         
         private void RefreshLoading(float loading, string desc)

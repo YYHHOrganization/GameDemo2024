@@ -24,7 +24,7 @@ namespace OurGameFramework
         
         public void Open(Action callback = null)
         {
-            
+            //
         }
     }
 }

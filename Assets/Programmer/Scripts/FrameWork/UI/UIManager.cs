@@ -100,6 +100,18 @@ namespace OurGameFramework
             // TODO 不应该Update设置应该放在屏幕状态变动事件里
             ChangeOrCreateBlack();
         }
+        
+        public void Close(UIType type, Action callback = null)
+        {
+            if (!_viewControllers.ContainsKey(type))
+            {
+                Debug.LogErrorFormat("未配置uiType:{0}， 请检查UIConfig.cs！", type.ToString());
+                return;
+            }
+
+            _openViews.Remove(type);
+            _viewControllers[type].Close(callback);
+        }
 
         /// <summary>
         /// 创建或者调整黑边，需间隔触发，由于有些设备屏幕是可以转动，是动态的
@@ -109,7 +121,7 @@ namespace OurGameFramework
             if (_layers == null) return;
             var parent = _layers[UILayer.BackgroundLayer].canvas.transform as RectTransform;
             var uIBlackType = GetUIBlackType();
-            switch (uIBlackType)
+            switch (uIBlackType)  
             {
                 case UIBlackType.Height:
                     // 高度适配时的左右黑边

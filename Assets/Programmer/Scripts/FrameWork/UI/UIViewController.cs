@@ -164,7 +164,7 @@ namespace OurGameFramework
             order = 0;
         }
         
-        public void AddTopViewNum(int num)
+        public void AddTopViewNum(int num)  //1,-1
         {
             topViewNum += num;
             topViewNum = Mathf.Max(0, topViewNum);
