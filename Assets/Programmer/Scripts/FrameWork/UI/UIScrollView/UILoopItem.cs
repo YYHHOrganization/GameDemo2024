@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -12,6 +13,10 @@ namespace OurGameFramework
         [ControlBinding]
         public Image BgImage;
         [ControlBinding]
+        public RawImage SelectedBtn;
+        [ControlBinding]
+        public Button UnSelectBtn;
+        [ControlBinding]
         public Button AnItemInBagPanel;
         [ControlBinding]
         public GridLayoutGroup Stars;
@@ -23,7 +28,6 @@ namespace OurGameFramework
 #pragma warning restore 0649
         #endregion
         
-        
         GenshinUserDataStruct localUserData;
         private GenshinDemoListData localData; //在HonkaiStarRail中加入Genshin类，这何尝不是一种。。。
 
@@ -32,13 +36,54 @@ namespace OurGameFramework
             base.OnInit();
             AnItemInBagPanel.onClick.AddListener(()=>
             {
-                UIScrollView.Select(Index);
+                UIScrollView.Select(Index, false);
             });
+            UnSelectBtn.onClick.AddListener(() =>  
+            {
+                UIScrollView.Select(Index, true); //明确减选
+            });
+            UnSelectBtn.gameObject.SetActive(false);
         }
+        
 
         public override void SetBaseData()
         {
             base.SetBaseData();
+        }
+
+        public override void CheckSelect(int index, object data, bool isRemove = false)
+        {
+            base.CheckSelect(index, data, isRemove);
+            //isRemove表示是否在显式减选物体，还要看该物体是不是多选的
+            GenshinDemoListData genshinData = data as GenshinDemoListData;
+            int selectCount = genshinData.selectCount;
+            if(localUserData==null) localUserData = new GenshinUserDataStruct();
+            if (isRemove == false)
+            {
+                bool isShow = (index == Index);
+                SelectedBtn.gameObject.SetActive(isShow);
+                //if(!isUpdate) SelectedBtn.DOFade(isShow ? 1 : 0, 0.15f);
+                UnSelectBtn.gameObject.SetActive(isShow && localUserData.isShowX);
+                //ItemCountText.gameObject.SetActive(isShow && selectCount > 0 && genshinData.multiSelectInOneItem);
+            }
+            else  //是要移除物品
+            {
+                bool isShow = selectCount > 0 && (index == Index);
+                SelectedBtn.gameObject.SetActive(isShow);
+                //if(!isUpdate) SelectedBtn.DOFade(isShow ? 1 : 0, 0.15f);
+                UnSelectBtn.gameObject.SetActive(isShow && localUserData.isShowX);
+                //ItemCountText.gameObject.SetActive(isShow && genshinData.multiSelectInOneItem);
+            }
+            
+            if (!genshinData.multiSelectInOneItem) return;
+            if (selectCount >= 1) //以下针对可叠加显示的物品
+            {
+                ItemCountText.text = genshinData.selectCount.ToString() + '/' + genshinData.count.ToString();
+            }
+            else
+            {
+                ItemCountText.text = genshinData.count.ToString();
+            }
         }
 
         protected override void OnUpdateData(IList dataList, int index, object userData)
@@ -82,7 +127,6 @@ namespace OurGameFramework
                     break;
             }
             SetStars(starCount);
-            ItemCountText.text = data.count.ToString();
         }
     }
     
@@ -104,6 +148,11 @@ namespace OurGameFramework
             
         }
         
+        public virtual void CheckSelect(int index, object data, bool isRemove = false)
+        {
+            
+        }
+        
         public void UpdateSingleData(IList dataList, int index, object userData)  //只能单选的情况
         {
             if (!isInit)
@@ -115,6 +164,7 @@ namespace OurGameFramework
             m_RectTransform.anchoredPosition = UIScrollView.GetLocalPositionByIndex(index);
             //CheckSelect(UIScrollView.SelectIndex, dataList[index]);
             GenshinUserDataStruct genshinUserData = userData as GenshinUserDataStruct;
+            CheckSelect(UIScrollView.SelectIndex, dataList[index],false);
             OnUpdateData(dataList, index, genshinUserData);
         }
         
@@ -129,6 +179,14 @@ namespace OurGameFramework
             m_RectTransform.anchoredPosition = UIScrollView.GetLocalPositionByIndex(index);
             //CheckSelect(UIScrollView.SelectIndex);
             GenshinUserDataStruct genshinUserData = userData as GenshinUserDataStruct;
+            if(UIScrollView.SelectIndexs.ContainsKey(index))
+            {
+                CheckSelect(m_Index, dataList[index], false);
+            }
+            else
+            {
+                CheckSelect(-1, dataList[index],false);
+            }
             OnUpdateData(dataList, index, genshinUserData);
         }
         

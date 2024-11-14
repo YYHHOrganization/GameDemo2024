@@ -81,11 +81,12 @@ namespace OurGameFramework
                 data.star = UnityEngine.Random.Range(3, 6); 
                 data.level = 80;
                 data.type = GenshinDemoListType.Weapon;
+                data.multiSelectInOneItem = false;
                 dataList.Add(data);
             }
             //创建对应的UserData，方便格子的逻辑处理
             GenshinUserDataStruct userData = new GenshinUserDataStruct();
-            userData.maxSelectCount = 10000; //可以最多选择10000个
+            userData.maxSelectCount = 1; //可以最多选择10000个
             userData.isShowX = true; //显示X键，只做UI上的显示
             userData.isCanOverlap = true; //不叠加显示
         

@@ -42,6 +42,7 @@ namespace OurGameFramework
         //Gets and Sets
         public Dictionary<int, int> SelectIndexs => m_SelectIndexs;
         public List<UILoopItem> LoopItems => m_LoopItems;
+        public int SelectIndex => m_selectIndex;
         
         //其他的私有变量
         private int m_HorizontalCount;
@@ -51,11 +52,12 @@ namespace OurGameFramework
         
         private Rect parentRect;
         private Type m_ItemType;
-        private object m_UserData;
+        private GenshinUserDataStruct m_UserData;
         private bool m_canRangeSelect = false;
         
         private Tweener m_Tweener;
         private int m_CurrentIndex; //记录当前content中左上角的格子的index
+        private int m_selectIndex = -1;
 
         private void Awake()
         {
@@ -69,7 +71,7 @@ namespace OurGameFramework
         }
 
         public void SetUpList(IList dataList, GameObject prefab, Type type,
-            object userData = null)
+            GenshinUserDataStruct userData = null)
         {
             if (dataList == null || prefab == null)
             {
@@ -109,7 +111,7 @@ namespace OurGameFramework
             m_Datas = dataList;
             m_UserData = userData;
             
-            GenshinUserDataStruct data = userData as GenshinUserDataStruct;
+            GenshinUserDataStruct data = userData;
             //尝试userData转为GenshinUserDataStruct，这个后面会讲，主要针对比如最多选几个，或者是否可以范围选择的逻辑
             if (userData != null)
             {
@@ -312,11 +314,142 @@ namespace OurGameFramework
                 m_LoopItems.RemoveAt(m_LoopItems.Count - 1);
             }
         }
+        
+        private void RefleshData()
+        {
+            //遍历字典
+            foreach (var item in m_SelectIndexs)
+            {
+                RefleshSingleData(item.Key);
+            }
+        }
+        
+        void RefleshSingleData(int index)
+        {
+            GenshinDemoListData data = m_Datas[index] as GenshinDemoListData;
+            data.selectCount = m_SelectIndexs[index];
+        }
+        
+        public void AddSelectIndex(int index, int maxCount, bool multiSelectInOneItem = false)
+        {
+            //dictionary的key是index，value是点击的次数
+            if (!m_SelectIndexs.ContainsKey(index))
+            {
+                m_SelectIndexs.Add(index, 1);
+            }
+            else
+            {
+                if (!multiSelectInOneItem) //本身不能多选
+                {
+                    m_SelectIndexs[index] = 1;
+                    return;
+                }
+                if (m_SelectIndexs[index] < maxCount)
+                {
+                    m_SelectIndexs[index]++;
+                }
+            }
+        }
+        
+        public void RemoveSelectIndex(int index, bool multiSelectInOneItem = false) 
+        {
+            //dictionary的key是index，value是点击的次数,如果点击次数为0，就删除这个index
+            if (m_SelectIndexs.ContainsKey(index))
+            {
+                m_SelectIndexs[index]--;
+                if(!multiSelectInOneItem) m_SelectIndexs[index] = 0; //单选情况，删除即为0
+                RefleshSingleData(index);
+                if (m_SelectIndexs[index] <= 0)
+                {
+                    m_SelectIndexs.Remove(index);
+                }
+            }
+        }
 
+        private int m_lastSelectIndex;
+        
+        public void SingleSelect(int index, bool isDiSelect = false)
+        {
+            if (m_Datas == null) return;
+            if (isDiSelect) //是强制减选
+            {
+                m_SelectIndexs.Remove(index);
+                m_lastSelectIndex = -1;
+                foreach (var item in m_LoopItems)
+                {
+                    item.CheckSelect(index, m_Datas[index],true);
+                }
+                m_selectIndex = -1;
+            }
+            else
+            {
+                if (m_lastSelectIndex == index) return;  //这次跟上次选的一样，不用管了
+                m_lastSelectIndex = index;
+                m_SelectIndexs.Clear();
+                m_SelectIndexs.Add(index, 1);
+                foreach (var item in m_LoopItems)
+                {
+                    item.CheckSelect(index, m_Datas[index]);
+                }
+                m_selectIndex = index;
+            }
+        }
+
+        
         public void Select(int index, bool isDiSelect = false)
         {
-            //index记录真实的索引，isDiSelect记录是否是取消选择
-            
+            //index记录真实的索引，isDiSelect记录是否是取消选择,如果是再点一次取消选择的话isDiSelect不起作用
+            if (m_Datas == null) return;
+            bool singleChoose = m_UserData.maxSelectCount == 1; //是否只能同时选中一个物体
+            if (singleChoose) //只能单选
+            {
+                SingleSelect(index, isDiSelect);
+                return;
+            }
+            GenshinDemoListData listData = m_Datas[index] as GenshinDemoListData;
+            bool multiSelectInOneItem = listData.multiSelectInOneItem; //这个物品是否是可多选的（比如连续点选）
+            int maxCount = listData.count; //当前持有多少该物体
+            if (m_SelectIndexs.ContainsKey(index)) //在选择的队列当中
+            {
+                int checkIndex = index - GetCurrentItemIndex(); //checkIndex指的是在背包格子中的索引
+                bool addSelect = multiSelectInOneItem && !isDiSelect; //多选，且不是显式减选
+                if (addSelect)
+                {
+                    AddSelectIndex(index, maxCount, multiSelectInOneItem);
+                    RefleshData();  //将选择个数同步更新到data当中，这样刷新就能看到
+                    if (checkIndex >= 0 && checkIndex < m_LoopItems.Count)
+                    {
+                        m_LoopItems[checkIndex].CheckSelect(index, m_Datas[index], false);
+                    }
+                }
+                else  //说明要减选
+                {
+                    RemoveSelectIndex(index, multiSelectInOneItem); //这里会顺便UpdateData
+                    if (checkIndex >= 0 && checkIndex < m_LoopItems.Count)
+                    {
+                        m_LoopItems[checkIndex].CheckSelect(index, m_Datas[index], true);
+                    }
+                }
+            }
+            else
+            {
+                //说明现在字典里没有，认为是加选，因为这时正常也不会出现减选按钮的
+                if (m_SelectIndexs.Count >= m_maxChooseCnt)  //这里是说选择的格子数量超过了最大值
+                {
+                    Debug.Log("选择数量超过最大值");
+                    //HMessageShowMgr.Instance.ShowMessage();
+                    //todo：应该给一个Message提示
+                    return;
+                }
+                AddSelectIndex(index, maxCount, multiSelectInOneItem);
+                RefleshData();
+                int checkIndex = index - GetCurrentItemIndex();
+                if (checkIndex >= 0 && checkIndex < m_LoopItems.Count)
+                {
+                    m_LoopItems[checkIndex].CheckSelect(index, m_Datas[index], false);
+                }
+                
+            }
         }
         
         public Vector3 GetLocalPositionByIndex(int index)
