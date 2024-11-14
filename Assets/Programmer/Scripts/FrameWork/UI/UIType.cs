@@ -7,6 +7,7 @@ namespace OurGameFramework
         UIMessageBoxView,
         UITestView,
 		New_YLoadPanel,
+		HBagPanelNew,
 		Max,
     }
 }
