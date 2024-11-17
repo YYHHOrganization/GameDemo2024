@@ -58,6 +58,17 @@ namespace OurGameFramework
         private Tweener m_Tweener;
         private int m_CurrentIndex; //记录当前content中左上角的格子的index
         private int m_selectIndex = -1;
+        
+        //以下是与范围选择有关的中间变量
+        private bool canRangeSelected = false;
+        private int rangeSelectStartIndex = -1; //范围选择开始的index
+        private int lastMouseContentIndex; //上一个鼠标所在的格子的index
+        private bool firstJudgeDirection = true; //第一次判断的方向
+        private bool dragBigger = false; //是否初次是在往大的地方drag
+        private bool biggerThanStart = false; //是否在往比Start更大的地方drag
+        private bool biggerThanLast = false; //跟上次鼠标在的位置比，是否更大
+        private bool lastBiggerThanStart = false; //上次存储的结果，记录是否发生了翻转的情况
+        private bool firstIsBeingSelected = false; //范围框选的时候第一次选中的格子是不是已经被选中了
 
         private void Awake()
         {
@@ -538,17 +549,259 @@ namespace OurGameFramework
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            throw new NotImplementedException();
+            if(!m_canRangeSelect || rangeSelectStartIndex==-1) return;
+            //Debug.LogError("BeginDrag");
+            lastMouseContentIndex = rangeSelectStartIndex;
+            tmpChooseIndexs.Clear();
+            tmpChooseIndexs.Add(rangeSelectStartIndex); //先加入当前选择的index
+            Select(rangeSelectStartIndex, false); //范围选择基本只限于圣遗物这种不能叠加的
+            firstJudgeDirection = true;
+            //关闭ScrollView的滚动能力
+            m_ScrollRect.enabled = false;
         }
+        
+        private int GetCurrentContentIndex(PointerEventData eventData)
+        {
+            //找到当前鼠标位置对应content中的哪个item
+            //todo:这个getIndex的计算不具备可扩展性，暂时根据这个背包的情况写死的
+            int resIndex = -1;
+            switch (m_AxisType)
+            {
+                case Axis.Vertical:
+                    float y = m_Content.anchoredPosition.y - eventData.position.y;
+                    int yIndex = Mathf.FloorToInt(y / (m_ChildHeight + m_VerticalSpace));
+                    int xIndex = Mathf.FloorToInt((eventData.position.x - m_Content.position.x) / (m_ChildWidth + m_HorizontalSpace));
+                    xIndex -= 1;
+                    yIndex += 6; //写死的，针对本背包的情况适用
+                    resIndex = yIndex * m_CountOfOtherAxis + xIndex;
+                    Debug.Log("xIndex:" + xIndex + " yIndex:" + yIndex);
+                    break;
+            }
+
+            return resIndex;
+        }
+        
+        private void AddOrRemoveSelect(int lastMouseContentIndex, int currentMouseContentIndex, bool isAddSelect) //isAddSelect指的是是否加选/减选
+        {
+            int startIndex = Mathf.Min(lastMouseContentIndex, currentMouseContentIndex);
+            int endIndex = Mathf.Max(lastMouseContentIndex, currentMouseContentIndex);
+            
+            if (startIndex < 0) startIndex = 0;
+            if (isAddSelect)
+            {
+                for (int i = startIndex; i <= endIndex; i++)
+                {
+                    tmpChooseIndexs.Add(i);
+                    if (!m_SelectIndexs.ContainsKey(i))
+                    {
+                        Select(i, false);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = startIndex; i <= endIndex; i++)
+                {
+                    if (m_SelectIndexs.ContainsKey(i))
+                    {
+                        Select(i, true);
+                    }
+                    tmpChooseIndexs.Remove(i);
+                }
+            }
+        }
+
 
         public void OnDrag(PointerEventData eventData)
         {
-            throw new NotImplementedException();
+            if(!m_canRangeSelect) return;
+            if (rangeSelectStartIndex == -1)
+            {
+                rangeSelectStartIndex = GetCurrentContentIndex(eventData);  //开始的index，没有的话再算一次
+            }
+            int currentMouseContentIndex = GetCurrentContentIndex(eventData);
+            if(currentMouseContentIndex == lastMouseContentIndex) return; //跟上次结果一样，不用加选或者减选
+            if (firstJudgeDirection)
+            {
+                //Debug.LogError("FirstJudgeDirection");
+                dragBigger = currentMouseContentIndex > lastMouseContentIndex;
+                biggerThanStart = dragBigger;
+                lastBiggerThanStart = dragBigger;
+                AddOrRemoveSelect(lastMouseContentIndex, currentMouseContentIndex, !firstIsBeingSelected); //先把当前选的这个进行处理
+                firstJudgeDirection = false;
+            }
+            bool isFlip = false; //flip指的是是否会越过start，如果越过的话要分段处理
+            biggerThanStart = currentMouseContentIndex >= rangeSelectStartIndex;
+            biggerThanLast = currentMouseContentIndex > lastMouseContentIndex;
+            if(biggerThanStart != lastBiggerThanStart)
+            {
+                //发生了翻转
+                isFlip = true;
+            }
+            lastBiggerThanStart = biggerThanStart;
+            bool isAdding = false;
+            //总体大趋势是设定加选的情况
+            if (!firstIsBeingSelected)
+            {
+                if (dragBigger)  //第一次鼠标相对往下移动
+                {
+                    if (biggerThanStart) //现在是比Start更大的方向
+                    {
+                        if (biggerThanLast) isAdding = true; //还在往下选
+                        else isAdding = false; //往上选，但还是比start大
+                    }
+                    else  //现在是比Start更小的方向
+                    {
+                        if (biggerThanLast) isAdding = false; //对应往下选，但在start上面，减选
+                        else isAdding = true; //对应网上选，但在start上面，加选
+                    }
+                }
+                else  //第一次鼠标相对往上移动
+                {
+                    if (biggerThanStart)
+                    {
+                        if(biggerThanLast) isAdding = true;
+                        else isAdding = false;
+                    }
+                    else
+                    {
+                        if (biggerThanLast) isAdding = false;
+                        else isAdding = true;
+                    }
+                }
+            }
+            else //现在是总体减选的逻辑
+            {
+                if (dragBigger)  //第一次鼠标相对往下移动
+                {
+                    if (biggerThanStart)
+                    {
+                        if (biggerThanLast) isAdding = false;
+                        else isAdding = true;
+                    }
+                    else
+                    {
+                        if (biggerThanLast) isAdding = true;
+                        else isAdding = false;
+                    }
+                }
+                else  //第一次鼠标相对往上移动
+                {
+                    if (biggerThanStart)
+                    {
+                        if(biggerThanLast) isAdding = false;
+                        else isAdding = true;
+                    }
+                    else
+                    {
+                        if (biggerThanLast) isAdding = true;
+                        else isAdding = false;
+                    }
+                }
+            }
+            
+            if (isFlip)  //发生了翻转，处理两段,也就是跟上一段比越过了startPos
+            {
+                //先处理last到start
+                AddOrRemoveSelect(lastMouseContentIndex, rangeSelectStartIndex, !isAdding);
+                //再处理start到current
+                AddOrRemoveSelect(rangeSelectStartIndex, currentMouseContentIndex, isAdding);    
+               
+                //注意：start被算了两次，需要再算一次， todo：不确定对错，一会测试一下
+                AddOrRemoveSelect(rangeSelectStartIndex, rangeSelectStartIndex, isAdding);
+            }
+            else
+            {
+                AddOrRemoveSelect(lastMouseContentIndex, currentMouseContentIndex, isAdding);
+            }
+            // Debug.LogError("==================================");
+            // Debug.LogError("第一次是往下选么？" + dragBigger);
+            // Debug.LogError("现在是在比Start更大的方向么？" + biggerThanStart);
+            // Debug.LogError("现在是在比Last更大的方向么？" + biggerThanLast);
+            // Debug.LogError("总体isAdding:" + isAdding);
+            // Debug.LogError("StartIndex:" + rangeSelectStartIndex + " CurrentIndex:" + currentMouseContentIndex);
+            // Debug.LogError("==================================");
+            lastMouseContentIndex = currentMouseContentIndex;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            throw new NotImplementedException();
+            canRangeSelected = false; // 此时结束拖拽，不能进行范围选择
+            rangeSelectStartIndex = -1; //开始拖拽的index重置为-1
+            m_ScrollRect.enabled = true; //打开ScrollView的滚动能力
+            firstJudgeDirection = true;
+            dragBigger = false;
+            biggerThanStart = false;
+            biggerThanLast = false;
+            firstIsBeingSelected=false;
+            tmpChooseIndexs.Clear();
+            rangeSelectStartIndex = -1;
+        }
+        
+        private bool m_IsHoldingPressed = false;
+        private List<int> tmpChooseIndexs = new List<int>(); //用于存储范围选择的index
+        private Coroutine m_LongPressCoroutine;
+
+        public void StartLongPressSelect(int index, bool isDiSelect = false)
+        {
+            GenshinDemoListData data = m_Datas[index] as GenshinDemoListData;
+            
+            if (firstJudgeDirection) //drag的时候只会进一次，判断初始点击的那个button是什么
+            {
+                rangeSelectStartIndex = index;
+                firstIsBeingSelected = m_SelectIndexs.ContainsKey(index); //第一次选中的格子是不是已经被选中了
+            }
+            if (!data.multiSelectInOneItem) return;
+            if (m_LongPressCoroutine != null)
+            { 
+                StopCoroutine(m_LongPressCoroutine);
+            }
+            m_IsHoldingPressed = true;
+            m_LongPressCoroutine = StartCoroutine(LongPressSelect(index, isDiSelect));
+        }
+
+        public void EndLongPressSelect()
+        {
+            m_IsHoldingPressed = false;
+
+            if (m_LongPressCoroutine != null)
+            {
+                StopCoroutine(m_LongPressCoroutine);
+            }
+        }
+
+        IEnumerator LongPressSelect(int index, bool isDiSelect)
+        {
+            if (!m_IsHoldingPressed) yield break;
+            int checkIndex = index - GetCurrentItemIndex();
+            // if (checkIndex >= 0 && checkIndex < m_LoopItems.Count) //当前的高亮，但并不一定在逻辑上判断选中
+            // {
+            //     m_LoopItems[checkIndex].CheckSelect(index, m_Datas[index]);
+            // }  //先不在没选择上的时候就高亮，怕有别的bug，先这样
+
+            yield return new WaitForSeconds(0.5f); //等待两秒
+            if (!m_IsHoldingPressed) yield break;
+            GenshinDemoListData data = m_Datas[index] as GenshinDemoListData;
+            int upperCnt = data.count;
+            int selectCnt = data.selectCount;
+            int selectCntStage = 1;
+            int thisSelectCnt = 0; //这次选择的数量,每次都是从慢到快
+            int delta = isDiSelect ? -1 : 1;
+            while (true)
+            {
+                selectCntStage = thisSelectCnt / 10 * 4 + 2;
+                float waitTime = 0.5f / selectCntStage;
+                //clamp 
+                waitTime = Mathf.Clamp(waitTime, 0.005f, 0.5f);
+                yield return new WaitForSeconds(waitTime); //这样会越来越快
+                bool condition = isDiSelect ? (selectCnt > 0) : (selectCnt < upperCnt);
+                if (condition)
+                {
+                    selectCnt += delta;
+                    thisSelectCnt++;
+                    Select(index, isDiSelect);
+                }
+            }
         }
         
         public void Release()

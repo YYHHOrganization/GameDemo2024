@@ -49,6 +49,9 @@ namespace OurGameFramework
         public override void SetBaseData()
         {
             base.SetBaseData();
+            //以下功能用于长按连续选择
+            AnItemInBagPanel.GetComponent<ButtonExtendEvent>().SetScrollViewAndIndex(UIScrollView,this, false); 
+            UnSelectBtn.GetComponent<ButtonExtendEvent>().SetScrollViewAndIndex(UIScrollView, this, true);
         }
 
         public override void CheckSelect(int index, object data, bool isRemove = false)
@@ -145,7 +148,6 @@ namespace OurGameFramework
         
         public virtual void SetBaseData()  //比如有一个子节点什么的，可以在这里面进行赋值
         {
-            
         }
         
         public virtual void CheckSelect(int index, object data, bool isRemove = false)
