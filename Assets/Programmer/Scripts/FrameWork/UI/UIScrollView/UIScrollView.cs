@@ -584,7 +584,7 @@ namespace OurGameFramework
                     xIndex -= 1;
                     yIndex += 6; //写死的，针对本背包的情况适用
                     resIndex = yIndex * m_CountOfOtherAxis + xIndex;
-                    Debug.Log("xIndex:" + xIndex + " yIndex:" + yIndex);
+                    //Debug.Log("xIndex:" + xIndex + " yIndex:" + yIndex);
                     break;
             }
 
