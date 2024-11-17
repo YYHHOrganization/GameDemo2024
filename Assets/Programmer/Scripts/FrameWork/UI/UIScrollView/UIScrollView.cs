@@ -551,13 +551,23 @@ namespace OurGameFramework
         {
             if(!m_canRangeSelect || rangeSelectStartIndex==-1) return;
             //Debug.LogError("BeginDrag");
+        }
+
+        private void DragIsBegin(int index)  //框选事件开始的象征
+        {
+            rangeSelectStartIndex = index;
             lastMouseContentIndex = rangeSelectStartIndex;
+            if (firstJudgeDirection) //drag的时候只会进一次，判断初始点击的那个button是什么
+            {
+                rangeSelectStartIndex = index;
+                firstIsBeingSelected = m_SelectIndexs.ContainsKey(index); //第一次选中的格子是不是已经被选中了
+                m_ScrollRect.enabled = false; //关闭ScrollView的滚动能力
+            }
             tmpChooseIndexs.Clear();
             tmpChooseIndexs.Add(rangeSelectStartIndex); //先加入当前选择的index
             Select(rangeSelectStartIndex, false); //范围选择基本只限于圣遗物这种不能叠加的
-            firstJudgeDirection = true;
-            //关闭ScrollView的滚动能力
-            m_ScrollRect.enabled = false;
+            canRangeSelected = true;
+            
         }
         
         private int GetCurrentContentIndex(PointerEventData eventData)
@@ -615,6 +625,7 @@ namespace OurGameFramework
         public void OnDrag(PointerEventData eventData)
         {
             if(!m_canRangeSelect) return;
+            if (!canRangeSelected) return;
             if (rangeSelectStartIndex == -1)
             {
                 rangeSelectStartIndex = GetCurrentContentIndex(eventData);  //开始的index，没有的话再算一次
@@ -745,13 +756,7 @@ namespace OurGameFramework
         public void StartLongPressSelect(int index, bool isDiSelect = false)
         {
             GenshinDemoListData data = m_Datas[index] as GenshinDemoListData;
-            
-            if (firstJudgeDirection) //drag的时候只会进一次，判断初始点击的那个button是什么
-            {
-                rangeSelectStartIndex = index;
-                firstIsBeingSelected = m_SelectIndexs.ContainsKey(index); //第一次选中的格子是不是已经被选中了
-            }
-            if (!data.multiSelectInOneItem) return;
+            if (!data.multiSelectInOneItem && !m_canRangeSelect) return;
             if (m_LongPressCoroutine != null)
             { 
                 StopCoroutine(m_LongPressCoroutine);
@@ -781,7 +786,9 @@ namespace OurGameFramework
 
             yield return new WaitForSeconds(0.5f); //等待两秒
             if (!m_IsHoldingPressed) yield break;
+            DragIsBegin(index); //框选逻辑可以开始了
             GenshinDemoListData data = m_Datas[index] as GenshinDemoListData;
+            if (!data.multiSelectInOneItem) yield break;
             int upperCnt = data.count;
             int selectCnt = data.selectCount;
             int selectCntStage = 1;
